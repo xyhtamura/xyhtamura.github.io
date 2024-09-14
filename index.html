@@ -5,169 +5,187 @@
 	<link rel="shortcut icon" type="image/png" href="xyhfavicon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Xyh Tamura</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&family=Rubik:wght@400;700&family=Lexend+Deca:wght@400;700&family=Syne+Mono&display=swap');
-    
-    body {
-        font-family: "Rubik", sans-serif;
-        background-color: #10362d;
-        color: #efe2bb;
-        margin: 0;
-        padding: 5%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        line-height: 1.3;
-        flex-direction: column;
-        letter-spacing: 0.01em;
-    }
-    .center-section {
-        text-align: center;
-        margin-bottom: 2rem;
-    }
-    .center-section h1 {
-        font-family: "Quicksand", sans-serif;
-        margin: 1rem 0 0.5rem 0;
-        letter-spacing: 0.02em;
-    }
-    .center-section p {
-        margin: 0.5rem 0;
-        letter-spacing: 0.015em;
-    }
-    .center-section img {
-        border-radius: 50%;
-        max-width: 150px;
-        height: auto;
-        margin: 1rem 0;
-    }
-    .email {
-        margin: 0.5rem 0;
-    }
-    .social-links a {
-        font-family: "Syne Mono", monospace;
-        margin: 0 1rem;
-        text-decoration: none;
-        color: #b787e8;
-        letter-spacing: 0.01em;
-    }
-    .social-links a:hover {
-        color: #d8ff3e;
-    }
-    h1 {
-        font-family: "Rubik", sans-serif;
-        text-align: center;
-        letter-spacing: 0.03em;
-    }
-    .left-align-section {
-        max-width: 800px;
-        text-align: left;
-    }
-    .works-section {
-        max-width: 800px;
-        text-align: left;
-    }
-    .work-entry {
-        margin-bottom: 2.5rem;
-    }
-    .work-entry h2 {
-        font-family: "Syne Mono", monospace;
-        margin: 0 0 0 0;
-        letter-spacing: 0.02em;
-    }
-    .work-entry h3 {
-        font-family: "Lexend Deca", sans-serif;
-        font-weight: 400;
-        margin: 0rem 0;
-        color: #d1c4e9;
-        letter-spacing: 0.015em;
-    }
-    a {
-        font-family: "Syne Mono", monospace;
-        text-decoration: none;
-        color: #b787e8; /* Link color */
-        letter-spacing: 0.02em;
-    }
-    a:hover {
-        color: #95ff00; /* Hover color */
-    }
-    .work-entry p {
-        font-family: "Lexend Deca", sans-serif;
-        margin: 0.2rem 0;
-        letter-spacing: 0.015em;
-    }
-    .work-entry .role-year {
-        font-style: italic;
-        color: #e6c9c3;
-        letter-spacing: 0.01em;
-    }
+	<style>
+		@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&family=Rubik:wght@400;700&family=Lexend+Deca:wght@400;700&family=Syne+Mono&display=swap');
 
-    /* Category Styles */
-    .category-research {
-        color: #ff3366; /* Intense Neon Pink */
-        font-weight: bold;
-        margin-right: 0.5rem;
-        display: inline;
-    }
+		/* Define CSS Variables for Colors */
+		:root {
+			--bg-color: #10362d;
+			--text-color: #efe2bb;
+			--link-color: #b787e8;
+			--link-hover-color: #d8ff3e;
+			--h3-color: #d1c4e9;
+			--role-year-color: #e6c9c3;
+			--category-research-color: #ff3366; /* Intense Neon Pink */
+			--category-intermedia-color: #7547ff; /* Electric Purple */
+			--category-virtual-color: #00ffcc; /* Vibrant Cyan */
+			--category-music-color: #ffa333; /* Bright Tangerine */
+			--category-score-color: #33ccff; /* Electric Blue */
+			--category-writing-color: #ff66b2; /* Neon Rose */
+			--category-theater-color: #66ff66; /* Neon Green */
+			--category-dot-color: #ffff33; /* Bright Yellow */
+		}
 
-    .category-intermedia {
-        color: #7547ff; /* Electric Purple */
-        font-weight: bold;
-        margin-right: 0.5rem;
-        display: inline;
-    }
+		body {
+			font-family: "Rubik", sans-serif;
+			background-color: var(--bg-color);
+			color: var(--text-color);
+			margin: 0;
+			padding: 5%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			line-height: 1.3;
+			flex-direction: column;
+			letter-spacing: 0.01em;
+		}
+		.center-section {
+			text-align: center;
+			margin-bottom: 2rem;
+		}
+		.center-section h1 {
+			font-family: "Quicksand", sans-serif;
+			margin: 1rem 0 0.5rem 0;
+			letter-spacing: 0.02em;
+		}
+		.center-section p {
+			margin: 0.5rem 0;
+			letter-spacing: 0.015em;
+		}
+		.center-section img {
+			border-radius: 50%;
+			max-width: 150px;
+			height: auto;
+			margin: 1rem 0;
+		}
+		.email {
+			margin: 0.5rem 0;
+		}
+		.social-links a {
+			font-family: "Syne Mono", monospace;
+			margin: 0 1rem;
+			text-decoration: none;
+			color: var(--link-color);
+			letter-spacing: 0.01em;
+		}
+		.social-links a:hover {
+			color: var(--link-hover-color);
+		}
+		h1 {
+			font-family: "Rubik", sans-serif;
+			text-align: center;
+			letter-spacing: 0.03em;
+		}
+		.left-align-section {
+			max-width: 800px;
+			text-align: left;
+		}
+		.works-section {
+			max-width: 800px;
+			text-align: left;
+		}
+		.work-entry {
+			margin-bottom: 2.5rem;
+		}
+		.work-entry h2 {
+			font-family: "Syne Mono", monospace;
+			margin: 0 0 0 0;
+			letter-spacing: 0.02em;
+		}
+		.work-entry h3 {
+			font-family: "Lexend Deca", sans-serif;
+			font-weight: 400;
+			margin: 0rem 0;
+			color: var(--h3-color);
+			letter-spacing: 0.015em;
+		}
+		a {
+			font-family: "Syne Mono", monospace;
+			text-decoration: none;
+			color: var(--link-color); /* Link color */
+			letter-spacing: 0.02em;
+		}
+		a:hover {
+			color: var(--link-hover-color); /* Hover color */
+		}
+		.work-entry p {
+			font-family: "Lexend Deca", sans-serif;
+			margin: 0.2rem 0;
+			letter-spacing: 0.015em;
+		}
+		.work-entry .role-year {
+			font-style: italic;
+			color: var(--role-year-color);
+			letter-spacing: 0.01em;
+		}
 
-    .category-virtual {
-        color: #00ffcc; /* Vibrant Cyan */
-        font-weight: bold;
-        margin-right: 0.5rem;
-        display: inline;
-    }
+		/* Category Styles */
+		.category-research {
+			color: var(--category-research-color);
+			font-weight: bold;
+			margin-right: 0.5rem;
+			display: inline;
+		}
 
-    .category-music {
-        color: #ffa333; /* Bright Tangerine */
-        font-weight: bold;
-        margin-right: 0.5rem;
-        display: inline;
-    }
+		.category-intermedia {
+			color: var(--category-intermedia-color);
+			font-weight: bold;
+			margin-right: 0.5rem;
+			display: inline;
+		}
 
-    .category-score {
-        color: #33ccff; /* Electric Blue */
-        font-weight: bold;
-        margin-right: 0.5rem;
-        display: inline;
-    }
+		.category-virtual {
+			color: var(--category-virtual-color);
+			font-weight: bold;
+			margin-right: 0.5rem;
+			display: inline;
+		}
 
-    .category-writing {
-        color: #ff66b2; /* Neon Rose */
-        font-weight: bold;
-        margin-right: 0.5rem;
-        display: inline;
-    }
+		.category-music {
+			color: var(--category-music-color);
+			font-weight: bold;
+			margin-right: 0.5rem;
+			display: inline;
+		}
 
-    .category-theater {
-        color: #66ff66; /* Neon Green */
-        font-weight: bold;
-        margin-right: 0.5rem;
-        display: inline;
-    }
+		.category-score {
+			color: var(--category-score-color);
+			font-weight: bold;
+			margin-right: 0.5rem;
+			display: inline;
+		}
 
-    .category-dot {
-        color: #ffff33; /* Bright Yellow */
-        font-weight: bold;
-        margin-right: 0.5rem;
-        display: inline;
-    }
+		.category-writing {
+			color: var(--category-writing-color);
+			font-weight: bold;
+			margin-right: 0.5rem;
+			display: inline;
+		}
 
-    /* Add padding for mobile devices */
-    @media (max-width: 768px) {
-        body {
-            padding: 1rem;
-        }
-        .left-align-section, .works-section {
-            padding: 0 1rem;
-        }
-    }
-</style>
+		.category-theater {
+			color: var(--category-theater-color);
+			font-weight: bold;
+			margin-right: 0.5rem;
+			display: inline;
+		}
+
+		.category-dot {
+			color: var(--category-dot-color);
+			font-weight: bold;
+			margin-right: 0.5rem;
+			display: inline;
+		}
+
+		/* Add padding for mobile devices */
+		@media (max-width: 768px) {
+			body {
+				padding: 1rem;
+			}
+			.left-align-section, .works-section {
+				padding: 0 1rem;
+			}
+		}
+	</style>
 
 </head>
 <body>
