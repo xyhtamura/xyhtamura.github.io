@@ -10,7 +10,7 @@
 
 		:root {
 			/* Background and Text Colors */
-			--bg-color: #222e2d; /* Deep charcoal cyan, evoking the calm of a dense forest at dusk with a slightly synthetic edge */
+			--bg-color: #222e2d; /* Deep charcoal cyan, evoking the calm and mystery of a moonlit forest, blending organic tones with a subtle synthetic edge */
 			--text-color: #edeadf; /* Soft, warm off-white, like diffused natural light filtering through clouds, gentle and organic */
 			
 			/* Link Colors */
@@ -64,7 +64,14 @@
 			max-width: 150px;
 			height: auto;
 			margin: 1rem 0;
+			mask-image: url('xmask.png'); /* Apply the mask image */
+			mask-size: cover; /* Scale the mask to fit the image */
+			-webkit-mask-image: url('xmask.png'); /* Webkit support */
+			-webkit-mask-size: cover;
 		}
+
+		
+		
 		.email {
 			margin: 0.5rem 0;
 		}
@@ -125,7 +132,7 @@
 			color: var(--role-year-color);
 			letter-spacing: 0.01em;
 		}
-
+		
 		/* Category Styles */
 		.category-research {
 			color: var(--category-research-color);
