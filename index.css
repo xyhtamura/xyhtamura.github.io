@@ -186,9 +186,9 @@
 			}
 		}
 		
-.mask1 {
-	-webkit-mask-image: url('github.com/xyhtamura/xyhtamura.github.io/blob/main/xmask.png?raw=true');
-	mask-image: url('github.com/xyhtamura/xyhtamura.github.io/blob/main/xmask.png?raw=true');
-	mask-repeat: no-repeat; 
-	mask-size: cover;
+	.mask1 {
+		-webkit-mask-image: url('xmask.png');
+		mask-image: url('xmask.png');
+		mask-repeat: no-repeat; 
+		mask-size: cover;
 }
