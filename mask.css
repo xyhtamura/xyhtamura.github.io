@@ -1,6 +1,0 @@
-.mask1 {
-	-webkit-mask-image: url('xmask.png');
-	mask-image: url('xmask.png');
-	mask-repeat: no-repeat; 
-	mask-size: cover;
-}
