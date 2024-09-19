@@ -3,6 +3,8 @@
 		:root {
 			/* Background and Text Colors */
 			--bg-color: #252e2d; /* Deep charcoal cyan, evoking the calm and mystery of a moonlit forest, blending organic tones with a subtle synthetic edge */
+			--bg-color2: #2e2925;
+			--bg-color3: #2e252b;
 			--text-color: #edeadf; /* Soft, warm off-white, like diffused natural light filtering through clouds, gentle and organic */
 			
 			/* Link Colors */
@@ -30,6 +32,7 @@
 		body {
 			font-family: "Rubik", sans-serif;
 			background-color: var(--bg-color);
+			/* background: linear-gradient(to bottom, var(--bg-color), var(--bg-color2), var(--bg-color3)); /* Vertical gradient */
 			color: var(--text-color);
 			margin: 0;
 			padding: 5%;
@@ -40,6 +43,7 @@
 			flex-direction: column;
 			letter-spacing: 0.01em;
 		}
+
 		.center-section {
 			text-align: center;
 			margin-bottom: 2rem;
