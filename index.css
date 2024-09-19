@@ -235,4 +235,17 @@
 			mask-image: url('xmask.png');
 			mask-repeat: no-repeat; 
 			mask-size: cover;
+		}
+		
+		.masked-element {
+			width: 10px;
+			height: 10px;
+			background-color: #ff0000; /* Color to be masked */
+			-webkit-mask-image: url('xmask.png');
+			mask-image: url('xmask.png');
+			mask-position: center;
+			mask-repeat: no-repeat;
+			mask-size: cover;
+		}
+
 }
