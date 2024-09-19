@@ -13,6 +13,8 @@
 			--h3-color: #d1c4e9; /* Pale lavender mist, soft and dreamy, like clouds over an artificial horizon */
 			--role-year-color: #e6c9c3; /* Warm, muted sand, echoing the ancient and the timeless, grounded but dreamlike */
 			--email-color: #dde1f9; /* Icy pastel blue, crisp and cool, like a serene digital stream blending with a misty morning sky */ 
+			--present-color: #c7e6c3;
+			--personal-color: #e6de8a;
 			
 			/* Category Colors */
 			--category-research-color: #ff3366; /* Intense neon pink, pulsing with synthetic life, vivid but surreal */
@@ -119,6 +121,14 @@
 			color: var(--role-year-color);
 			letter-spacing: 0.01em;
 		}
+
+		.personal {
+			color: var(--personal-color);
+		}
+		
+		.present {
+			color: var(--present-color);
+		}		
 		
 		/* Category Styles */
 		.category-research {
