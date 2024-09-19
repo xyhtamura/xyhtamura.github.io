@@ -237,16 +237,19 @@
 			mask-size: cover;
 		}
 		
-		.masked-element {
-			width: 10px;
-			height: 10px;
+		.dot-separator {
+			text-align: center;
+			width: 5px;
+			height: 5px;
 			border: 0 0 0 1rem;
-			background-color: #ff0000; /* Color to be masked */
+			background-color: var(--text-color); /* Color to be masked */
 			-webkit-mask-image: url('xmask.png');
 			mask-image: url('xmask.png');
 			mask-position: center;
 			mask-repeat: no-repeat;
 			mask-size: cover;
+			margin-top: 1rem;
+			margin-bottom: 1.5rem;
 		}
 
 }
