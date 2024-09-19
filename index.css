@@ -176,6 +176,49 @@
 			margin-right: 0.5rem;
 			display: inline;
 		}
+		
+		/* category text */
+
+		.category-research::before {
+			content: "Research & Academic Work";
+			font-weight: bold;
+		}
+
+		.category-intermedia::before {
+			content: "Intermedia & Interdisciplinary Art";
+			font-weight: bold;
+		}
+
+		.category-virtual::before {
+			content: "Virtual & Streaming";
+			font-weight: bold;
+		}
+
+		.category-score::before {
+			content: "Soundtrack & Score";
+			font-weight: bold;
+		}
+
+		.category-music::before {
+			content: "Music Composition & Performance";
+			font-weight: bold;
+		}
+
+		.category-writing::before {
+			content: "Writing";
+			font-weight: bold;
+		}
+
+		.category-theater::before {
+			content: "Theater & Acting";
+			font-weight: bold;
+		}
+
+		.category-dot::before {
+			content: " · ";
+			font-weight: bold;
+		}
+
 
 		/* Add padding for mobile devices */
 		@media (max-width: 768px) {
