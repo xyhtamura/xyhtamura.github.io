@@ -2,7 +2,7 @@
 
 		:root {
 			/* Background and Text Colors */
-			--bg-color: #222e2d; /* Deep charcoal cyan, evoking the calm and mystery of a moonlit forest, blending organic tones with a subtle synthetic edge */
+			--bg-color: #252e2d; /* Deep charcoal cyan, evoking the calm and mystery of a moonlit forest, blending organic tones with a subtle synthetic edge */
 			--text-color: #edeadf; /* Soft, warm off-white, like diffused natural light filtering through clouds, gentle and organic */
 			
 			/* Link Colors */
@@ -54,7 +54,7 @@
 		.center-section img {
 			max-width: 150px;
 			height: auto;
-			margin: 0;
+			margin: 0.1rem 0 0 0;
 		}
 		
 		
