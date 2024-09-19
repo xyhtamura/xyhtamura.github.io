@@ -240,6 +240,7 @@
 		.masked-element {
 			width: 10px;
 			height: 10px;
+			border: 0 0 0 1rem;
 			background-color: #ff0000; /* Color to be masked */
 			-webkit-mask-image: url('xmask.png');
 			mask-image: url('xmask.png');
