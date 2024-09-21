@@ -65,10 +65,11 @@
 		
 		
 		.email {
+			font-family: "Averia Sans Libre", sans-serif;
 			margin: 0.5rem 0;
 		}
 		.social-links a {
-			font-family: "Syne Mono", monospace;
+			font-family: "Averia Sans Libre", sans-serif;
 			margin: 0 1rem;
 			text-decoration: none;
 			color: var(--link-color);
@@ -107,7 +108,6 @@
 			letter-spacing: 0.015em;
 		}
 		a {
-			font-family: "Averia Sans Libre", sans-serif;
 			text-decoration: none;
 			color: var(--link-color); /* Link color */
 			letter-spacing: 0.02em;
