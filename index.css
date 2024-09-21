@@ -1,4 +1,4 @@
-		@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&family=Rubik:wght@400;700&family=Lexend+Deca:wght@400;700&family=Syne+Mono&display=swap');
+		@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&family=Rubik:wght@400;700&family=Lexend+Deca:wght@400;700&family=Syne+Mono&&family=Averia+Sans+Libre&display=swap');
 
 		:root {
 			/* Background and Text Colors */
@@ -95,7 +95,7 @@
 			margin-bottom: 2.5rem;
 		}
 		.work-entry h2 {
-			font-family: "Syne Mono", monospace;
+			font-family: "Averia Sans Libre", sans-serif;
 			margin: 0 0 0 0;
 			letter-spacing: 0.02em;
 		}
@@ -107,7 +107,7 @@
 			letter-spacing: 0.015em;
 		}
 		a {
-			font-family: "Syne Mono", monospace;
+			font-family: "Averia Sans Libre", sans-serif;
 			text-decoration: none;
 			color: var(--link-color); /* Link color */
 			letter-spacing: 0.02em;
