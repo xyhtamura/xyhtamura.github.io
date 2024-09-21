@@ -16,16 +16,16 @@
 			--role-year-color: #e6c9c3; /* Warm, muted sand, echoing the ancient and the timeless, grounded but dreamlike */
 			--email-color: #dde1f9; /* Icy pastel blue, crisp and cool, like a serene digital stream blending with a misty morning sky */ 
 			--present-color: #c7e6c3;
-			--personal-color: #fcc28b;
+			--personal-color: #f0bb86;
 			
 			/* Category Colors */
-			--category-research-color: #ff3366; /* Intense neon pink, pulsing with synthetic life, vivid but surreal */
-			--category-intermedia-color: #7547ff; /* Electric violet, merging high-tech creativity with a dreamlike aura */
-			--category-virtual-color: #00ffcc; /* Vibrant cyan, fluid and sharp, bridging the digital and the organic */
-			--category-music-color: #ffa333; /* Bright tangerine, resonating like a sunset in an alternate universe, warm yet synthetic */
+			--category-research-color: #e72e5c; /* Intense neon pink, pulsing with synthetic life, vivid but surreal */
+			--category-intermedia-color: #7a52f3; /* Electric violet, merging high-tech creativity with a dreamlike aura */
+			--category-virtual-color: #1cebc1; /* Vibrant cyan, fluid and sharp, bridging the digital and the organic */
+			--category-music-color: #eeae3b; /* Bright tangerine, resonating like a sunset in an alternate universe, warm yet synthetic */
 			--category-score-color: #33ccff; /* Electric blue, cold and clear like a synthesized melody, crisp and futuristic */
 			--category-writing-color: #ff66b2; /* Neon rose, glowing with creative intensity, expressive yet otherworldly */
-			--category-theater-color: #66ff66; /* Neon green, playful and bold, like the flicker of light in a dreamworld performance */
+			--category-theater-color: #5fe25f; /* Neon green, playful and bold, like the flicker of light in a dreamworld performance */
 			--category-dot-color: #c3c6d6;
 		}
 
