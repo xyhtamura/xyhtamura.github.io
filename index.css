@@ -26,6 +26,7 @@
 			--category-score-color: #33ccff; /* Electric blue, cold and clear like a synthesized melody, crisp and futuristic */
 			--category-writing-color: #e8c440; /* Neon rose, glowing with creative intensity, expressive yet otherworldly */
 			--category-theater-color: #5fe25f; /* Neon green, playful and bold, like the flicker of light in a dreamworld performance */
+			--category-software-color: #88d9e6; /* Soft aqua, with a cool, digital edge, blending modern tech and organic tones */	
 			--category-dot-color: #c3c6d6;
 		}
 
@@ -230,6 +231,11 @@
 
 		.category-dot::before {
 			content: " · ";
+			font-weight: bold;
+		}
+
+		.category-software::before {
+			content: "Digital Applications & Tools";
 			font-weight: bold;
 		}
 
