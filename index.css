@@ -1,268 +1,287 @@
-		@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&family=Rubik:wght@400;700&family=Lexend+Deca:wght@400;700&family=Syne+Mono&family=Averia+Sans+Libre&family=Noto+Sans:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&family=Rubik:wght@400;700&family=Lexend+Deca:wght@400;700&family=Syne+Mono&family=Averia+Sans+Libre&family=Noto+Sans:wght@400;700&display=swap');
 
-		:root {
-			/* Background and Text Colors */
-			--bg-color: #272e2d; /* Deep charcoal cyan, evoking the calm and mystery of a moonlit forest, blending organic tones with a subtle synthetic edge */
-			--bg-color2: #2e2925;
-			--bg-color3: #2e252b;
-			--text-color: #edeadf; /* Soft, warm off-white, like diffused natural light filtering through clouds, gentle and organic */
-			
-			/* Link Colors */
-			--link-color: #b787e8; /* Faded lavender, like twilight in a surreal world, balancing nature and technology */
-			--link-hover-color: #d8ff3e; /* Luminous neon green, otherworldly and vibrant, evoking synthetic energy in natural space */
-			
-			/* Special Text */
-			--h3-color: #d1c4e9; /* Pale lavender mist, soft and dreamy, like clouds over an artificial horizon */
-			--role-year-color: #e0bfbf; /* Warm, muted sand, echoing the ancient and the timeless, grounded but dreamlike */
-			--email-color: #9fc4ee; /* Icy pastel blue, crisp and cool, like a serene digital stream blending with a misty morning sky */ 
-			--present-color: #c7e6c3;
-			--personal-color: #f0bb86;
-			
-			/* Category Colors */
-			--category-research-color: #1cebc1; /* Intense neon pink, pulsing with synthetic life, vivid but surreal */
-			--category-intermedia-color: #7a52f3; /* Electric violet, merging high-tech creativity with a dreamlike aura */
-			--category-virtual-color: #e72e5c; /* Vibrant cyan, fluid and sharp, bridging the digital and the organic */
-			--category-music-color: #ff66d4; /* Bright tangerine, resonating like a sunset in an alternate universe, warm yet synthetic */
-			--category-score-color: #33ccff; /* Electric blue, cold and clear like a synthesized melody, crisp and futuristic */
-			--category-writing-color: #e8c440; /* Neon rose, glowing with creative intensity, expressive yet otherworldly */
-			--category-theater-color: #5fe25f; /* Neon green, playful and bold, like the flicker of light in a dreamworld performance */
-			--category-software-color: #88d9e6; /* Soft aqua, with a cool, digital edge, blending modern tech and organic tones */	
-			--category-dot-color: #c3c6d6;
-		}
-
-		body {
-			font-family: "Rubik", "Noto Sans", sans-serif;
-			background-color: var(--bg-color);
-			/* background: linear-gradient(to bottom, var(--bg-color), var(--bg-color2), var(--bg-color3)); /* Vertical gradient */
-			color: var(--text-color);
-			margin: 0;
-			padding: 5%;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			line-height: 1.3;
-			flex-direction: column;
-			letter-spacing: 0.01em;
-		}
-
-		.center-section {
-			text-align: center;
-			margin-bottom: 2rem;
-		}
-		.center-section h1 {
-			font-family: "Quicksand", "Noto Sans", sans-serif;
-			margin: 1rem 0 0.7rem 0;
-			letter-spacing: 0.02em;
-		}
-		.center-section p {
-			margin: 0.5rem 0;
-			letter-spacing: 0.015em;
-		}
-		.center-section img {
-			max-width: 150px;
-			height: auto;
-			margin: 0.4rem 0 0 0;
-		}
-		
-		
-		.email {
-			font-family: "Averia Sans Libre", "Noto Sans", sans-serif;
-			margin: 0.5rem 0;
-		}
-		.social-links a {
-			font-family: "Averia Sans Libre", "Noto Sans", sans-serif;
-			margin: 0 1rem;
-			text-decoration: none;
-			color: var(--link-color);
-			letter-spacing: 0.01em;
-		}
-		.social-links a:hover {
-			color: var(--link-hover-color);
-		}
-		h1 {
-			font-family: "Rubik", "Noto Sans", sans-serif;
-			text-align: center;
-			letter-spacing: 0.03em;
-			margin: 0 0 1rem 0;
-		}
-		.left-align-section {
-			max-width: 800px;
-			text-align: left;
-		}
-		.works-section {
-			max-width: 800px;
-			text-align: left;
-		}
-		.work-entry {
-			margin-bottom: 2.5rem;
-		}
-		.work-entry h2 {
-			font-family: "Averia Sans Libre", "Noto Sans", sans-serif;
-			margin: 0 0 0 0;
-			letter-spacing: 0.03em;
-		}
-		.work-entry h3 {
-			font-family: "Lexend Deca", "Noto Sans", sans-serif;
-			font-weight: 400;
-			margin: 0rem 0;
-			color: var(--h3-color);
-			letter-spacing: 0.015em;
-		}
-		a {
-			text-decoration: none;
-			color: var(--link-color); /* Link color */
-		}
-		
-		a:hover {
-			color: var(--link-hover-color); /* Hover color */
-		}
-		.work-entry p {
-			font-family: "Lexend Deca", "Noto Sans", sans-serif;
-			margin: 0.25rem 0;
-			letter-spacing: 0.015em;
-		}
-		.work-entry .role-year {
-			font-style: italic;
-			color: var(--role-year-color);
-			letter-spacing: 0.01em;
-		}
-
-		.personal {
-			color: var(--personal-color);
-		}
-		
-		.present {
-			color: var(--present-color);
-		}		
-		
-		/* Category Styles */
-		.category-research {
-			color: var(--category-research-color);
-			font-weight: bold;
-			margin-right: 0.5rem;
-			display: inline;
-		}
-
-		.category-intermedia {
-			color: var(--category-intermedia-color);
-			font-weight: bold;
-			margin-right: 0.5rem;
-			display: inline;
-		}
-
-		.category-virtual {
-			color: var(--category-virtual-color);
-			font-weight: bold;
-			margin-right: 0.5rem;
-			display: inline;
-		}
-
-		.category-music {
-			color: var(--category-music-color);
-			font-weight: bold;
-			margin-right: 0.5rem;
-			display: inline;
-		}
-
-		.category-score {
-			color: var(--category-score-color);
-			font-weight: bold;
-			margin-right: 0.5rem;
-			display: inline;
-		}
-
-		.category-writing {
-			color: var(--category-writing-color);
-			font-weight: bold;
-			margin-right: 0.5rem;
-			display: inline;
-		}
-
-		.category-theater {
-			color: var(--category-theater-color);
-			font-weight: bold;
-			margin-right: 0.5rem;
-			display: inline;
-		}
-
-		.category-dot {
-			color: var(--category-dot-color);
-			font-weight: bold;
-			margin-right: 0.5rem;
-			display: inline;
-		}
-		
-		/* category text */
-
-		.category-research::before {
-			content: "Research & Academic Work";
-			font-weight: bold;
-		}
-
-		.category-intermedia::before {
-			content: "Intermedia & Interdisciplinary Art";
-			font-weight: bold;
-		}
-
-		.category-virtual::before {
-			content: "Virtual & Streaming";
-			font-weight: bold;
-		}
-
-		.category-score::before {
-			content: "Soundtrack & Score";
-			font-weight: bold;
-		}
-
-		.category-music::before {
-			content: "Music Composition & Performance";
-			font-weight: bold;
-		}
-
-		.category-writing::before {
-			content: "Writing";
-			font-weight: bold;
-		}
-
-		.category-theater::before {
-			content: "Theater & Acting";
-			font-weight: bold;
-		}
-
-		.category-dot::before {
-			content: " · ";
-			font-weight: bold;
-		}
-
-		.category-software::before {
-			content: "Digital Applications & Tools";
-			font-weight: bold;
-		}
-
-
-		/* Add padding for mobile devices */
-		@media (max-width: 768px) {
-			body {
-				padding: 1rem;
-			}
-			.left-align-section, .works-section {
-				padding: 0 1rem;
-			}
-		}
-		
-		.mask1 {
-			-webkit-mask-image: url('xmask.png');
-			mask-image: url('xmask.png');
-			mask-repeat: no-repeat; 
-			mask-size: cover;
-		}
-		
-		.logo{
-			text-align: center;
-			height:50px; 
-			width:50px; 
-			margin: 1rem 0 2.1rem 0;
-		}
-
-
+:root {
+	/* Background and Text Colors */
+	--bg-color: #272e2d; /* Deep charcoal cyan, evoking the calm and mystery of a moonlit forest, blending organic tones with a subtle synthetic edge */
+	--bg-color2: #2e2925;
+	--bg-color3: #2e252b;
+	--text-color: #edeadf; /* Soft, warm off-white, like diffused natural light filtering through clouds, gentle and organic */
+	
+	/* Link Colors */
+	--link-color: #b787e8; /* Faded lavender, like twilight in a surreal world, balancing nature and technology */
+	--link-hover-color: #d8ff3e; /* Luminous neon green, otherworldly and vibrant, evoking synthetic energy in natural space */
+	
+	/* Special Text */
+	--h3-color: #d1c4e9; /* Pale lavender mist, soft and dreamy, like clouds over an artificial horizon */
+	--role-year-color: #e0bfbf; /* Warm, muted sand, echoing the ancient and the timeless, grounded but dreamlike */
+	--role-color: #e0bfbf; /* Warm, muted sand, echoing the ancient and the timeless, grounded but dreamlike */
+	--year-color: #bcd6d4;
+	--email-color: #9fc4ee; /* Icy pastel blue, crisp and cool, like a serene digital stream blending with a misty morning sky */ 
+	--present-color: #c7e6c3;
+	--personal-color: #f0bb86;
+	
+	/* Category Colors */
+	--category-research-color: #1cebc1; /* Intense neon pink, pulsing with synthetic life, vivid but surreal */
+	--category-intermedia-color: #7a52f3; /* Electric violet, merging high-tech creativity with a dreamlike aura */
+	--category-virtual-color: #e72e5c; /* Vibrant cyan, fluid and sharp, bridging the digital and the organic */
+	--category-music-color: #ff66d4; /* Bright tangerine, resonating like a sunset in an alternate universe, warm yet synthetic */
+	--category-score-color: #33ccff; /* Electric blue, cold and clear like a synthesized melody, crisp and futuristic */
+	--category-writing-color: #e8c440; /* Neon rose, glowing with creative intensity, expressive yet otherworldly */
+	--category-theater-color: #5fe25f; /* Neon green, playful and bold, like the flicker of light in a dreamworld performance */
+	--category-software-color: #88d9e6; /* Soft aqua, with a cool, digital edge, blending modern tech and organic tones */	
+	--category-dot-color: #c3c6d6;
 }
+
+body {
+	font-family: "Rubik", "Noto Sans", sans-serif;
+	background-color: var(--bg-color);
+	/* background: linear-gradient(to bottom, var(--bg-color), var(--bg-color2), var(--bg-color3)); /* Vertical gradient */
+	color: var(--text-color);
+	margin: 0;
+	padding: 5%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	line-height: 1.3;
+	flex-direction: column;
+	letter-spacing: 0.01em;
+}
+
+.center-section {
+	text-align: center;
+	margin-bottom: 2rem;
+}
+.center-section h1 {
+	font-family: "Quicksand", "Noto Sans", sans-serif;
+	margin: 1rem 0 0.7rem 0;
+	letter-spacing: 0.02em;
+}
+.center-section p {
+	margin: 0.5rem 0;
+	letter-spacing: 0.015em;
+}
+.center-section img {
+	max-width: 150px;
+	height: auto;
+	margin: 0.4rem 0 0 0;
+}
+
+
+.email {
+	font-family: "Averia Sans Libre", "Noto Sans", sans-serif;
+	margin: 0.5rem 0;
+}
+.social-links {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-top: 1rem;
+}
+.social-links a {
+	font-family: "Averia Sans Libre", "Noto Sans", sans-serif;
+	margin: 0.1rem 0;
+	text-decoration: none;
+	color: var(--link-color);
+	letter-spacing: 0.01em;
+}
+.social-links a:hover {
+	color: var(--link-hover-color);
+}
+h1 {
+	font-family: "Rubik", "Noto Sans", sans-serif;
+	text-align: center;
+	letter-spacing: 0.03em;
+	margin: 0 0 1rem 0;
+}
+.left-align-section {
+	max-width: 800px;
+	text-align: left;
+}
+.works-section {
+	max-width: 800px;
+	text-align: left;
+}
+.work-entry {
+	margin-bottom: 2.5rem;
+}
+.work-entry h2 {
+	font-family: "Averia Sans Libre", "Noto Sans", sans-serif;
+	margin: 0 0 0 0;
+	letter-spacing: 0.03em;
+}
+.work-entry h3 {
+	font-family: "Lexend Deca", "Noto Sans", sans-serif;
+	font-weight: 400;
+	margin: 0rem 0;
+	color: var(--h3-color);
+	letter-spacing: 0.015em;
+}
+a {
+	text-decoration: none;
+	color: var(--link-color); /* Link color */
+}
+
+a:hover {
+	color: var(--link-hover-color); /* Hover color */
+}
+.work-entry p {
+	font-family: "Lexend Deca", "Noto Sans", sans-serif;
+	margin: 0.25rem 0;
+	letter-spacing: 0.015em;
+}
+.work-entry .role-year {
+	font-style: italic;
+	color: var(--role-year-color);
+	letter-spacing: 0.01em;
+}
+
+.work-entry .year {
+	font-style: italic;
+	color: var(--year-color);
+	letter-spacing: 0.01em;
+}
+
+.work-entry .role {
+	font-style: italic;
+	color: var(--role-color);
+	letter-spacing: 0.01em;
+}
+
+.personal {
+	color: var(--personal-color);
+}
+
+.present {
+	color: var(--present-color);
+}		
+
+/* Category Styles */
+.category-research {
+	color: var(--category-research-color);
+	font-weight: bold;
+	margin-right: 0.5rem;
+	display: inline;
+}
+
+.category-intermedia {
+	color: var(--category-intermedia-color);
+	font-weight: bold;
+	margin-right: 0.5rem;
+	display: inline;
+}
+
+.category-virtual {
+	color: var(--category-virtual-color);
+	font-weight: bold;
+	margin-right: 0.5rem;
+	display: inline;
+}
+
+.category-music {
+	color: var(--category-music-color);
+	font-weight: bold;
+	margin-right: 0.5rem;
+	display: inline;
+}
+
+.category-score {
+	color: var(--category-score-color);
+	font-weight: bold;
+	margin-right: 0.5rem;
+	display: inline;
+}
+
+.category-writing {
+	color: var(--category-writing-color);
+	font-weight: bold;
+	margin-right: 0.5rem;
+	display: inline;
+}
+
+.category-theater {
+	color: var(--category-theater-color);
+	font-weight: bold;
+	margin-right: 0.5rem;
+	display: inline;
+}
+
+.category-dot {
+	color: var(--category-dot-color);
+	font-weight: bold;
+	margin-right: 0.5rem;
+	display: inline;
+}
+
+/* category text */
+
+.category-research::before {
+	content: "Research & Academic Work";
+	font-weight: bold;
+}
+
+.category-intermedia::before {
+	content: "Intermedia & Interdisciplinary Art";
+	font-weight: bold;
+}
+
+.category-virtual::before {
+	content: "Virtual & Streaming";
+	font-weight: bold;
+}
+
+.category-score::before {
+	content: "Soundtrack & Score";
+	font-weight: bold;
+}
+
+.category-music::before {
+	content: "Music Composition & Performance";
+	font-weight: bold;
+}
+
+.category-writing::before {
+	content: "Writing";
+	font-weight: bold;
+}
+
+.category-theater::before {
+	content: "Theater & Acting";
+	font-weight: bold;
+}
+
+.category-dot::before {
+	content: " · ";
+	font-weight: bold;
+}
+
+.category-software::before {
+	content: "Digital Applications & Tools";
+	font-weight: bold;
+}
+
+
+/* Add padding for mobile devices */
+@media (max-width: 768px) {
+	body {
+		padding: 1rem;
+	}
+	.left-align-section, .works-section {
+		padding: 0 1rem;
+	}
+}
+
+.mask1 {
+	-webkit-mask-image: url('xmask.png');
+	mask-image: url('xmask.png');
+	mask-repeat: no-repeat; 
+	mask-size: cover;
+}
+
+.logo{
+	text-align: center;
+	height:50px; 
+	width:50px; 
+	margin: 1rem 0 2.1rem 0;
+}
+
+
