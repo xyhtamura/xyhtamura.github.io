@@ -17,7 +17,7 @@
 	--year-color: #bcd6d4;
 	--email-color: #9fc4ee; /* Icy pastel blue, crisp and cool, like a serene digital stream blending with a misty morning sky */ 
 	--present-color: #c7e6c3;
-	--personal-color: #f0bb86;
+	--original-color: #f0bb86;
 	
 	/* Category Colors */
 	--category-research-color: #1cebc1; /* Intense neon pink, pulsing with synthetic life, vivid but surreal */
@@ -141,13 +141,22 @@ a:hover {
 	letter-spacing: 0.01em;
 }
 
-.personal {
-	color: var(--personal-color);
+.original {
+	color: var(--original-color);
+}
+
+.original::before {
+	content: "original work";
 }
 
 .present {
 	color: var(--present-color);
 }		
+
+.next::before {
+    content: " · ";
+}
+
 
 /* Category Styles */
 .category-research {
