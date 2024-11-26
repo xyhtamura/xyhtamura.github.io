@@ -16,7 +16,6 @@
 	--role-color: #e0bfbf; /* Warm, muted sand, echoing the ancient and the timeless, grounded but dreamlike */
 	--year-color: #bcd6d4;
 	--email-color: #9fc4ee; /* Icy pastel blue, crisp and cool, like a serene digital stream blending with a misty morning sky */ 
-	--present-color: #c7e6c3;
 	--original-color: #f0bb86;
 	
 	/* Category Colors */
@@ -153,9 +152,10 @@ a:hover {
 	color: var(--present-color);
 }		
 
-.next::before {
+.work-entry span:not(:first-of-type)::before {
     content: " · ";
 }
+
 
 
 /* Category Styles */
