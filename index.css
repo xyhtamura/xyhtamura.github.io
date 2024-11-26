@@ -156,7 +156,11 @@ a:hover {
     content: " · ";
 }
 
-
+div.categories p:not(:last-of-type)::after{
+    content: " · ";
+	color: var(--category-dot-color);
+	font-weight: bold;
+}
 
 /* Category Styles */
 .category-research {
@@ -208,12 +212,6 @@ a:hover {
 	display: inline;
 }
 
-.category-dot {
-	color: var(--category-dot-color);
-	font-weight: bold;
-	margin-right: 0.5rem;
-	display: inline;
-}
 
 .category-instrument {
 	color: var(--category-instrument-color);
@@ -263,11 +261,6 @@ a:hover {
 
 .category-theater::before {
 	content: "Theater & Acting";
-	font-weight: bold;
-}
-
-.category-dot::before {
-	content: " · ";
 	font-weight: bold;
 }
 
