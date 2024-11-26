@@ -28,6 +28,8 @@
 	--category-writing-color: #e8c440; /* Neon rose, glowing with creative intensity, expressive yet otherworldly */
 	--category-theater-color: #5fe25f; /* Neon green, playful and bold, like the flicker of light in a dreamworld performance */
 	--category-software-color: #88d9e6; /* Soft aqua, with a cool, digital edge, blending modern tech and organic tones */	
+	--category-instrument-color: #ff7200; /* Glowing amber, warm and rich, evoking craftsmanship and sonic experimentation */
+	--category-visual-color: #ab00ff; /* Radiant magenta-violet, bold and surreal, blending the organic and synthetic aesthetics */
 	--category-dot-color: #c3c6d6;
 }
 
@@ -211,6 +213,20 @@ a:hover {
 	display: inline;
 }
 
+.category-instrument {
+	color: var(--category-instrument-color);
+	font-weight: bold;
+	margin-right: 0.5rem;
+	display: inline;
+}
+
+.category-visuals {
+	color: var(--category-visual-color);
+	font-weight: bold;
+	margin-right: 0.5rem;
+	display: inline;
+}
+
 /* category text */
 
 .category-research::before {
@@ -257,6 +273,17 @@ a:hover {
 	content: "Digital Applications & Tools";
 	font-weight: bold;
 }
+
+.category-instrument::before {
+	content: "Instrument Design & Sound Synthesis";
+	font-weight: bold;
+}
+
+.category-visuals::before {
+	content: "Visual Art & Graphics";
+	font-weight: bold;
+}
+
 
 
 /* Add padding for mobile devices */
