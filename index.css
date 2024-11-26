@@ -111,7 +111,7 @@ h1 {
 	letter-spacing: 0.03em;
 }
 .work-entry h3 {
-	font-family: "Lexend Deca", "Noto Sans", sans-serif;
+	font-family: "Averia Sans Libre", "Noto Sans", sans-serif;
 	font-weight: 400;
 	margin: 0rem 0;
 	color: var(--h3-color);
@@ -130,20 +130,13 @@ a:hover {
 	margin: 0.25rem 0;
 	letter-spacing: 0.015em;
 }
-.work-entry .role-year {
-	font-style: italic;
-	color: var(--role-year-color);
-	letter-spacing: 0.01em;
-}
 
 .work-entry .year {
-	font-style: italic;
 	color: var(--year-color);
 	letter-spacing: 0.01em;
 }
 
 .work-entry .role {
-	font-style: italic;
 	color: var(--role-color);
 	letter-spacing: 0.01em;
 }
