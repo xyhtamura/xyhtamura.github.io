@@ -17,6 +17,9 @@
 	--year-color: #bcd6d4;
 	--email-color: #9fc4ee; /* Icy pastel blue, crisp and cool, like a serene digital stream blending with a misty morning sky */ 
 	--original-color: #f0bb86;
+	--selection-text: #1f2457;
+	--selection-background: #ccb8c9;
+	
 	
 	/* Category Colors */
 	--category-research-color: #1cebc1; /* Intense neon pink, pulsing with synthetic life, vivid but surreal */
@@ -121,9 +124,16 @@ a {
 	color: var(--link-color); /* Link color */
 }
 
-a:hover {
+a:hover, a:active {
 	color: var(--link-hover-color); /* Hover color */
 }
+
+::selection {
+    background-color:  var(--selection-background);
+    color:  var(--selection-text);
+}
+
+
 .work-entry p {
 	font-family: "Lexend Deca", "Noto Sans", sans-serif;
 	margin: 0.25rem 0;
