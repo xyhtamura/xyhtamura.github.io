@@ -330,7 +330,7 @@ div.categories p:not(:last-of-type)::after{
 
 ::-webkit-scrollbar-thumb {
     background: var(--scrollbar-color); /* Color of the scrollbar thumb */
-    border-radius: 50%; /* Fully rounded thumb */
+    border-radius: 40%; /* Fully rounded thumb */
     border: 3px solid var(--scrollbar-track-color); /* Space around the thumb */
 }
 
@@ -342,18 +342,4 @@ div.categories p:not(:last-of-type)::after{
     background: var(--scrollbar-track-color); /* Background of the scrollbar corner */
 }
 
-/* Scrollbar Styling for Firefox */
-* {
-    scrollbar-width: auto; /* Medium-sized width for the scrollbar */
-    scrollbar-color: var(--scrollbar-color) var(--scrollbar-track-color); /* Thumb and track colors */
-}
 
-/* Optional: Styling for specific containers (Edge/older browsers) */
-.scroll-container {
-    scrollbar-width: medium;
-    scrollbar-color: var(--scrollbar-color) var(--scrollbar-track-color);
-}
-
-::caret {
-    color: var(--link-hover-color);
-}
