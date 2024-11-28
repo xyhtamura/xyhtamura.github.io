@@ -18,7 +18,9 @@
 	--email-color: #9fc4ee; /* Icy pastel blue, crisp and cool, like a serene digital stream blending with a misty morning sky */ 
 	--original-color: #f0bb86;
 	--selection-text: #26245c;
-	--selection-background: #a4bfb1;
+	--selection-background: #a4bfab;
+	--scrollbar-color: #e887dd;
+	--scrollbar-track-color: #26261e;
 	
 	
 	/* Category Colors */
@@ -315,4 +317,43 @@ div.categories p:not(:last-of-type)::after{
 	margin: 1rem 0 2.1rem 0;
 }
 
+/* Scrollbar Styling for Webkit Browsers */
+::-webkit-scrollbar {
+    width: 16px; /* Medium width for vertical scrollbar */
+    height: 16px; /* Medium height for horizontal scrollbar */
+}
 
+::-webkit-scrollbar-track {
+    background: var(--scrollbar-track-color); /* Background of the scrollbar track */
+    border-radius: 8px; /* Slightly rounded scrollbar track */
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-color); /* Color of the scrollbar thumb */
+    border-radius: 50%; /* Fully rounded thumb */
+    border: 3px solid var(--scrollbar-track-color); /* Space around the thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--link-hover-color); /* Thumb color when hovered */
+}
+
+::-webkit-scrollbar-corner {
+    background: var(--scrollbar-track-color); /* Background of the scrollbar corner */
+}
+
+/* Scrollbar Styling for Firefox */
+* {
+    scrollbar-width: auto; /* Medium-sized width for the scrollbar */
+    scrollbar-color: var(--scrollbar-color) var(--scrollbar-track-color); /* Thumb and track colors */
+}
+
+/* Optional: Styling for specific containers (Edge/older browsers) */
+.scroll-container {
+    scrollbar-width: medium;
+    scrollbar-color: var(--scrollbar-color) var(--scrollbar-track-color);
+}
+
+::caret {
+    color: var(--link-hover-color);
+}
