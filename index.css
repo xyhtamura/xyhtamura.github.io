@@ -342,4 +342,37 @@ div.categories p:not(:last-of-type)::after{
     background: var(--scrollbar-track-color); /* Background of the scrollbar corner */
 }
 
+@media (prefers-color-scheme: light) {
+	:root {
+	/* Background and Text Colors */
+	--bg-color: #fdf8e3; /* Sunlit ivory, reminiscent of soft sands and gentle sunlight */
+	--bg-color2: #ffead1; /* Warm pastel peach, evoking seashell tones */
+	--bg-color3: #e4f7f5; /* Soft aqua, like the shimmer of ocean foam */
+	--text-color: #333a3e; /* Deep charcoal, bold and readable, balancing the brightness */
 
+	/* Link Colors */
+	--link-color: #3366cc; /* Bold cobalt blue, evoking ocean depths and skies */
+	--link-hover-color: #ffbb33; /* Saturated golden yellow, like the sun reflecting off water */
+
+	/* Special Text */
+	--h3-color: #4a75b9; /* Rich cerulean blue, dreamy and resonant like deep waters */
+	--role-color: #cc8f57; /* Saturated sand dune beige, warm and earthy */
+	--year-color: #5ea69f; /* Dark teal, grounded yet vibrant, reminiscent of deep ocean currents */
+	--email-color: #3388cc; /* Strong azure blue, striking and clear like a digital reflection of the sea */
+	--present-color: #4ca765; /* Saturated forest green, organic and fresh, like beach flora */
+	--personal-color: #e65c2e; /* Bold coral orange, vibrant and fiery like a tropical sunset */
+
+	/* Category Colors */
+	--category-research-color: #e63971; /* Deep neon magenta, vivid and pulsating with energy */
+	--category-intermedia-color: #5733e6; /* Electric indigo, merging the synthetic and surreal */
+	--category-virtual-color: #00a88e; /* Intense teal green, fluid and high-tech */
+	--category-music-color: #ff7733; /* Rich tangerine, resonant and warm */
+	--category-score-color: #0073e6; /* Deep ocean blue, crisp and futuristic */
+	--category-writing-color: #ccaa00; /* Bold gold, glowing with intensity and energy */
+	--category-theater-color: #33cc33; /* Vibrant emerald green, bold and playful */
+	--category-software-color: #33aabb; /* Deep aqua, balancing tech and organic tones */
+	--category-dot-color: #445566; /* Dark slate gray, grounding and versatile */
+}
+
+	
+	}
