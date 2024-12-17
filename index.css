@@ -342,6 +342,7 @@ div.categories p:not(:last-of-type)::after{
     background: var(--scrollbar-track-color); /* Background of the scrollbar corner */
 }
 
+/*
 @media (prefers-color-scheme: light) {
 	:root {
 	/* Background and Text Colors */
@@ -373,6 +374,6 @@ div.categories p:not(:last-of-type)::after{
 	--category-software-color: #33aabb; /* Deep aqua, balancing tech and organic tones */
 	--category-dot-color: #445566; /* Dark slate gray, grounding and versatile */
 }
-
+*/
 	
 	}
