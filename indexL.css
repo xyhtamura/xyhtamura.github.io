@@ -2,39 +2,38 @@
 
 :root {
 	/* Background and Text Colors */
-	--bg-color: #272e2d; /* Deep charcoal cyan, evoking the calm and mystery of a moonlit forest, blending organic tones with a subtle synthetic edge */
-	--bg-color2: #2e2925;
-	--bg-color3: #2e252b;
-	--text-color: #edeadf; /* Soft, warm off-white, like diffused natural light filtering through clouds, gentle and organic */
-	
+	--bg-color: #f2dacd; /* Sunlit ivory, reminiscent of soft sands and gentle sunlight */
+	--bg-color2: #ffead1; /* Warm pastel peach, evoking seashell tones */
+	--bg-color3: #e4f7f5; /* Soft aqua, like the shimmer of ocean foam */
+	--text-color: #444385; /* Deep charcoal, bold and readable, balancing the brightness */
+
 	/* Link Colors */
-	--link-color: #b787e8; /* Faded lavender, like twilight in a surreal world, balancing nature and technology */
-	--link-hover-color: #d8ff3e; /* Luminous neon green, otherworldly and vibrant, evoking synthetic energy in natural space */
-	
+	--link-color: #b236e4; /* Bold cobalt blue, evoking ocean depths and skies */
+	--link-hover-color: #87a510; /* Saturated golden yellow, like the sun reflecting off water */
+
 	/* Special Text */
-	--h3-color: #e4dfed; /* Pale lavender mist, soft and dreamy, like clouds over an artificial horizon */
-	--role-color: #e0bfbf; /* Warm, muted sand, echoing the ancient and the timeless, grounded but dreamlike */
-	--year-color: #bcd6d4;
-	--email-color: #9fc4ee; /* Icy pastel blue, crisp and cool, like a serene digital stream blending with a misty morning sky */ 
-	--original-color: #f0bb86;
-	--selection-text: #26245c;
-	--selection-background: #a4bfab;
-	--scrollbar-color: #e887dd;
-	--scrollbar-track-color: #26261e;
-	
-	
+	--h3-color: #365858; /* Rich cerulean blue, dreamy and resonant like deep waters */
+	--role-color: #584809; /* Saturated sand dune beige, warm and earthy */
+	--year-color: #3f857e; /* Dark teal, grounded yet vibrant, reminiscent of deep ocean currents */
+	--email-color: #546f79; /* Strong azure blue, striking and clear like a digital reflection of the sea */
+	--original-color: #99097d; /* Bold coral orange, vibrant and fiery like a tropical sunset */
+	--selection-text: #a5a3d8;
+	--selection-background: #1e7234;
+	--scrollbar-color: #8d1980;
+	--scrollbar-track-color: #a0ccb7;
+
 	/* Category Colors */
-	--category-research-color: #1cebc1; /* Intense neon pink, pulsing with synthetic life, vivid but surreal */
-	--category-intermedia-color: #7a52f3; /* Electric violet, merging high-tech creativity with a dreamlike aura */
-	--category-virtual-color: #e72e5c; /* Vibrant cyan, fluid and sharp, bridging the digital and the organic */
-	--category-music-color: #ff66d4; /* Bright tangerine, resonating like a sunset in an alternate universe, warm yet synthetic */
-	--category-score-color: #33ccff; /* Electric blue, cold and clear like a synthesized melody, crisp and futuristic */
-	--category-writing-color: #e8c440; /* Neon rose, glowing with creative intensity, expressive yet otherworldly */
-	--category-theater-color: #5fe25f; /* Neon green, playful and bold, like the flicker of light in a dreamworld performance */
-	--category-software-color: #88d9e6; /* Soft aqua, with a cool, digital edge, blending modern tech and organic tones */	
-	--category-instrument-color: #ff7200; /* Glowing amber, warm and rich, evoking craftsmanship and sonic experimentation */
-	--category-visual-color: #ab00ff; /* Radiant magenta-violet, bold and surreal, blending the organic and synthetic aesthetics */
-	--category-dot-color: #c3c6d6;
+	--category-research-color: #e3143e; /* Inverted intense neon pink */
+	--category-intermedia-color: #85ad0c; /* Inverted electric violet */
+	--category-virtual-color: #18d1a3; /* Inverted vibrant cyan */
+	--category-music-color: #00992b; /* Inverted bright tangerine */
+	--category-score-color: #cc3300; /* Inverted electric blue */
+	--category-writing-color: #173bbf; /* Inverted neon rose */
+	--category-theater-color: #a01da0; /* Inverted neon green */
+	--category-software-color: #77261d; /* Inverted soft aqua */
+	--category-instrument-color: #008dff; /* Inverted glowing amber */
+	--category-visual-color: #54ff00; /* Inverted radiant magenta-violet */
+	--category-dot-color: #3c3929; /* Inverted */
 }
 
 body {
@@ -345,40 +344,7 @@ div.categories p:not(:last-of-type)::after{
 
 @media (prefers-color-scheme: light) {
 :root {
-	/* Background and Text Colors */
-	/* Background and Text Colors */
-	--bg-color: #f2dacd; /* Sunlit ivory, reminiscent of soft sands and gentle sunlight */
-	--bg-color2: #ffead1; /* Warm pastel peach, evoking seashell tones */
-	--bg-color3: #e4f7f5; /* Soft aqua, like the shimmer of ocean foam */
-	--text-color: #444385; /* Deep charcoal, bold and readable, balancing the brightness */
 
-	/* Link Colors */
-	--link-color: #b236e4; /* Bold cobalt blue, evoking ocean depths and skies */
-	--link-hover-color: #87a510; /* Saturated golden yellow, like the sun reflecting off water */
-
-	/* Special Text */
-	--h3-color: #365858; /* Rich cerulean blue, dreamy and resonant like deep waters */
-	--role-color: #584809; /* Saturated sand dune beige, warm and earthy */
-	--year-color: #3f857e; /* Dark teal, grounded yet vibrant, reminiscent of deep ocean currents */
-	--email-color: #546f79; /* Strong azure blue, striking and clear like a digital reflection of the sea */
-	--original-color: #99097d; /* Bold coral orange, vibrant and fiery like a tropical sunset */
-	--selection-text: #a5a3d8;
-	--selection-background: #1e7234;
-	--scrollbar-color: #8d1980;
-	--scrollbar-track-color: #a0ccb7;
-
-	/* Category Colors */
-	--category-research-color: #e3143e; /* Inverted intense neon pink */
-	--category-intermedia-color: #85ad0c; /* Inverted electric violet */
-	--category-virtual-color: #18d1a3; /* Inverted vibrant cyan */
-	--category-music-color: #00992b; /* Inverted bright tangerine */
-	--category-score-color: #cc3300; /* Inverted electric blue */
-	--category-writing-color: #173bbf; /* Inverted neon rose */
-	--category-theater-color: #a01da0; /* Inverted neon green */
-	--category-software-color: #77261d; /* Inverted soft aqua */
-	--category-instrument-color: #008dff; /* Inverted glowing amber */
-	--category-visual-color: #54ff00; /* Inverted radiant magenta-violet */
-	--category-dot-color: #3c3929; /* Inverted */
 }
 
 
