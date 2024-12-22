@@ -2,10 +2,10 @@
 
 :root {
 	/* Background and Text Colors */
-	--bg-color: #f2dacd; /* Sunlit ivory, reminiscent of soft sands and gentle sunlight */
+	--bg-color: #f2e4dc; /* Sunlit ivory, reminiscent of soft sands and gentle sunlight */
 	--bg-color2: #ffead1; /* Warm pastel peach, evoking seashell tones */
 	--bg-color3: #e4f7f5; /* Soft aqua, like the shimmer of ocean foam */
-	--text-color: #444385; /* Deep charcoal, bold and readable, balancing the brightness */
+	--text-color: #37364d; /* Deep charcoal, bold and readable, balancing the brightness */
 
 	/* Link Colors */
 	--link-color: #b236e4; /* Bold cobalt blue, evoking ocean depths and skies */
@@ -16,7 +16,7 @@
 	--role-color: #584809; /* Saturated sand dune beige, warm and earthy */
 	--year-color: #3f857e; /* Dark teal, grounded yet vibrant, reminiscent of deep ocean currents */
 	--email-color: #546f79; /* Strong azure blue, striking and clear like a digital reflection of the sea */
-	--original-color: #99097d; /* Bold coral orange, vibrant and fiery like a tropical sunset */
+	--original-color: #e3780e; /* Bold coral orange, vibrant and fiery like a tropical sunset */
 	--selection-text: #a5a3d8;
 	--selection-background: #1e7234;
 	--scrollbar-color: #8d1980;
@@ -24,7 +24,7 @@
 
 	/* Category Colors */
 	--category-research-color: #e3143e; /* Inverted intense neon pink */
-	--category-intermedia-color: #85ad0c; /* Inverted electric violet */
+	--category-intermedia-color: #4f0cad; /* Inverted electric violet */
 	--category-virtual-color: #18d1a3; /* Inverted vibrant cyan */
 	--category-music-color: #00992b; /* Inverted bright tangerine */
 	--category-score-color: #cc3300; /* Inverted electric blue */
