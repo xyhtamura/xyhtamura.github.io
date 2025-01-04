@@ -121,6 +121,21 @@ h1 {
 	color: var(--h3-color);
 	letter-spacing: 0.015em;
 }
+
+
+.work-entry p.subentry {
+	font-size: 0.95em; /* Slightly smaller than the usual h2 */
+	margin-left: 1rem; /* Separation from the preceding <p> */
+	
+}
+
+
+.work-entry p + p.subentry {
+	margin-top: 0.5rem; /* Separation from the preceding <p> */
+}
+
+
+
 a {
 	text-decoration: none;
 	color: var(--link-color); /* Link color */
