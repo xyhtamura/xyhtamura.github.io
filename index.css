@@ -252,6 +252,13 @@ div.categories p:not(:last-of-type)::after{
 	display: inline;
 }
 
+.category-software {
+	color: var(--category-software-color);
+	font-weight: bold;
+	margin-right: 0.5rem;
+	display: inline;
+}
+
 /* category text */
 
 .category-research::before {
