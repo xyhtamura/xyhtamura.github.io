@@ -13,6 +13,7 @@
 	
 	/* Special Text */
 	--h3-color: #e4dfed; /* Pale lavender mist, soft and dreamy, like clouds over an artificial horizon */
+	--h4-color: #c9f2cf;
 	--role-color: #e0bfbf; /* Warm, muted sand, echoing the ancient and the timeless, grounded but dreamlike */
 	--year-color: #bcd6d4;
 	--email-color: #9fc4ee; /* Icy pastel blue, crisp and cool, like a serene digital stream blending with a misty morning sky */ 
@@ -120,6 +121,15 @@ h1 {
 	margin: 0rem 0;
 	color: var(--h3-color);
 	letter-spacing: 0.015em;
+}
+
+.work-entry h4 {
+	font-family: "Averia Sans Libre", "Noto Sans", sans-serif;
+	font-weight: 400;
+	margin: 0rem 0;
+	color: var(--h4-color);
+	letter-spacing: 0.015em;
+	font-size: 1.2em;
 }
 
 
