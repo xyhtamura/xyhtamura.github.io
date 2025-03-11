@@ -387,7 +387,7 @@ div.categories p:not(:last-of-type)::after{
 @media (prefers-color-scheme: light) {
 :root {
 	/* Background and Text Colors */
-	--bg-color: #e3f0dd; /* Mist-kissed jade, soft and airy like morning light through dense foliage */
+	--bg-color: #e6f0dd; /* Mist-kissed jade, soft and airy like morning light through dense foliage */
 	--bg-color2: #ffead1; /* Warm pastel peach, evoking seashell tones */
 	--bg-color3: #e4f7f5; /* Soft aqua, like the shimmer of ocean foam */
 	--text-color: #353357; /* Deep charcoal, bold and readable, balancing the brightness */
