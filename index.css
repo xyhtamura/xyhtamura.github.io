@@ -4,7 +4,7 @@
 	/* Background and Text Colors */
 	--bg-color: #272e2d; /* Deep charcoal cyan, evoking the calm and mystery of a moonlit forest, blending organic tones with a subtle synthetic edge */
 	--bg-color2: #2e2925;
-	--bg-color3: #2e252b;
+	--bg-color3: #27252e;
 	--text-color: #edeadf; /* Soft, warm off-white, like diffused natural light filtering through clouds, gentle and organic */
 	
 	/* Link Colors */
@@ -40,7 +40,7 @@
 
 body {
 	font-family: "Rubik", "Noto Sans", sans-serif;
-	background-color: var(--bg-color);
+	background: linear-gradient(to bottom, var(--bg-color), var(--bg-color), var(--bg-color));
 	color: var(--text-color);
 	margin: 0;
 	padding: 5%;
@@ -58,9 +58,10 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    /*background: url('background.png') no-repeat center center/cover;  */
-    opacity: 0; /* Adjust transparency */
-    mix-blend-mode: hue; /* Try overlay, multiply, or screen */
+    background: url('background') no-repeat center center/cover; 
+	filter: hue-rotate(-10deg); /* Change hue */
+    opacity: 0.02; /* Adjust transparency */
+    mix-blend-mode: normal; /* Try overlay, multiply, or screen */
     z-index: -1;
 }
 
@@ -387,7 +388,7 @@ div.categories p:not(:last-of-type)::after{
 @media (prefers-color-scheme: light) {
 :root {
 	/* Background and Text Colors */
-	--bg-color: #e6f0dd; /* Mist-kissed jade, soft and airy like morning light through dense foliage */
+	--bg-color: #e9f0dd; /* Soft celadon mist, airy and fresh like early morning light filtering through leaves */
 	--bg-color2: #ffead1; /* Warm pastel peach, evoking seashell tones */
 	--bg-color3: #e4f7f5; /* Soft aqua, like the shimmer of ocean foam */
 	--text-color: #23213b; /* Deep charcoal, bold and readable, balancing the brightness */
@@ -398,15 +399,15 @@ div.categories p:not(:last-of-type)::after{
 
 	/* Special Text */
 	--h3-color: #365858; /* Rich cerulean blue, dreamy and resonant like deep waters */
-	--h4-color: #4c5e49;
+	--h4-color: #4c5e49; /* Mossy olive, understated and organic, grounding the visual palette */
 	--role-color: #584809; /* Saturated sand dune beige, warm and earthy */
 	--year-color: #3f857e; /* Dark teal, grounded yet vibrant, reminiscent of deep ocean currents */
 	--email-color: #546f79; /* Strong azure blue, striking and clear like a digital reflection of the sea */
 	--original-color: #e3780e; /* Bold coral orange, vibrant and fiery like a tropical sunset */
-	--selection-text: #a5a3d8;
-	--selection-background: #1e7234;
-	--scrollbar-color: #8d1980;
-	--scrollbar-track-color: #a0ccb7;
+	--selection-text: #a9b5db; /* Soft periwinkle, gentle yet distinct against the backdrop */
+	--selection-background: #32543b; /* Deep forest green, lush and immersive */
+	--scrollbar-color: #392363; /* Regal plum, rich with a hint of mystery */
+	--scrollbar-track-color: #a0ccb7; /* Minted jade, cooling and harmonious */
 
 	/* Category Colors */
 	--category-research-color: #b32846; /* Deep crimson rose, vivid yet tempered like aged pigment */
@@ -421,6 +422,11 @@ div.categories p:not(:last-of-type)::after{
 	--category-visual-color: #76a51f; /* Lush olive-green, an interplay of organic pigments and electric contrast */
 	--category-dot-color: #514d3d; /* Weathered taupe, subtle yet structured */
 	--category-visual-color: #8b3ebd; /* Royal violet, striking yet balanced between synthetic and organic tones */
-
 }
+
+.background-overlay {
+	filter: hue-rotate(-90deg); /* Change hue */
+	opacity: 0.1; /* Adjust transparency */
+}
+
 }
