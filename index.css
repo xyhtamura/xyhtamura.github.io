@@ -1,42 +1,42 @@
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&family=Rubik:wght@400;700&family=Lexend+Deca:wght@400;700&family=Syne+Mono&family=Averia+Sans+Libre&family=Noto+Sans:wght@400;700&display=swap');
 
 :root {
-	/* Background and Text Colors */
-	--bg-color: #272e2d; /* Deep charcoal cyan, evoking the calm and mystery of a moonlit forest, blending organic tones with a subtle synthetic edge */
-	--bg-color2: #2e2925;
-	--bg-color3: #27252e;
-	--text-color: #edeadf; /* Soft, warm off-white, like diffused natural light filtering through clouds, gentle and organic */
+	/* Background, Titles, and Body Text Colors */
+	--bg-color: #272e2d; /* Background */
+	--text-color: #edeadf; /* Page Title, Work Item Titles, and Body Text */
 	
-	/* Link Colors */
-	--link-color: #b787e8; /* Faded lavender, like twilight in a surreal world, balancing nature and technology */
-	--link-hover-color: #d8ff3e; /* Luminous neon green, otherworldly and vibrant, evoking synthetic energy in natural space */
+	/* Link and Linked Item Colors */
+	--link-color: #b787e8; /* Links and Linked Item Titles */
+	--link-hover-color: #d8ff3e; /* Links and Linked Item Titles on Hover */
 	
-	/* Special Text */
-	--h3-color: #e4dfed; /* Pale lavender mist, soft and dreamy, like clouds over an artificial horizon */
-	--h4-color: #c9f2cf;
-	--role-color: #e0bfbf; /* Warm, muted sand, echoing the ancient and the timeless, grounded but dreamlike */
-	--year-color: #bcd6d4;
-	--email-color: #9fc4ee; /* Icy pastel blue, crisp and cool, like a serene digital stream blending with a misty morning sky */ 
-	--original-color: #f0bb86;
-	--selection-text: #26245c;
-	--selection-background: #a4bfab;
-	--scrollbar-color: #e887dd;
-	--scrollbar-track-color: #26261e;
+	/* Additional Item Information */
+	--h3-color: #e4dfed; /* Context of the work (e.g., exhibition, publisher, institution, company) */
+	--h4-color: #c9f2cf; /* Specific project, act, or segment title within a larger work */
+	--role-color: #e0bfbf; /* Role within a project or work */
+	--year-color: #bcd6d4; /* Year of creation or participation */
+	--email-color: #9fc4ee; /* Email address */
+	--original-color: #f0bb86; /* Indicator for originally conceptualized works */ 
 	
+	/* Other UI Elements */
+	--selection-text: #26245c; /* Selected text color */
+	--selection-background: #a4bfab; /* Background of selected text */
+	--scrollbar-color: #e887dd; /* Scrollbar thumb */
+	--scrollbar-track-color: #26261e; /* Scrollbar track */
 	
-	/* Category Colors */
-	--category-research-color: #1cebc1; /* Intense neon pink, pulsing with synthetic life, vivid but surreal */
-	--category-intermedia-color: #7a52f3; /* Electric violet, merging high-tech creativity with a dreamlike aura */
-	--category-virtual-color: #e72e5c; /* Vibrant cyan, fluid and sharp, bridging the digital and the organic */
-	--category-music-color: #ff66d4; /* Bright tangerine, resonating like a sunset in an alternate universe, warm yet synthetic */
-	--category-score-color: #33ccff; /* Electric blue, cold and clear like a synthesized melody, crisp and futuristic */
-	--category-writing-color: #e8c440; /* Neon rose, glowing with creative intensity, expressive yet otherworldly */
-	--category-theater-color: #5fe25f; /* Neon green, playful and bold, like the flicker of light in a dreamworld performance */
-	--category-software-color: #88d9e6; /* Soft aqua, with a cool, digital edge, blending modern tech and organic tones */	
-	--category-instrument-color: #ff7200; /* Glowing amber, warm and rich, evoking craftsmanship and sonic experimentation */
-	--category-visual-color: #ab00ff; /* Radiant magenta-violet, bold and surreal, blending the organic and synthetic aesthetics */
-	--category-dot-color: #c3c6d6;
+	/* Item Category Colors */
+	--category-research-color: #1cebc1; /* Research & Academic */
+	--category-intermedia-color: #7a52f3; /* Intermedia */
+	--category-virtual-color: #e72e5c; /* Virtual and streamed media */
+	--category-music-color: #ff66d4; /* Music */
+	--category-score-color: #33ccff; /* Soundtrack & Score */
+	--category-writing-color: #e8c440; /* Written works (e.g., poetry, essays, fiction) */
+	--category-theater-color: #5fe25f; /* Theater and performance-based works */
+	--category-software-color: #88d9e6; /* Software and technological works */
+	--category-instrument-color: #ff7200; /* Instrument design and experimental interfaces */
+	--category-visual-color: #ab00ff; /* Visual art */
+	--category-dot-color: #c3c6d6; /* Separator dot for categories */
 }
+
 
 body {
 	font-family: "Rubik", "Noto Sans", sans-serif;
@@ -388,40 +388,41 @@ div.categories p:not(:last-of-type)::after{
 @media (prefers-color-scheme: light) {
 :root {
 	/* Background and Text Colors */
-	--bg-color: #e9f0dd; /* Soft celadon mist, airy and fresh like early morning light filtering through leaves */
-	--bg-color2: #ffead1; /* Warm pastel peach, evoking seashell tones */
-	--bg-color3: #e4f7f5; /* Soft aqua, like the shimmer of ocean foam */
-	--text-color: #23213b; /* Deep charcoal, bold and readable, balancing the brightness */
+	--bg-color: #e9f0dd; /* Primary background */
+	--bg-color2: #ffead1; /* Secondary background */
+	--bg-color3: #e4f7f5; /* Tertiary background */
+	--text-color: #23213b; /* Page Title, Work Item Titles, and Body Text */
 
 	/* Link Colors */
-	--link-color: #b236e4; /* Bold cobalt blue, evoking ocean depths and skies */
-	--link-hover-color: #87a510; /* Saturated golden yellow, like the sun reflecting off water */
+	--link-color: #b236e4; /* Links and Linked Item Titles */
+	--link-hover-color: #87a510; /* Links and Linked Item Titles on Hover */
 
-	/* Special Text */
-	--h3-color: #365858; /* Rich cerulean blue, dreamy and resonant like deep waters */
-	--h4-color: #4c5e49; /* Mossy olive, understated and organic, grounding the visual palette */
-	--role-color: #584809; /* Saturated sand dune beige, warm and earthy */
-	--year-color: #3f857e; /* Dark teal, grounded yet vibrant, reminiscent of deep ocean currents */
-	--email-color: #546f79; /* Strong azure blue, striking and clear like a digital reflection of the sea */
-	--original-color: #e3780e; /* Bold coral orange, vibrant and fiery like a tropical sunset */
-	--selection-text: #a9b5db; /* Soft periwinkle, gentle yet distinct against the backdrop */
-	--selection-background: #32543b; /* Deep forest green, lush and immersive */
-	--scrollbar-color: #392363; /* Regal plum, rich with a hint of mystery */
-	--scrollbar-track-color: #a0ccb7; /* Minted jade, cooling and harmonious */
+	/* Additional Item Information */
+	--h3-color: #365858; /* Context of the work (e.g., exhibition, publisher, institution, company) */
+	--h4-color: #4c5e49; /* Specific project, act, or segment title within a larger work */
+	--role-color: #584809; /* Role within a project or work */
+	--year-color: #3f857e; /* Year of creation or participation */
+	--email-color: #546f79; /* Email address */
+	--original-color: #e3780e; /* Indicator for originally conceptualized works */
+	
+	/* Other UI Elements */
+	--selection-text: #a9b5db; /* Selected text color */
+	--selection-background: #32543b; /* Background of selected text */
+	--scrollbar-color: #392363; /* Scrollbar thumb */
+	--scrollbar-track-color: #a0ccb7; /* Scrollbar track */
 
 	/* Category Colors */
-	--category-research-color: #b32846; /* Deep crimson rose, vivid yet tempered like aged pigment */
-	--category-intermedia-color: #5b2f89; /* Twilight amethyst, rich and enigmatic with a velvety undertone */
-	--category-virtual-color: #2c9c87; /* Oceanic teal, evoking depth and digital fluidity */
-	--category-music-color: #1e7a4e; /* Verdant jade, resonant with organic vibrancy */
-	--category-score-color: #a64625; /* Burnt sienna, earthy with a hint of embered glow */
-	--category-writing-color: #2e57a1; /* Royal blue, deep and saturated like ink on parchment */
-	--category-theater-color: #7a3d7a; /* Dusky orchid, a blend of theatrical mystique and richness */
-	--category-software-color: #644737; /* Earthen umber, warm and grounded with a digital edge */
-	--category-instrument-color: #2e72b5; /* Cerulean steel, cool yet full of motion like vibrating strings */
-	--category-visual-color: #76a51f; /* Lush olive-green, an interplay of organic pigments and electric contrast */
-	--category-dot-color: #514d3d; /* Weathered taupe, subtle yet structured */
-	--category-visual-color: #8b3ebd; /* Royal violet, striking yet balanced between synthetic and organic tones */
+	--category-research-color: #b32846; /* Research & Academic */
+	--category-intermedia-color: #402f89; /* Intermedia */
+	--category-virtual-color: #2c9c87; /* Virtual and streamed media \ */
+	--category-music-color: #1e7a4e; /* Music */
+	--category-score-color: #a64625; /* Soundtrack & Score */
+	--category-writing-color: #2e57a1; /* Written works  */
+	--category-theater-color: #7a3d7a; /* Theater and performance-based works */
+	--category-software-color: #2e72b5;; /* Digital Applications & Technology works */
+	--category-instrument-color: #644737 /* Instrument design and experimental interfaces */
+	--category-visual-color: #8b3ebd; /* Visual art */
+	--category-dot-color: #514d3d; /* Separator dot for categories */
 }
 
 .background-overlay {
