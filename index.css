@@ -41,7 +41,6 @@
 body {
 	font-family: "Rubik", "Noto Sans", sans-serif;
 	background-color: var(--bg-color);
-	/* background: linear-gradient(to bottom, var(--bg-color), var(--bg-color2), var(--bg-color3)); /* Vertical gradient */
 	color: var(--text-color);
 	margin: 0;
 	padding: 5%;
@@ -388,10 +387,10 @@ div.categories p:not(:last-of-type)::after{
 @media (prefers-color-scheme: light) {
 :root {
 	/* Background and Text Colors */
-	--bg-color: #f1f2dc; /* Sunlit ivory, reminiscent of soft sands and gentle sunlight */
+	--bg-color: #e3f0dd; /* Mist-kissed jade, soft and airy like morning light through dense foliage */
 	--bg-color2: #ffead1; /* Warm pastel peach, evoking seashell tones */
 	--bg-color3: #e4f7f5; /* Soft aqua, like the shimmer of ocean foam */
-	--text-color: #37364d; /* Deep charcoal, bold and readable, balancing the brightness */
+	--text-color: #353357; /* Deep charcoal, bold and readable, balancing the brightness */
 
 	/* Link Colors */
 	--link-color: #b236e4; /* Bold cobalt blue, evoking ocean depths and skies */
@@ -410,17 +409,18 @@ div.categories p:not(:last-of-type)::after{
 	--scrollbar-track-color: #a0ccb7;
 
 	/* Category Colors */
-	--category-research-color: #e3143e; /* Inverted intense neon pink */
-	--category-intermedia-color: #4f0cad; /* Inverted electric violet */
-	--category-virtual-color: #18d1a3; /* Inverted vibrant cyan */
-	--category-music-color: #00992b; /* Inverted bright tangerine */
-	--category-score-color: #cc3300; /* Inverted electric blue */
-	--category-writing-color: #173bbf; /* Inverted neon rose */
-	--category-theater-color: #a01da0; /* Inverted neon green */
-	--category-software-color: #77261d; /* Inverted soft aqua */
-	--category-instrument-color: #008dff; /* Inverted glowing amber */
-	--category-visual-color: #54ff00; /* Inverted radiant magenta-violet */
-	--category-dot-color: #3c3929; /* Inverted */
-	--category-visual-color: #ab00ff; /* Radiant magenta-violet, bold and surreal, blending the organic and synthetic aesthetics */
+	--category-research-color: #b32846; /* Deep crimson rose, vivid yet tempered like aged pigment */
+	--category-intermedia-color: #5b2f89; /* Twilight amethyst, rich and enigmatic with a velvety undertone */
+	--category-virtual-color: #2c9c87; /* Oceanic teal, evoking depth and digital fluidity */
+	--category-music-color: #1e7a4e; /* Verdant jade, resonant with organic vibrancy */
+	--category-score-color: #a64625; /* Burnt sienna, earthy with a hint of embered glow */
+	--category-writing-color: #2e57a1; /* Royal blue, deep and saturated like ink on parchment */
+	--category-theater-color: #7a3d7a; /* Dusky orchid, a blend of theatrical mystique and richness */
+	--category-software-color: #644737; /* Earthen umber, warm and grounded with a digital edge */
+	--category-instrument-color: #2e72b5; /* Cerulean steel, cool yet full of motion like vibrating strings */
+	--category-visual-color: #76a51f; /* Lush olive-green, an interplay of organic pigments and electric contrast */
+	--category-dot-color: #514d3d; /* Weathered taupe, subtle yet structured */
+	--category-visual-color: #8b3ebd; /* Royal violet, striking yet balanced between synthetic and organic tones */
+
 }
 }
