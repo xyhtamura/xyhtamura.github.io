@@ -367,7 +367,6 @@ div.categories p:not(:last-of-type)::after{
 
 ::-webkit-scrollbar-track {
     background: var(--scrollbar-track-color); /* Background of the scrollbar track */
-    border-radius: 8px; /* Slightly rounded scrollbar track */
 }
 
 ::-webkit-scrollbar-thumb {
@@ -419,8 +418,8 @@ div.categories p:not(:last-of-type)::after{
 	--category-score-color: #a64625; /* Soundtrack & Score */
 	--category-writing-color: #2e57a1; /* Written works  */
 	--category-theater-color: #7a3d7a; /* Theater and performance-based works */
-	--category-software-color: #2e72b5;; /* Digital Applications & Technology works */
-	--category-instrument-color: #644737 /* Instrument design and experimental interfaces */
+	--category-software-color: #2e72b5; /* Digital Applications & Technology works */
+	--category-instrument-color: #644737; /* Instrument design and experimental interfaces */
 	--category-visual-color: #8b3ebd; /* Visual art */
 	--category-dot-color: #514d3d; /* Separator dot for categories */
 }
