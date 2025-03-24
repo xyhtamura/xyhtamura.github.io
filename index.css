@@ -34,7 +34,9 @@
 	--category-software-color: #88d9e6; /* Software and technological works */
 	--category-instrument-color: #ff7200; /* Instrument design and experimental interfaces */
 	--category-visual-color: #ab00ff; /* Visual art */
+	--category-participatory-color: #ffb400; /* Participatory & Community Projects */
 	--category-dot-color: #c3c6d6; /* Separator dot for categories */
+
 }
 
 
@@ -281,6 +283,13 @@ div.categories p:not(:last-of-type)::after{
 	display: inline;
 }
 
+.category-participatory {
+	color: var(--category-participatory-color);
+	font-weight: bold;
+	margin-right: 0.5rem;
+	display: inline;
+}
+
 /* category text */
 
 .category-research::before {
@@ -333,6 +342,10 @@ div.categories p:not(:last-of-type)::after{
 	font-weight: bold;
 }
 
+.category-participatory::before {
+	content: "Participatory & Community Projects";
+	font-weight: bold;
+}
 
 
 /* Add padding for mobile devices */
@@ -421,6 +434,7 @@ div.categories p:not(:last-of-type)::after{
 	--category-software-color: #2e72b5; /* Digital Applications & Technology works */
 	--category-instrument-color: #644737; /* Instrument design and experimental interfaces */
 	--category-visual-color: #8b3ebd; /* Visual art */
+	--category-participatory-color: #d49a00; /* Participatory & Community Projects */
 	--category-dot-color: #514d3d; /* Separator dot for categories */
 }
 
