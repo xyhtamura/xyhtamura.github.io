@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>arbzn's past events</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            line-height: 1.6;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #333;
+        }
+        
+        h1 {
+            color: #bb86fc;
+            margin-bottom: 10px;
+        }
+        
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .posters-container {
+            flex: 2;
+            min-width: 300px;
+        }
+        
+        .nightmare-events {
+            flex: 1;
+            min-width: 250px;
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 8px;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+        
+        .posters-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .poster {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .poster:hover {
+            transform: scale(1.03);
+        }
+        
+        .poster img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .poster-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .poster:hover .poster-info {
+            transform: translateY(0);
+        }
+        
+        .nightmare-header {
+            color: #ff7597;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .nightmare-link {
+            display: block;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .nightmare-link a {
+            color: #bb86fc;
+            text-decoration: none;
+        }
+        
+        .nightmare-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .event-list {
+            list-style-type: none;
+        }
+        
+        .event-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .event-item:last-child {
+            border-bottom: none;
+        }
+        
+        .event-title {
+            color: #03dac6;
+            margin-bottom: 5px;
+        }
+        
+        .event-time {
+            font-size: 0.9em;
+            color: #bb86fc;
+            margin-bottom: 5px;
+        }
+        
+        .event-genre {
+            font-style: italic;
+            color: #cf6679;
+        }
+        
+        .event-desc {
+            margin-top: 8px;
+            font-size: 0.9em;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+            color: #666;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .posters-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nightmare-events {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>arbzn's past events on Second Life</h1>
+    </header>
+    
+    <div class="container">
+	
+	
+<div class="nightmare-events">
+    <h3 class="nightmare-header"><a href="https://maps.secondlife.com/secondlife/Sirius%20Prime/95/109/2360" target="_blank">Nightmare Events</a></h3>
+    
+    <ul class="event-list">
+        <li class="event-item">
+            <div class="event-title">EBM</div>
+            <div class="event-genre">New dark, industrial, synthy dance music</div>
+            <div class="event-desc">With screeching harsh synths, hard beats, rolling ducking basses, sinister harmonies, metallics, and noise.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Dark Ambient</div>
+            <div class="event-genre">Dark Ambient</div>
+            <div class="event-desc">Floating through wastelands of ruined worlds, picking up lost transmissions, disintegrated memories.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Genrefluid</div>
+            <div class="event-genre">arbzn's Genrefluid</div>
+            <div class="event-desc">A curated and eclectic blend of music. Each song another genre. Sometimes many in one, or unclassifiable.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Picopop</div>
+            <div class="event-genre">Picopop</div>
+            <div class="event-desc">Shibuya-kei, an jpop version of easy listening western styles, but with more emphasis on the electronic elements, and electronic experimentation.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Microsound</div>
+            <div class="event-genre">Microsound</div>
+            <div class="event-desc">Often abstract pieces that deal with small, quiet, short sounds - from sounds of buttons falling, or blip of white noise, to miniaturized beats.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Power Noise</div>
+            <div class="event-genre">Power Noise</div>
+            <div class="event-desc">Various forms of beat music that is heavily saturated with noise. Or Noise that tries to be coalesce into something that resembles rhythm.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Afroelectroacoustic</div>
+            <div class="event-genre">Afroelectroacoustic</div>
+            <div class="event-desc">Avant-garde, experimental, abstract music that pushes the boundaries of music, mostly from African artists.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Chillsynth</div>
+            <div class="event-genre">Chillsynth</div>
+            <div class="event-desc">The fluorescent land between chillwave and synthwave, echoing synths and relaxed grooves.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Minimal Synth</div>
+            <div class="event-genre">Minimal Synth</div>
+            <div class="event-desc">Synthpop, but stripped down and raw, with a rough, unpolished quality.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Hardstyle</div>
+            <div class="event-genre">Hardstyle</div>
+            <div class="event-desc">New hardstyle. Distorted kicks, Screeching lead synths, crescendo bass.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Drone Metal</div>
+            <div class="event-genre">Drone Metal</div>
+            <div class="event-desc">Experimental metal for meditators. Long form metal, stripped down and slowed down but often still thick and heavy.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Bubblegum Bass</div>
+            <div class="event-genre">Bubblegum Bass</div>
+            <div class="event-desc">Pop and commercial music through a blender, processed, stretched, ripped apart to form new sounds.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Electronic Indie Pop</div>
+            <div class="event-genre">Electronic indie pop and Future Beat</div>
+            <div class="event-desc">Moody electronics and pop and r&b melodies, with an indie sensibility and colors of future garage.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Dark Jazz</div>
+            <div class="event-genre">Dark Jazz</div>
+            <div class="event-desc">Sinister, moody, slow film noir music and jazz with a little trip hop, synth music, and dark ambient.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Blackgaze</div>
+            <div class="event-genre">Blackgaze</div>
+            <div class="event-desc">A fusion of black metal and shoegaze, combining aggressive drums, screaming, razor guitars and lo-fi crushed production.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Synth Goth</div>
+            <div class="event-genre">Synth Goth</div>
+            <div class="event-desc">New gothic music: post-punk, darkwave, ebm, synthpop with a gothic sensibility.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Ritual Ambient</div>
+            <div class="event-genre">Ritual Ambient</div>
+            <div class="event-desc">Soundscapes with a dark and ceremonial atmosphere, with elements of subtle metal, chanting and drums.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Classic Vaporwave</div>
+            <div class="event-genre">Vaporwave</div>
+            <div class="event-desc">The ghost of the pre-millenium haunts the future. A varied mix of various forms of vaporwave.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Dusted Circuit</div>
+            <div class="event-genre">Lo-fi EDM & IDM, Dub Techno, Future House</div>
+            <div class="event-desc">A mix of instrumental and abstract electronic music with a dusty, echoey, lo-fi atmosphere from the 90's to today.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Bhangra</div>
+            <div class="event-genre">Bhangra</div>
+            <div class="event-desc">Bhangra and new variations: combinations with reggaeton and hip hop, as well as other forms of Indian pop.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Spore Season</div>
+            <div class="event-genre">Pastoral IDM and Folktronica</div>
+            <div class="event-desc">Music evoking an idyllic setting, containing both acoustic and electronic instruments.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Chiptune</div>
+            <div class="event-genre">Chiptune</div>
+            <div class="event-desc">Songs centered around the simplest building blocks of digital sound as instruments.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">New Grunge</div>
+            <div class="event-genre">Grunge</div>
+            <div class="event-desc">Neo-alt rock grown from classic grunge: post-2010's.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Dungeon Synth</div>
+            <div class="event-genre">Dungeon Synth</div>
+            <div class="event-desc">Synth music related to neo-medieval music and soundscapes.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Dark Cabaret</div>
+            <div class="event-genre">Dark Cabaret</div>
+            <div class="event-desc">Modern cabaret influenced by goth and punk.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Occult Psychedelia</div>
+            <div class="event-genre">Occult Psychedelia</div>
+            <div class="event-desc">Abstract, experimental faded memories of the haunted and hippie 60's and 70's.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Deep Dubstep</div>
+            <div class="event-genre">Deep Dubstep</div>
+            <div class="event-desc">Dubstep that's deeper, darker, atmospheric, jazzy, foreboding.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">MAWS</div>
+            <div class="event-genre">Avant-Garde Eerie Mouth Music</div>
+            <div class="event-desc">Experimental, eerie music focused around the voice and mouth sounds from multiple genres.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Witch House</div>
+            <div class="event-genre">Witch House</div>
+            <div class="event-desc">Lo-fi internet horror music from the 2010's to today.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Darksynth</div>
+            <div class="event-genre">Darksynth</div>
+            <div class="event-desc">Synthwave along a heavier, bleaker tone, incorporating elements from horror synth, ebm and industrial.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Neofolk</div>
+            <div class="event-genre">Neofolk</div>
+            <div class="event-desc">Acoustic leaning music with a foreboding atmosphere.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Slowcore</div>
+            <div class="event-genre">Slowcore</div>
+            <div class="event-desc">Slow, sad, indie music for not getting up in the morning.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Sticky</div>
+            <div class="event-genre">Sticky, Sexy Electronics</div>
+            <div class="event-desc">Slick, scary, sexy, slow, sticky, like tar.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Disalignment</div>
+            <div class="event-genre">Witch House, Dark Synth, Vapor, Future Bass, EBM, Trap</div>
+            <div class="event-desc">A mix of genres from different internet cultures, producing a morose, broody atmosphere.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Unblooming: Tenebrous Rose</div>
+            <div class="event-genre">Orchestral Goth</div>
+            <div class="event-desc">Gothic music with strong neoclassical elements: operatic, dramatic, orchestral, balladic.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Unblooming: Bloom in Reverse</div>
+            <div class="event-genre">Dark Melancholia</div>
+            <div class="event-desc">Somber, brooding and melancholic music with neoclassical elements.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Unblooming: Ghost of a Flower</div>
+            <div class="event-genre">Haunting, Sorrowful Quiet Music</div>
+            <div class="event-desc">Delicate ghost music. Moods ranging from mysterious, sorrowful, haunting, ominous, introspective.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Shibuya Kei</div>
+            <div class="event-genre">Shibuya Kei</div>
+            <div class="event-desc">j-pop that calls back to jazz, bossa nova, and lounge influences.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Broken Transmission</div>
+            <div class="event-genre">Broken Transmission/Signalwave</div>
+            <div class="event-desc">A Vaporwave subgenre focused around the use of television and radio transmissions.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Drill and Bass</div>
+            <div class="event-genre">Drill and Bass</div>
+            <div class="event-desc">An extreme form of drum and bass that pushes tempo to the limit.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">cadavreexquis2000</div>
+            <div class="event-genre">Deconstructed Halloween</div>
+            <div class="event-desc">New experimental electronic genres for a Halloween mood.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Geist</div>
+            <div class="event-genre">Ambient Horror Synth</div>
+            <div class="event-desc">Calmer, but foreboding and ominous synth atmospheres.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Dungeon Sound</div>
+            <div class="event-genre">Dungeon Sound Dubstep</div>
+            <div class="event-desc">A type of dubstep that uses more dark atmospheres and spaces.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Trick</div>
+            <div class="event-genre">Horror Synth + Dungeon Synth</div>
+            <div class="event-desc">Synth music drawing from horror film movies, video game music, and medieval music.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Treat</div>
+            <div class="event-genre">Hyperpop, Witch House, Dark Synth, Vapor, Future Bass, EBM, Trap</div>
+            <div class="event-desc">A mix of genres from different internet culture suitable for trick or treating.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Halloween Vaporwave</div>
+            <div class="event-genre">Halloween Vaporwave</div>
+            <div class="event-desc">Halloween themed vaporwave: from eerie atmospheres, horror movie references.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Horrorcore</div>
+            <div class="event-genre">Horrorcore</div>
+            <div class="event-desc">Hip hop dealing with macabre and horror themes.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Atmospheric Breaks</div>
+            <div class="event-genre">Atmospheric Breaks</div>
+            <div class="event-desc">Breakbeat on the more chilled out side, more melodic, with trance elements.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Chillstep</div>
+            <div class="event-genre">Chillstep</div>
+            <div class="event-desc">Between chillwave and dubstep, taking the relaxed vibe and shimmering synths of chillwave.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Rain without Gravity</div>
+            <div class="event-genre">Futuristic Pop + Alternative R&B</div>
+            <div class="event-desc">Gravity-free, futuristic, whispery blend of pop, R&B, jpop, kpop, electronica.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Big Room</div>
+            <div class="event-genre">Big Room EDM</div>
+            <div class="event-desc">Enormous, energetic, spacious EDM that takes elements from house, trance, dubstep.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Vogue & Ballroom</div>
+            <div class="event-genre">Vogue & Ballroom</div>
+            <div class="event-desc">Often minimal, rhythmic and harder beats with the distinctive ha crash.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Dubstep/Filthstep</div>
+            <div class="event-genre">Dubstep/Filthstep</div>
+            <div class="event-desc">Dubstep on the aggressive side, with filthy distorted basses and big beats.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Indie Dance</div>
+            <div class="event-genre">Indie Dance</div>
+            <div class="event-desc">Indietronica and dancey indie music, from indie pop to rock.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Indie Pop + Rock</div>
+            <div class="event-genre">Indie Pop</div>
+            <div class="event-desc">Sometimes electronic, sometimes folksy, sometimes rock - poppy, fresh, and diverse indie music.</div>
+        </li>
+        
+        <li class="event-item">
+            <div class="event-title">Industrial Techno</div>
+            <div class="event-genre">Industrial Techno</div>
+            <div class="event-desc">Techno with industrial elements, often darker and more aggressive.</div>
+        </li>
+    </ul>
+</div>
+       <div class="posters-container">
+    <h2>Events in <a href="https://secondlife.com/destination/altitude">altitude</a> & <a href="https://secondlife.com/destination/the-velvet">the velvet</a></h2>
+    <div class="posters-grid">
+ <div class="poster">
+    <img src="nightdrives.png" alt="nightdrives event poster">
+</div>
+
+<div class="poster">
+    <img src="Sunlight through Air.jpg" alt="Sunlight through Air event poster">
+</div>
+
+<div class="poster">
+    <img src="Inflatables.jpg" alt="Inflatables event poster">
+</div>
+
+<div class="poster">
+    <img src="UnchartedCocktail2.png" alt="UnchartedCocktail2 event poster">
+</div>
+
+<div class="poster">
+    <img src="Andthen.png" alt="Andthen event poster">
+</div>
+
+<div class="poster">
+    <img src="Supersonic Heart Ache.png" alt="Supersonic Heart Ache event poster">
+</div>
+
+<div class="poster">
+    <img src="The High Chorus.png" alt="The High Chorus event poster">
+</div>
+
+<div class="poster">
+    <img src="Rejects.png" alt="Rejects event poster">
+</div>
+
+<div class="poster">
+    <img src="Disco Levitation.png" alt="Disco Levitation event poster">
+</div>
+
+<div class="poster">
+    <img src="Shadows that Linger.png" alt="Shadows that Linger event poster">
+</div>
+
+<div class="poster">
+    <img src="Wireless Hexes.png" alt="Wireless Hexes event poster">
+</div>
+
+<div class="poster">
+    <img src="Moderndespair.png" alt="Modern Despal 5r event poster">
+</div>
+
+<div class="poster">
+    <img src="Fallen Leaves.png" alt="Fallen Leaves event poster">
+</div>
+
+<div class="poster">
+    <img src="Rain Without Gravity.png" alt="Rain Without Gravity event poster">
+</div>
+
+<div class="poster">
+    <img src="step2it.png" alt="step2it event poster">
+</div>
+
+<div class="poster">
+    <img src="Electric Legs.png" alt="Electric Legs event poster">
+</div>
+
+<div class="poster">
+    <img src="Maybe tomorrow.png" alt="Maybe tomorrow event poster">
+</div>
+
+    </div>
+</div>
+
+    </div>
+    
+</body>
+</html>
