@@ -7,7 +7,11 @@
 	
 	/* Link and Linked Item Colors */
 	--link-color: #b787e8; /* Links and Linked Item Titles */
-	--link-hover-color: #d8ff3e; /* Links and Linked Item Titles on Hover */
+	--link-hover-color: #cdfc12; /* Links and Linked Item Titles on Hover */
+	--line-color: rgb(183, 135, 232, 0.7);
+	--line-hover-color: #988fff;
+	--link-halo: #2600ff;
+	--link-halo2: #00509c;
 	
 	/* Additional Item Information */
 	--h3-color: #e4dfed; /* Context of the work (e.g., exhibition, publisher, institution, company) */
@@ -37,6 +41,13 @@
 	--category-participatory-color: #ffb400; /* Participatory & Community Projects */
 	--category-dot-color: #c3c6d6; /* Separator dot for categories */
 
+}
+
+a {
+	text-decoration: underline wavy;
+	text-decoration-color: var(--line-color);
+	color: inherit; /* Link color */
+	
 }
 
 
@@ -156,18 +167,41 @@ h1 {
 .work-entry p + p.subentry {
 }
 
-a {
-	text-decoration: none;
-	color: var(--link-color); /* Link color */
-}
+
 
 a:hover, a:active {
 	color: var(--link-hover-color); /* Hover color */
+	text-decoration-color: var(--line-hover-color);
 }
+
+/* Apply to all links (optionally exclude email/socials) */
+/* Apply to all links (optionally exclude email/socials) */
 
 ::selection {
     background-color:  var(--selection-background);
     color:  var(--selection-text);
+}
+
+.subentry {
+    margin-left: 1.5rem;
+    padding-left: 1rem;
+	margin-top: 1rem;
+	margin-bottom: 0;
+}
+
+.subentry p{
+    font-size:0.9rem
+}
+
+
+.subentry h2 {
+    font-size: 1.1em;
+    color: var(--h3-color); /* Soft accent */
+	font-weight: 400;
+	margin: 0rem 0;
+
+	letter-spacing: 0.015em;
+
 }
 
 
@@ -405,7 +439,11 @@ div.categories p:not(:last-of-type)::after{
 
 	/* Link Colors */
 	--link-color: #b236e4; /* Links and Linked Item Titles */
+	--line-color: rgb(183, 135, 232, 0.7);
+	--line-hover-color: #988fff;
 	--link-hover-color: #87a510; /* Links and Linked Item Titles on Hover */
+	--link-halo: #00ff26;
+	--link-halo2: #00e5ff;
 
 	/* Additional Item Information */
 	--h3-color: #365858; /* Context of the work (e.g., exhibition, publisher, institution, company) */
