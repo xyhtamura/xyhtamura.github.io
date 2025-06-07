@@ -6,11 +6,11 @@
 	--text-color: #edeadf; /* Page Title, Work Item Titles, and Body Text */
 	
 	/* Link and Linked Item Colors */
-	--link-color: #b787e8; /* Links and Linked Item Titles */
+	--h2-color: #b787e8; /* Links and Linked Item Titles */
 	--link-hover-color: #cdfc12; /* Links and Linked Item Titles on Hover */
-	--line-color: rgb(183, 135, 232, 0.7);
+	--line-color: rgb(135, 138, 232, 0.7);
 	--line-hover-color: #988fff;
-	--link-halo: #2600ff;
+	--link-halo: #878ae8;
 	--link-halo2: #00509c;
 	
 	/* Additional Item Information */
@@ -112,7 +112,7 @@ body {
 	font-family: "Averia Sans Libre", "Noto Sans", sans-serif;
 	margin: 0.1rem 0;
 	text-decoration: none;
-	color: var(--link-color);
+	color: var(--h2-color);
 	letter-spacing: 0.01em;
 }
 .social-links a:hover {
@@ -139,6 +139,7 @@ h1 {
 	font-family: "Averia Sans Libre", "Noto Sans", sans-serif;
 	margin: 0 0 0 0;
 	letter-spacing: 0.03em;
+	color: var(--h2-color)
 }
 .work-entry h3 {
 	font-family: "Averia Sans Libre", "Noto Sans", sans-serif;
@@ -190,14 +191,15 @@ a:hover, a:active {
 }
 
 .subentry p{
-    font-size:0.9rem
+    font-size:0.9rem;
+
 }
 
 
 .subentry h2 {
     font-size: 1.1em;
-    color: var(--h3-color); /* Soft accent */
-	font-weight: 400;
+
+	font-weight: 500;
 	margin: 0rem 0;
 
 	letter-spacing: 0.015em;
@@ -428,6 +430,50 @@ div.categories p:not(:last-of-type)::after{
     background: var(--scrollbar-track-color); /* Background of the scrollbar corner */
 }
 
+/* Minor Work Styling */
+.work-entry.minor {
+font-size: 0.9rem;
+}
+
+.work-entry.minor .categories p::before {
+    font-size: 0.9rem; /* Smaller category label */
+	font-weight: normal;
+}
+.work-entry.minor .categories p {
+    font-size: 0.8rem; /* Smaller category label */
+	font-weight: normal;
+}
+
+.work-entry.minor h2 {
+    font-size: 1.2rem; /* Smaller title */
+    margin: 0.1rem 0;
+	display: inline; /* Combine into one line */
+}
+
+.work-entry.minor h2::after{
+    content: " · ";
+	color: var(--category-dot-color);
+}
+
+.work-entry.minor h4::after{
+    content: " · ";
+	color: var(--category-dot-color);
+}
+
+.work-entry.minor .role,
+.work-entry.minor .year,
+.work-entry.minor h4 {
+    font-size:0.95rem; /* Compact metadata */
+    display: inline; /* Combine into one line */
+}
+.work-entry.minor .role span:not(:first-of-type)::before {
+    content: " · "; /* Separator for role/description */
+}
+.work-entry.minor .year::before {
+    content: " · "; /* Separator before year */
+}
+
+
 
 @media (prefers-color-scheme: light) {
 :root {
@@ -438,8 +484,8 @@ div.categories p:not(:last-of-type)::after{
 	--text-color: #23213b; /* Page Title, Work Item Titles, and Body Text */
 
 	/* Link Colors */
-	--link-color: #b236e4; /* Links and Linked Item Titles */
-	--line-color: rgb(183, 135, 232, 0.7);
+	--h2-color: #b236e4; /* Links and Linked Item Titles */
+	--line-color: rgb(135, 138, 232, 0.7);
 	--line-hover-color: #988fff;
 	--link-hover-color: #87a510; /* Links and Linked Item Titles on Hover */
 	--link-halo: #00ff26;
