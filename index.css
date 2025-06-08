@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&family=Rubik:wght@400;700&family=Lexend+Deca:wght@400;700&family=Syne+Mono&family=Averia+Sans+Libre&family=Noto+Sans:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&family=Rubik:wght@400;700&family=Lexend+Deca:wght@400;700&family=Syne+Mono&family=Averia+Sans+Libre&family=Noto+Sans:wght@400;700&family=Dosis:wght@600;700&display=swap');
+
 
 :root {
 	/* Background, Titles, and Body Text Colors */
@@ -436,12 +437,12 @@ font-size: 0.9rem;
 }
 
 .work-entry.minor .categories p::before {
-    font-size: 0.9rem; /* Smaller category label */
-	font-weight: normal;
+    font-size: 1rem; /* Smaller category label */
+	font-weight: 600;
+	font-family: Dosis;
 }
 .work-entry.minor .categories p {
-    font-size: 0.8rem; /* Smaller category label */
-	font-weight: normal;
+
 }
 
 .work-entry.minor h2 {
@@ -450,14 +451,18 @@ font-size: 0.9rem;
 	display: inline; /* Combine into one line */
 }
 
-.work-entry.minor h2::after{
+
+
+.work-entry.minor h4::before{
     content: " · ";
 	color: var(--category-dot-color);
 }
 
-.work-entry.minor h4::after{
-    content: " · ";
-	color: var(--category-dot-color);
+.work-entry.minor .original::before {
+	content: " · original work";
+font-size: 0.9rem;
+font-weight: 600;
+	font-family: Dosis;	
 }
 
 .work-entry.minor .role,
@@ -473,7 +478,13 @@ font-size: 0.9rem;
     content: " · "; /* Separator before year */
 }
 
+/*.work-entry.minor .category-intermedia::before {
+	content: "Interdisciplinary Work";
+}
 
+.work-entry.minor .category-intermedia::before {
+	content: "Interdisciplinary Work";
+}*/
 
 @media (prefers-color-scheme: light) {
 :root {
