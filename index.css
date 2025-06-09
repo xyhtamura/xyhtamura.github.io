@@ -433,7 +433,7 @@ div.categories p:not(:last-of-type)::after{
 
 /* Minor Work Styling */
 .work-entry.minor {
-font-size: 0.9rem;
+font-size: 0.95rem;
 }
 
 .work-entry.minor .categories p::before {
@@ -460,7 +460,7 @@ font-size: 0.9rem;
 
 .work-entry.minor .original::before {
 	content: " · original work";
-font-size: 0.9rem;
+font-size: 1rem;
 font-weight: 600;
 	font-family: Dosis;	
 }
