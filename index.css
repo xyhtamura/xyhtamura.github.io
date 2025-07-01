@@ -41,7 +41,8 @@
 	--category-visual-color: #ab00ff; /* Visual art */
 	--category-participatory-color: #ffb400; /* Participatory & Community Projects */
 	--category-dot-color: #c3c6d6; /* Separator dot for categories */
-
+  --category-management-color: #d9a7f9; /* lavender/purple-pink for soft structure */
+  --category-sci-comm-color: #77ddff;   /* sky blue for clarity & education */
 }
 
 a {
@@ -382,6 +383,30 @@ div.categories p:not(:last-of-type)::after{
 	font-weight: bold;
 }
 
+.category-management {
+	color: var(--category-management-color); /* or a pastel magenta/lilac for contrast */
+	font-weight: bold;
+	margin-right: 0.5rem;
+	display: inline;
+}
+
+.category-management::before {
+	content: "Organizational & Management Roles";
+	font-weight: bold;
+}
+
+.category-sci-comm {
+	color: var(--category-sci-comm-color); /* Choose a cool tone that differs from Software/Research */
+	font-weight: bold;
+	margin-right: 0.5rem;
+	display: inline;
+}
+
+.category-sci-comm::before {
+	content: "Science Communication";
+	font-weight: bold;
+}
+
 
 /* Add padding for mobile devices */
 @media (max-width: 768px) {
@@ -528,6 +553,8 @@ font-weight: 600;
 	--category-instrument-color: #644737; /* Instrument design and experimental interfaces */
 	--category-visual-color: #8b3ebd; /* Visual art */
 	--category-participatory-color: #d49a00; /* Participatory & Community Projects */
+	--category-management-color: #6d3684; /* deep plum for grounded structure */
+    --category-sci-comm-color: #1a7a99;   /* ocean teal-blue for communication & clarity */
 	--category-dot-color: #514d3d; /* Separator dot for categories */
 }
 
