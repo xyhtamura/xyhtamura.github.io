@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Writing Constellation - Tiered Tracks</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+            padding: 40px 20px;
+            overflow-x: auto;
+        }
+
+        .mindmap-container {
+            display: flex;
+            align-items: flex-start;
+            gap: 40px; /* Space between columns */
+            padding: 20px;
+        }
+
+        .storyline-track {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px; /* Space between nodes in a column */
+            position: relative;
+        }
+        
+        .track-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #999;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            position: sticky;
+            top: 20px;
+            background: #1a1a1a;
+            padding: 5px 0;
+            z-index: 10;
+        }
+
+        .node {
+            border: 2px solid #555;
+            padding: 10px 15px;
+            background-color: #2c2c2c;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 220px;
+            min-height: 80px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        /* Vertical Connecting Lines */
+        .node:not(:first-child)::before {
+            content: '';
+            position: absolute;
+            bottom: 100%; /* Start from the top of the node */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 40px; /* Length of the line */
+            background-color: #555;
+        }
+
+        .node:hover {
+            border-color: #a0a0a0;
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            z-index: 5;
+        }
+
+        .node h3 {
+            font-size: 16px;
+            margin: 0 0 5px 0;
+            color: #f0f0f0;
+        }
+        
+        .node .subtitle {
+            font-size: 12px;
+            font-style: italic;
+            color: #999;
+            margin: 0;
+        }
+
+        .node .status {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 3px 10px;
+            font-size: 10px;
+            border-radius: 12px;
+            font-weight: bold;
+            color: #111;
+        }
+        .status-complete { background-color: #4CAF50; }
+        .status-inprogress { background-color: #2196F3; }
+        .status-next { background-color: #FFC107; }
+        .status-future { background-color: #888888; }
+        
+        .node .description {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            top: 50%;
+            left: calc(100% + 15px); /* Position to the right of the node */
+            transform: translateY(-50%);
+            width: 300px;
+            background-color: #383838;
+            color: #ddd;
+            text-align: left;
+            white-space: normal;
+            padding: 15px;
+            border-radius: 6px;
+            z-index: 1;
+            transition: opacity 0.3s, visibility 0.3s;
+            font-size: 13px;
+            line-height: 1.5;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .storyline-track:last-child .node .description {
+            left: auto;
+            right: calc(100% + 15px);
+        }
+        .node:hover .description {
+            visibility: visible;
+            opacity: 1;
+        }
+        .description strong {
+            color: #FFC107;
+            display: block;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="mindmap-container">
+
+    <div class="storyline-track">
+        <div class="track-title">The Posthuman Self</div>
+        <div class="node">
+            <span class="status status-complete">Finished</span>
+            <h3>From Interiority to Interaction</h3>
+            <p class="subtitle">Trilogy: Anchor</p>
+            [cite_start]<div class="description"><strong>Function:</strong> Establishes how personhood and affect emerge relationally with non-human actors, challenging the "Interiority Trap"[cite: 13].</div>
+        </div>
+        <div class="node">
+            <span class="status status-inprogress">Ongoing</span>
+            <h3>Feeling Together</h3>
+            <p class="subtitle">Trilogy: Cultural Grounding</p>
+            [cite_start]<div class="description"><strong>Function:</strong> Grounds the relational self in Filipino concepts of *kapwa* and *loób*, contrasting them with Western individualism[cite: 22].</div>
+        </div>
+        <div class="node">
+            <span class="status status-future">Tier 5</span>
+            <h3>Profilicity as Embodied Becoming</h3>
+            <p class="subtitle">Trilogy: Capstone</p>
+            [cite_start]<div class="description"><strong>Function:</strong> Explores how virtual avatars become real, embodied extensions of a fluid, multiple self [cite: 255-257].</div>
+        </div>
+    </div>
+    
+    <div class="storyline-track">
+        <div class="track-title">Practice & Meta-Methodology</div>
+        <div class="node">
+            <span class="status status-inprogress">Ongoing</span>
+            <h3>Night Bus</h3>
+            <p class="subtitle">Transpractice Proof of Concept</p>
+            [cite_start]<div class="description"><strong>Function:</strong> An experimental pop song that demonstrates "transpractice" by integrating poetry, Filipino traditions, and electronic music[cite: 1, 8].</div>
+        </div>
+        <div class="node">
+            <span class="status status-future">Tier 4</span>
+            <h3>From Transdisciplinary to Transpractice</h3>
+            <p class="subtitle">The Meta-Methodology</p>
+            [cite_start]<div class="description"><strong>Function:</strong> A capstone paper arguing that "transpractice" offers a more inclusive framework for knowledge integration than transdisciplinarity[cite: 231, 234].</div>
+        </div>
+    </div>
+
+    <div class="storyline-track">
+        <div class="track-title">Poetics & Ontology</div>
+        <div class="node">
+            <span class="status status-next">Tier 3</span>
+            <h3>The Indeterminate Turn</h3>
+            <p class="subtitle">Core Poetics & Affect Theory</p>
+            [cite_start]<div class="description"><strong>Function:</strong> The aesthetic framework for the PhD, developing a theory of how art can create open, suggestive meanings that preserve "unclassifiable affect"[cite: 220, 225].</div>
+        </div>
+        <div class="node">
+            <span class="status status-future">Tier 4</span>
+            <h3>Presence Without Symbol</h3>
+            <p class="subtitle">Ontological Companion</p>
+            [cite_start]<div class="description"><strong>Function:</strong> The ontological counterpart, arguing that an artwork *is* an event or being, not just a representation[cite: 320, 324].</div>
+        </div>
+    </div>
+
+    <div class="storyline-track">
+        <div class="track-title">Science, Art & Method</div>
+        <div class="node">
+            <span class="status status-next">Tier 3</span>
+            <h3>Bending the Bamboo</h3>
+            <p class="subtitle">Sci-Art & Sonic Modeling</p>
+            [cite_start]<div class="description"><strong>Function:</strong> A methodological work treating scientific modeling as conceptual art, bridging physics and sonic practice[cite: 455, 459].</div>
+        </div>
+        <div class="node">
+            <span class="status status-future">Tier 4</span>
+            <h3>What is Science Art?</h3>
+            <p class="subtitle">Epistemological Companion</p>
+            [cite_start]<div class="description"><strong>Function:</strong> Defines the field for "Bending the Bamboo" and questions how art can participate in scientific knowledge production[cite: 332, 339].</div>
+        </div>
+    </div>
+    
+    <div class="storyline-track">
+        <div class="track-title">Aesthetics & Perception</div>
+        <div class="node">
+            <span class="status status-future">Tier 5</span>
+            <h3>EcoTechnoAesthetics</h3>
+            <p class="subtitle">Generative Aesthetic Theory</p>
+            [cite_start]<div class="description"><strong>Function:</strong> Provides a theoretical framework that unites nature, humans, and technology, informing solo creative work[cite: 290].</div>
+        </div>
+        <div class="node">
+            <span class="status status-future">Tier 5</span>
+            <h3>Squish Glitch</h3>
+            <p class="subtitle">Aesthetic Philosophy</p>
+            [cite_start]<div class="description"><strong>Function:</strong> A specific philosophy of digital materiality, reframing glitches as organic, living phenomena [cite: 205-206].</div>
+        </div>
+         <div class="node">
+            <span class="status status-future">Tier 6</span>
+            <h3>Tuning the Ear + 12-TET</h3>
+            <p class="subtitle">The Politics of Perception</p>
+            [cite_start]<div class="description"><strong>Function:</strong> A long-term PhD project exploring how musical perception is culturally and politically conditioned[cite: 236, 241].</div>
+        </div>
+    </div>
+    
+    <div class="storyline-track">
+        <div class="track-title">Contingent Futures</div>
+        <div class="node">
+            <span class="status status-future">Tier 6</span>
+            <h3>Vaporwave Histories</h3>
+            <p class="subtitle">Autoethnography</p>
+            [cite_start]<div class="description"><strong>Function:</strong> A future autoethnographic project on the community-driven knowledge of the Vaporwave scene, requiring a unique form and context [cite: 271-273].</div>
+        </div>
+        <div class="node">
+            <span class="status status-future">Tier 6</span>
+            <h3>Hacker Culture Trilogy</h3>
+            <p class="subtitle">Contextual (MIT Only)</p>
+            [cite_start]<div class="description"><strong>Function:</strong> A location-dependent study of hacker ethics, contingent on access to specific archives, such as those at MIT[cite: 387, 391, 403].</div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

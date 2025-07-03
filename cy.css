@@ -1,0 +1,211 @@
+:root {
+	/* Background and Text Colors (Vanilla Version) */
+	--bg-color: #f5f5f5;          /* Off-white background */
+	--text-color: #1a1a1a;        /* Off-black text */
+
+	/* Link Colors (Vanilla Version) */
+	--link-color: #0000ee;          /* Standard blue for links */
+	--link-hover-color: #dd0000;  /* Classic red for link hover */
+	--line-color: #0000ee;        /* Underline color */
+	--line-hover-color: #dd0000;  /* Underline hover color */
+	--email-color: #0000ee;       /* Make email a standard link */
+
+	/* Neutralize all other specific element colors */
+	--h2-color: inherit; /* h2 will inherit base text color */
+	--h3-color: inherit;
+	--h4-color: inherit;
+	--role-color: inherit;
+	--year-color: inherit;
+	--original-color: inherit;
+	
+	/* Neutralize all category colors to inherit the default text color */
+	--category-research-color: inherit;
+	--category-intermedia-color: inherit;
+	--category-virtual-color: inherit;
+	--category-music-color: inherit;
+	--category-score-color: inherit;
+	--category-writing-color: inherit;
+	--category-theater-color: inherit;
+	--category-software-color: inherit;
+	--category-instrument-color: inherit;
+	--category-visual-color: inherit;
+	--category-participatory-color: inherit;
+	--category-management-color: inherit;
+	--category-sci-comm-color: inherit;
+	--category-dot-color: inherit;
+	
+	/* Basic UI Elements */
+	--selection-text: #ffffff;
+	--selection-background: #333333;
+}
+
+/* Remove decorative elements */
+.background-overlay, .logo {
+    display: none;
+}
+
+/* Remove custom scrollbar styling to revert to browser default */
+::-webkit-scrollbar, ::-webkit-scrollbar-track, ::-webkit-scrollbar-thumb, ::-webkit-scrollbar-thumb:hover, ::-webkit-scrollbar-corner {
+    all: unset;
+}
+
+/* Base body styling with a classic web font */
+body {
+	font-family: "Times New Roman", Times, serif;
+	background: var(--bg-color);
+	color: var(--text-color);
+	margin: 0;
+	padding: 5%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	line-height: 1.4;
+	flex-direction: column;
+	letter-spacing: normal;
+}
+
+/* Reset all font families to maintain a consistent, classic look */
+h1, .center-section h1, .work-entry h2, .work-entry h3, .work-entry h4, .email, .social-links a, .work-entry p {
+    font-family: "Times New Roman", Times, serif;
+    letter-spacing: normal;
+}
+
+/* Simplify link appearance */
+a {
+	text-decoration: underline solid;
+	text-decoration-color: var(--line-color);
+	color: var(--link-color); /* Set link color to blue */
+}
+
+a:hover, a:active {
+	color: var(--link-hover-color);
+	text-decoration-color: var(--line-hover-color);
+}
+
+.social-links a {
+    text-decoration: underline;
+}
+
+/* Standardize heading and text styles */
+.center-section {
+	text-align: center;
+	margin-bottom: 2rem;
+}
+.center-section h1 {
+	margin: 1rem 0 0.7rem 0;
+    font-size: 2.5em;
+    font-weight: bold;
+}
+.center-section p {
+	margin: 0.5rem 0;
+}
+.center-section img {
+	max-width: 150px;
+	height: auto;
+	margin: 0.4rem 0 0 0;
+}
+
+.left-align-section, .works-section {
+	max-width: 800px;
+	text-align: left;
+}
+
+.work-entry {
+	margin-bottom: 2rem;
+}
+
+.work-entry h2 {
+	margin: 0;
+	font-size: 1.5em;
+	font-weight: bold;
+	color: var(--h2-color); /* h2s now inherit the default text color */
+}
+
+.work-entry h3 {
+	font-weight: normal;
+	margin: 0;
+	color: var(--h3-color);
+    font-style: italic;
+    font-size: 1.2em;
+}
+
+.work-entry h4 {
+	font-weight: normal;
+	margin: 0;
+	color: var(--h4-color);
+    font-size: 1.1em;
+}
+
+.work-entry p {
+	margin: 0.25rem 0;
+}
+
+/* Neutralize category text styling */
+.category-research, .category-intermedia, .category-virtual, .category-music, .category-score, .category-writing, .category-theater, .category-software, .category-instrument, .category-visuals, .category-participatory, .category-management, .category-sci-comm {
+	font-weight: normal; /* Remove bold */
+    font-style: italic;  /* Use italics for distinction */
+	margin-right: 0.5rem;
+	display: inline;
+	color: inherit;
+}
+
+.work-entry .year, .work-entry .role {
+	color: inherit;
+}
+
+.original::before {
+	content: "original work";
+}
+
+.work-entry span:not(:first-of-type)::before, .work-entry.minor h4::before, .work-entry.minor .year::before {
+    content: " · ";
+}
+
+div.categories p:not(:last-of-type)::after{
+    content: " · ";
+	color: inherit;
+	font-weight: normal;
+}
+
+/* Simplify sub-entries */
+.subentry {
+    margin-left: 1.5rem;
+    padding-left: 1rem;
+	margin-top: 0.5rem;
+	margin-bottom: 0;
+}
+.subentry h2 {
+    font-size: 1.1em;
+	font-weight: bold;
+	margin: 0.25rem 0;
+}
+.subentry p{
+    font-size: 1em;
+}
+
+/* Simplify minor work entries */
+.work-entry.minor {
+    font-size: 1em;
+}
+.work-entry.minor .categories p::before {
+    font-size: 1em;
+    font-weight: normal;
+	font-family: "Times New Roman", Times, serif;
+}
+.work-entry.minor h2 {
+    font-size: 1.2em;
+    margin: 0.1rem 0;
+	display: inline;
+}
+.work-entry.minor .role,
+.work-entry.minor .year,
+.work-entry.minor h4 {
+    font-size: 1em;
+    display: inline;
+}
+.work-entry.minor .original::before {
+	content: " · original work";
+    font-size: 1em;
+    font-weight: normal;
+	font-family: "Times New Roman", Times, serif;	
+}
