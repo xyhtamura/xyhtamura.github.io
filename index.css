@@ -191,7 +191,28 @@ a:hover, a:active {
     padding-left: 1rem;
 	margin-top: 1rem;
 	margin-bottom: 0;
+	line-height: 1;
 }
+
+.iteration {
+	margin-left: 0;
+	padding-left: 0;
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+}
+
+.iteration h2,
+.iteration h3,
+.iteration h4,
+.iteration p {
+	font-size: 1rem; /* Match base <p> size */
+	font-family: "Lexend Deca", "Noto Sans", sans-serif;
+	font-weight: 400;
+	margin: 0;
+	letter-spacing: 0.015em;
+	line-height: 1.1;
+}
+
 
 .subentry p{
     font-size:0.9rem;
@@ -209,6 +230,15 @@ a:hover, a:active {
 
 }
 
+.subentry h3 {
+    font-size: 1.em;
+
+	font-weight: 500;
+	margin: 0rem 0;
+
+	letter-spacing: 0.015em;
+
+}
 
 .work-entry p {
 	font-family: "Lexend Deca", "Noto Sans", sans-serif;
@@ -460,6 +490,7 @@ div.categories p:not(:last-of-type)::after{
 /* Minor Work Styling */
 .work-entry.minor {
 font-size: 0.95rem;
+line-height: 1.15rem;
 }
 
 .work-entry.minor .categories p::before {
