@@ -27,6 +27,11 @@
 	--selection-background: #a4bfab; /* Background of selected text */
 	--scrollbar-color: #e887dd; /* Scrollbar thumb */
 	--scrollbar-track-color: #26261e; /* Scrollbar track */
+
+	/* Entry Background Colors */
+	--work-entry-bg: rgba(0,3,15,0.2);
+	--sub-entry-bg: rgba(0,3,15, 0.15);
+	--minor-work-entry-bg: rgba(0,3,15, 0.05);
 	
 	/* Item Category Colors */
 	--category-research-color: #1cebc1; /* Research & Academic */
@@ -41,8 +46,60 @@
 	--category-visual-color: #ab00ff; /* Visual art */
 	--category-participatory-color: #ffb400; /* Participatory & Community Projects */
 	--category-dot-color: #c3c6d6; /* Separator dot for categories */
-  --category-management-color: #d9a7f9; /* lavender/purple-pink for soft structure */
-  --category-sci-comm-color: #77ddff;   /* sky blue for clarity & education */
+    --category-management-color: #d9a7f9; /* lavender/purple-pink for soft structure */
+    --category-sci-comm-color: #77ddff;   /* sky blue for clarity & education */
+}
+
+@media (prefers-color-scheme: light) {
+:root {
+	/* Background and Text Colors */
+	--bg-color: #e9f0dd; /* Primary background */
+
+	--text-color: #23213b; /* Page Title, Work Item Titles, and Body Text */
+
+	/* Link Colors */
+	--h2-color: #b236e4; /* Links and Linked Item Titles */
+	--line-color: rgb(135, 138, 232, 0.7);
+	--line-hover-color: #988fff;
+	--link-hover-color: #87a510; /* Links and Linked Item Titles on Hover */
+	--link-halo: #00ff26;
+	--link-halo2: #00e5ff;
+
+	/* Additional Item Information */
+	--h3-color: #365858; /* Context of the work (e.g., exhibition, publisher, institution, company) */
+	--h4-color: #4c5e49; /* Specific project, act, or segment title within a larger work */
+	--role-color: #584809; /* Role within a project or work */
+	--year-color: #3f857e; /* Year of creation or participation */
+	--email-color: #546f79; /* Email address */
+	--original-color: #e3780e; /* Indicator for originally conceptualized works */
+	
+	/* Other UI Elements */
+	--selection-text: #a9b5db; /* Selected text color */
+	--selection-background: #32543b; /* Background of selected text */
+	--scrollbar-color: #392363; /* Scrollbar thumb */
+	--scrollbar-track-color: #a0ccb7; /* Scrollbar track */
+
+	/* Entry Background Colors */
+	--work-entry-bg: rgba(220, 228, 203, 1);
+	--sub-entry-bg: rgba(209, 216, 193, 1);
+	--minor-work-entry-bg: rgba(220, 228, 203, 1);
+
+	/* Category Colors */
+	--category-research-color: #b32846; /* Research & Academic */
+	--category-intermedia-color: #402f89; /* Intermedia */
+	--category-virtual-color: #2c9c87; /* Virtual and streamed media \ */
+	--category-music-color: #1e7a4e; /* Music */
+	--category-score-color: #a64625; /* Soundtrack & Score */
+	--category-writing-color: #2e57a1; /* Written works  */
+	--category-theater-color: #7a3d7a; /* Theater and performance-based works */
+	--category-software-color: #2e72b5; /* Digital Applications & Technology works */
+	--category-instrument-color: #644737; /* Instrument design and experimental interfaces */
+	--category-visual-color: #8b3ebd; /* Visual art */
+	--category-participatory-color: #d49a00; /* Participatory & Community Projects */
+	--category-management-color: #6d3684; /* deep plum for grounded structure */
+    --category-sci-comm-color: #1a7a99;   /* ocean teal-blue for communication & clarity */
+	--category-dot-color: #514d3d; /* Separator dot for categories */
+}
 }
 
 a {
@@ -137,6 +194,9 @@ h1 {
 }
 .work-entry {
 	margin-bottom: 2.5rem;
+	background-color: var(--work-entry-bg);
+	padding: 1.5rem;
+	border-radius: 15px;
 }
 .work-entry h2 {
 	font-family: "Averia Sans Libre", "Noto Sans", sans-serif;
@@ -199,6 +259,12 @@ a:hover, a:active {
 	padding-left: 0;
 	margin-top: 1rem;
 	margin-bottom: 1rem;
+}
+
+.iteration, .subentry {
+	background-color: var(--sub-entry-bg);
+	padding: 1rem;
+	border-radius: 10px;
 }
 
 .iteration h2,
@@ -489,8 +555,11 @@ div.categories p:not(:last-of-type)::after{
 
 /* Minor Work Styling */
 .work-entry.minor {
-font-size: 0.95rem;
-line-height: 1.15rem;
+	font-size: 0.95rem;
+	line-height: 1.15rem;
+	padding: 1rem;
+	border-radius: 10px;
+	background-color: var(--minor-work-entry-bg);
 }
 
 .work-entry.minor .categories p::before {
@@ -543,56 +612,3 @@ font-weight: 600;
 	content: "Interdisciplinary Work";
 }*/
 
-@media (prefers-color-scheme: light) {
-:root {
-	/* Background and Text Colors */
-	--bg-color: #e9f0dd; /* Primary background */
-	--bg-color2: #ffead1; /* Secondary background */
-	--bg-color3: #e4f7f5; /* Tertiary background */
-	--text-color: #23213b; /* Page Title, Work Item Titles, and Body Text */
-
-	/* Link Colors */
-	--h2-color: #b236e4; /* Links and Linked Item Titles */
-	--line-color: rgb(135, 138, 232, 0.7);
-	--line-hover-color: #988fff;
-	--link-hover-color: #87a510; /* Links and Linked Item Titles on Hover */
-	--link-halo: #00ff26;
-	--link-halo2: #00e5ff;
-
-	/* Additional Item Information */
-	--h3-color: #365858; /* Context of the work (e.g., exhibition, publisher, institution, company) */
-	--h4-color: #4c5e49; /* Specific project, act, or segment title within a larger work */
-	--role-color: #584809; /* Role within a project or work */
-	--year-color: #3f857e; /* Year of creation or participation */
-	--email-color: #546f79; /* Email address */
-	--original-color: #e3780e; /* Indicator for originally conceptualized works */
-	
-	/* Other UI Elements */
-	--selection-text: #a9b5db; /* Selected text color */
-	--selection-background: #32543b; /* Background of selected text */
-	--scrollbar-color: #392363; /* Scrollbar thumb */
-	--scrollbar-track-color: #a0ccb7; /* Scrollbar track */
-
-	/* Category Colors */
-	--category-research-color: #b32846; /* Research & Academic */
-	--category-intermedia-color: #402f89; /* Intermedia */
-	--category-virtual-color: #2c9c87; /* Virtual and streamed media \ */
-	--category-music-color: #1e7a4e; /* Music */
-	--category-score-color: #a64625; /* Soundtrack & Score */
-	--category-writing-color: #2e57a1; /* Written works  */
-	--category-theater-color: #7a3d7a; /* Theater and performance-based works */
-	--category-software-color: #2e72b5; /* Digital Applications & Technology works */
-	--category-instrument-color: #644737; /* Instrument design and experimental interfaces */
-	--category-visual-color: #8b3ebd; /* Visual art */
-	--category-participatory-color: #d49a00; /* Participatory & Community Projects */
-	--category-management-color: #6d3684; /* deep plum for grounded structure */
-    --category-sci-comm-color: #1a7a99;   /* ocean teal-blue for communication & clarity */
-	--category-dot-color: #514d3d; /* Separator dot for categories */
-}
-
-.background-overlay {
-	filter: hue-rotate(-90deg); /* Change hue */
-	opacity: 0.1; /* Adjust transparency */
-}
-
-}

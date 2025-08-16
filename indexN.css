@@ -1,0 +1,274 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&family=Rubik:wght@400;700&family=Lexend+Deca:wght@400;700&family=Syne+Mono&family=Averia+Sans+Libre&family=Noto+Sans:wght@400;700&family=Dosis:wght@600;800&display=swap');
+
+:root {
+	/* Background, Titles, and Body Text Colors */
+	--bg-color: #2a0e4a; /* Deep Purple */
+	--bg-secondary: #3c1f6b; /* Lighter Purple for containers */
+	--text-color: #e8ffcc; /* Light Greenish White */
+	
+	/* Link and Linked Item Colors */
+	--h2-color: #9dff00; /* Slime Green */
+	--link-hover-color: #ff33a8; /* Hot Pink */
+	--line-color: rgba(0, 194, 255, 0.6); /* Electric Blue underline */
+	--line-hover-color: #ff33a8;
+	
+	/* Additional Item Information */
+	--h3-color: #ff8c00; /* Nickelodeon Orange */
+	--h4-color: #00c2ff; /* Electric Blue */
+	--role-color: #f09fff; /* Lavender */
+	--year-color: #9dff00; /* Slime Green */
+	--email-color: #00c2ff;
+	--original-color: #ff8c00;
+	
+	/* Other UI Elements */
+	--selection-text: #2a0e4a;
+	--selection-background: #9dff00;
+	--scrollbar-color: #9dff00;
+	--scrollbar-track-color: #1e0a33;
+	
+	/* Item Category Colors */
+	--category-research-color: #00c2ff;
+	--category-intermedia-color: #ff33a8;
+	--category-virtual-color: #ff8c00;
+	--category-music-color: #f09fff;
+	--category-score-color: #7cff00;
+	--category-writing-color: #ffdb00;
+	--category-theater-color: #ff5e00;
+	--category-software-color: #00f2ff;
+	--category-instrument-color: #ff9500;
+	--category-visual-color: #d400ff;
+	--category-participatory-color: #ffc400;
+	--category-dot-color: #e8ffcc;
+    --category-management-color: #d400ff;
+    --category-sci-comm-color: #00c2ff;
+}
+
+/* GENERAL STYLING */
+body {
+	font-family: "Rubik", sans-serif;
+	background: radial-gradient(circle, #4a1a7c, var(--bg-color));
+	color: var(--text-color);
+	margin: 0;
+	padding: 5%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	letter-spacing: 0.03em;
+	line-height: 1.4;
+}
+
+.background-overlay { display: none; } /* Hiding the original overlay for a cleaner look */
+
+::selection {
+    background-color: var(--selection-background);
+    color: var(--selection-text);
+}
+
+/* LINKS */
+a {
+	text-decoration: underline wavy 2px var(--line-color);
+	color: var(--h2-color);
+	transition: all 0.2s ease-in-out;
+}
+
+a:hover, a:active {
+	color: var(--text-color);
+	background-color: var(--link-hover-color);
+	text-decoration-color: var(--link-hover-color);
+	border-radius: 3px;
+	text-shadow: 0 0 5px var(--text-color);
+}
+
+/* TYPOGRAPHY */
+h1, .center-section h1 {
+	font-family: "Dosis", sans-serif;
+	font-weight: 800;
+	font-size: 3.5rem;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+	color: var(--h2-color);
+	text-shadow: 4px 4px 0px var(--bg-secondary), -2px -2px 0px var(--h3-color);
+	margin: 1rem 0;
+	text-align: center;
+}
+
+.center-section p {
+	font-family: "Syne Mono", monospace;
+	font-size: 1.1rem;
+	color: var(--text-color);
+}
+
+.email a {
+	font-family: "Syne Mono", monospace;
+	font-size: 1.1rem;
+	color: var(--email-color);
+	background: none;
+	text-decoration: none;
+}
+
+.email a:hover {
+	background: var(--link-hover-color);
+	color: var(--text-color);
+}
+
+/* SECTIONS & CONTAINERS */
+.left-align-section {
+	max-width: 800px;
+	text-align: left;
+	background: var(--bg-secondary);
+	padding: 2rem;
+	border: 3px solid var(--h4-color);
+	border-radius: 15px;
+	box-shadow: 6px 6px 0px var(--h2-color);
+	margin-bottom: 2rem;
+}
+
+.works-section {
+	max-width: 800px;
+	width: 100%;
+}
+
+.work-entry {
+	background: var(--bg-secondary);
+	padding: 1.5rem 2rem;
+	margin-bottom: 2.5rem;
+	border: 3px solid var(--h2-color);
+	border-radius: 15px;
+	box-shadow: 6px 6px 0px var(--h4-color);
+	transition: all 0.3s ease;
+}
+
+.work-entry:hover {
+	transform: translate(-3px, -3px);
+	box-shadow: 9px 9px 0px var(--h4-color);
+}
+
+.work-entry.minor {
+	border-style: dashed;
+	border-color: var(--h3-color);
+	box-shadow: 4px 4px 0px var(--role-color);
+}
+.work-entry.minor:hover {
+	box-shadow: 7px 7px 0px var(--role-color);
+}
+
+/* WORK ENTRY DETAILS */
+.work-entry h2 {
+	font-family: "Dosis", sans-serif;
+	font-weight: 800;
+	letter-spacing: 0.03em;
+	color: var(--h2-color);
+	margin: 0 0 0.25rem 0;
+	text-shadow: 2px 2px 0 var(--bg-color);
+}
+.work-entry h2 a { text-decoration: none; background: none; }
+
+.work-entry h3 {
+	font-family: "Averia Sans Libre", sans-serif;
+	font-weight: 700;
+	margin: 0.1rem 0;
+	color: var(--h3-color);
+}
+.work-entry h3 a { color: var(--h3-color); }
+
+.work-entry h4 {
+	font-family: "Averia Sans Libre", sans-serif;
+	color: var(--h4-color);
+	margin: 0.1rem 0;
+}
+
+.work-entry p {
+	font-family: "Lexend Deca", sans-serif;
+	margin: 0.25rem 0;
+}
+
+.iteration, .subentry {
+	border-left: 3px dotted var(--h3-color);
+	padding-left: 1rem;
+	margin-left: 1rem;
+	margin-top: 1rem;
+}
+
+.original::before {
+	content: "original work";
+	font-family: "Dosis";
+	font-weight: 700;
+	text-transform: uppercase;
+}
+
+/* Center Section & Socials */
+.center-section { text-align: center; margin-bottom: 3rem; }
+.center-section img {
+	max-width: 150px;
+	border-radius: 50%;
+	border: 5px solid var(--h2-color);
+	filter: drop-shadow(4px 4px 0 var(--h3-color));
+}
+.logo { display: none; } /* Hide the divider logo */
+.social-links { margin-top: 1.5rem; }
+.social-links a {
+	font-family: "Syne Mono", monospace;
+	font-size: 1.2rem;
+	margin: 0.2rem 0;
+	text-decoration: none;
+	color: var(--h2-color);
+}
+.social-links a:hover {
+	background-color: transparent;
+	color: var(--link-hover-color);
+	text-shadow: none;
+}
+
+
+/* CATEGORIES */
+div.categories p:not(:last-of-type)::after{
+    content: " · ";
+	color: var(--category-dot-color);
+	font-weight: bold;
+}
+.category-research, .category-intermedia, .category-virtual, .category-music, .category-score, .category-writing, .category-theater, .category-software, .category-instrument, .category-visuals, .category-participatory, .category-management, .category-sci-comm {
+	font-family: "Dosis", sans-serif;
+	font-weight: 700;
+	margin-right: 0.5rem;
+	display: inline;
+	text-transform: uppercase;
+}
+
+/* Category Text Content */
+.category-research::before { content: "Research"; }
+.category-intermedia::before { content: "Intermedia"; }
+.category-virtual::before { content: "Virtual"; }
+.category-score::before { content: "Score"; }
+.category-music::before { content: "Music"; }
+.category-writing::before { content: "Writing"; }
+.category-theater::before { content: "Theater"; }
+.category-software::before { content: "Software"; }
+.category-instrument::before { content: "Instrument Design"; }
+.category-visuals::before { content: "Visuals"; }
+.category-participatory::before { content: "Community"; }
+.category-management::before { content: "Management"; }
+.category-sci-comm::before { content: "Sci-Comm"; }
+
+/* MINOR WORK STYLING (OVERRIDE) */
+.work-entry.minor { font-size: 1rem; line-height: 1.3rem; }
+.work-entry.minor h2 { font-size: 1.2rem; display: inline; }
+.work-entry.minor .role, .work-entry.minor .year, .work-entry.minor h4 {
+    font-size: 1rem;
+    display: inline;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 16px; }
+::-webkit-scrollbar-track { background: var(--scrollbar-track-color); }
+::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-color);
+    border-radius: 8px;
+    border: 3px solid var(--scrollbar-track-color);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--link-hover-color); }
+
+/* Remove light mode override */
+@media (prefers-color-scheme: light) {
+	:root {} /* This prevents the original light mode from activating */
+}
