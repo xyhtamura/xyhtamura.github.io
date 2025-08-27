@@ -3,7 +3,7 @@
 
 :root {
 	/* Background, Titles, and Body Text Colors */
-	--bg-color: #2d3333; /* Background */
+	--bg-color: #27393b; /* Background */
 	--text-color: #efece7; /* Page Title, Work Item Titles, and Body Text */
 	
 	/* Link and Linked Item Colors */
@@ -29,9 +29,9 @@
 	--scrollbar-track-color: #26261e; /* Scrollbar track */
 
 	/* Entry Background Colors */
-	--work-entry-bg: rgba(36, 34, 23,0.2);
-	--sub-entry-bg: rgba(36, 34, 23, 0.2);
-	--minor-work-entry-bg: rgba(36, 34, 23, 0.1);
+	--work-entry-bg: rgba(39, 38, 33,0.2);
+	--sub-entry-bg: rgba(39, 38, 33, 0.2);
+	--minor-work-entry-bg: rgba(39, 38, 33, 0.1);
 	
 	/* Item Category Colors */
 	--category-research-color: #1cebc1; /* Research & Academic */
@@ -155,8 +155,6 @@ body {
 	max-width: 150px;
 	height: auto;
 	margin: 0.4rem 0 0 0;
-	border-radius: 50% 35% 45% 25%;
-	rotate: 5deg;
 }
 
 .email {
