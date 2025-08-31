@@ -13,6 +13,7 @@
 	--line-hover-color: #988fff;
 	--link-halo: #878ae8;
 	--link-halo2: #00509c;
+	--subnames: ;
 	
 	/* Additional Item Information */
 	--h3-color: #e4dfed; /* Context of the work (e.g., exhibition, publisher, institution, company) */
@@ -144,7 +145,7 @@ body {
 }
 .center-section h1 {
 	font-family: "Quicksand", "Noto Sans", sans-serif;
-	margin: 1rem 0 0.7rem 0;
+	margin: 1rem 0 0rem 0;
 	letter-spacing: 0.02em;
 }
 .center-section p {
@@ -260,11 +261,10 @@ a:hover, a:active {
 .iteration {
 	margin-left: 0;
 	padding-left: 0;
-	margin-top: 1rem;
-	margin-bottom: 1rem;
+	margin-top: 1.5rem;
 }
 
-.iteration, .subentry {
+.subentry {
 	background-color: var(--sub-entry-bg);
 	padding: 1rem;
 	border-radius: 10px;
