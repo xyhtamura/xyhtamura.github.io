@@ -167,9 +167,10 @@ body {
 }
 
 .center-section .othernames {
-	font-family: "Averia Sans Libre", "Noto Sans", sans-serif;
+	font-family: "Quicksand", "Noto Sans", sans-serif;
 	color: var(--other-names);
 	margin: 0.1rem 0 0 0;
+	font-weight: 700;
 }
 
 .center-section .tagline {
