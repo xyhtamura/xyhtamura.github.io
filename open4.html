@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Open4 | xyh tamura</title>
     <style>
+	
+	@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap');
+	
         /* --- Basic Setup & Theme --- */
         body {
             background-color: #1a1a2a; /* Deep charcoal/navy blue */
@@ -63,13 +66,26 @@
             width: 100%;
             height: 100%;
         }
+		
+		.logo-text {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(60px, 12vw, 140px); /* Responsive font size */
+    font-style: italic;
+    font-weight: 400; /* Archivo Black is already very bold */
+    text-align: center;
+    color: transparent; /* Makes the inside of the letters transparent */
+    -webkit-text-stroke: 2px #00BFFF; /* Creates the cyan outline */
+    text-stroke: 2px #00BFFF; /* Standard property */
+    letter-spacing: -2px;
+    margin-bottom: 20px;
+}
     </style>
 </head>
 <body>
 
     <div class="container">
 
-        <img src="Open4logob.png" alt="Open4 Logo" class="logo">
+        <div class="logo-text">Open4</div>
 
         <h2 class="artist-name">xyh tamura</h2>
 
