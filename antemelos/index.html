@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Averia+Sans+Libre:wght@400;700&display=swap" rel="stylesheet">
+    <title>Antemelos v3 - Primordial Melody Generator</title>
+    <style>
+        :root {
+            --bg-color: #1a1a1a;
+            --text-color: #e0e0e0;
+            --primary-color: #af87ff;
+            --surface-color: #2a2a2a;
+            --border-color: #444;
+        }
+        body {
+            font-family: 'Averia Sans Libre', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background-color: var(--surface-color);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1, h2 {
+            text-align: center;
+            color: var(--primary-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+            margin-top: 0;
+            font-weight: 700;
+        }
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            justify-content: center;
+        }
+        .control-group { display: flex; flex-direction: column; }
+        label { margin-bottom: 0.5rem; font-weight: bold; }
+        input[type="range"], input[type="number"], select {
+            width: 100%;
+            padding: 0.5rem;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-family: 'Averia Sans Libre', sans-serif;
+        }
+        button {
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            font-weight: bold;
+            color: var(--bg-color);
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+            flex-grow: 1;
+            font-family: 'Averia Sans Libre', sans-serif;
+        }
+        button:hover { background-color: #c4a7ff; }
+        button:disabled { background-color: #555; color: #999; cursor: not-allowed; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border-color); }
+        th { background-color: rgba(0,0,0,0.2); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Antemelos v3</h1>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label for="numNotes">Number of Notes: <span id="numNotesValue">16</span></label>
+                <input type="range" id="numNotes" min="4" max="64" value="16">
+            </div>
+            <div class="control-group">
+                <label for="leapProb">Leap Probability: <span id="leapProbValue">20%</span></label>
+                <input type="range" id="leapProb" min="0" max="100" value="20">
+            </div>
+             <div class="control-group">
+                <label for="minLeap">Min Leap Size: <span id="minLeapValue">1.33x</span></label>
+                <input type="range" id="minLeap" min="1.2" max="2.0" value="1.33" step="0.01">
+            </div>
+             <div class="control-group">
+                <label for="maxLeap">Max Leap Size: <span id="maxLeapValue">2.00x</span></label>
+                <input type="range" id="maxLeap" min="2.0" max="4.0" value="2.0" step="0.01">
+            </div>
+            <div class="control-group">
+                <label for="minHz">Min Frequency: <span id="minHzValue">82 Hz (E2)</span></label>
+                <input type="range" id="minHz" min="30" max="400" value="82" step="1">
+            </div>
+            <div class="control-group">
+                <label for="maxHz">Max Frequency: <span id="maxHzValue">600 Hz (D5)</span></label>
+                <input type="range" id="maxHz" min="401" max="1200" value="600" step="1">
+            </div>
+            <div class="control-group">
+                <label for="tempo">Tempo (BPM): <span id="tempoValue">90</span></label>
+                <input type="range" id="tempo" min="30" max="180" value="90" step="1">
+            </div>
+            <div class="control-group">
+                <label for="waveform">Waveform</label>
+                <select id="waveform">
+                    <option value="sine">Sine</option>
+                    <option value="sawtooth">Sawtooth</option>
+                    <option value="square">Square</option>
+                    <option value="triangle">Triangle</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="envelope">Envelope</label>
+                <select id="envelope">
+                    <option value="decaying">Decaying</option>
+                    <option value="held">Held</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="actions">
+             <button id="generateBtn">Generate Melody</button>
+             <button id="playBtn" disabled>▶ Play / ⏹ Stop</button>
+             <button id="copyBtn" disabled>📋 Copy Table</button>
+             <button id="downloadBtn" disabled>⬇️ Download .WAV</button>
+        </div>
+
+        <div id="output">
+            <h2>Generated Melody</h2>
+            <table id="melodyTable">
+                <thead><tr><th>Note #</th><th>Pitch (Hz)</th><th>Duration (s)</th></tr></thead>
+                <tbody id="melodyTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // --- DOM ELEMENTS ---
+        const sliders = {
+            numNotes: document.getElementById('numNotes'), leapProb: document.getElementById('leapProb'),
+            minLeap: document.getElementById('minLeap'), maxLeap: document.getElementById('maxLeap'),
+            minHz: document.getElementById('minHz'), maxHz: document.getElementById('maxHz'),
+            tempo: document.getElementById('tempo'),
+        };
+        const selects = { waveform: document.getElementById('waveform'), envelope: document.getElementById('envelope') };
+        const valueSpans = {
+            numNotes: document.getElementById('numNotesValue'), leapProb: document.getElementById('leapProbValue'),
+            minLeap: document.getElementById('minLeapValue'), maxLeap: document.getElementById('maxLeapValue'),
+            minHz: document.getElementById('minHzValue'), maxHz: document.getElementById('maxHzValue'),
+            tempo: document.getElementById('tempoValue'),
+        };
+        const buttons = {
+            generate: document.getElementById('generateBtn'), play: document.getElementById('playBtn'),
+            copy: document.getElementById('copyBtn'), download: document.getElementById('downloadBtn'),
+        };
+        const melodyTableBody = document.getElementById('melodyTableBody');
+
+        // --- GLOBAL STATE ---
+        let audioContext;
+        let currentMelody = [];
+        let isPlaying = false;
+        let activeAudioNodes = []; // <-- BUG FIX: Track active nodes
+        let melodyTimeoutId = null; // <-- BUG FIX: Track the timeout for melody completion
+        const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+
+        // --- CONVERSION HELPERS ---
+        const hzToMidi = (hz) => 12 * Math.log2(hz / 440) + 69;
+        const midiToHz = (midi) => 440 * Math.pow(2, (midi - 69) / 12);
+        const freqToNoteName = (hz) => {
+            if (hz <= 0) return "";
+            const midi = Math.round(hzToMidi(hz));
+            return `${NOTE_NAMES[midi % 12]}${Math.floor(midi / 12) - 1}`;
+        };
+
+        // --- UI UPDATE LOGIC ---
+        function updateSliderDisplays() {
+            valueSpans.numNotes.textContent = sliders.numNotes.value;
+            valueSpans.leapProb.textContent = `${sliders.leapProb.value}%`;
+            valueSpans.minLeap.textContent = `${parseFloat(sliders.minLeap.value).toFixed(2)}x`;
+            valueSpans.maxLeap.textContent = `${parseFloat(sliders.maxLeap.value).toFixed(2)}x`;
+            const minFreq = parseFloat(sliders.minHz.value);
+            const maxFreq = parseFloat(sliders.maxHz.value);
+            valueSpans.minHz.textContent = `${Math.round(minFreq)} Hz (${freqToNoteName(minFreq)})`;
+            valueSpans.maxHz.textContent = `${Math.round(maxFreq)} Hz (${freqToNoteName(maxFreq)})`;
+            valueSpans.tempo.textContent = sliders.tempo.value;
+        }
+
+        // --- CORE MELODY GENERATION ---
+        function generateMelody() {
+            const params = {
+                numNotes: parseInt(sliders.numNotes.value), minMidi: hzToMidi(parseFloat(sliders.minHz.value)),
+                maxMidi: hzToMidi(parseFloat(sliders.maxHz.value)), bpm: parseFloat(sliders.tempo.value),
+                leapProb: parseFloat(sliders.leapProb.value) / 100,
+                minLeapRatio: parseFloat(sliders.minLeap.value), maxLeapRatio: parseFloat(sliders.maxLeap.value)
+            };
+            const baseDuration = 60 / params.bpm;
+            const durationPool = [baseDuration * 0.5, baseDuration, baseDuration * 1.5, baseDuration * 2];
+            currentMelody = [];
+            let lastMidi = params.minMidi + Math.random() * (params.maxMidi - params.minMidi);
+            for (let i = 0; i < params.numNotes; i++) {
+                if (i > 0) {
+                    const isLeap = Math.random() < params.leapProb;
+                    const goUp = Math.random() < 0.5;
+                    const intervalRatio = isLeap ? params.minLeapRatio + Math.random() * (params.maxLeapRatio - params.minLeapRatio) : 1.05 + Math.random() * 0.2;
+                    const intervalSemitones = 12 * Math.log2(intervalRatio);
+                    let nextMidi = goUp ? lastMidi + intervalSemitones : lastMidi - intervalSemitones;
+                    if (nextMidi > params.maxMidi || nextMidi < params.minMidi) {
+                        nextMidi = goUp ? lastMidi - intervalSemitones : lastMidi + intervalSemitones;
+                        nextMidi = Math.max(params.minMidi, Math.min(params.maxMidi, nextMidi));
+                    }
+                    lastMidi = nextMidi;
+                }
+                currentMelody.push({
+                    freq: midiToHz(lastMidi),
+                    duration: durationPool[Math.floor(Math.random() * durationPool.length)]
+                });
+            }
+            displayMelody();
+            buttons.play.disabled = false; buttons.copy.disabled = false; buttons.download.disabled = false;
+        }
+
+        function displayMelody() {
+            melodyTableBody.innerHTML = '';
+            currentMelody.forEach((note, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${index + 1}</td><td>${note.freq.toFixed(2)} Hz</td><td>${note.duration.toFixed(2)} s</td>`;
+                melodyTableBody.appendChild(row);
+            });
+        }
+        
+        // --- AUDIO HANDLING ---
+        function togglePlayback() {
+            if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            if (isPlaying) {
+                stopMelody();
+            } else {
+                playMelody();
+            }
+        }
+
+        function playMelody() {
+            if (currentMelody.length === 0) return;
+            isPlaying = true;
+            buttons.play.textContent = "⏹ Stop";
+            buttons.generate.disabled = true;
+            let currentTime = audioContext.currentTime + 0.1;
+            currentMelody.forEach(note => {
+                const osc = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                osc.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                osc.type = selects.waveform.value;
+                osc.frequency.setValueAtTime(note.freq, currentTime);
+                gainNode.gain.setValueAtTime(0, currentTime);
+                if (selects.envelope.value === 'decaying') {
+                    gainNode.gain.linearRampToValueAtTime(0.7, currentTime + 0.02);
+                    gainNode.gain.exponentialRampToValueAtTime(0.0001, currentTime + note.duration);
+                } else {
+                    gainNode.gain.linearRampToValueAtTime(0.7, currentTime + 0.02);
+                    gainNode.gain.setValueAtTime(0.7, currentTime + note.duration - 0.05);
+                    gainNode.gain.linearRampToValueAtTime(0, currentTime + note.duration);
+                }
+                osc.start(currentTime);
+                osc.stop(currentTime + note.duration);
+                activeAudioNodes.push({ osc, gainNode }); // BUG FIX: Track node
+                currentTime += note.duration;
+            });
+            const totalDuration = currentMelody.reduce((sum, note) => sum + note.duration, 0);
+            melodyTimeoutId = setTimeout(() => { if (isPlaying) stopMelody(); }, (totalDuration + 0.2) * 1000);
+        }
+
+        function stopMelody() {
+            if (melodyTimeoutId) clearTimeout(melodyTimeoutId); // BUG FIX: Clear scheduled stop
+            activeAudioNodes.forEach(node => { // BUG FIX: Stop each node individually
+                const stopTime = audioContext.currentTime + 0.05;
+                node.gainNode.gain.cancelScheduledValues(0);
+                node.gainNode.gain.linearRampToValueAtTime(0, stopTime);
+                node.osc.stop(stopTime);
+            });
+            activeAudioNodes = []; // Clear the tracking array
+            isPlaying = false;
+            buttons.play.textContent = "▶ Play";
+            buttons.generate.disabled = false;
+        }
+
+        // --- UTILITY FUNCTIONS ---
+        function copyTableToClipboard() {
+            let tableText = "Note\tFrequency (Hz)\tDuration (s)\n";
+            currentMelody.forEach((note, index) => {
+                tableText += `${index + 1}\t${note.freq.toFixed(2)}\t${note.duration.toFixed(2)}\n`;
+            });
+            navigator.clipboard.writeText(tableText).then(() => {
+                const originalText = buttons.copy.textContent;
+                buttons.copy.textContent = "Copied!";
+                setTimeout(() => { buttons.copy.textContent = originalText; }, 2000);
+            });
+        }
+        
+        async function downloadWav() {
+            const totalDuration = currentMelody.reduce((sum, note) => sum + note.duration, 0);
+            if (totalDuration === 0) return;
+            const offlineCtx = new OfflineAudioContext(1, 44100 * totalDuration, 44100);
+            let currentTime = 0;
+            currentMelody.forEach(note => {
+                const osc = offlineCtx.createOscillator();
+                const gainNode = offlineCtx.createGain();
+                osc.connect(gainNode); gainNode.connect(offlineCtx.destination);
+                osc.type = selects.waveform.value;
+                osc.frequency.setValueAtTime(note.freq, currentTime);
+                gainNode.gain.setValueAtTime(0, currentTime);
+                 if (selects.envelope.value === 'decaying') {
+                    gainNode.gain.linearRampToValueAtTime(0.5, currentTime + 0.02);
+                    gainNode.gain.exponentialRampToValueAtTime(0.0001, currentTime + note.duration);
+                } else {
+                    gainNode.gain.linearRampToValueAtTime(0.5, currentTime + 0.02);
+                    gainNode.gain.setValueAtTime(0.5, currentTime + note.duration - 0.05);
+                    gainNode.gain.linearRampToValueAtTime(0, currentTime + note.duration);
+                }
+                osc.start(currentTime);
+                currentTime += note.duration;
+            });
+            const renderedBuffer = await offlineCtx.startRendering();
+            const wavData = bufferToWav(renderedBuffer);
+            const blob = new Blob([wavData], { type: 'audio/wav' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none'; a.href = url; a.download = 'antemelos_melody.wav';
+            document.body.appendChild(a); a.click();
+            window.URL.revokeObjectURL(url); document.body.removeChild(a);
+        }
+
+        function bufferToWav(buffer) {
+            const numChannels = 1, sampleRate = buffer.sampleRate, numFrames = buffer.length, bitsPerSample = 16;
+            const blockAlign = numChannels * bitsPerSample / 8, byteRate = sampleRate * blockAlign, dataSize = numFrames * blockAlign;
+            const wavBuffer = new ArrayBuffer(44 + dataSize);
+            const view = new DataView(wavBuffer);
+            const writeString = (v, o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+            writeString(view, 0, 'RIFF'); view.setUint32(4, 36 + dataSize, true); writeString(view, 8, 'WAVE');
+            writeString(view, 12, 'fmt '); view.setUint32(16, 16, true); view.setUint16(20, 1, true);
+            view.setUint16(22, numChannels, true); view.setUint32(24, sampleRate, true); view.setUint32(28, byteRate, true);
+            view.setUint16(32, blockAlign, true); view.setUint16(34, bitsPerSample, true);
+            writeString(view, 36, 'data'); view.setUint32(40, dataSize, true);
+            let offset = 44;
+            for (let i = 0; i < numFrames; i++) {
+                const sample = Math.max(-1, Math.min(1, buffer.getChannelData(0)[i]));
+                view.setInt16(offset, sample < 0 ? sample * 0x8000 : sample * 0x7FFF, true);
+                offset += 2;
+            }
+            return view;
+        }
+
+        // --- EVENT LISTENERS ---
+        buttons.generate.addEventListener('click', generateMelody);
+        buttons.play.addEventListener('click', togglePlayback);
+        buttons.copy.addEventListener('click', copyTableToClipboard);
+        buttons.download.addEventListener('click', downloadWav);
+        Object.values(sliders).forEach(slider => slider.addEventListener('input', updateSliderDisplays));
+
+        // --- INITIALIZATION ---
+        updateSliderDisplays();
+    </script>
+</body>
+</html>

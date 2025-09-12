@@ -33,12 +33,12 @@
 	--scrollbar-track-color: #26261e; /* Scrollbar track */
 
 	/* Entry Background Colors */
-	--work-entry-bg: rgba(36, 34, 23,0.2);
-	--sub-entry-bg: rgba(36, 34, 23, 0.2);
-	--minor-work-entry-bg: rgba(36, 34, 23, 0.1);
+	--work-entry-bg: rgba(26, 22, 4, 0.3);
+	--sub-entry-bg: rgba(26, 22, 4, 0.3);
+	--minor-work-entry-bg: rgba(12, 23, 23, 0.1);
 	
 	/* Item Category Colors */
-	--category-research-color: #1cebc1; /* Research & Academic */
+	--category-research-color: #f07167; /* New Red */
 	--category-intermedia-color: #7a52f3; /* Intermedia */
 	--category-virtual-color: #e72e5c; /* Virtual and streamed media */
 	--category-music-color: #ff66d4; /* Music */
@@ -52,12 +52,13 @@
 	--category-dot-color: #c3c6d6; /* Separator dot for categories */
     --category-management-color: #d9a7f9; /* lavender/purple-pink for soft structure */
     --category-sci-comm-color: #77ddff;   /* sky blue for clarity & education */
+	--category-artistic-research-color: #48d1cc; /* New Bluish-Green */
 }
 
 @media (prefers-color-scheme: light) {
 :root {
 	/* Background and Text Colors */
-	--bg-color: #d1d8c1; /* Primary background */
+	--bg-color: #c5ccb6; /* Primary background */
 	--text-color: #23213b; /* Page Title, Work Item Titles, and Body Text */
 
 
@@ -87,9 +88,9 @@
 	--scrollbar-track-color: #a0ccb7; /* Scrollbar track */
 
 	/* Entry Background Colors */
-	--work-entry-bg: rgba(211, 220, 2277,0.2);
-	--sub-entry-bg: rgba(247, 255, 248, 0.15);
-	--minor-work-entry-bg: rgba(247, 255, 248, 0.1);
+	--work-entry-bg: rgba(224, 255, 244, 0.3);
+	--sub-entry-bg: rgba(224, 255, 244, 0.3);
+	--minor-work-entry-bg: rgba(255, 255, 255, 0.1);
 	
 
 	/* Category Colors */
@@ -107,6 +108,7 @@
 	--category-management-color: #6d3684; /* deep plum for grounded structure */
     --category-sci-comm-color: #1a7a99;   /* ocean teal-blue for communication & clarity */
 	--category-dot-color: #514d3d; /* Separator dot for categories */
+	--category-artistic-research-color: #00796b; /* New Dark Teal */
 }
 }
 
@@ -545,6 +547,17 @@ div.categories p:not(:last-of-type)::after{
 	font-weight: bold;
 }
 
+.category-artistic-research {
+	color: var(--category-artistic-research-color);
+	font-weight: bold;
+	margin-right: 0.5rem;
+	display: inline;
+}
+
+.category-artistic-research::before {
+	content: "Artistic Research";
+	font-weight: bold;
+}
 
 /* Add padding for mobile devices */
 @media (max-width: 768px) {
@@ -598,16 +611,16 @@ div.categories p:not(:last-of-type)::after{
 .work-entry.minor {
 	font-size: 0.95rem;
 	line-height: 1.15rem;
-	padding: 1rem;
+	padding: 1.5rem;
 	border-radius: 10px;
 	background-color: var(--minor-work-entry-bg);
 }
 
 .work-entry.minor .categories p::before {
-    font-size: 1rem; /* Smaller category label */
+    font-size: 0.9rem; /* Smaller category label */
 	font-weight: 600;
-	font-family: Dosis;
 }
+
 .work-entry.minor .categories p {
 
 }
@@ -620,13 +633,10 @@ div.categories p:not(:last-of-type)::after{
 
 
 
-.work-entry.minor h4::before{
-    content: " · ";
-	color: var(--category-dot-color);
-}
+
 
 .work-entry.minor .original::before {
-	content: " · original work";
+	content: "original work";
 font-size: 1rem;
 font-weight: 600;
 	font-family: Dosis;	
@@ -636,20 +646,6 @@ font-weight: 600;
 .work-entry.minor .year,
 .work-entry.minor h4 {
     font-size:0.95rem; /* Compact metadata */
-    display: inline; /* Combine into one line */
-}
-.work-entry.minor .role span:not(:first-of-type)::before {
-    content: " · "; /* Separator for role/description */
-}
-.work-entry.minor .year::before {
-    content: " · "; /* Separator before year */
 }
 
-/*.work-entry.minor .category-intermedia::before {
-	content: "Interdisciplinary Work";
-}
-
-.work-entry.minor .category-intermedia::before {
-	content: "Interdisciplinary Work";
-}*/
 

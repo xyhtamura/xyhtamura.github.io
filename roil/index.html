@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROIL Oscillator</title>
+    <style>
+        :root {
+            --bg-color: #1a1a1a;
+            --control-bg: #2a2a2a;
+            --section-bg: #222;
+            --text-color: #e0e0e0;
+            --accent-color: #ff4500;
+            --handle-color: #cccccc;
+        }
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 2em 0;
+        }
+        .main-container {
+            border: 1px solid #333;
+            background-color: var(--section-bg);
+            padding: 2em;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            text-align: center;
+            width: 90%;
+            max-width: 1200px;
+        }
+        h1 { color: var(--accent-color); margin-top: 0; letter-spacing: 2px; font-weight: normal; }
+        h3 { border-bottom: 1px solid #444; padding-bottom: 0.5em; margin-top: 0; font-weight: normal; }
+        
+        .button-container { display: flex; gap: 1em; justify-content: center; margin-bottom: 2em; }
+        .button, .button-container button, select {
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            font-family: inherit;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+        .button-container button:hover, .button:hover { background-color: #ff6a33; }
+        .button-container button:disabled { background-color: #555; color: #888; cursor: not-allowed; }
+
+        .sections-wrapper {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5em;
+            margin-bottom: 1.5em;
+        }
+        .section {
+            background: var(--control-bg);
+            padding: 1.5em;
+            border-radius: 6px;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 1.5em;
+        }
+        label { margin-bottom: 1em; font-size: 0.9em; text-transform: uppercase; }
+        input[type="range"] {
+            -webkit-appearance: none; appearance: none;
+            width: 100%; height: 5px; background: #444; outline: none; border-radius: 5px; cursor: pointer;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none;
+            width: 20px; height: 20px; background: var(--handle-color); border-radius: 50%;
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 20px; height: 20px; background: var(--handle-color); border-radius: 50%;
+        }
+        .value-display { margin-top: 1em; font-size: 0.8em; color: var(--accent-color); min-height: 1em; }
+        
+        #waveCanvas {
+            background-color: #111;
+            border: 1px solid #444;
+            cursor: pointer;
+        }
+        select {
+            padding: 10px;
+            font-size: 1em;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <h1>ROIL</h1>
+    <div class="button-container">
+        <button id="activateButton">ACTIVATE</button>
+        <button id="stopButton" disabled>STOP</button>
+    </div>
+
+    <div id="controlsContainer">
+        <div class="sections-wrapper">
+            <div class="section">
+                <h3>OSCILLATOR</h3>
+                <div class="control-group">
+                    <label>PITCH DRIFT RANGE</label>
+                    <input type="range" id="minFreq" min="20" max="2000" value="20" step="1">
+                    <input type="range" id="maxFreq" min="20" max="2000" value="93" step="1">
+                    <span class="value-display" id="freqRangeValue">20 - 93 Hz</span>
+                </div>
+                 <div class="control-group">
+                    <label for="waveform">WAVEFORM</label>
+                    <select id="waveform">
+                        <option value="sawtooth" selected>Sawtooth</option>
+                        <option value="square">Square</option>
+                        <option value="sine">Sine</option>
+                        <option value="triangle">Triangle</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="pitchDriftRate">PITCH DRIFT RATE</label>
+                    <input type="range" id="pitchDriftRate" min="0" max="2.0" value="1.8016" step="0.0001">
+                    <span class="value-display" id="pitchDriftRateValue">1.8016</span>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>FILTER</h3>
+                <div class="control-group">
+                    <label for="filterCutoff">BASE CUTOFF</label>
+                    <input type="range" id="filterCutoff" min="20" max="15000" value="1279" step="1">
+                    <span class="value-display" id="filterCutoffValue">1279 Hz</span>
+                </div>
+                <div class="control-group">
+                    <label for="filterNoiseDepth">CUTOFF NOISE DEPTH</label>
+                    <input type="range" id="filterNoiseDepth" min="0" max="15000" value="10000" step="10">
+                    <span class="value-display" id="filterNoiseDepthValue">10000</span>
+                </div>
+                <div class="control-group">
+                    <label for="filterNoiseRate">CUTOFF NOISE RATE</label>
+                    <input type="range" id="filterNoiseRate" min="0" max="50.0" value="50.000" step="0.001">
+                    <span class="value-display" id="filterNoiseRateValue">50.000</span>
+                </div>
+                <div class="control-group">
+                    <label for="filterQ">BASE RESONANCE (Q)</label>
+                    <input type="range" id="filterQ" min="0.1" max="30" value="7.3" step="0.1">
+                    <span class="value-display" id="filterQValue">7.3</span>
+                </div>
+                 <div class="control-group">
+                    <label for="qNoiseDepth">Q NOISE DEPTH</label>
+                    <input type="range" id="qNoiseDepth" min="0" max="30" value="2.9" step="0.1">
+                    <span class="value-display" id="qNoiseDepthValue">2.9</span>
+                </div>
+                <div class="control-group">
+                    <label for="qNoiseRate">Q NOISE RATE</label>
+                    <input type="range" id="qNoiseRate" min="0" max="50.0" value="9.551" step="0.001">
+                    <span class="value-display" id="qNoiseRateValue">9.551</span>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>AMPLITUDE</h3>
+                <div class="control-group">
+                    <label for="masterGain">BASE GAIN</label>
+                    <input type="range" id="masterGain" min="0" max="0.5" value="0.19" step="0.01">
+                    <span class="value-display" id="masterGainValue">0.19</span>
+                </div>
+                <div class="control-group">
+                    <label for="ampNoiseDepth">NOISE DEPTH</label>
+                    <input type="range" id="ampNoiseDepth" min="0" max="1" value="0.87" step="0.01">
+                    <span class="value-display" id="ampNoiseDepthValue">0.87</span>
+                </div>
+                <div class="control-group">
+                    <label for="ampNoiseRate">AMP NOISE RATE</label>
+                    <input type="range" id="ampNoiseRate" min="0" max="50.0" value="34.833" step="0.001">
+                    <span class="value-display" id="ampNoiseRateValue">34.833</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>WAVEFORM LOADER</h3>
+            <canvas id="waveCanvas" width="512" height="256"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+// --- PERLIN NOISE GENERATOR (self-contained) ---
+const Perlin = { p: new Uint8Array(512), init: function() { const p = new Uint8Array(256); for (let i = 0; i < 256; i++) p[i] = i; for (let i = 255; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[p[i], p[j]] = [p[j], p[i]]; } this.p = new Uint8Array(512); for (let i = 0; i < 256; i++) this.p[i] = this.p[i + 256] = p[i]; }, fade: function(t) { return t * t * t * (t * (t * 6 - 15) + 10); }, lerp: function(t, a, b) { return a + t * (b - a); }, grad: function(hash, x, y, z) { const h = hash & 15; const u = h < 8 ? x : y; const v = h < 4 ? y : h === 12 || h === 14 ? x : z; return ((h & 1) === 0 ? u : -u) + ((h & 2) === 0 ? v : -v); }, noise: function(x, y = 0, z = 0) { const p = this.p; const X = Math.floor(x) & 255; const Y = Math.floor(y) & 255; const Z = Math.floor(z) & 255; x -= Math.floor(x); y -= Math.floor(y); z -= Math.floor(z); const u = this.fade(x); const v = this.fade(y); const w = this.fade(z); const A = p[X] + Y, AA = p[A] + Z, AB = p[A + 1] + Z; const B = p[X + 1] + Y, BA = p[B] + Z, BB = p[B + 1] + Z; return this.lerp(w, this.lerp(v, this.lerp(u, this.grad(p[AA], x, y, z), this.grad(p[BA], x - 1, y, z)), this.lerp(u, this.grad(p[AB], x, y - 1, z), this.grad(p[BB], x - 1, y - 1, z))), this.lerp(v, this.lerp(u, this.grad(p[AA + 1], x, y, z - 1), this.grad(p[BA + 1], x - 1, y, z - 1)), this.lerp(u, this.grad(p[AB + 1], x, y - 1, z - 1), this.grad(p[BB + 1], x - 1, y - 1, z - 1)))); } };
+Perlin.init();
+
+// --- WEB AUDIO SETUP ---
+let audioCtx, vco, vcf, masterGain;
+let isInitialized = false;
+let animationFrameId;
+let customPeriodicWave = null;
+let wavePoints = new Float32Array(512).fill(0); // Store final wave data
+
+let t_pitch = Math.random() * 100;
+let t_filter = Math.random() * 100;
+let t_amp = Math.random() * 100;
+let t_q = Math.random() * 100;
+
+// --- DOM ELEMENT REFERENCES ---
+const activateButton = document.getElementById('activateButton');
+const stopButton = document.getElementById('stopButton');
+const controlsContainer = document.getElementById('controlsContainer');
+const waveformSelect = document.getElementById('waveform');
+const sliders = {};
+document.querySelectorAll('input[type="range"]').forEach(slider => { sliders[slider.id] = slider; });
+const displays = {};
+document.querySelectorAll('.value-display').forEach(display => {
+    const id = display.id.replace('Value', '');
+    displays[id] = display;
+});
+
+// --- AUDIO INITIALIZATION ---
+function initAudio() {
+    if (isInitialized) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    vco = audioCtx.createOscillator();
+    vcf = audioCtx.createBiquadFilter();
+    masterGain = audioCtx.createGain();
+
+    updateOscillatorType(); // Set initial waveform
+    vcf.type = 'lowpass';
+    
+    vco.connect(vcf);
+    vcf.connect(masterGain);
+    masterGain.connect(audioCtx.destination);
+
+    vco.start();
+
+    isInitialized = true;
+    updateUIState();
+    update();
+}
+
+function stopAudio() {
+    if (!isInitialized) return;
+    audioCtx.close().then(() => {
+        isInitialized = false;
+        cancelAnimationFrame(animationFrameId);
+        updateUIState();
+    });
+}
+
+function updateUIState() {
+    activateButton.disabled = isInitialized;
+    stopButton.disabled = !isInitialized;
+}
+
+activateButton.addEventListener('click', initAudio);
+stopButton.addEventListener('click', stopAudio);
+
+function updateOscillatorType() {
+    if (!vco) return;
+    const waveformType = waveformSelect.value;
+    
+    if (waveformType === 'custom') {
+        // If a wave object doesn't exist yet but we have points, create it.
+        if (!customPeriodicWave && wavePoints.some(p => p !== 0)) {
+            const real = new Float32Array(wavePoints);
+            const imag = new Float32Array(wavePoints.length).fill(0);
+            customPeriodicWave = audioCtx.createPeriodicWave(real, imag, { disableNormalization: false });
+        }
+
+        if (customPeriodicWave) {
+            vco.setPeriodicWave(customPeriodicWave);
+        } else {
+            vco.type = 'sawtooth'; // Fallback if no custom wave is loaded
+        }
+    } else {
+        customPeriodicWave = null; // Clear the custom wave when switching away
+        vco.type = waveformType;
+    }
+}
+
+// --- EVENT LISTENERS ---
+Object.keys(sliders).forEach(key => sliders[key].addEventListener('input', updateAllDisplays));
+waveformSelect.addEventListener('change', updateOscillatorType);
+
+// --- DISPLAY UPDATES ---
+function updateAllDisplays() {
+    const minFreq = parseFloat(sliders.minFreq.value);
+    const maxFreq = parseFloat(sliders.maxFreq.value);
+    displays.freqRange.textContent = `${minFreq.toFixed(0)} - ${maxFreq.toFixed(0)} Hz`;
+    
+    displays.pitchDriftRate.textContent = parseFloat(sliders.pitchDriftRate.value).toFixed(4);
+    
+    displays.filterCutoff.textContent = `${parseFloat(sliders.filterCutoff.value).toFixed(0)} Hz`;
+    displays.filterNoiseDepth.textContent = parseFloat(sliders.filterNoiseDepth.value).toFixed(0);
+    displays.filterNoiseRate.textContent = parseFloat(sliders.filterNoiseRate.value).toFixed(3);
+    displays.filterQ.textContent = parseFloat(sliders.filterQ.value).toFixed(1);
+    displays.qNoiseDepth.textContent = parseFloat(sliders.qNoiseDepth.value).toFixed(1);
+    displays.qNoiseRate.textContent = parseFloat(sliders.qNoiseRate.value).toFixed(3);
+
+    displays.masterGain.textContent = parseFloat(sliders.masterGain.value).toFixed(2);
+    displays.ampNoiseDepth.textContent = parseFloat(sliders.ampNoiseDepth.value).toFixed(2);
+    displays.ampNoiseRate.textContent = parseFloat(sliders.ampNoiseRate.value).toFixed(3);
+}
+
+// --- MAP UTILITY FUNCTION ---
+function map(value, inMin, inMax, outMin, outMax) {
+    return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+}
+
+// --- MAIN UPDATE LOOP ---
+function update() {
+    if (!isInitialized) return;
+    const pitchDriftRate = parseFloat(sliders.pitchDriftRate.value);
+    const filterNoiseRate = parseFloat(sliders.filterNoiseRate.value);
+    const ampNoiseRate = parseFloat(sliders.ampNoiseRate.value);
+    const qNoiseRate = parseFloat(sliders.qNoiseRate.value);
+    t_pitch += pitchDriftRate;
+    t_filter += filterNoiseRate;
+    t_amp += ampNoiseRate;
+    t_q += qNoiseRate;
+    let pitchNoise = (Perlin.noise(t_pitch, 0, 0) + 1) / 2;
+    pitchNoise = Perlin.fade(pitchNoise);
+    const filterNoise = Perlin.noise(t_filter, 10, 0);
+    const ampNoise = Perlin.noise(t_amp, 20, 0);
+    const qNoise = Perlin.noise(t_q, 30, 0);
+    const minFreq = parseFloat(sliders.minFreq.value);
+    const maxFreq = parseFloat(sliders.maxFreq.value);
+    const currentPitch = map(pitchNoise, 0, 1, Math.min(minFreq, maxFreq), Math.max(minFreq, maxFreq));
+    vco.frequency.setTargetAtTime(currentPitch, audioCtx.currentTime, 0.01);
+    const filterCutoff = parseFloat(sliders.filterCutoff.value);
+    const filterNoiseDepth = parseFloat(sliders.filterNoiseDepth.value);
+    const finalCutoff = filterCutoff + (filterNoise * filterNoiseDepth);
+    vcf.frequency.setTargetAtTime(Math.max(20, finalCutoff), audioCtx.currentTime, 0.01);
+    const baseQ = parseFloat(sliders.filterQ.value);
+    const qNoiseDepth = parseFloat(sliders.qNoiseDepth.value);
+    const finalQ = baseQ + (qNoise * qNoiseDepth);
+    vcf.Q.setTargetAtTime(Math.max(0.0001, finalQ), audioCtx.currentTime, 0.01);
+    const masterGainValue = parseFloat(sliders.masterGain.value);
+    const ampNoiseDepth = parseFloat(sliders.ampNoiseDepth.value);
+    const finalGain = masterGainValue + (ampNoise * (masterGainValue * ampNoiseDepth));
+    masterGain.gain.setTargetAtTime(Math.max(0, finalGain), audioCtx.currentTime, 0.01);
+    animationFrameId = requestAnimationFrame(update);
+}
+
+// --- CUSTOM WAVEFORM LOADER ---
+const canvas = document.getElementById('waveCanvas');
+const ctx = canvas.getContext('2d');
+
+function drawWaveform(points) {
+    ctx.fillStyle = '#111';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let i = 0; i < points.length; i++) {
+        const x = i;
+        const y = map(points[i], -1, 1, canvas.height, 0);
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+}
+
+function drawPlaceholder() {
+    ctx.fillStyle = '#111';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#555';
+    ctx.font = '16px "Courier New", Courier, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('Drop a .wav file here', canvas.width / 2, canvas.height / 2);
+}
+
+// --- FILE DROP LOGIC ---
+canvas.addEventListener('dragover', (e) => e.preventDefault());
+canvas.addEventListener('drop', (e) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file && file.type === 'audio/wav') {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const arrayBuffer = event.target.result;
+            parseWav(arrayBuffer).then(audioData => {
+                // Resample to fit canvas width
+                const resampled = new Float32Array(canvas.width);
+                for (let i = 0; i < canvas.width; i++) {
+                    const index = Math.floor(map(i, 0, canvas.width, 0, audioData.length));
+                    resampled[i] = audioData[index] || 0;
+                }
+                wavePoints = resampled;
+                drawWaveform(wavePoints);
+                waveformSelect.value = 'custom'; // Switch dropdown to custom
+                if (isInitialized) {
+                   updateOscillatorType(); // Apply the change if audio is already active
+                }
+            }).catch(err => {
+                console.error("Failed to parse WAV file:", err);
+                alert("Failed to parse WAV file. See console for details.");
+            });
+        };
+        reader.readAsArrayBuffer(file);
+    } else {
+        alert("Please drop a valid .wav file.");
+    }
+});
+
+// --- WAV PARSER ---
+async function parseWav(arrayBuffer) {
+    return new Promise((resolve, reject) => {
+        const view = new DataView(arrayBuffer);
+        if (view.getString(4, 0) !== 'RIFF' || view.getString(4, 8) !== 'WAVE') return reject('Not a valid WAV file');
+        let fmtChunkOffset = 12;
+        let dataChunkOffset = -1;
+        let offset = 12;
+        while(offset < view.byteLength) {
+            const chunkId = view.getString(4, offset);
+            const chunkSize = view.getUint32(offset + 4, true);
+            if (chunkId === 'fmt ') { fmtChunkOffset = offset; }
+            if (chunkId === 'data') { dataChunkOffset = offset + 8; break; }
+            offset += 8 + chunkSize;
+        }
+        if (dataChunkOffset === -1) return reject('Could not find data chunk in WAV file.');
+        const bitDepth = view.getUint16(fmtChunkOffset + 22, true);
+        const dataSize = view.getUint32(dataChunkOffset - 4, true);
+        const numSamples = dataSize / (bitDepth / 8);
+        const samples = new Float32Array(numSamples);
+        let pos = dataChunkOffset;
+        for (let i = 0; i < numSamples; i++) {
+            if (pos >= view.byteLength) break;
+            if (bitDepth === 16) { samples[i] = view.getInt16(pos, true) / 32768; pos += 2; } 
+            else if (bitDepth === 8) { samples[i] = (view.getUint8(pos) - 128) / 128; pos += 1; }
+            else { return reject(`Unsupported bit depth: ${bitDepth}`); }
+        }
+        resolve(samples);
+    });
+}
+DataView.prototype.getString = function(length, offset) {
+    let str = '';
+    for (let i = 0; i < length; i++) str += String.fromCharCode(this.getUint8(offset + i));
+    return str;
+};
+
+// Initial UI setup
+updateUIState();
+updateAllDisplays();
+drawPlaceholder();
+</script>
+</body>
+</html>
