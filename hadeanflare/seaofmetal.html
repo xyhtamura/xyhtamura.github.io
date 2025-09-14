@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Hadean Flare</title>
+    <title>Molten Chrome</title>
     <style>
         body, html {
             margin: 0;
@@ -28,55 +28,48 @@
     <script id="fragment-shader" type="x-shader/x-fragment">
         precision mediump float;
         uniform vec2 u_resolution;
-        uniform vec2 u_scroll_offset; 
+        uniform vec2 u_scroll_offset;
 
         // Values from JavaScript
         uniform float u_noise_scale;
         uniform float u_warp_amount;
         uniform float u_warp_speed;
-        uniform vec3 u_color1;
-        uniform vec3 u_color2;
-        uniform vec3 u_color3;
-        uniform vec3 u_color4;
-        uniform vec3 u_color5;
-        uniform float u_saturation;
+        
+        // --- CHROME EFFECT UNIFORMS ---
+        uniform vec3 u_color_dark;
+        uniform vec3 u_color_mid;
+        uniform vec3 u_color_highlight;
+        uniform float u_highlight_sharpness; // Controls how sharp the "reflection" is
 
         // Helper functions
-        vec3 rgb2hsv(vec3 c) { vec4 K=vec4(0.,-1./3.,2./3.,-1.);vec4 p=mix(vec4(c.bg,K.wz),vec4(c.gb,K.xy),step(c.b,c.g));vec4 q=mix(vec4(p.xyw,c.r),vec4(c.r,p.yzx),step(p.x,c.r));float d=q.x-min(q.w,q.y);float e=1e-10;return vec3(abs(q.z+(q.w-q.y)/(6.*d+e)),d/(q.x+e),q.x); }
-        vec3 hsv2rgb(vec3 c) { vec4 K=vec4(1.,2./3.,1./3.,3.);vec3 p=abs(fract(c.xxx+K.xyz)*6.-K.www);return c.z*mix(K.xxx,clamp(p-K.xxx,0.,1.),c.y); }
         vec2 hash( vec2 p ) { p=vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3)));return-1.+2.*fract(sin(p)*43758.5453123); }
         float noise( in vec2 p ) { const float K1=.366025404,K2=.211324865;vec2 i=floor(p+(p.x+p.y)*K1);vec2 a=p-i+(i.x+i.y)*K2;vec2 o=(a.x>a.y)?vec2(1.,0.):vec2(0.,1.);vec2 b=a-o+K2;vec2 c=a-1.+2.*K2;vec3 h=max(.5-vec3(dot(a,a),dot(b,b),dot(c,c)),0.);vec3 n=h*h*h*h*vec3(dot(a,hash(i+0.)),dot(b,hash(i+o)),dot(c,hash(i+1.)));return dot(n,vec3(70.)); }
 
         void main() {
             vec2 uv = gl_FragCoord.xy / u_resolution.xy;
             
+            // The core warping and scrolling movement remains the same
             vec2 warp_offset = vec2(noise(uv * u_noise_scale * 0.5 + u_scroll_offset * u_warp_speed), noise(uv * u_noise_scale * 0.5 + u_scroll_offset * u_warp_speed + 10.0));
             vec2 warped_uv = uv + (warp_offset * u_warp_amount);
             
             float noiseValue = (noise(warped_uv * u_noise_scale + u_scroll_offset) + 1.0) * 0.5;
 
-            // Chained mix for a 5-color gradient
-            vec3 color;
-            if (noiseValue < 0.25) {
-                color = mix(u_color1, u_color2, smoothstep(0.0, 0.25, noiseValue));
-            } else if (noiseValue < 0.5) {
-                color = mix(u_color2, u_color3, smoothstep(0.25, 0.5, noiseValue));
-            } else if (noiseValue < 0.75) {
-                color = mix(u_color3, u_color4, smoothstep(0.5, 0.75, noiseValue));
-            } else {
-                color = mix(u_color4, u_color5, smoothstep(0.75, 1.0, noiseValue));
-            }
-            
-            vec3 hsv = rgb2hsv(color);
-            hsv.y *= u_saturation;
-            color = hsv2rgb(hsv);
+            // --- MOLTEN CHROME LOGIC ---
+            // 1. Use pow() to crush the mid-tones, creating sharp highlights.
+            // A higher exponent = sharper, smaller highlights.
+            float metalNoise = pow(noiseValue, u_highlight_sharpness);
+
+            // 2. Blend the colors based on this new high-contrast value.
+            // This creates a base of the dark color with sharp highlights of the other colors.
+            vec3 color = mix(u_color_dark, u_color_mid, metalNoise * 2.0);
+            color = mix(color, u_color_highlight, smoothstep(0.4, 1.0, metalNoise));
             
             gl_FragColor = vec4(color, 1.0);
         }
     </script>
 
     <script>
-        // Simplex noise implementation (unchanged)
+        // CORRECTED Simplex noise implementation
         (function(){"use strict";var F2=0.5*(Math.sqrt(3)-1),G2=(3-Math.sqrt(3))/6,F3=1/3,G3=1/6;function SimplexNoise(random){if(!random)random=Math.random;this.p=new Uint8Array(256);this.perm=new Uint8Array(512);this.permMod12=new Uint8Array(512);for(var i=0;i<256;i++)this.p[i]=i;for(var i=0;i<255;i++){var r=i+~~(random()*(256-i));var aux=this.p[i];this.p[i]=this.p[r];this.p[r]=aux}for(var i=0;i<512;i++){this.perm[i]=this.p[i&255];this.permMod12[i]=this.perm[i]%12}this.grad3=new Float32Array([1,1,0,-1,1,0,1,-1,0,-1,-1,0,1,0,1,-1,0,1,1,0,-1,-1,0,-1,0,1,1,0,-1,1,0,1,-1,0,-1,-1])}SimplexNoise.prototype={noise:function(x,y){var n0,n1,n2;var s=(x+y)*F2;var i=Math.floor(x+s),j=Math.floor(y+s);var t=(i+j)*G2;var X0=i-t,Y0=j-t;var x0=x-X0,y0=y-Y0;var i1,j1;if(x0>y0){i1=1;j1=0}else{i1=0;j1=1}var x1=x0-i1+G2,y1=y0-j1+G2,x2=x0-1+2*G2,y2=y0-1+2*G2;var ii=i&255,jj=j&255;var gi0=this.permMod12[ii+this.perm[jj]];var gi1=this.permMod12[ii+i1+this.perm[jj+j1]];var gi2=this.permMod12[ii+1+this.perm[jj+1]];var t0=0.5-x0*x0-y0*y0;if(t0<0)n0=0;else{t0*=t0;n0=t0*t0*this.dot(this.grad3,gi0,x0,y0)}var t1=0.5-x1*x1-y1*y1;if(t1<0)n1=0;else{t1*=t1;n1=t1*t1*this.dot(this.grad3,gi1,x1,y1)}var t2=0.5-x2*x2-y2*y2;if(t2<0)n2=0;else{t2*=t2;n2=t2*t2*this.dot(this.grad3,gi2,x2,y2)}return 70*(n0+n1+n2)},dot:function(g,gi,x,y){return g[gi]*x+g[gi+1]*y}};if(typeof define!=="undefined"&&define.amd)define(function(){return SimplexNoise});else if(typeof module!=="undefined"&&module.exports)module.exports=SimplexNoise;else if(typeof window!=="undefined")window.SimplexNoise=SimplexNoise;else self.SimplexNoise=SimplexNoise})();
 
         const canvas = document.getElementById('glCanvas');
@@ -85,26 +78,24 @@
 
         // --- CUSTOMIZE HERE ---
 
-        const noiseScale = 2.5;
-        const scrollWanderSpeed = 0.02;
-        const scrollWanderMagnitude = 2.0;
-        const warpAmount = 0.36;
-        const warpSpeed = 0.02;
+        // Animation Parameters
+        const noiseScale = 5;
+        const scrollWanderSpeed = 0.015;  // Slightly slower for a more "viscous" feel
+        const scrollWanderMagnitude = 1.5;
+        const warpAmount = 0.4;
+        const warpSpeed = 0.01;      // Slightly slower for a "molten" feel
 
-        // ** INDEPENDENT COLOR SPEED CONTROLS **
-        const color1Speed = 0.05; 
-        const color2Speed = 0.07;
-        const color3Speed = 0.09;
-        const color4Speed = 0.06;
-        const color5Speed = 0.08;
+        // --- IRIDESCENT CHROME PALETTE & PROPERTIES ---
+        // Define your chrome colors here.
+        const color_dark = [0.05, 0.05, 0.1];        // Dark Charcoal Blue (the base metal)
+        const color_mid = [0.7, 0.7, 0.75];         // Neutral Silver (the main reflection color)
+        const color_highlight = [0.9, 1.0, 1.0];  // Bright Highlight (with a slight cyan tint for iridescence)
+        
+        // This is the key to the "chrome" look. Higher numbers = sharper, more defined reflections.
+        // Good values are between 5.0 and 15.0.
+        const highlightSharpness = 8.0;
 
-        const speedVariability = 0.3; 
-        const speedChangeFrequency = 0.04; 
-
-        const saturationChangeSpeed = 0.06;
-        const minSaturation = 0.1;         
-        const maxSaturation = 1.0;  
-        // ----------------------
+        // -----------------------------
 
         function createShader(gl, type, source) { const shader = gl.createShader(type); gl.shaderSource(shader, source); gl.compileShader(shader); if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) { console.error('Shader compile error:', gl.getShaderInfoLog(shader)); gl.deleteShader(shader); return null; } return shader; }
         function createProgram(gl, vertexShader, fragmentShader) { const program = gl.createProgram(); gl.attachShader(program, vertexShader); gl.attachShader(program, fragmentShader); gl.linkProgram(program); if (!gl.getProgramParameter(program, gl.LINK_STATUS)) { console.error('Program link error:', gl.getProgramInfoLog(program)); gl.deleteProgram(program); return null; } return program; }
@@ -115,18 +106,17 @@
         const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
         const program = createProgram(gl, vertexShader, fragmentShader);
 
+        // Get WebGL locations
         const positionAttributeLocation = gl.getAttribLocation(program, "a_position");
         const resolutionUniformLocation = gl.getUniformLocation(program, "u_resolution");
         const scrollOffsetUniformLocation = gl.getUniformLocation(program, "u_scroll_offset");
         const noiseScaleUniformLocation = gl.getUniformLocation(program, "u_noise_scale");
         const warpAmountUniformLocation = gl.getUniformLocation(program, "u_warp_amount");
         const warpSpeedUniformLocation = gl.getUniformLocation(program, "u_warp_speed");
-        const color1UniformLocation = gl.getUniformLocation(program, "u_color1");
-        const color2UniformLocation = gl.getUniformLocation(program, "u_color2");
-        const color3UniformLocation = gl.getUniformLocation(program, "u_color3");
-        const color4UniformLocation = gl.getUniformLocation(program, "u_color4");
-        const color5UniformLocation = gl.getUniformLocation(program, "u_color5");
-        const saturationUniformLocation = gl.getUniformLocation(program, "u_saturation");
+        const darkColorUniformLocation = gl.getUniformLocation(program, "u_color_dark");
+        const midColorUniformLocation = gl.getUniformLocation(program, "u_color_mid");
+        const highlightColorUniformLocation = gl.getUniformLocation(program, "u_color_highlight");
+        const highlightSharpnessLocation = gl.getUniformLocation(program, "u_highlight_sharpness");
 
         const positionBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
@@ -135,19 +125,7 @@
 
         const simplex = new SimplexNoise();
 
-        let lastTime = 0;
-        let color1Progress = 0, color2Progress = 0, color3Progress = 0, color4Progress = 0, color5Progress = 0;
-        let saturationProgress = 0;
-
         function render(time) {
-            const deltaTime = (time - lastTime) * 0.001;
-            lastTime = time;
-
-            if (isNaN(deltaTime) || deltaTime > 0.5) {
-                requestAnimationFrame(render);
-                return;
-            }
-            
             time *= 0.001; // convert to seconds
 
             canvas.width = window.innerWidth;
@@ -164,43 +142,18 @@
             const scrollOffsetX = simplex.noise(scrollTime, 100) * scrollWanderMagnitude;
             const scrollOffsetY = simplex.noise(scrollTime, 200) * scrollWanderMagnitude;
 
-            // --- UNPREDICTABLE SPEED AND COLOR LOGIC ---
-            const modTime = time * speedChangeFrequency;
-            const speedMod1 = 1 + speedVariability * simplex.noise(modTime, 10.0);
-            const speedMod2 = 1 + speedVariability * simplex.noise(modTime, 20.0);
-            const speedMod3 = 1 + speedVariability * simplex.noise(modTime, 30.0);
-            const speedMod4 = 1 + speedVariability * simplex.noise(modTime, 40.0);
-            const speedMod5 = 1 + speedVariability * simplex.noise(modTime, 50.0);
-            const speedModSat = 1 + speedVariability * simplex.noise(modTime, 60.0);
-
-            color1Progress += color1Speed * speedMod1 * deltaTime;
-            color2Progress += color2Speed * speedMod2 * deltaTime;
-            color3Progress += color3Speed * speedMod3 * deltaTime;
-            color4Progress += color4Speed * speedMod4 * deltaTime;
-            color5Progress += color5Speed * speedMod5 * deltaTime;
-            saturationProgress += saturationChangeSpeed * speedModSat * deltaTime;
-
-            const gradientColor1 = [ (simplex.noise(color1Progress, 5) + 1) * 0.5, (simplex.noise(color1Progress, 15) + 1) * 0.5, (simplex.noise(color1Progress, 25) + 1) * 0.5 ];
-            const gradientColor2 = [ (simplex.noise(color2Progress, 35) + 1) * 0.5, (simplex.noise(color2Progress, 45) + 1) * 0.5, (simplex.noise(color2Progress, 55) + 1) * 0.5 ];
-            const gradientColor3 = [ (simplex.noise(color3Progress, 65) + 1) * 0.5, (simplex.noise(color3Progress, 75) + 1) * 0.5, (simplex.noise(color3Progress, 85) + 1) * 0.5 ];
-            const gradientColor4 = [ (simplex.noise(color4Progress, 95) + 1) * 0.5, (simplex.noise(color4Progress, 105) + 1) * 0.5, (simplex.noise(color4Progress, 115) + 1) * 0.5 ];
-            const gradientColor5 = [ (simplex.noise(color5Progress, 125) + 1) * 0.5, (simplex.noise(color5Progress, 135) + 1) * 0.5, (simplex.noise(color5Progress, 145) + 1) * 0.5 ];
-            
-            const sat_cycle = (simplex.noise(saturationProgress, 0) + 1.0) * 0.5;
-            const currentSaturation = minSaturation + sat_cycle * (maxSaturation - minSaturation);
-
             // Pass all Uniforms to the Shader
             gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height);
             gl.uniform2f(scrollOffsetUniformLocation, scrollOffsetX, scrollOffsetY);
             gl.uniform1f(noiseScaleUniformLocation, noiseScale);
             gl.uniform1f(warpAmountUniformLocation, warpAmount);
             gl.uniform1f(warpSpeedUniformLocation, warpSpeed);
-            gl.uniform3fv(color1UniformLocation, gradientColor1);
-            gl.uniform3fv(color2UniformLocation, gradientColor2);
-            gl.uniform3fv(color3UniformLocation, gradientColor3);
-            gl.uniform3fv(color4UniformLocation, gradientColor4);
-            gl.uniform3fv(color5UniformLocation, gradientColor5);
-            gl.uniform1f(saturationUniformLocation, currentSaturation);
+            
+            // Pass chrome properties
+            gl.uniform3fv(darkColorUniformLocation, color_dark);
+            gl.uniform3fv(midColorUniformLocation, color_mid);
+            gl.uniform3fv(highlightColorUniformLocation, color_highlight);
+            gl.uniform1f(highlightSharpnessLocation, highlightSharpness);
 
             gl.drawArrays(gl.TRIANGLES, 0, 6);
             requestAnimationFrame(render);

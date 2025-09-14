@@ -555,7 +555,7 @@ div.categories p:not(:last-of-type)::after{
 }
 
 .category-artistic-research::before {
-	content: "Artistic Research";
+	content: "Research-Art";
 	font-weight: bold;
 }
 
@@ -648,4 +648,32 @@ font-weight: 600;
     font-size:0.95rem; /* Compact metadata */
 }
 
+/* --- Add this to your index.css file --- */
 
+/* Styling for the new sub-heading */
+.sub-heading {
+  font-family: "Averia Sans Libre", "Noto Sans", sans-serif; /* A font you use for special text */
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--tagline-color);
+  margin-bottom: 1rem; /* Space below the heading */
+  padding-bottom: 0.4rem; /* Space for the border */
+
+}
+
+/* Styling for the grouped tool item */
+.item {
+  margin-top: 1rem; /* Space between each tool item */
+  margin-left: 1rem;
+}
+
+/* Removes the extra top margin from the first tool item */
+.item:first-of-type {
+  margin-top: 0;
+}
+
+/* Ensure h2 and p within the tool-item have no extra margin */
+.item h2,
+.item p {
+  margin: 0.1rem 0;
+}

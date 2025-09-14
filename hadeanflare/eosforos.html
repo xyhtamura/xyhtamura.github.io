@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Hadean Flare</title>
+    <title>Hadean Flare (5-Color Gradient)</title>
     <style>
         body, html {
             margin: 0;
@@ -37,6 +37,7 @@
         uniform vec3 u_color1;
         uniform vec3 u_color2;
         uniform vec3 u_color3;
+        // MODIFICATION: Added two new colors
         uniform vec3 u_color4;
         uniform vec3 u_color5;
         uniform float u_saturation;
@@ -55,7 +56,7 @@
             
             float noiseValue = (noise(warped_uv * u_noise_scale + u_scroll_offset) + 1.0) * 0.5;
 
-            // Chained mix for a 5-color gradient
+            // MODIFICATION: Chained mix for a 5-color gradient
             vec3 color;
             if (noiseValue < 0.25) {
                 color = mix(u_color1, u_color2, smoothstep(0.0, 0.25, noiseValue));
@@ -85,26 +86,24 @@
 
         // --- CUSTOMIZE HERE ---
 
+        // Animation Parameters (Movement)
         const noiseScale = 2.5;
-        const scrollWanderSpeed = 0.02;
-        const scrollWanderMagnitude = 2.0;
-        const warpAmount = 0.36;
+        const scrollWanderSpeed = 0.02;     
+        const scrollWanderMagnitude = 2.0; 
+        const warpAmount = 0.1;
         const warpSpeed = 0.02;
 
-        // ** INDEPENDENT COLOR SPEED CONTROLS **
-        const color1Speed = 0.05; 
-        const color2Speed = 0.07;
-        const color3Speed = 0.09;
-        const color4Speed = 0.06;
-        const color5Speed = 0.08;
+        // --- STATIC COLOR GRADIENT ---
+        // Define your 5 colors here. Values are [R, G, B] from 0.0 to 1.0.
+        const color1 = [1.0, 0.9, 0.8];      // Black 1.0, 0.9, 0.8
+        const color2 = [1.0, 0.5, 0.0];      // Deep Indigo 1.0, 0.5, 0.0
+        const color3 = [0.8, 0.2, 0.1];      // Magenta / Red
+        const color4 = [0.1, 0.0, 0.3];      // Bright Orange
+        const color5 = [0.0, 0.0, 0.1];      // Pale Yellow/White0.0, 0.0, 0.1
 
-        const speedVariability = 0.3; 
-        const speedChangeFrequency = 0.04; 
+        const staticSaturation = 1.0;     
 
-        const saturationChangeSpeed = 0.06;
-        const minSaturation = 0.1;         
-        const maxSaturation = 1.0;  
-        // ----------------------
+        // -----------------------------
 
         function createShader(gl, type, source) { const shader = gl.createShader(type); gl.shaderSource(shader, source); gl.compileShader(shader); if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) { console.error('Shader compile error:', gl.getShaderInfoLog(shader)); gl.deleteShader(shader); return null; } return shader; }
         function createProgram(gl, vertexShader, fragmentShader) { const program = gl.createProgram(); gl.attachShader(program, vertexShader); gl.attachShader(program, fragmentShader); gl.linkProgram(program); if (!gl.getProgramParameter(program, gl.LINK_STATUS)) { console.error('Program link error:', gl.getProgramInfoLog(program)); gl.deleteProgram(program); return null; } return program; }
@@ -124,6 +123,7 @@
         const color1UniformLocation = gl.getUniformLocation(program, "u_color1");
         const color2UniformLocation = gl.getUniformLocation(program, "u_color2");
         const color3UniformLocation = gl.getUniformLocation(program, "u_color3");
+        // MODIFICATION: Get locations for new colors
         const color4UniformLocation = gl.getUniformLocation(program, "u_color4");
         const color5UniformLocation = gl.getUniformLocation(program, "u_color5");
         const saturationUniformLocation = gl.getUniformLocation(program, "u_saturation");
@@ -135,19 +135,7 @@
 
         const simplex = new SimplexNoise();
 
-        let lastTime = 0;
-        let color1Progress = 0, color2Progress = 0, color3Progress = 0, color4Progress = 0, color5Progress = 0;
-        let saturationProgress = 0;
-
         function render(time) {
-            const deltaTime = (time - lastTime) * 0.001;
-            lastTime = time;
-
-            if (isNaN(deltaTime) || deltaTime > 0.5) {
-                requestAnimationFrame(render);
-                return;
-            }
-            
             time *= 0.001; // convert to seconds
 
             canvas.width = window.innerWidth;
@@ -164,43 +152,21 @@
             const scrollOffsetX = simplex.noise(scrollTime, 100) * scrollWanderMagnitude;
             const scrollOffsetY = simplex.noise(scrollTime, 200) * scrollWanderMagnitude;
 
-            // --- UNPREDICTABLE SPEED AND COLOR LOGIC ---
-            const modTime = time * speedChangeFrequency;
-            const speedMod1 = 1 + speedVariability * simplex.noise(modTime, 10.0);
-            const speedMod2 = 1 + speedVariability * simplex.noise(modTime, 20.0);
-            const speedMod3 = 1 + speedVariability * simplex.noise(modTime, 30.0);
-            const speedMod4 = 1 + speedVariability * simplex.noise(modTime, 40.0);
-            const speedMod5 = 1 + speedVariability * simplex.noise(modTime, 50.0);
-            const speedModSat = 1 + speedVariability * simplex.noise(modTime, 60.0);
-
-            color1Progress += color1Speed * speedMod1 * deltaTime;
-            color2Progress += color2Speed * speedMod2 * deltaTime;
-            color3Progress += color3Speed * speedMod3 * deltaTime;
-            color4Progress += color4Speed * speedMod4 * deltaTime;
-            color5Progress += color5Speed * speedMod5 * deltaTime;
-            saturationProgress += saturationChangeSpeed * speedModSat * deltaTime;
-
-            const gradientColor1 = [ (simplex.noise(color1Progress, 5) + 1) * 0.5, (simplex.noise(color1Progress, 15) + 1) * 0.5, (simplex.noise(color1Progress, 25) + 1) * 0.5 ];
-            const gradientColor2 = [ (simplex.noise(color2Progress, 35) + 1) * 0.5, (simplex.noise(color2Progress, 45) + 1) * 0.5, (simplex.noise(color2Progress, 55) + 1) * 0.5 ];
-            const gradientColor3 = [ (simplex.noise(color3Progress, 65) + 1) * 0.5, (simplex.noise(color3Progress, 75) + 1) * 0.5, (simplex.noise(color3Progress, 85) + 1) * 0.5 ];
-            const gradientColor4 = [ (simplex.noise(color4Progress, 95) + 1) * 0.5, (simplex.noise(color4Progress, 105) + 1) * 0.5, (simplex.noise(color4Progress, 115) + 1) * 0.5 ];
-            const gradientColor5 = [ (simplex.noise(color5Progress, 125) + 1) * 0.5, (simplex.noise(color5Progress, 135) + 1) * 0.5, (simplex.noise(color5Progress, 145) + 1) * 0.5 ];
-            
-            const sat_cycle = (simplex.noise(saturationProgress, 0) + 1.0) * 0.5;
-            const currentSaturation = minSaturation + sat_cycle * (maxSaturation - minSaturation);
-
             // Pass all Uniforms to the Shader
             gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height);
             gl.uniform2f(scrollOffsetUniformLocation, scrollOffsetX, scrollOffsetY);
             gl.uniform1f(noiseScaleUniformLocation, noiseScale);
             gl.uniform1f(warpAmountUniformLocation, warpAmount);
             gl.uniform1f(warpSpeedUniformLocation, warpSpeed);
-            gl.uniform3fv(color1UniformLocation, gradientColor1);
-            gl.uniform3fv(color2UniformLocation, gradientColor2);
-            gl.uniform3fv(color3UniformLocation, gradientColor3);
-            gl.uniform3fv(color4UniformLocation, gradientColor4);
-            gl.uniform3fv(color5UniformLocation, gradientColor5);
-            gl.uniform1f(saturationUniformLocation, currentSaturation);
+            
+            // Pass the static colors and saturation
+            gl.uniform3fv(color1UniformLocation, color1);
+            gl.uniform3fv(color2UniformLocation, color2);
+            gl.uniform3fv(color3UniformLocation, color3);
+            // MODIFICATION: Pass new colors to the shader
+            gl.uniform3fv(color4UniformLocation, color4);
+            gl.uniform3fv(color5UniformLocation, color5);
+            gl.uniform1f(saturationUniformLocation, staticSaturation);
 
             gl.drawArrays(gl.TRIANGLES, 0, 6);
             requestAnimationFrame(render);
