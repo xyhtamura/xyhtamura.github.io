@@ -19,8 +19,8 @@ const scene = new THREE.Scene();
 const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
 const canvas = document.getElementById('main-canvas');
 const renderer = new THREE.WebGLRenderer({ canvas: canvas, preserveDrawingBuffer: true });
-renderer.setClearColor(0x000000, 1);   // keep a known clear color
-renderer.autoClear = false;    
+renderer.setClearColor(0x000000, 1);
+renderer.autoClear = true;
 const canvasContainer = document.getElementById('canvas-container');
 renderer.setSize(600, 600);
 camera.position.z = 1;
@@ -29,14 +29,14 @@ camera.position.z = 1;
 const geometry = new THREE.PlaneGeometry(2, 2);
 
 const uniforms = {
-	//These will be set on Initial Sync
   u_time: { value: 0.0 },
   u_texture: { value: null },
   u_aspect: { value: 1.0 },
   u_turbulence: { value: 0.0 },     
   u_flowSpeed: { value: 0.0 },      
   u_chromaticBleed: { value: 0.001 },
-  u_phosphorSize: { value: 7500.0 }
+  u_phosphorSize: { value: 7500.0 },
+  u_softness: { value: 0.5 } // NEW: Uniform for Voronoi softness
 };
 
 const material = new THREE.ShaderMaterial({
@@ -57,6 +57,7 @@ const material = new THREE.ShaderMaterial({
         uniform float u_flowSpeed;
         uniform float u_chromaticBleed;
         uniform float u_phosphorSize;
+        uniform float u_softness; // NEW: Receive softness uniform in shader
 
         ${noiseFunction}
         ${voronoiHash}
@@ -73,7 +74,7 @@ const material = new THREE.ShaderMaterial({
             );
             vec2 distortedUv = vUv + flow * u_turbulence * 0.1;
 
-            // --- VORONOI CELLS (REVISED LOGIC) ---
+            // --- PROBABILISTIC VORONOI CELLS ---
             vec2 uv = distortedUv;
             uv.x *= u_aspect;
             
@@ -81,29 +82,49 @@ const material = new THREE.ShaderMaterial({
 
             vec2 i_uv = floor(uv);
 
-            float min_dist = 100.0; // Start with a large minimum distance
-            vec2 final_point_pos = vec2(0.0); // Will store the position of the closest cell center
+            // 1. Store all 9 candidate points and their distances
+            vec2 points[9];
+            float dists[9];
+            int index = 0;
 
-            // Loop through the current cell and its 8 neighbors
             for (int i = -1; i <= 1; i++) {
                 for (int j = -1; j <= 1; j++) {
                     vec2 neighbor = vec2(float(i), float(j));
-                    // Calculate the random center point for the neighboring cell
                     vec2 seed_point = i_uv + neighbor + hash22(i_uv + neighbor) * 0.5 + 0.5;
-                    float dist = length(seed_point - uv);
                     
-                    // If this point is closer than any we've seen before, store it
-                    if (dist < min_dist) {
-                        min_dist = dist;
-                        final_point_pos = seed_point;
-                    }
+                    points[index] = seed_point;
+                    dists[index] = length(seed_point - uv);
+                    index++;
                 }
             }
             
-            // Convert the closest point's position back to 0-1 texture space
+            // 2. Calculate weights based on inverse distance and sum them up
+            float total_weight = 0.0;
+            float weights[9];
+            for (int k = 0; k < 9; k++) {
+                // MODIFIED: The power is now controlled by the u_softness slider.
+                // mix() transitions from 16.0 (hard edges) to 2.0 (soft edges) as u_softness goes from 0.0 to 1.0.
+                float power = mix(16.0, 2.0, u_softness);
+                float weight = 1.0 / (pow(dists[k], power) + 0.0001); // Epsilon to avoid division by zero
+                weights[k] = weight;
+                total_weight += weight;
+            }
+
+            // 3. Perform a weighted random roll
+            vec2 final_point_pos = points[0]; // Default to the first point
+            float roll = noise(vUv * 5.0 + u_time) * total_weight;
+            float cumulative_weight = 0.0;
+            for (int k = 0; k < 9; k++) {
+                cumulative_weight += weights[k];
+                if (roll < cumulative_weight) {
+                    final_point_pos = points[k];
+                    break; // We found our winner
+                }
+            }
+            
+            // Convert the chosen point's position back to 0-1 texture space
             vec2 phosphorUv = final_point_pos / (u_phosphorSize / 20.0);
             phosphorUv.x /= u_aspect;
-
 
             // --- COLOR ---
             float r = texture2D(u_texture, phosphorUv - u_chromaticBleed).r;
@@ -118,15 +139,6 @@ const material = new THREE.ShaderMaterial({
 const plane = new THREE.Mesh(geometry, material);
 scene.add(plane);
 
-const persistenceGeometry = new THREE.PlaneGeometry(2, 2);
-const persistenceMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.05 });
-persistenceMaterial.depthTest = false;
-persistenceMaterial.depthWrite = false;
-const persistencePlane = new THREE.Mesh(persistenceGeometry, persistenceMaterial);
-
-
-scene.add(persistencePlane);
-
 // === HELPER FUNCTIONS =============================================
 function updateAspectRatio(texture) {
     const MAX_SIZE = 600;
@@ -134,7 +146,6 @@ function updateAspectRatio(texture) {
 
     let newWidth, newHeight;
     plane.scale.set(1, 1, 1);
-    persistencePlane.scale.set(1, 1, 1);
 
     if (aspect >= 1) { // Landscape
         newWidth = MAX_SIZE;
@@ -144,7 +155,6 @@ function updateAspectRatio(texture) {
         camera.top = 1;
         camera.bottom = -1;
         plane.scale.x = aspect;
-        persistencePlane.scale.x = aspect;
     } else { // Portrait
         newWidth = MAX_SIZE * aspect;
         newHeight = MAX_SIZE;
@@ -153,7 +163,6 @@ function updateAspectRatio(texture) {
         camera.top = 1 / aspect;
         camera.bottom = -1 / aspect;
         plane.scale.y = 1 / aspect;
-        persistencePlane.scale.y = 1 / aspect;
     }
 
     camera.updateProjectionMatrix();
@@ -169,21 +178,13 @@ function loadImage(file) {
         const reader = new FileReader();
         reader.onload = (event) => {
             new THREE.TextureLoader().load(event.target.result, (texture) => {
-                
-                // === THE FIX ===
-                // Change the filtering to prevent blending across cell boundaries.
-                // This eliminates the strange colored seams.
                 texture.magFilter = THREE.NearestFilter;
                 texture.minFilter = THREE.NearestFilter;
-                // ===============
-
                 uniforms.u_texture.value = texture;
                 updateAspectRatio(texture);
                 document.getElementById('drop-zone').classList.add('hidden');
-				
-       // Hard clear once so old trails don't linger when a new image loads
-        renderer.setClearColor(0x000000, 1);
-        renderer.clear(true, true, true);
+                renderer.setClearColor(0x000000, 1);
+                renderer.clear(true, true, true);
             });
         };
         reader.readAsDataURL(file);
@@ -201,9 +202,7 @@ function setupSliderSync(sliderId, numberId, uniformKey, options = {}) {
         
         if (options.isExponential) finalValue = Math.pow(finalValue, 2);
 
-        if (options.isOpacity) {
-            persistenceMaterial.opacity = 1.0 - finalValue;
-        } else if (uniformKey) {
+        if (uniformKey) {
             uniforms[uniformKey].value = finalValue;
         }
     };
@@ -212,15 +211,16 @@ function setupSliderSync(sliderId, numberId, uniformKey, options = {}) {
     numberInput.addEventListener('input', () => { slider.value = numberInput.value; updateValue(numberInput.value); });
 	
 	//Initial Sync
-	  numberInput.value = slider.value;
-  updateValue(slider.value);
+	numberInput.value = slider.value;
+    updateValue(slider.value);
 }
 
 setupSliderSync('turbulence', 'turbulence-num', 'u_turbulence', { isLog: true });
 setupSliderSync('flowSpeed', 'flowSpeed-num', 'u_flowSpeed', { isLog: true });
 setupSliderSync('phosphorSize', 'phosphorSize-num', 'u_phosphorSize');
 setupSliderSync('chromaticBleed', 'chromaticBleed-num', 'u_chromaticBleed');
-setupSliderSync('persistence', 'persistence-num', null, { isOpacity: true, isExponential: true });
+// NEW: Connect the softness slider to its uniform
+setupSliderSync('voronoiSoftness', 'voronoiSoftness-num', 'u_softness'); 
 
 // === FILE INPUTS =============================================
 const dropZone = document.getElementById('drop-zone');
@@ -256,15 +256,6 @@ function animate() {
   if (!uniforms.u_texture.value) return;
 
   uniforms.u_time.value += 0.01;
-
-  // Pass A: fade the previous frame using the translucent black quad
-  persistencePlane.visible = true;
-  plane.visible = false;
-  renderer.render(scene, camera);
-
-  // Pass B: draw the new image frame
-  persistencePlane.visible = false;
-  plane.visible = true;
   renderer.render(scene, camera);
 }
 
