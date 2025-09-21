@@ -16,27 +16,31 @@ body {
     font-family: 'Fira Code', monospace;
     display: flex;
     justify-content: center;
-    align-items: center;
-    height: 100vh;
+    /* CHANGED: Remove fixed height and centered alignment to allow scrolling */
     margin: 0;
-    overflow: hidden;
+    padding: 2rem 1rem; /* Add some padding for spacing */
 }
 
 #app-container {
     display: flex;
+    /* CHANGED: Main layout is now a vertical column */
+    flex-direction: column; 
     gap: 2rem;
     background-color: var(--silt-dark);
     padding: 2rem;
     border-radius: 12px;
     box-shadow: 0 0 25px rgba(0, 0, 0, 0.5), 0 0 15px var(--phosphor-amber-glow);
     border: 1px solid var(--silt-medium);
-    transition: width 0.4s ease;
+    /* CHANGED: Set a max-width for better readability */
+    max-width: 800px;
+    width: 100%;
 }
 
 #canvas-container {
     position: relative;
-    width: 600px;
-    height: 600px;
+    /* Canvas size is now controlled by JS, but we center it */
+    margin: 0 auto; 
+    max-width: 100%;
     background-color: #1e1c19;
     border-radius: 8px;
     overflow: hidden;
@@ -82,30 +86,39 @@ body.drag-over #drop-zone {
 }
 
 #controls-container {
-    width: 300px;
+    /* CHANGED: Remove fixed width */
     display: flex;
     flex-direction: column;
+    gap: 2rem; /* Add gap for spacing between title/grid/buttons */
+}
+
+/* NEW: Grid layout for the control sections */
+#controls-grid {
+    display: grid;
+    /* This creates responsive columns. They will wrap on smaller screens. */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem 1.5rem; /* Row and column gap */
 }
 
 .title { 
     color: var(--phosphor-amber); 
     text-align: center; 
     margin-top: 0; 
-    margin-bottom: 0.25rem; 
+    margin-bottom: 0; 
     text-shadow: 0 0 8px var(--phosphor-amber-glow);
 }
 .subtitle { 
     text-align: center; 
     font-size: 0.8rem; 
     color: #8c8577; 
-    margin-top: 0; 
-    margin-bottom: 2rem; 
+    margin: 0;
 }
 h3 { 
     border-bottom: 1px solid var(--silt-medium); 
     padding-bottom: 0.5rem; 
     margin-bottom: 1rem; 
     color: var(--silt-text);
+    margin-top: 0;
 }
 .control-group { margin-bottom: 1rem; }
 .slider-group { display: grid; grid-template-columns: 1fr 50px; grid-template-rows: auto auto; margin-bottom: 1rem; align-items: center; }
@@ -132,7 +145,6 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .button-group {
-    margin-top: auto;
     display: flex;
     gap: 10px;
 }

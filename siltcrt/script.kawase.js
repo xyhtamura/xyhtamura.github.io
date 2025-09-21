@@ -28,7 +28,6 @@ camera.position.z = 1;
 // === GEOMETRY & MATERIAL =============================================
 const geometry = new THREE.PlaneGeometry(2, 2);
 
-// NEW UNIFORMS ADDED FOR UMBRA
 const uniforms = {
   u_time: { value: 0.0 },
   u_texture: { value: null },
@@ -40,8 +39,11 @@ const uniforms = {
   u_softness: { value: 0.5 },
   u_bloomIntensity: { value: 0.8 },
   u_bloomThreshold: { value: 0.7 },
+  u_bloomRadius: { value: 2.0 }, // New
   u_umbraIntensity: { value: 0.5 },
-  u_umbraThreshold: { value: 0.3 }
+  u_umbraThreshold: { value: 0.3 },
+  u_umbraRadius: { value: 2.0 }, // New
+  u_texel: { value: new THREE.Vector2(1/1024, 1/1024) }
 };
 
 const material = new THREE.ShaderMaterial({
@@ -53,7 +55,7 @@ const material = new THREE.ShaderMaterial({
             gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
     `,
-  fragmentShader: `
+   fragmentShader: `
         varying vec2 vUv;
         uniform sampler2D u_texture;
         uniform float u_time;
@@ -65,11 +67,63 @@ const material = new THREE.ShaderMaterial({
         uniform float u_softness;
         uniform float u_bloomIntensity;
         uniform float u_bloomThreshold;
+        uniform float u_bloomRadius; // New
         uniform float u_umbraIntensity;
         uniform float u_umbraThreshold;
+        uniform float u_umbraRadius; // New
+        uniform vec2 u_texel;
 
         ${noiseFunction}
         ${voronoiHash}
+        
+        float luminance(vec3 c){ return dot(c, vec3(0.299, 0.587, 0.114)); }
+        
+        vec3 kawaseBloom(sampler2D tex, vec2 uv, float radius, float threshold, float intensity, vec2 texel, float time){
+            const int N = 12;
+            float angStep = 6.2831853 / float(N);
+            float rot = fract(time * 0.03) * 6.2831853;
+            vec3 acc = vec3(0.0);
+            float wsum = 0.0;
+            for (int i = 0; i < N; ++i) {
+                float a = rot + angStep * float(i);
+                vec2 dir = vec2(cos(a), sin(a));
+                for (int r = 1; r <= 3; ++r) {
+                    vec2 offs = dir * texel * (radius * float(r));
+                    vec3 c = texture2D(tex, uv + offs).rgb;
+                    float b = max(0.0, luminance(c) - threshold);
+                    float w = 1.0 / float(r);
+                    acc += c * b * w;
+                    wsum += w;
+                }
+            }
+            if (wsum > 0.0) acc /= wsum;
+            return acc * intensity;
+        }
+        
+        // --- NEW: Kawase Umbra function ---
+        // Mirrors the bloom function but calculates a dimming factor based on darkness
+        float kawaseUmbra(sampler2D tex, vec2 uv, float radius, float threshold, float intensity, vec2 texel, float time){
+            const int N = 12;
+            float angStep = 6.2831853 / float(N);
+            float rot = fract(time * 0.03) * 6.2831853;
+            float acc = 0.0;
+            float wsum = 0.0;
+            for (int i = 0; i < N; ++i) {
+                float a = rot + angStep * float(i);
+                vec2 dir = vec2(cos(a), sin(a));
+                for (int r = 1; r <= 3; ++r) {
+                    vec2 offs = dir * texel * (radius * float(r));
+                    vec3 c = texture2D(tex, uv + offs).rgb;
+                    // Inverted logic: check how FAR BELOW the threshold the luminance is
+                    float b = max(0.0, threshold - luminance(c));
+                    float w = 1.0 / float(r);
+                    acc += b * w;
+                    wsum += w;
+                }
+            }
+            if (wsum > 0.0) acc /= wsum;
+            return acc * intensity;
+        }
 
         void main() {
             vec2 correctedUv = vUv - 0.5;
@@ -84,6 +138,7 @@ const material = new THREE.ShaderMaterial({
             vec2 distortedUv = vUv + flow * u_turbulence * 0.1;
 
             // --- PROBABILISTIC VORONOI CELLS ---
+            // This part is now only for the main image, not bloom/umbra
             vec2 uv = distortedUv;
             uv.x *= u_aspect;
             uv *= u_phosphorSize / 20.0;
@@ -99,36 +154,6 @@ const material = new THREE.ShaderMaterial({
                     points[index] = seed_point;
                     dists[index] = length(seed_point - uv);
                     index++;
-                }
-            }
-            
-            // --- BLOOM & UMBRA CALCULATION ---
-            vec3 total_bloom_color = vec3(0.0);
-            float total_umbra_dimming = 0.0;
-
-            for (int k = 0; k < 9; k++) {
-                vec2 neighbor_uv = points[k] / (u_phosphorSize / 20.0);
-                neighbor_uv.x /= u_aspect;
-                vec4 neighbor_color = texture2D(u_texture, neighbor_uv);
-                float neighbor_luminosity = dot(neighbor_color.rgb, vec3(0.299, 0.587, 0.114));
-                float distance_falloff = 1.0 / (dists[k] * dists[k] + 1.0);
-
-                // --- REVISED: Additive Bloom with smoothstep ---
-                // This creates a smooth fade-in instead of a hard "if" switch.
-                // It fades from 0.0 to 1.0 as luminosity goes from threshold to threshold + 0.1
-                float bloom_activation = smoothstep(u_bloomThreshold, u_bloomThreshold + 0.1, neighbor_luminosity);
-                if (bloom_activation > 0.0) {
-                    float bloom_amount = (neighbor_luminosity - u_bloomThreshold) * distance_falloff * u_bloomIntensity * bloom_activation;
-                    total_bloom_color += neighbor_color.rgb * bloom_amount;
-                }
-
-                // --- REVISED: Subtractive Umbra with smoothstep ---
-                // This fades from 0.0 to 1.0 as luminosity DROPS from threshold to threshold - 0.1
-                float umbra_activation = smoothstep(u_umbraThreshold, u_umbraThreshold - 0.1, neighbor_luminosity);
-                if (umbra_activation > 0.0) {
-                     float darkness = (u_umbraThreshold - neighbor_luminosity) / u_umbraThreshold;
-                     float umbra_amount = darkness * distance_falloff * u_umbraIntensity * umbra_activation;
-                     total_umbra_dimming += umbra_amount;
                 }
             }
 
@@ -161,7 +186,13 @@ const material = new THREE.ShaderMaterial({
 
             vec3 final_color = vec3(r, g, b);
             
-            final_color += total_bloom_color;
+            // Apply Kawase Bloom
+            vec3 bloom_color = kawaseBloom(u_texture, distortedUv, u_bloomRadius, u_bloomThreshold, u_bloomIntensity, u_texel, u_time);
+            final_color += bloom_color;
+            
+            // --- REVISED: Apply Kawase Umbra ---
+            // The old Voronoi loop is gone, replaced with this single line
+            float total_umbra_dimming = kawaseUmbra(u_texture, distortedUv, u_umbraRadius, u_umbraThreshold, u_umbraIntensity, u_texel, u_time);
             final_color -= total_umbra_dimming;
 
             gl_FragColor = vec4(clamp(final_color, 0.0, 1.0), 1.0);
@@ -185,6 +216,9 @@ function updateAspectRatio(texture) {
     canvasContainer.style.height = `${newHeight}px`;
     renderer.setSize(newWidth, newHeight);
     uniforms.u_aspect.value = aspect;
+    const w = renderer.domElement.width;
+    const h = renderer.domElement.height;
+    uniforms.u_texel.value.set(1 / w, 1 / h);
 }
 function loadImage(file) {
     if (file && file.type.startsWith('image/')) {
@@ -193,6 +227,9 @@ function loadImage(file) {
             new THREE.TextureLoader().load(event.target.result, (texture) => {
                 texture.magFilter = THREE.LinearFilter;
                 texture.minFilter = THREE.LinearFilter;
+                texture.generateMipmaps = false;
+                texture.wrapS = THREE.ClampToEdgeWrapping;
+                texture.wrapT = THREE.ClampToEdgeWrapping;
                 uniforms.u_texture.value = texture;
                 updateAspectRatio(texture);
                 document.getElementById('drop-zone').classList.add('hidden');
@@ -227,10 +264,12 @@ setupSliderSync('chromaticBleed', 'chromaticBleed-num', 'u_chromaticBleed');
 setupSliderSync('voronoiSoftness', 'voronoiSoftness-num', 'u_softness'); 
 setupSliderSync('bloomIntensity', 'bloomIntensity-num', 'u_bloomIntensity');
 setupSliderSync('bloomThreshold', 'bloomThreshold-num', 'u_bloomThreshold');
-
-// NEW SLIDER CONNECTIONS FOR UMBRA
 setupSliderSync('umbraIntensity', 'umbraIntensity-num', 'u_umbraIntensity');
 setupSliderSync('umbraThreshold', 'umbraThreshold-num', 'u_umbraThreshold');
+
+// New slider connections
+setupSliderSync('bloomRadius', 'bloomRadius-num', 'u_bloomRadius');
+setupSliderSync('umbraRadius', 'umbraRadius-num', 'u_umbraRadius');
 
 
 // === FILE INPUTS =============================================
@@ -248,7 +287,7 @@ fileUpload.addEventListener('change', (e) => loadImage(e.target.files[0]));
 document.getElementById('save-btn').addEventListener('click', () => {
     const link = document.createElement('a');
     link.download = 'siltcrt-snapshot.png';
-    link.href = canvas.toDataURL('image/png');
+    link.href = canvas.to_data_url('image/png');
     link.click();
 });
 

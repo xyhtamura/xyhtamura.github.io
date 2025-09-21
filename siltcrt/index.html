@@ -17,6 +17,9 @@
 <body>
 
     <div id="app-container">
+	            <h2 class="title">SILTCRT</h2>
+            <p class="subtitle">Soft Granular Signal Emulator</p>
+            <p><a href="/siltcrt/block/">Block Version</a></p>
         <div id="canvas-container">
             <div id="drop-zone">
                 <p>Drag & Drop Image Here<br>or</p>
@@ -26,9 +29,8 @@
         </div>
 
         <div id="controls-container">
-            <h2 class="title">SILTCRT</h2>
-            <p class="subtitle">Soft Granular Signal Emulator</p>
-            <p><a href="/siltcrt/block/">Block Version</a></p>
+
+			 <div id="controls-grid">
             <div class="control-group">
                 <h3>Warping</h3>
                 <div class="slider-group">
@@ -63,7 +65,43 @@
     <input type="number" id="voronoiSoftness-num" min="0.0" max="1.0" value="0.5" step="0.01">
 </div>
             </div>
-			
+			<div class="control-group">
+                <h3>Bloom</h3>
+                <div class="slider-group">
+                    <label for="bloomIntensity">Bloom Intensity</label>
+                    <input type="range" id="bloomIntensity" min="0.0" max="2.0" value="0.8" step="0.01">
+                    <input type="number" id="bloomIntensity-num" min="0.0" max="2.0" value="0.8" step="0.01">
+                </div>
+                <div class="slider-group">
+                    <label for="bloomThreshold">Bloom Threshold</label>
+                    <input type="range" id="bloomThreshold" min="0.0" max="1.0" value="0.7" step="0.01">
+                    <input type="number" id="bloomThreshold-num" min="0.0" max="1.0" value="0.7" step="0.01">
+                </div>
+				    <div class="slider-group">
+        <label for="bloomRadius">Bloom Radius</label>
+        <input type="range" id="bloomRadius" min="0.0" max="10.0" value="2.0" step="0.1">
+        <input type="number" id="bloomRadius-num" min="0.0" max="10.0" value="2.0" step="0.1">
+    </div>
+            </div>
+			<div class="control-group">
+                <h3>Umbra (Negative Bloom)</h3>
+                <div class="slider-group">
+                    <label for="umbraIntensity">Umbra Intensity</label>
+                    <input type="range" id="umbraIntensity" min="0.0" max="2.0" value="0" step="0.01">
+                    <input type="number" id="umbraIntensity-num" min="0.0" max="2.0" value="0" step="0.01">
+                </div>
+                <div class="slider-group">
+                    <label for="umbraThreshold">Umbra Threshold</label>
+                    <input type="range" id="umbraThreshold" min="0.0" max="1.0" value="0" step="0.01">
+                    <input type="number" id="umbraThreshold-num" min="0.0" max="1.0" value="0" step="0.01">
+                </div>
+				    <div class="slider-group">
+        <label for="umbraRadius">Umbra Radius</label>
+        <input type="range" id="umbraRadius" min="0.0" max="10.0" value="2.0" step="0.1">
+        <input type="number" id="umbraRadius-num" min="0.0" max="10.0" value="2.0" step="0.1">
+    </div>
+            </div>
+			</div>
 
             <div class="button-group">
                 <input type="file" id="file-upload" accept="image/*" style="display: none;">
@@ -74,8 +112,7 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="script.js"></script>
+<script src="script.kawase.js"></script>
 
-<script type="module" src="script.js"></script>
 </body>
 </html>
