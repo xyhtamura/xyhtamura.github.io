@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>72 Munting Panahon</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Roboto:wght@300;400&display=swap');
+
+        :root {
+            --bg-color: #fdfdfc;
+            --text-color: #333;
+            --accent-color: #8B4513;
+            --highlight-bg: #f4f1ea;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            overflow: hidden; /* Hide body scrollbar, we scroll the container */
+            display: flex;
+            justify-content: center;
+        }
+
+        #microseason-timeline {
+            width: 100%;
+            max-width: 600px;
+            height: 100vh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            padding: 45vh 0; /* Creates space at top and bottom */
+            box-sizing: border-box;
+        }
+
+        /* Hides the scrollbar for a cleaner look */
+        #microseason-timeline::-webkit-scrollbar {
+            display: none;
+        }
+        #microseason-timeline {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .microseason-item {
+            scroll-snap-align: center;
+            text-align: center;
+            padding: 2rem 1.5rem;
+            margin: 1rem 0;
+            opacity: 0.4;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            transform: scale(0.9);
+            border-radius: 8px;
+        }
+
+        .microseason-item.current {
+            opacity: 1;
+            transform: scale(1);
+            background-color: var(--highlight-bg);
+        }
+
+        .microseason-item h2 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0 0 0.25rem 0;
+            color: var(--accent-color);
+        }
+
+        .microseason-item p {
+            font-family: 'Roboto', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 300;
+            margin: 0;
+        }
+
+        .ko-number {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 0.5rem;
+        }
+
+        #center-marker {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 95%;
+            max-width: 650px;
+            height: 2px;
+            background: linear-gradient(to right, transparent, var(--accent-color) 20% 80%, transparent);
+            opacity: 0.15;
+            z-index: -1;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="center-marker"></div>
+    <div id="microseason-timeline">
+        </div>
+
+    <script>
+        const microseasons = [
+            { ko: 1, filipinoName: "Halimuyak ng Dita sa Gabi", englishName: "The Scent of Dita Fills the Night Air", dates: "Oct 23-27" },
+            { ko: 2, filipinoName: "Mga Kandila'y Sinasariwa para sa mga Yumao", englishName: "Candles are Lit for the Departed", dates: "Oct 28-Nov 1" },
+            { ko: 3, filipinoName: "Mga Latia'y Napupuno ng mga Dayong Ibon", englishName: "The Wetlands Teem with Migrants", dates: "Nov 2-6" },
+            { ko: 4, filipinoName: "Nagsisimulang Bumigat ang Trapiko ng Pasko", englishName: "The Christmas Traffic Begins to Build", dates: "Nov 7-11" },
+            { ko: 5, filipinoName: "Pagsisiping ng mga Mamu", englishName: "The Tarsiers Begin their Mating", dates: "Nov 12-16" },
+            { ko: 6, filipinoName: "Yumayabong ang mga Gumamela", englishName: "The Hibiscus Flowers Flourish", dates: "Nov 17-21" },
+            { ko: 7, filipinoName: "Ang Bituing Baha'y Nagbabadya ng Tag-araw", englishName: "The Baha Constellation Signals the Dry Season", dates: "Nov 22-26" },
+            { ko: 8, filipinoName: "Hanging Amihan ay Nagpapahinog ng Palay", englishName: "The North Wind Ripens the Grain", dates: "Nov 27-Dec 1" },
+            { ko: 9, filipinoName: "Panahon ng Ani ng Kalamansi at Dalandan", englishName: "Calamansi and Dalandan are Harvested", dates: "Dec 2-6" },
+            { ko: 10, filipinoName: "Dumarating ang Rurok ng Ginaw", englishName: "The Deepest Chill of the Year Arrives", dates: "Dec 7-11" },
+            { ko: 11, filipinoName: "Kasagsagan ng mga Geminid", englishName: "The Geminid Meteors Peak", dates: "Dec 12-16" },
+            { ko: 12, filipinoName: "Nagsisimula ang Dakilang Uwian", englishName: "The Great Provincial Homecoming Begins", dates: "Dec 17-21" },
+            { ko: 13, filipinoName: "Halimuyak ng Noche Buena sa Tahanan", englishName: "The Scent of Noche Buena Fills the Home", dates: "Dec 22-26" },
+            { ko: 14, filipinoName: "Mga Bakawa'y Nagniningning sa Alitaptap", englishName: "The Mangroves Glimmer with Fireflies", dates: "Dec 27-31" },
+            { ko: 15, filipinoName: "Ang Bagong Taon ay Sumisikat sa Usok", englishName: "The New Year Begins in a Haze of Smoke", dates: "Jan 1-4" },
+            { ko: 16, filipinoName: "Milyon-milyong Dumadagsa sa Poong Nazareno", englishName: "Millions Throng for the Black Nazarene", dates: "Jan 5-9" },
+            { ko: 17, filipinoName: "Dumarating ang Kanais-nais na Panahon", englishName: "The Perfect Weather Arrives", dates: "Jan 10-14" },
+            { ko: 18, filipinoName: "Kasagsagan ng mga Pista ng Santo Niño", englishName: "The Great Festivals of the Santo Niño Peak", dates: "Jan 15-19" },
+            { ko: 19, filipinoName: "Ang Bituing Balatik ay Sumisikat, Hudyat ng Pagtatanim", englishName: "Balatik Rises, Signaling the Planting Season", dates: "Feb 20-24" },
+            { ko: 20, filipinoName: "Gintong Alpombra ng mga Bulaklak ng Narra", englishName: "A Golden Carpet of Narra Blossoms Falls", dates: "Feb 25-Mar 1" },
+            { ko: 21, filipinoName: "Ang Damo'y Naninilaw sa Ilalim ng Araw", englishName: "The Grass Browns Under the Sun", dates: "Mar 2-6" },
+            { ko: 22, filipinoName: "Nagsisimulang Magsabog ng Binhi ang mga Koral", englishName: "The Corals Begin their Mass Spawning", dates: "Mar 7-11" },
+            { ko: 23, filipinoName: "Ang Bango ng Sampaguita'y Sumasabog sa Kalye", englishName: "The Scent of Sampaguita Fills the City Streets", dates: "Mar 12-16" },
+            { ko: 24, filipinoName: "Pantay ang Araw at Gabi sa Ekinoks", englishName: "The Sun and Sky are Balanced at the Equinox", dates: "Mar 17-21" },
+            { ko: 25, filipinoName: "Mga Pipit-Maya'y Nagpupugad", englishName: "The Maya Sparrows Build Their Nests", dates: "Mar 22-26" },
+            { ko: 26, filipinoName: "Nalalaglag ang Puting Talulot ng Katmon", englishName: "The White Petals of the Katmon Tree Fall", dates: "Mar 27-31" },
+            { ko: 27, filipinoName: "Isang Dakilang Katahimikan ang Bumabalot sa Lungsod", englishName: "A Great Stillness Falls Over the City", dates: "Apr 1-5" },
+            { ko: 28, filipinoName: "Inaalagaan ng Agila ang Kanyang mga Sisiw", englishName: "The Great Philippine Eagle Cares for its Young", dates: "Apr 6-10" },
+            { ko: 29, filipinoName: "Dumarating ang Rurok ng Tag-init", englishName: "The Peak of the Dry Season's Heat Arrives", dates: "Apr 11-15" },
+            { ko: 30, filipinoName: "Namumulaklak ng Lila ang Punong Banaba", englishName: "The Banaba Tree Blooms in Purple", dates: "Apr 16-20" },
+            { ko: 31, filipinoName: "Ang mga Puno ng Apoy ay Nagbabadya ng Ulan", englishName: "The Fire Trees Herald the Coming Rains", dates: "Apr 21-25" },
+            { ko: 32, filipinoName: "Kasagsagan ng Tamis ng Manggang Kalabaw", englishName: "The Philippine Mango is at its Sweetest", dates: "Apr 26-30" },
+            { ko: 33, filipinoName: "Nagsisimula ang mga Pista ng Mayo", englishName: "The Month of May Festivals Begins", dates: "May 1-5" },
+            { ko: 34, filipinoName: "Ginising ng Unang Kulog ang mga Palaka", englishName: "The First Thunderstorms Awaken the Frogs", dates: "May 6-10" },
+            { ko: 35, filipinoName: "Ang Pistang Pahiyas ay Nagbibihis ng Ani sa Bayan", englishName: "The Pahiyas Festival Adorns the Town in Harvest", dates: "May 11-15" },
+            { ko: 36, filipinoName: "Rurok ng Panahon ng mga Butanding", englishName: "The Whale Shark Season Peaks", dates: "May 16-20" },
+            { ko: 37, filipinoName: "Ang Halimuyak ng Lupa'y Sumisingaw", englishName: "The Scent of Petrichor Fills the Air", dates: "May 21-25" },
+            { ko: 38, filipinoName: "Sinusubok ng Unang Baha ang Lungsod", englishName: "The First Flash Floods Test the City", dates: "May 26-30" },
+            { ko: 39, filipinoName: "Inihahanda ang Bukid para sa Panananim", englishName: "The Fields are Prepared for the Wet-Season Crop", dates: "May 31-Jun 4" },
+            { ko: 40, filipinoName: "Dagsaan ang mga Pagsulpot ng Kulisap", englishName: "A Surge of Insect Life Emerges", dates: "Jun 5-10" },
+            { ko: 41, filipinoName: "Namumukadkad ang mga Katutubong Orkidya", englishName: "The Native Orchids Begin to Bloom", dates: "Jun 11-15" },
+            { ko: 42, filipinoName: "Simula ng Ani ng Rambutan", englishName: "The Rambutan Harvest Begins", dates: "Jun 16-20" },
+            { ko: 43, filipinoName: "Luntiang-luntian ang Kapaligiran", englishName: "The Landscape is at its Most Verdant", dates: "Jun 21-26" },
+            { ko: 44, filipinoName: "Umaahon ang mga Bulaklak ng Lotus sa Tubig", englishName: "The Lotus Flowers Rise from the Water", dates: "Jun 27-Jul 1" },
+            { ko: 45, filipinoName: "Simula ng Rurok ng Panahon ng Bagyo", englishName: "The Peak Typhoon Season Begins", dates: "Jul 2-6" },
+            { ko: 46, filipinoName: "Dumarating ang Walang-Tigil na Ulan", englishName: "The Monotonous Rains Arrive", dates: "Jul 7-11" },
+            { ko: 47, filipinoName: "Nagsisimula ang Ani ng Durian sa Mindanao", englishName: "The Durian Harvest Begins in Mindanao", dates: "Jul 12-16" },
+            { ko: 48, filipinoName: "Nakikinig ang Bansa sa Talumpati ng Pangulo", englishName: "The Nation Listens to the State of the Nation Address", dates: "Jul 17-22" },
+            { ko: 49, filipinoName: "Kumakalat ang mga Pakpak na Binhi ng Narra", englishName: "The Winged Seeds of the Narra are Dispersed", dates: "Jul 23-28" },
+            { ko: 50, filipinoName: "Nananahan ang Malalim na Halumigmig", englishName: "The Deep, Pervasive Dampness Sets In", dates: "Jul 29-Aug 2" },
+            { ko: 51, filipinoName: "Pinaparalisa ng Ilang Araw na Ulan ang Kapital", englishName: "Multi-Day Rains Paralyze the Capital", dates: "Aug 3-7" },
+            { ko: 52, filipinoName: "Ipinagdiriwang ng Davao ang Kadayawan", englishName: "Davao Celebrates the Kadayawan Harvest", dates: "Aug 8-12" },
+            { ko: 53, filipinoName: "Mga Perseid ay Tinatago ng Ulap", englishName: "The Perseid Meteors are Hidden by Clouds", dates: "Aug 13-17" },
+            { ko: 54, filipinoName: "Lubos na Namumulaklak ang Waling-waling", englishName: "The Waling-waling Orchid is in Full Bloom", dates: "Aug 18-22" },
+            { ko: 55, filipinoName: "Ang mga Palayan ay Nagiging Ginto mula sa Luntian", englishName: "The Rice Paddies Turn from Green to Gold", dates: "Aug 23-27" },
+            { ko: 56, filipinoName: "Naririnig ang mga Unang Pamaskong Awitin", englishName: "The First Christmas Carols are Heard", dates: "Aug 28-Sep 1" },
+            { ko: 57, filipinoName: "Naghihintay ng Tuyo ang Bukid para sa Ani", englishName: "The Fields Await a Dry Spell for Harvest", dates: "Sep 2-7" },
+            { ko: 58, filipinoName: "Hamog sa Umaga, Hudyat ng Paghupa ng Habagat", englishName: "Morning Dew Signals the Waning Habagat", dates: "Sep 8-12" },
+            { ko: 59, filipinoName: "Dumarating ang mga Unang Dayong Tilis", englishName: "The First Migrant Wagtails Arrive", dates: "Sep 13-17" },
+            { ko: 60, filipinoName: "Ang Birhen ng Peñafrancia'y Naglalayag sa Ilog", englishName: "The Virgin of Peñafrancia Sails the River", dates: "Sep 18-22" },
+            { ko: 61, filipinoName: "Nagsisimulang Humupa ang mga Dumadagundong na Kulog", englishName: "The Crashing Thunderstorms Begin to Fade", dates: "Sep 23-27" },
+            { ko: 62, filipinoName: "Nagdiriwang ang Lungsod ng mga Ngiti", englishName: "The City of Smiles Holds its Festival", dates: "Sep 28-Oct 2" },
+            { ko: 63, filipinoName: "Pinatutuyo at Pinagpapahinga ang mga Palayan", englishName: "The Rice Paddies are Drained and Rested", dates: "Oct 3-7" },
+            { ko: 64, filipinoName: "Nagbabalik ang Ariwanas sa Gabi", englishName: "The Milky Way Returns to the Night Sky", dates: "Oct 8-12" },
+            { ko: 65, filipinoName: "Ipinagdiriwang ng Camiguin ang Ani ng Lansones", englishName: "Camiguin Celebrates the Lanzones Harvest", dates: "Oct 13-17" },
+            { ko: 66, filipinoName: "Huni ng Kuliglig ang Pumapalit sa Kokak ng Palaka", englishName: "The Chirping of Crickets Replaces the Croaking of Frogs", dates: "Oct 18-22" },
+            { ko: 67, filipinoName: "Umiikot ang Gahon, Nagbabalik ang Amihan", englishName: "The Cycle Turns, the Amihan Returns", dates: "Oct 23-27" },
+            { ko: 68, filipinoName: "Isang Huling Ambon ang Pumapatak", englishName: "A Final Lingering Shower Falls", dates: "Oct 28-Nov 1" },
+            { ko: 69, filipinoName: "Ang Malamig na Hangin ay Dala ang Ginaw ng Hilaga", englishName: "The Cool Wind Carries a Northern Chill", dates: "Nov 2-6" },
+            { ko: 70, filipinoName: "Ang Lungsod ay Nagagayakan ng Ilaw-Pamasko", englishName: "The City is Adorned in Christmas Lights", dates: "Nov 7-11" },
+            { ko: 71, filipinoName: "Ang Simoy ng Hangin ay Palaging Malamig", englishName: "The Air Becomes Consistently Chilly", dates: "Nov 12-16" },
+            { ko: 72, filipinoName: "Pinakamaliwanag ang Kalangitan, Nagtatapos ang Taon", englishName: "The Skies are Clearest, the Year Concludes", dates: "Nov 17-21" }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const timeline = document.getElementById('microseason-timeline');
+            let isScrolling = false;
+            let scrollTimeout;
+
+            // --- 1. Populate the Timeline ---
+            const fragment = document.createDocumentFragment();
+            microseasons.forEach((season, index) => {
+                const item = document.createElement('div');
+                item.className = 'microseason-item';
+                item.dataset.index = index;
+                item.innerHTML = `
+                    <div class="ko-number">Kō ${season.ko} &mdash; (${season.dates})</div>
+                    <h2>${season.filipinoName}</h2>
+                    <p>${season.englishName}</p>
+                `;
+                fragment.appendChild(item);
+            });
+            
+            // --- 2. Create Cyclical/Infinite Scroll ---
+            // Clone the entire set of seasons 3 times for a seamless loop
+            const totalItems = microseasons.length;
+            timeline.appendChild(fragment.cloneNode(true)); // Middle set (actual)
+            timeline.prepend(fragment.cloneNode(true)); // Top set (for scrolling up)
+            timeline.appendChild(fragment.cloneNode(true)); // Bottom set (for scrolling down)
+
+            // --- 3. Find Today's Microseason and Scroll to It ---
+            const currentSeasonIndex = getCurrentMicroseasonIndex();
+            const targetElement = timeline.querySelector(`.microseason-item[data-index='${currentSeasonIndex}']`);
+            
+            // We scroll to the item in the MIDDLE set of clones
+            const middleSetOffset = totalItems * targetElement.offsetHeight;
+            const initialScrollTop = targetElement.offsetTop + middleSetOffset - (timeline.clientHeight / 2) + (targetElement.offsetHeight / 2);
+
+            timeline.scrollTo({ top: initialScrollTop });
+
+
+            // --- 4. Use Intersection Observer to Highlight the Current Item ---
+            let currentActiveIndex = -1;
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const newIndex = entry.target.dataset.index;
+                        if (newIndex !== currentActiveIndex) {
+                            // Remove 'current' from previous element
+                            const oldCurrent = timeline.querySelector('.current');
+                            if(oldCurrent) oldCurrent.classList.remove('current');
+                            
+                            // Add 'current' to the new element
+                            entry.target.classList.add('current');
+                            currentActiveIndex = newIndex;
+                        }
+                    }
+                });
+            }, {
+                root: null, // viewport
+                rootMargin: "-50% 0px -50% 0px", // a horizontal line in the middle
+                threshold: 0
+            });
+
+            timeline.querySelectorAll('.microseason-item').forEach(item => observer.observe(item));
+
+            // --- 5. Handle the Infinite Scroll Reset ---
+            timeline.addEventListener('scroll', () => {
+                const itemHeight = timeline.querySelector('.microseason-item').offsetHeight;
+                const topResetThreshold = (totalItems * itemHeight) / 2;
+                const bottomResetThreshold = (totalItems * itemHeight) * 2.5;
+
+                if (timeline.scrollTop < topResetThreshold) {
+                    timeline.scrollTop += totalItems * itemHeight;
+                } else if (timeline.scrollTop > bottomResetThreshold) {
+                    timeline.scrollTop -= totalItems * itemHeight;
+                }
+            });
+
+        });
+
+        function getCurrentMicroseasonIndex() {
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            const cycleStartMonth = 9; // October (0-indexed)
+            
+            // Determine if the current date is part of the cycle that started last year or this year.
+            // A cycle runs from late Oct to the next Oct.
+            const cycleYear = now.getMonth() < cycleStartMonth ? currentYear - 1 : currentYear;
+
+            for (let i = 0; i < microseasons.length; i++) {
+                const season = microseasons[i];
+                const [monthStr, dayRange] = season.dates.split(' ');
+                const [startDay] = dayRange.split('-').map(Number);
+
+                const monthIndex = new Date(Date.parse(monthStr +" 1, 2000")).getMonth();
+                
+                // If the month is Jan-Sep, it belongs to the year *after* the cycle started.
+                const year = (monthIndex < cycleStartMonth) ? cycleYear + 1 : cycleYear;
+
+                const startDate = new Date(year, monthIndex, startDay);
+                
+                // Get the end date by finding the start of the *next* microseason
+                const nextSeason = microseasons[(i + 1) % microseasons.length];
+                const [nextMonthStr, nextDayRange] = nextSeason.dates.split(' ');
+                const [nextStartDay] = nextDayRange.split('-').map(Number);
+                const nextMonthIndex = new Date(Date.parse(nextMonthStr +" 1, 2000")).getMonth();
+                const nextYear = (nextMonthIndex < cycleStartMonth) ? cycleYear + 1 : cycleYear;
+
+                const endDate = new Date(nextYear, nextMonthIndex, nextStartDay);
+                
+                if (now >= startDate && now < endDate) {
+                    return i;
+                }
+            }
+             // Fallback for the very last season of the year
+             if (now >= new Date(cycleYear, 11, 27) && now <= new Date(cycleYear, 11, 31)){
+                return microseasons.findIndex(s => s.ko === 14);
+            }
+            return 0; // Default fallback
+        }
+    </script>
+</body>
+</html>
