@@ -58,7 +58,6 @@
             border-radius: 8px;
             border: 1px solid var(--border-color);
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-
         }
 
         label, .checkbox-container {
@@ -105,18 +104,19 @@
             width: 120px;
             background: transparent;
         }
-input[type="range"]::-webkit-slider-runnable-track {
-    height: 6px; /* Increased from 4px */
-    background: var(--border-color); /* Using a lighter color */
-    border-radius: 3px;
-}
+        
+        input[type="range"]::-webkit-slider-runnable-track {
+            height: 6px;
+            background: var(--border-color);
+            border-radius: 3px;
+        }
 
-/* --- Add this new rule for Firefox compatibility --- */
-input[type="range"]::-moz-range-track {
-    height: 6px;
-    background: var(--border-color);
-    border-radius: 3px;
-}
+        input[type="range"]::-moz-range-track {
+            height: 6px;
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             height: 16px;
@@ -127,6 +127,7 @@ input[type="range"]::-moz-range-track {
             cursor: pointer;
             transition: background-color 0.2s;
         }
+        
         input[type="range"]:hover::-webkit-slider-thumb {
             background: var(--accent-hover);
         }
@@ -163,25 +164,38 @@ input[type="range"]::-moz-range-track {
 
     <div id="controls">
         <input type="file" id="imageLoader" accept="image/*">
+
+        <label for="growthAlgorithm">Growth:</label>
+        <select id="growthAlgorithm"></select>
+
+        <label for="effectAlgorithm">Effect:</label>
+        <select id="effectAlgorithm"></select>
         
-        <label for="sortCriteria">Strain:</label>
-        <select id="sortCriteria">
-            <option value="brightness">Brightness</option>
-            <option value="hue">Hue</option>
-            <option value="saturation">Saturation</option>
-            <option value="red">Red</option>
-            <option value="green">Green</option>
-            <option value="blue">Blue</option>
-        </select>
-        <div class="checkbox-container">
-            <input type="checkbox" id="reverseSort">
-            <label for="reverseSort">Reverse</label>
+        <div id="effectOptions">
+            <label for="sortCriteria">Strain:</label>
+            <select id="sortCriteria">
+                <option value="brightness">Brightness</option>
+                <option value="hue">Hue</option>
+                <option value="saturation">Saturation</option>
+                <option value="red">Red</option>
+                <option value="green">Green</option>
+                <option value="blue">Blue</option>
+            </select>
+            <div class="checkbox-container">
+                <input type="checkbox" id="reverseSort">
+                <label for="reverseSort">Reverse</label>
+            </div>
+        </div>
+        
+        <div id="biasControls" style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+            <label for="xBias">X-Bias (L/R)</label>
+            <input type="range" id="xBias" min="-100" max="100" value="0">
+            <label for="yBias">Y-Bias (U/D)</label>
+            <input type="range" id="yBias" min="-100" max="100" value="0">
         </div>
         
         <label for="threshold">Tolerance:</label>
-        <input type="range" id="threshold" min="1" max="500" value="50">
-        
-        <button id="stopButton">Stop & Freeze</button>
+        <input type="range" id="threshold" min="1" max="500" value="500">
         <button id="resetButton">Reset</button>
         <button id="saveButton">Save Image</button>
     </div>
@@ -189,209 +203,363 @@ input[type="range"]::-moz-range-track {
     <canvas id="canvas"></canvas>
 
     <script>
-        // All JavaScript remains the same as the previous version.
-        // The script from the last turn is included here for completeness.
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d', { willReadFrequently: true });
-        const imageLoader = document.getElementById('imageLoader');
-        const sortCriteriaSelect = document.getElementById('sortCriteria');
-        const reverseSortCheckbox = document.getElementById('reverseSort');
-        const resetButton = document.getElementById('resetButton');
-        const stopButton = document.getElementById('stopButton');
-        const saveButton = document.getElementById('saveButton');
-        const thresholdSlider = document.getElementById('threshold');
+    // =================================================================================
+    // == ALGORITHM MODULES (The "Cartridges")
+    // =================================================================================
 
-        let trueOriginalImageData = null;
-        let workingImageData = null;
-        let isProcessing = false;
-        let animationFrameId = null;
+    // --- Growth Module Registry ---
+    const availableGrowths = [];
 
-        imageLoader.addEventListener('change', handleImageUpload);
-        canvas.addEventListener('click', handleCanvasClick);
-        stopButton.addEventListener('click', stopProcessing);
-        resetButton.addEventListener('click', resetCanvas);
-        saveButton.addEventListener('click', saveImage);
-        canvas.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            canvas.classList.add('dragging-over');
-        });
-        canvas.addEventListener('dragleave', () => {
-            canvas.classList.remove('dragging-over');
-        });
-        canvas.addEventListener('drop', (e) => {
-            e.preventDefault();
-            canvas.classList.remove('dragging-over');
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                const file = files[0];
-                if (file.type.startsWith('image/')) {
-                    loadImageFile(file);
+    const LichenGrowth = {
+        name: "Lichen",
+        showBiasControls: false, // Control UI visibility
+        init: function(startX, startY, imageData, seedColor, threshold) {
+            this.frontier = [[startX, startY]];
+            this.infectedSet = new Set([`${startX},${startY}`]);
+            this.imageData = imageData;
+            this.seedColor = seedColor;
+            this.threshold = threshold;
+        },
+        step: function(batchSize) { // The original, isotropic step function
+            const newCoords = [];
+            const batchLimit = Math.min(this.frontier.length, batchSize);
+
+            for (let i = 0; i < batchLimit; i++) {
+                if (this.frontier.length === 0) break;
+                const randomIndex = Math.floor(Math.random() * this.frontier.length);
+                const [currentX, currentY] = this.frontier.splice(randomIndex, 1)[0];
+                newCoords.push({ x: currentX, y: currentY });
+
+                const neighbors = [
+                    [currentX, currentY - 1], [currentX, currentY + 1],
+                    [currentX - 1, currentY], [currentX + 1, currentY]
+                ];
+
+                for (const [nx, ny] of neighbors) {
+                    const key = `${nx},${ny}`;
+                    if (nx >= 0 && nx < this.imageData.width && ny >= 0 && ny < this.imageData.height && !this.infectedSet.has(key)) {
+                        const neighborColor = getPixelColor(nx, ny, this.imageData);
+                        if (colorDistance(this.seedColor, neighborColor) < this.threshold) {
+                            this.infectedSet.add(key);
+                            this.frontier.push([nx, ny]);
+                        }
+                    }
                 }
             }
-        });
-
-        function loadImageFile(file) {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const img = new Image();
-                img.onload = function() {
-                    stopProcessing();
-                    canvas.width = img.width;
-                    canvas.height = img.height;
-                    ctx.drawImage(img, 0, 0);
-                    trueOriginalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                    workingImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                }
-                img.src = event.target.result;
-            }
-            reader.readAsDataURL(file);
+            return { newCoords: newCoords, isDone: this.frontier.length === 0 };
         }
+    };
+    availableGrowths.push(LichenGrowth);
 
-        function handleImageUpload(e) {
-            if (e.target.files && e.target.files[0]) {
-                loadImageFile(e.target.files[0]);
-            }
-        }
+    const BiasedGrowth = {
+        name: "Slime Mold",
+        showBiasControls: true, // Control UI visibility
+        init: function(startX, startY, imageData, seedColor, threshold) {
+            this.frontier = [[startX, startY]];
+            this.infectedSet = new Set([`${startX},${startY}`]);
+            this.imageData = imageData;
+            this.seedColor = seedColor;
+            this.threshold = threshold;
+        },
+        step: function(batchSize, options) { // The new, directional step function
+            const { xBias = 0, yBias = 0 } = options || {};
+            const newCoords = [];
+            const batchLimit = Math.min(this.frontier.length, batchSize);
 
-        function handleCanvasClick(e) {
-            if (!workingImageData) return;
-            if (isProcessing) {
-                stopProcessing();
-            } else {
-                startFungalSort(e);
-            }
-        }
+            for (let i = 0; i < batchLimit; i++) {
+                if (this.frontier.length === 0) break;
+                const randomIndex = Math.floor(Math.random() * this.frontier.length);
+                const [currentX, currentY] = this.frontier.splice(randomIndex, 1)[0];
+                newCoords.push({ x: currentX, y: currentY });
 
-        function stopProcessing() {
-            if (!isProcessing) return;
-            cancelAnimationFrame(animationFrameId);
-            isProcessing = false;
-            workingImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        }
+                const neighbors = [
+                    { pos: [currentX, currentY - 1], dir: 'up' },
+                    { pos: [currentX, currentY + 1], dir: 'down' },
+                    { pos: [currentX - 1, currentY], dir: 'left' },
+                    { pos: [currentX + 1, currentY], dir: 'right' }
+                ];
 
-        function resetCanvas() {
-            stopProcessing();
-            if (trueOriginalImageData) {
-                workingImageData = trueOriginalImageData;
-                ctx.putImageData(workingImageData, 0, 0);
-            }
-        }
+                for (const { pos: [nx, ny], dir } of neighbors) {
+                    let probability = 0.5;
+                    if (dir === 'right') probability += 0.5 * xBias;
+                    if (dir === 'left')  probability -= 0.5 * xBias;
+                    if (dir === 'down')  probability += 0.5 * yBias;
+                    if (dir === 'up')    probability -= 0.5 * yBias;
 
-        function saveImage() {
-            const link = document.createElement('a');
-            link.download = 'lesion-art.png';
-            link.href = canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream');
-            link.click();
-        }
-
-        function startFungalSort(e) {
-            isProcessing = true;
-            const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / rect.width;
-            const scaleY = canvas.height / rect.height;
-            const x = Math.floor((e.clientX - rect.left) * scaleX);
-            const y = Math.floor((e.clientY - rect.top) * scaleY);
-            
-            const frontier = [[x, y]]; 
-            const lesionCoords = []; 
-            const infectedSet = new Set([`${x},${y}`]);
-            const seedColor = getPixelColor(x, y, workingImageData);
-            const COLOR_THRESHOLD = parseInt(thresholdSlider.value, 10);
-            const BATCH_SIZE = 50; 
-
-            function animate() {
-                if (frontier.length === 0) {
-                    stopProcessing();
-                    return;
-                }
-
-                const batchLimit = Math.min(frontier.length, BATCH_SIZE);
-                for (let i = 0; i < batchLimit; i++) {
-                    const randomIndex = Math.floor(Math.random() * frontier.length);
-                    const [currentX, currentY] = frontier.splice(randomIndex, 1)[0];
-                    lesionCoords.push({ x: currentX, y: currentY });
-                    const neighbors = [
-                        [currentX, currentY - 1], [currentX, currentY + 1],
-                        [currentX - 1, currentY], [currentX + 1, currentY]
-                    ];
-                    for (const [nx, ny] of neighbors) {
-                        const key = `${nx},${ny}`;
-                        if (nx >= 0 && nx < canvas.width && ny >= 0 && ny < canvas.height && !infectedSet.has(key)) {
-                            const neighborColor = getPixelColor(nx, ny, workingImageData);
-                            if (colorDistance(seedColor, neighborColor) < COLOR_THRESHOLD) {
-                                infectedSet.add(key);
-                                frontier.push([nx, ny]);
+                    const key = `${nx},${ny}`;
+                    if (nx >= 0 && nx < this.imageData.width && ny >= 0 && ny < this.imageData.height && !this.infectedSet.has(key)) {
+                        if (Math.random() < probability) {
+                            const neighborColor = getPixelColor(nx, ny, this.imageData);
+                            if (colorDistance(this.seedColor, neighborColor) < this.threshold) {
+                                this.infectedSet.add(key);
+                                this.frontier.push([nx, ny]);
                             }
                         }
                     }
                 }
-
-                const lesionPixelsData = lesionCoords.map(coord => {
-                    const color = getPixelColor(coord.x, coord.y, workingImageData);
-                    return { ...color, coord };
-                });
-                const sortFunction = getSortFunction(sortCriteriaSelect.value);
-                const isReversed = reverseSortCheckbox.checked;
-                lesionPixelsData.sort(sortFunction);
-                if (isReversed) {
-                    lesionPixelsData.reverse();
-                }
-                
-                const modifiedImageData = new ImageData(
-                    new Uint8ClampedArray(workingImageData.data),
-                    workingImageData.width
-                );
-                for (let i = 0; i < lesionCoords.length; i++) {
-                    const originalCoord = lesionCoords[i];
-                    const sortedPixel = lesionPixelsData[i];
-                    const index = (originalCoord.y * canvas.width + originalCoord.x) * 4;
-                    modifiedImageData.data[index] = sortedPixel.r;
-                    modifiedImageData.data[index + 1] = sortedPixel.g;
-                    modifiedImageData.data[index + 2] = sortedPixel.b;
-                }
-                ctx.putImageData(modifiedImageData, 0, 0);
-                
-                animationFrameId = requestAnimationFrame(animate);
             }
-            animate();
+            return { newCoords: newCoords, isDone: this.frontier.length === 0 };
         }
+    };
+    availableGrowths.push(BiasedGrowth);
 
-        function getPixelColor(x, y, imageData) {
-            const i = (y * imageData.width + x) * 4;
-            return { r: imageData.data[i], g: imageData.data[i + 1], b: imageData.data[i + 2] };
+
+    // --- Effect Module Registry ---
+    const availableEffects = [];
+
+    const GradientSort = {
+        name: "Gradient Sort",
+        showOptions: true,
+        apply: function(lesionCoords, imageData, options) {
+            const { sortCriteria, isReversed } = options;
+            
+            let pixels = lesionCoords.map(coord => {
+                const color = getPixelColor(coord.x, coord.y, imageData);
+                return { r: color.r, g: color.g, b: color.b };
+            });
+
+            const sortFunction = getSortFunction(sortCriteria);
+            pixels.sort(sortFunction);
+            if (isReversed) {
+                pixels.reverse();
+            }
+            return pixels;
         }
-        function colorDistance(c1, c2) {
-            return Math.sqrt(Math.pow(c1.r - c2.r, 2) + Math.pow(c1.g - c2.g, 2) + Math.pow(c1.b - c2.b, 2));
+    };
+    availableEffects.push(GradientSort);
+
+    const PixelShuffle = {
+        name: "Pixel Shuffle",
+        showOptions: false,
+        apply: function(lesionCoords, imageData, options) {
+            let pixels = lesionCoords.map(coord => {
+                const color = getPixelColor(coord.x, coord.y, imageData);
+                return { r: color.r, g: color.g, b: color.b };
+            });
+
+            for (let i = pixels.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [pixels[i], pixels[j]] = [pixels[j], pixels[i]];
+            }
+            return pixels;
         }
-        function getSortFunction(criteria) {
-            const colorSorters = {
-                'red': (a, b) => a.r - b.r, 'green': (a, b) => a.g - b.g, 'blue': (a, b) => a.b - b.b,
-                'brightness': (a, b) => getBrightness(a.r, a.g, a.b) - getBrightness(b.r, b.g, b.b),
-                'hue': (a, b) => getHue(a.r, a.g, a.b) - getHue(b.r, b.g, b.b),
-                'saturation': (a, b) => getSaturation(a.r, a.g, a.b) - getSaturation(b.r, b.g, b.b)
+    };
+    availableEffects.push(PixelShuffle);
+
+
+    // =================================================================================
+    // == CORE ENGINE
+    // =================================================================================
+
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    const imageLoader = document.getElementById('imageLoader');
+    const growthSelect = document.getElementById('growthAlgorithm');
+    const effectSelect = document.getElementById('effectAlgorithm');
+    const effectOptions = document.getElementById('effectOptions');
+    const biasControls = document.getElementById('biasControls');
+    const sortCriteriaSelect = document.getElementById('sortCriteria');
+    const reverseSortCheckbox = document.getElementById('reverseSort');
+    const resetButton = document.getElementById('resetButton');
+    const saveButton = document.getElementById('saveButton');
+    const thresholdSlider = document.getElementById('threshold');
+
+    let trueOriginalImageData = null;
+    let workingImageData = null;
+    let isProcessing = false;
+    let animationFrameId = null;
+    let lesionCoords = [];
+    let currentGrowthModule = null;
+    let currentEffectModule = null;
+
+    imageLoader.addEventListener('change', e => e.target.files && e.target.files[0] && loadImageFile(e.target.files[0]));
+    canvas.addEventListener('click', handleCanvasClick);
+    resetButton.addEventListener('click', resetCanvas);
+    saveButton.addEventListener('click', saveImage);
+    effectSelect.addEventListener('change', toggleEffectOptions);
+    growthSelect.addEventListener('change', toggleBiasControls);
+
+    canvas.addEventListener('dragover', e => { e.preventDefault(); canvas.classList.add('dragging-over'); });
+    canvas.addEventListener('dragleave', () => canvas.classList.remove('dragging-over'));
+    canvas.addEventListener('drop', e => {
+        e.preventDefault();
+        canvas.classList.remove('dragging-over');
+        if (e.dataTransfer.files.length > 0) {
+            const file = e.dataTransfer.files[0];
+            if (file.type.startsWith('image/')) loadImageFile(file);
+        }
+    });
+
+    function populateControls() {
+        availableGrowths.forEach(g => {
+            const option = document.createElement('option');
+            option.value = g.name;
+            option.textContent = g.name;
+            growthSelect.appendChild(option);
+        });
+        availableEffects.forEach(e => {
+            const option = document.createElement('option');
+            option.value = e.name;
+            option.textContent = e.name;
+            effectSelect.appendChild(option);
+        });
+        toggleEffectOptions();
+        toggleBiasControls();
+    }
+
+    function toggleEffectOptions() {
+        const selectedEffect = availableEffects.find(e => e.name === effectSelect.value);
+        effectOptions.style.display = selectedEffect.showOptions ? 'flex' : 'none';
+    }
+    
+    function toggleBiasControls() {
+        const selectedGrowth = availableGrowths.find(g => g.name === growthSelect.value);
+        biasControls.style.display = selectedGrowth.showBiasControls ? 'flex' : 'none';
+    }
+
+    function loadImageFile(file) {
+        const reader = new FileReader();
+        reader.onload = event => {
+            const img = new Image();
+            img.onload = () => {
+                stopProcessing();
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+                trueOriginalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                workingImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
             };
-            return colorSorters[criteria];
+            img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function handleCanvasClick(e) {
+        if (!workingImageData) return;
+        isProcessing ? stopProcessing() : startLesion(e);
+    }
+
+    function stopProcessing() {
+        if (!isProcessing) return;
+        cancelAnimationFrame(animationFrameId);
+        isProcessing = false;
+        workingImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    }
+
+    function resetCanvas() {
+        stopProcessing();
+        if (trueOriginalImageData) {
+            workingImageData = new ImageData(
+                new Uint8ClampedArray(trueOriginalImageData.data),
+                trueOriginalImageData.width
+            );
+            ctx.putImageData(workingImageData, 0, 0);
         }
-        function getBrightness(r, g, b) { return 0.299 * r + 0.587 * g + 0.114 * b; }
-        function rgbToHsl(r, g, b) {
-            r /= 255; g /= 255; b /= 255;
-            let max = Math.max(r, g, b), min = Math.min(r, g, b);
-            let h, s, l = (max + min) / 2;
-            if (max === min) { h = s = 0; } 
-            else {
-                let d = max - min;
-                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-                switch (max) {
-                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-                    case g: h = (b - r) / d + 2; break;
-                    case b: h = (r - g) / d + 4; break;
-                }
-                h /= 6;
+    }
+
+    function saveImage() {
+        const link = document.createElement('a');
+        link.download = 'lesion-art.png';
+        link.href = canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream');
+        link.click();
+    }
+
+    function startLesion(e) {
+        isProcessing = true;
+        lesionCoords = [];
+
+        currentGrowthModule = availableGrowths.find(g => g.name === growthSelect.value);
+        currentEffectModule = availableEffects.find(e => e.name === effectSelect.value);
+
+        const rect = canvas.getBoundingClientRect();
+        const x = Math.floor((e.clientX - rect.left) * (canvas.width / rect.width));
+        const y = Math.floor((e.clientY - rect.top) * (canvas.height / rect.height));
+        const seedColor = getPixelColor(x, y, workingImageData);
+        const threshold = parseInt(thresholdSlider.value, 10);
+        currentGrowthModule.init(x, y, workingImageData, seedColor, threshold);
+
+        animate();
+    }
+
+    function animate() {
+        const xBias = parseInt(document.getElementById('xBias').value, 10) / 100;
+        const yBias = parseInt(document.getElementById('yBias').value, 10) / 100;
+
+        const BATCH_SIZE = 50;
+        const growthResult = currentGrowthModule.step(BATCH_SIZE, { xBias, yBias });
+        lesionCoords.push(...growthResult.newCoords);
+
+        const effectOptions = {
+            sortCriteria: sortCriteriaSelect.value,
+            isReversed: reverseSortCheckbox.checked
+        };
+        const processedPixels = currentEffectModule.apply(lesionCoords, workingImageData, effectOptions);
+
+        drawLesion(lesionCoords, processedPixels);
+
+        if (growthResult.isDone) {
+            stopProcessing();
+        } else {
+            animationFrameId = requestAnimationFrame(animate);
+        }
+    }
+
+    function drawLesion(coords, pixels) {
+        const modifiedImageData = new ImageData(
+            new Uint8ClampedArray(workingImageData.data),
+            workingImageData.width
+        );
+        for (let i = 0; i < coords.length; i++) {
+            const originalCoord = coords[i];
+            const processedPixel = pixels[i];
+            const index = (originalCoord.y * canvas.width + originalCoord.x) * 4;
+            modifiedImageData.data[index] = processedPixel.r;
+            modifiedImageData.data[index + 1] = processedPixel.g;
+            modifiedImageData.data[index + 2] = processedPixel.b;
+        }
+        ctx.putImageData(modifiedImageData, 0, 0);
+    }
+
+    // --- Helper & Color Functions ---
+    function getPixelColor(x, y, imageData) {
+        const i = (y * imageData.width + x) * 4;
+        return { r: imageData.data[i], g: imageData.data[i + 1], b: imageData.data[i + 2] };
+    }
+    function colorDistance(c1, c2) {
+        return Math.sqrt(Math.pow(c1.r - c2.r, 2) + Math.pow(c1.g - c2.g, 2) + Math.pow(c1.b - c2.b, 2));
+    }
+    function getSortFunction(criteria) {
+        const colorSorters = {
+            'red': (a, b) => a.r - b.r, 'green': (a, b) => a.g - b.g, 'blue': (a, b) => a.b - b.b,
+            'brightness': (a, b) => getBrightness(a.r, a.g, a.b) - getBrightness(b.r, b.g, b.b),
+            'hue': (a, b) => getHue(a.r, a.g, a.b) - getHue(b.r, b.g, b.b),
+            'saturation': (a, b) => getSaturation(a.r, a.g, a.b) - getSaturation(b.r, b.g, b.b)
+        };
+        return colorSorters[criteria];
+    }
+    function getBrightness(r, g, b) { return 0.299 * r + 0.587 * g + 0.114 * b; }
+    function rgbToHsl(r, g, b) {
+        r /= 255; g /= 255; b /= 255;
+        let max = Math.max(r, g, b), min = Math.min(r, g, b);
+        let h, s, l = (max + min) / 2;
+        if (max === min) { h = s = 0; }
+        else {
+            let d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
             }
-            return [h, s, l];
+            h /= 6;
         }
-        function getHue(r, g, b) { return rgbToHsl(r, g, b)[0]; }
-        function getSaturation(r, g, b) { return rgbToHsl(r, g, b)[1]; }
+        return [h, s, l];
+    }
+    function getHue(r, g, b) { return rgbToHsl(r, g, b)[0]; }
+    function getSaturation(r, g, b) { return rgbToHsl(r, g, b)[1]; }
+
+    // --- Initial Setup ---
+    populateControls();
 
     </script>
 </body>
