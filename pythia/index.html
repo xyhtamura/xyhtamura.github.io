@@ -10,7 +10,7 @@
     <div class="container">
         <header>
             <h1>Pythia</h1>
-            <p>Paracognitive Granular Effect</p>
+            <p>Paracognitive Granular Delay</p>
         </header>
 
         <div class="io-panel">
@@ -20,7 +20,7 @@
                 <input type="file" id="control-input" accept="audio/*">
             </div>
             <div class="input-group" id="source-input-group">
-                <h3>2. Source Signal (Other Dimension)</h3>
+                <h3>2. Source Signal</h3>
                 <p>The audio used for the granular textures.</p>
                 <input type="file" id="source-input" accept="audio/*">
             </div>
@@ -31,16 +31,34 @@
             <label for="self-sample-checkbox">Use Control Signal as Source</label>
         </div>
 
+        <div class="mode-selector">
+             <div class="radio-group">
+                <input type="radio" id="mode-continuous" name="mode" value="continuous" checked>
+                <label for="mode-continuous">Delay Mode</label>
+            </div>
+            <div class="radio-group">
+                <input type="radio" id="mode-triggered" name="mode" value="triggered">
+                <label for="mode-triggered">Threshold Mode</label>
+            </div>
+        </div>
+
+
         <div class="controls-panel">
             <div class="playback-controls">
                 <button id="play-button" disabled>Load Files to Start</button>
                 <button id="record-button" disabled>Record</button>
             </div>
-            <div class="slider-group">
+            <div class="slider-group" id="delay-group">
+                <label for="delay">Envelope Delay (s)</label>
+                <input type="range" id="delay" min="-2" max="2" value="0" step="0.01">
+                <span id="delay-value">0.00</span>
+            </div>
+            <div class="slider-group" id="threshold-group">
                 <label for="threshold">Trigger Threshold</label>
                 <input type="range" id="threshold" min="0" max="1" value="0.1" step="0.01">
                 <span id="threshold-value">0.10</span>
             </div>
+
             <div class="slider-group">
                 <label for="grain-size">Grain Size (ms)</label>
                 <input type="range" id="grain-size" min="10" max="500" value="150" step="1">
@@ -85,4 +103,4 @@
     </div>
     <script src="pythia.js"></script>
 </body>
-</html>s
+</html>

@@ -8,8 +8,12 @@ window.onload = () => {
     const recordingsList = document.getElementById('recordings-list');
     const selfSampleCheckbox = document.getElementById('self-sample-checkbox');
     const lookaheadGroup = document.getElementById('lookahead-group');
-    
+    const modeRadios = document.querySelectorAll('input[name="mode"]');
+    const delayGroup = document.getElementById('delay-group');
+    const thresholdGroup = document.getElementById('threshold-group');
+
     const sliders = {
+        delay: document.getElementById('delay'),
         threshold: document.getElementById('threshold'),
         grainSize: document.getElementById('grain-size'),
         grainDensity: document.getElementById('grain-density'),
@@ -19,6 +23,7 @@ window.onload = () => {
         envelopeShape: document.getElementById('envelope-shape'),
     };
     const valueSpans = {
+        delay: document.getElementById('delay-value'),
         threshold: document.getElementById('threshold-value'),
         grainSize: document.getElementById('grain-size-value'),
         grainDensity: document.getElementById('grain-density-value'),
@@ -38,6 +43,7 @@ window.onload = () => {
     let analyserNode = null;
     let mediaRecorder = null;
     let recordedChunks = [];
+    let controlRmsEnvelope = [];
 
     // --- Audio Graph Nodes ---
     const dryGain = audioContext.createGain();
@@ -45,13 +51,14 @@ window.onload = () => {
     const masterOut = audioContext.createGain();
     masterOut.connect(audioContext.destination);
 
-
     // --- Audio State & Parameters ---
     let isPlaying = false;
     let isRecording = false;
     let isSelfSampling = false;
+    let operatingMode = 'continuous'; // 'continuous' or 'triggered'
     let startTime = 0;
     const params = {
+        delay: 0,
         threshold: 0.1,
         grainSize: 150,
         grainDensity: 20,
@@ -62,6 +69,32 @@ window.onload = () => {
     };
     let lastGrainTime = 0;
     let nextGrainInterval = 0;
+
+    // --- Pre-computation ---
+    const analyzeControlBuffer = () => {
+        if (!controlBuffer) return;
+        controlRmsEnvelope = [];
+        const data = controlBuffer.getChannelData(0);
+        const windowSize = 256; // Should be a power of 2
+        for (let i = 0; i < data.length; i += windowSize) {
+            let sumSquares = 0.0;
+            const end = Math.min(i + windowSize, data.length);
+            for (let j = i; j < end; j++) {
+                sumSquares += data[j] * data[j];
+            }
+            controlRmsEnvelope.push(Math.sqrt(sumSquares / windowSize));
+        }
+    };
+
+    const getRmsAtTime = (time) => {
+        if (controlRmsEnvelope.length === 0) return 0;
+        const windowSize = 256;
+        const windowsPerSecond = audioContext.sampleRate / windowSize;
+        const index = Math.floor(time * windowsPerSecond);
+        const clampedIndex = Math.max(0, Math.min(controlRmsEnvelope.length - 1, index));
+        return controlRmsEnvelope[clampedIndex] * 4.0; // Scale up RMS for more dynamic impact
+    };
+
 
     // --- File Loading ---
     const loadAudioFile = (file) => new Promise((resolve, reject) => {
@@ -75,17 +108,14 @@ window.onload = () => {
         const ready = isSelfSampling ? controlBuffer : (controlBuffer && sourceBuffer);
         playButton.disabled = !ready;
         recordButton.disabled = !ready;
-        if (ready) {
-            playButton.textContent = "Start Pythia";
-        } else {
-            playButton.textContent = "Load Files to Start";
-        }
+        playButton.textContent = ready ? "Start Pythia" : "Load Files to Start";
     };
 
     controlInput.addEventListener('change', async (e) => {
         if (!e.target.files[0]) return;
         try {
             controlBuffer = await loadAudioFile(e.target.files[0]);
+            analyzeControlBuffer();
             if (isSelfSampling) sourceBuffer = controlBuffer;
             checkReadyState();
         } catch (error) { console.error("Error loading control file:", error); }
@@ -101,6 +131,21 @@ window.onload = () => {
     });
     
     // --- UI Updates ---
+    const updateModeUI = () => {
+        if (operatingMode === 'continuous') {
+            delayGroup.classList.remove('hidden');
+            thresholdGroup.classList.add('hidden');
+        } else { // triggered
+            delayGroup.classList.add('hidden');
+            thresholdGroup.classList.remove('hidden');
+        }
+    };
+    
+    modeRadios.forEach(radio => radio.addEventListener('change', (e) => {
+        operatingMode = e.target.value;
+        updateModeUI();
+    }));
+
     selfSampleCheckbox.addEventListener('change', (e) => {
         isSelfSampling = e.target.checked;
         sourceInputGroup.style.opacity = isSelfSampling ? '0.5' : '1';
@@ -108,11 +153,7 @@ window.onload = () => {
         sliders.lookahead.disabled = !isSelfSampling;
         lookaheadGroup.style.opacity = isSelfSampling ? '1' : '0.5';
 
-        if (isSelfSampling) {
-            sourceBuffer = controlBuffer;
-        } else {
-            sourceBuffer = externalSourceBuffer;
-        }
+        sourceBuffer = isSelfSampling ? controlBuffer : externalSourceBuffer;
         checkReadyState();
     });
 
@@ -132,11 +173,12 @@ window.onload = () => {
     const calculateNextGrainInterval = () => {
         const baseInterval = 1 / params.grainDensity;
         const jitter = (Math.random() - 0.5) * baseInterval * params.densityJitter;
-        nextGrainInterval = Math.max(0, baseInterval + jitter);
+        nextGrainInterval = Math.max(0.001, baseInterval + jitter);
     };
 
-    const triggerGrain = () => {
-        if (!sourceBuffer) return;
+    const triggerGrain = (amplitude = 1.0) => {
+        if (!sourceBuffer || amplitude <= 0.001) return;
+
         const grainDuration = params.grainSize / 1000;
         let startOffset = 0;
 
@@ -156,39 +198,49 @@ window.onload = () => {
         grain.buffer = sourceBuffer;
         
         const now = audioContext.currentTime;
-        grainGain.gain.setValueAtTime(0, now);
-        // Use the envelope shape parameter to control attack time
         const attackTime = grainDuration * params.envelopeShape;
-        grainGain.gain.linearRampToValueAtTime(1, now + attackTime);
+        
+        grainGain.gain.setValueAtTime(0, now);
+        grainGain.gain.linearRampToValueAtTime(amplitude, now + attackTime);
         grainGain.gain.linearRampToValueAtTime(0, now + grainDuration);
 
         grain.connect(grainGain).connect(wetGain);
         grain.start(now, Math.max(0, startOffset), grainDuration);
     };
 
-    const analysisLoop = () => {
+    const playbackLoop = () => {
         if (!isPlaying) return;
         
+        const now = audioContext.currentTime;
+        const currentPlaybackTime = (now - startTime) % controlBuffer.duration;
+        
+        // --- Live Metering (always active) ---
         const dataArray = new Uint8Array(analyserNode.frequencyBinCount);
         analyserNode.getByteTimeDomainData(dataArray);
-        
         let sumSquares = 0.0;
-        for (const amplitude of dataArray) {
-            const val = (amplitude / 128.0) - 1.0;
+        for (const amp of dataArray) {
+            const val = (amp / 128.0) - 1.0;
             sumSquares += val * val;
         }
-        const rms = Math.sqrt(sumSquares / dataArray.length);
+        const liveRms = Math.sqrt(sumSquares / dataArray.length);
+        levelMeter.style.width = `${Math.min(100, liveRms * 300)}%`;
 
-        levelMeter.style.width = `${Math.min(100, rms * 300)}%`;
-        
-        const now = audioContext.currentTime;
-        
-        if (rms > params.threshold && (now - lastGrainTime) > nextGrainInterval) {
-            triggerGrain();
+        // --- Grain Generation Logic ---
+        if ((now - lastGrainTime) > nextGrainInterval) {
+            if (operatingMode === 'continuous') {
+                const envelopeTime = (currentPlaybackTime + params.delay + controlBuffer.duration) % controlBuffer.duration;
+                const targetAmplitude = getRmsAtTime(envelopeTime);
+                triggerGrain(targetAmplitude);
+            } else { // triggered
+                if (liveRms > params.threshold) {
+                    triggerGrain(1.0);
+                }
+            }
             lastGrainTime = now;
-            calculateNextGrainInterval(); // Calculate the next random interval
+            calculateNextGrainInterval();
         }
-        requestAnimationFrame(analysisLoop);
+        
+        requestAnimationFrame(playbackLoop);
     };
 
     // --- Playback Control ---
@@ -211,13 +263,13 @@ window.onload = () => {
         wetGain.connect(masterOut);
         
         startTime = audioContext.currentTime;
-        lastGrainTime = 0; // Reset grain timer
-        calculateNextGrainInterval(); // Set the first interval
+        lastGrainTime = 0;
+        calculateNextGrainInterval();
         controlSourceNode.start(startTime);
         
         isPlaying = true;
         playButton.textContent = "Stop Pythia";
-        analysisLoop();
+        playbackLoop();
     };
     
     const stop = () => {
@@ -232,8 +284,7 @@ window.onload = () => {
     };
 
     playButton.addEventListener('click', () => {
-        if (!isPlaying) start();
-        else stop();
+        if (!isPlaying) start(); else stop();
     });
 
     // --- Recording Logic ---
@@ -242,16 +293,12 @@ window.onload = () => {
         
         const dest = audioContext.createMediaStreamDestination();
         masterOut.connect(dest);
-        
         const mimeType = MediaRecorder.isTypeSupported('audio/wav') ? 'audio/wav' : 'audio/webm';
-        
         mediaRecorder = new MediaRecorder(dest.stream);
         recordedChunks = [];
 
         mediaRecorder.ondataavailable = (e) => {
-            if (e.data.size > 0) {
-                recordedChunks.push(e.data);
-            }
+            if (e.data.size > 0) recordedChunks.push(e.data);
         };
 
         mediaRecorder.onstop = () => {
@@ -259,7 +306,7 @@ window.onload = () => {
             const url = URL.createObjectURL(blob);
             const li = document.createElement('li');
             const a = document.createElement('a');
-a.href = url;
+            a.href = url;
             const extension = mimeType.includes('wav') ? 'wav' : 'webm';
             a.download = `pythia-recording-${new Date().toISOString()}.${extension}`;
             a.textContent = a.download;
@@ -283,10 +330,9 @@ a.href = url;
     };
 
     recordButton.addEventListener('click', () => {
-        if (!isRecording) {
-            startRecording();
-        } else {
-            stopRecording();
-        }
+        if (!isRecording) startRecording(); else stopRecording();
     });
+
+    // --- Initial UI State ---
+    updateModeUI();
 };
