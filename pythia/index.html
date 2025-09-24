@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pythia</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Pythia</h1>
+            <p>Paracognitive Granular Effect</p>
+        </header>
+
+        <div class="io-panel">
+            <div class="input-group">
+                <h3>1. Control Signal</h3>
+                <p>The audio that triggers and shapes the effect.</p>
+                <input type="file" id="control-input" accept="audio/*">
+            </div>
+            <div class="input-group" id="source-input-group">
+                <h3>2. Source Signal (Other Dimension)</h3>
+                <p>The audio used for the granular textures.</p>
+                <input type="file" id="source-input" accept="audio/*">
+            </div>
+        </div>
+        
+        <div class="option-group">
+            <input type="checkbox" id="self-sample-checkbox">
+            <label for="self-sample-checkbox">Use Control Signal as Source</label>
+        </div>
+
+        <div class="controls-panel">
+            <div class="playback-controls">
+                <button id="play-button" disabled>Load Files to Start</button>
+                <button id="record-button" disabled>Record</button>
+            </div>
+            <div class="slider-group">
+                <label for="threshold">Trigger Threshold</label>
+                <input type="range" id="threshold" min="0" max="1" value="0.1" step="0.01">
+                <span id="threshold-value">0.10</span>
+            </div>
+            <div class="slider-group">
+                <label for="grain-size">Grain Size (ms)</label>
+                <input type="range" id="grain-size" min="10" max="500" value="150" step="1">
+                <span id="grain-size-value">150</span>
+            </div>
+            <div class="slider-group">
+                <label for="grain-density">Grain Density</label>
+                <input type="range" id="grain-density" min="1" max="100" value="20" step="1">
+                <span id="grain-density-value">20</span>
+            </div>
+            <div class="slider-group" id="lookahead-group">
+                <label for="lookahead">Lookahead (s)</label>
+                <input type="range" id="lookahead" min="0" max="5" value="0.5" step="0.01" disabled>
+                <span id="lookahead-value">0.50</span>
+            </div>
+             <div class="slider-group">
+                <label for="mix">Dry / Wet Mix</label>
+                <input type="range" id="mix" min="0" max="1" value="0.7" step="0.01">
+                <span id="mix-value">0.70</span>
+            </div>
+            <div class="slider-group">
+                <label for="density-jitter">Density Jitter</label>
+                <input type="range" id="density-jitter" min="0" max="1" value="0" step="0.01">
+                <span id="density-jitter-value">0.00</span>
+            </div>
+            <div class="slider-group">
+                <label for="envelope-shape">Envelope Shape</label>
+                <input type="range" id="envelope-shape" min="0.01" max="0.99" value="0.5" step="0.01">
+                <span id="envelope-shape-value">0.50</span>
+            </div>
+        </div>
+         <div class="visualization">
+            <h3>Control Signal Level</h3>
+            <div class="meter-container">
+                <div id="level-meter" class="meter-bar"></div>
+            </div>
+        </div>
+        <div id="recordings-container" class="recordings-container">
+             <h3>Recordings</h3>
+             <ul id="recordings-list"></ul>
+        </div>
+    </div>
+    <script src="pythia.js"></script>
+</body>
+</html>s
