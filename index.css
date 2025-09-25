@@ -512,7 +512,7 @@ div.categories p:not(:last-of-type)::after{
 }
 
 .category-software::before {
-	content: "Digital Applications & Tools";
+	content: "Digital Technologies";
 	font-weight: bold;
 }
 
