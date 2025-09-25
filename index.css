@@ -31,8 +31,9 @@
 	--email-color: #9fc4ee; /* Email address */
 	--original-color: #f0bb86; /* Indicator for originally conceptualized works */ 
 	--tagline-color: #c8d3db; /* A prominent purple for emphasis */
-	--keywords-color: #c8dbcc; /* A thematic sky blue */
-	--other-names: #f2dceb;
+	--keywords-color: #f2dceb; 
+	--other-names: #c8dbcc;
+	--alt-title-color: #a0b8a5; /* New variable for dark mode */
 	
 	/* Other UI Elements */
 	--selection-text: #26245c; /* Selected text color */
@@ -86,8 +87,9 @@
 	--email-color: #546f79; /* Email address */
 	--original-color: #e3780e; /* Indicator for originally conceptualized works */
 	--tagline-color: #323738;   /* A vibrant purple for light backgrounds */
-	--keywords-color: #323832;    /* A deep teal for clarity */
-	--other-names: #2e262b;
+	--keywords-color: #2e262b;    /* A deep teal for clarity */
+	--other-names: #323832;
+	--alt-title-color: #4a5e4f; /* New variable for light mode */
 	
 	/* Other UI Elements */
 	--selection-text: #a9b5db; /* Selected text color */
@@ -684,4 +686,10 @@ div.categories p:not(:last-of-type)::after{
 .item h2,
 .item p {
   margin: 0.1rem 0;
+}
+
+/* --- Add this to your index.css file --- */
+
+.work-alt-title {
+  color: var(--other-names);    /* Uses the new color variable */
 }
