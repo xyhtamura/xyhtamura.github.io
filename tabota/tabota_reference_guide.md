@@ -1,19 +1,21 @@
-# Tabota Language Reference v1.2
+<html>
+# Tabota Language Reference v1.4
 
 ## Table of Contents
 1. [Core Concepts](#core-concepts)
-2. [Positioning Systems](#positioning-systems)
-3. [Nested Timelines](#nested-timelines)
-4. [External References](#external-references)
-5. [Complete Examples](#complete-examples)
+2. [The Symbolic Axis Mode](#the-symbolic-axis-mode)
+3. [Positioning Systems](#positioning-systems)
+4. [Nested Timelines](#nested-timelines)
+5. [External References](#external-references)
+6. [Complete Examples](#complete-examples)
 
 ---
 
 ## Core Concepts
 
-### The Three Axes of Organization
+### The Regime Pair: Temporal + Axial
 
-Tabota separates **temporal flow** from **value semantics**, creating a flexible matrix:
+A Tabota **Scoring Regime** is a pair of two settings that define the fundamental "physics" of a section: the **Temporal Regime** (how time flows) and the **Axis Mode** (what the Y-axis values mean).
 
 | Temporal Regime | Description | Use Cases |
 |----------------|-------------|-----------|
@@ -24,8 +26,87 @@ Tabota separates **temporal flow** from **value semantics**, creating a flexible
 | Axis Mode | Description | Use Cases |
 |-----------|-------------|-----------|
 | **frequency** | Y-axis represents Hz | Pitched music, microtonal composition |
+| **symbolic** | Y-axis represents note names | Conventional notation, custom tuning systems |
 | **categorical** | Y-axis divided into named lanes | Percussion, MIDI triggers, lighting cues |
 | **instructional** | Y-axis for visual layout only | Theater, performance art, conceptual scores |
+
+### The Conversion Principle
+
+Tabota is built on the principle of mutual translation between abstract compositional ideas and their physical realization.
+
+* **Temporal Conversion**: `metered` (beats) can be translated to `chronological` (seconds) using a **BPM** value as the key.
+* **Axial Conversion**: `symbolic` (note names) can be translated to `frequency` (Hz) using a **Tuning Map** as the key.
+
+---
+
+## The Symbolic Axis Mode
+
+The `symbolic` axis mode allows composers to work with familiar note names and durations, abstracting away the underlying frequencies. It must be used with the `metered` temporal regime.
+
+Events in this mode use `"note"` and `"duration"` properties.
+
+### Standard 12-TET Notation
+
+By default, the `symbolic` mode uses standard 12-Tone Equal Temperament with A4=440Hz.
+
+```json
+{
+  "sectionId": "C_Major_Scale",
+  "temporalRegime": "metered",
+  "regimeSettings": { "beats": 8, "bpm": 120 },
+  "axisMode": "symbolic",
+  "modeSettings": {
+    "tuning": "12-TET",
+    "a4": 440
+  },
+  "events": [
+    { "type": "line", "startTime": 0, "duration": 1, "note": "C4" },
+    { "type": "line", "startTime": 1, "duration": 1, "note": "D4" },
+    { "type": "line", "startTime": 2, "duration": 1, "note": "E4" },
+    { "type": "line", "startTime": 3, "duration": 1, "note": "F4" }
+  ]
+}
+```
+
+### Custom Tuning Systems
+
+You can override the default tuning by providing a path to a custom **Tuning Map** file. This allows for historical temperaments (like Pythagorean or Just Intonation) or completely novel, user-defined scales.
+
+The `modeSettings` object is changed to point to your file:
+
+```json
+{
+  "axisMode": "symbolic",
+  "modeSettings": {
+    "tuning": {
+      "system": "custom",
+      "file": "./tunings/pythagorean_c.json"
+    }
+  }
+}
+```
+
+The referenced JSON file is a simple map of note names to their exact frequencies in Hz.
+
+**Example: `pythagorean_c.json`**
+```json
+{
+  "name": "Pythagorean Scale on C",
+  "description": "A 12-tone scale derived from a stack of pure 3:2 perfect fifths.",
+  "referenceNote": "A4",
+  "referenceFreq": 440.00,
+  "notes": {
+    "C4": 260.74,
+    "D4": 293.33,
+    "E4": 330.00,
+    "F4": 347.65,
+    "G4": 391.11,
+    "A4": 440.00,
+    "B4": 495.00,
+    "C5": 521.48
+  }
+}
+```
 
 ---
 
@@ -46,8 +127,7 @@ Tabota separates **temporal flow** from **value semantics**, creating a flexible
   "type": "line",
   "startTime": 0,
   "duration": 3,
-  "startYValue": 440,
-  "endYValue": 660
+  "note": "C4" 
 }
 // Calculates: endTime = 0 + 3 = 3
 ```
@@ -87,7 +167,6 @@ Position an event where you know ONE point within its span:
 - `0` or `"0%"` = anchor is at the START
 - `0.5` or `"50%"` = anchor is at the MIDDLE
 - `1` or `"100%"` = anchor is at the END
-- `0.25` or `"25%"` = anchor is 25% through the event
 - Any value 0-1 or 0%-100% works!
 
 ### 5. Relative Positioning
@@ -145,20 +224,12 @@ Multiple tracks within one section, each with its own axis mode:
   "tracks": [
     {
       "trackId": "Melody",
-      "axisMode": "frequency",
+      "axisMode": "symbolic",
       "events": [...]
     },
     {
       "trackId": "Percussion",
       "axisMode": "categorical",
-      "events": [...]
-    },
-    {
-      "trackId": "FieldRecording",
-      "temporalRegime": "chronological",  // Override parent regime!
-      "regimeSettings": {"duration": 20},
-      "startOffset": 4,
-      "axisMode": "instructional",
       "events": [...]
     }
   ]
@@ -194,8 +265,7 @@ Nested sections triggered at specific points in the parent:
 
 ## External References
 
-### Pattern 1: Imports (Recommended)
-Declare all external files at the top:
+Declare external files at the top via `imports` and reference them by ID.
 
 ```json
 {
@@ -203,8 +273,7 @@ Declare all external files at the top:
   "imports": [
     {
       "id": "rain_ambience",
-      "file": "./recordings/rain.json",
-      "type": "full"
+      "file": "./recordings/rain.json"
     },
     {
       "id": "rock_pattern",
@@ -216,7 +285,6 @@ Declare all external files at the top:
   "score": [
     {
       "sectionId": "Movement1",
-      "events": [...],
       "childSections": [
         {
           "externalRef": "rain_ambience",
@@ -228,146 +296,59 @@ Declare all external files at the top:
 }
 ```
 
-### Pattern 2: Direct File References
-Reference files directly without imports:
-
-```json
-{
-  "score": [
-    {
-      "externalFile": "./sections/intro.json",
-      "parallelTo": {
-        "section": "MainTheme",
-        "startAt": 0
-      }
-    }
-  ]
-}
-```
-
-### Pattern 3: External Events
-Import and position individual event patterns:
-
-```json
-{
-  "events": [
-    {
-      "type": "external",
-      "externalRef": "rock_pattern",
-      "time": 16,
-      "transform": {
-        "timeOffset": 0,
-        "transpose": 1.5,  // Multiply all yValues by 1.5
-        "scale": 1.0       // Scale timing
-      }
-    }
-  ]
-}
-```
-
-### Pattern 4: Track References
-Import entire tracks:
-
-```json
-{
-  "tracks": [
-    {
-      "trackId": "Melody",
-      "axisMode": "frequency",
-      "events": [...]
-    },
-    {
-      "externalRef": "drone_textures",
-      "startOffset": 8
-    }
-  ]
-}
-```
-
 ---
 
 ## Complete Examples
 
-### Example 1: Song with Field Recording Trigger
+### Example 1: Symbolic Mode with Custom Tuning
 
-**main.json:**
+**composition.json:**
 ```json
 {
-  "projectName": "Song with Rain",
-  "languageVersion": "1.2",
-  "imports": [
-    {"id": "rain", "file": "./rain.json"}
-  ],
+  "projectName": "Pythagorean Melody",
+  "languageVersion": "1.4",
   "score": [
     {
-      "sectionId": "Song",
+      "sectionId": "MainTheme",
       "temporalRegime": "metered",
-      "regimeSettings": {"beats": 32, "bpm": 120},
-      "axisMode": "frequency",
-      "modeSettings": {"minHz": 200, "maxHz": 800},
+      "regimeSettings": { "beats": 8, "bpm": 100 },
+      "axisMode": "symbolic",
+      "modeSettings": {
+        "tuning": {
+          "system": "custom",
+          "file": "./tunings/pythagorean_c.json"
+        }
+      },
       "events": [
-        {
-          "type": "line",
-          "startTime": 0,
-          "duration": 8,
-          "startYValue": 440,
-          "endYValue": 523.25,
-          "payload": {"comment": "Verse"}
-        },
-        {
-          "type": "line",
-          "startTime": 8,
-          "duration": 8,
-          "startYValue": 587.33,
-          "endYValue": 659.25,
-          "payload": {"comment": "Chorus - rain starts here"}
-        }
-      ],
-      "childSections": [
-        {
-          "externalRef": "rain",
-          "startTrigger": {
-            "parentTime": 16,
-            "anchorPosition": 0
-          }
-        }
+        { "type": "line", "startTime": 0, "duration": 2, "note": "C4" },
+        { "type": "line", "startTime": 2, "duration": 2, "note": "G4" },
+        { "type": "line", "startTime": 4, "duration": 2, "note": "D4" },
+        { "type": "line", "startTime": 6, "duration": 2, "note": "A4" }
       ]
     }
   ]
 }
 ```
 
-**rain.json:**
+**./tunings/pythagorean_c.json:**
 ```json
 {
-  "projectName": "Rain Recording",
-  "languageVersion": "1.2",
-  "score": [
-    {
-      "sectionId": "RainAmbience",
-      "temporalRegime": "chronological",
-      "regimeSettings": {"duration": 30, "units": "seconds"},
-      "axisMode": "frequency",
-      "modeSettings": {"minHz": 100, "maxHz": 500},
-      "events": [
-        {
-          "type": "point",
-          "time": 0,
-          "yValue": 220,
-          "payload": {"text": "Rain starts"}
-        }
-      ]
-    }
-  ]
+  "name": "Pythagorean Scale on C",
+  "referenceNote": "A4",
+  "referenceFreq": 440.00,
+  "notes": {
+    "C4": 260.74, "D4": 293.33, "E4": 330.00, "F4": 347.65, 
+    "G4": 391.11, "A4": 440.00, "B4": 495.00
+  }
 }
 ```
 
-### Example 2: Multi-Track with Different Time Regimes
+### Example 2: Multi-Track with Mixed Regimes
 
 ```json
 {
   "projectName": "Mixed Regime Composition",
-  "languageVersion": "1.2",
+  "languageVersion": "1.4",
   "score": [
     {
       "sectionId": "MainSection",
@@ -376,15 +357,13 @@ Import entire tracks:
       "tracks": [
         {
           "trackId": "MelodicLayer",
-          "axisMode": "frequency",
-          "modeSettings": {"minHz": 400, "maxHz": 1000},
+          "axisMode": "symbolic",
           "events": [
             {
               "type": "line",
               "anchor": {"time": 16, "position": "50%"},
               "duration": 8,
-              "startYValue": 440,
-              "endYValue": 880,
+              "note": "A4",
               "payload": {"comment": "Climax centered at beat 16"}
             }
           ]
@@ -397,126 +376,8 @@ Import entire tracks:
             {"type": "point", "time": 0, "yValue": "Kick"},
             {"type": "point", "time": 1, "yValue": "Snare"}
           ]
-        },
-        {
-          "trackId": "TimedSoundEffect",
-          "temporalRegime": "chronological",
-          "regimeSettings": {"duration": 15, "units": "seconds"},
-          "startOffset": 8,
-          "axisMode": "instructional",
-          "events": [
-            {
-              "type": "point",
-              "time": 0,
-              "yValue": 50,
-              "payload": {"text": "Whoosh sound effect"}
-            }
-          ]
         }
       ]
     }
   ]
 }
-```
-
-### Example 3: Modular Library System
-
-**composition.json:**
-```json
-{
-  "projectName": "Modular Piece",
-  "languageVersion": "1.2",
-  "imports": [
-    {"id": "motif_a", "file": "./library/motif_a.json"},
-    {"id": "motif_b", "file": "./library/motif_b.json"},
-    {"id": "drums", "file": "./library/drums.json", "target": "Rock_Beat"}
-  ],
-  "score": [
-    {
-      "sectionId": "Intro",
-      "temporalRegime": "metered",
-      "regimeSettings": {"beats": 16, "bpm": 120},
-      "axisMode": "frequency",
-      "modeSettings": {"minHz": 200, "maxHz": 800},
-      "events": [
-        {
-          "type": "external",
-          "externalRef": "motif_a",
-          "time": 0
-        },
-        {
-          "type": "external",
-          "externalRef": "motif_b",
-          "time": 8,
-          "transform": {
-            "transpose": 1.5,
-            "timeOffset": 0
-          }
-        },
-        {
-          "type": "external",
-          "externalRef": "drums",
-          "time": 4
-        }
-      ]
-    }
-  ]
-}
-```
-
----
-
-## Processing Order
-
-When rendering a Tabota score, follow this order:
-
-1. **Load external files** from `imports` and direct references
-2. **Resolve relative positioning** (events referencing other events)
-3. **Calculate missing time values** (duration-based, anchor-based)
-4. **Process parallel sections** and child sections
-5. **Apply transforms** to external events
-6. **Render to global timeline**
-
----
-
-## Key Design Principles
-
-1. **Separation of Concerns**: Time flow (regime) is independent of value semantics (mode)
-2. **Modularity**: Build libraries of reusable patterns
-3. **Flexibility**: Multiple positioning systems for different compositional needs
-4. **Nestability**: Timelines within timelines, regimes within regimes
-5. **Human Readability**: JSON is verbose but clear
-6. **Machine Parsable**: Strict schema validation
-
----
-
-## Use Cases
-
-- **Microtonal Music**: frequency mode with custom tuning
-- **Theatrical Scores**: instructional mode with achronous regime
-- **Film Scores**: chronological regime with parallel sections
-- **Interactive Media**: conditional triggers and external references
-- **Live Coding**: Reference libraries and transform on-the-fly
-- **Multimedia Installations**: Mixed regimes and nested timelines
-- **Algorithmic Composition**: Generate and combine external modules
-- **Collaborative Scores**: Multiple composers working on separate files
-
----
-
-## Version History
-
-- **v1.2**: Added external file references and percentage-based anchors
-- **v1.1**: Added nested timelines (parallel sections, tracks, child sections)
-- **v1.0**: Core specification (regimes, modes, events, positioning)
-
----
-
-## Future Considerations
-
-- **Conditional Execution**: More robust condition system
-- **Live Parameters**: Real-time control mappings
-- **Spatial Audio**: 3D positioning and movement
-- **Video Sync**: Frame-accurate timing
-- **MIDI/OSC Export**: Standard format conversion
-- **Playback Engine**: Reference implementation
-- **Visual Editor**: GUI for score creation
