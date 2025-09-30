@@ -51,17 +51,17 @@
 	--category-intermedia-color: #7a52f3; /* Intermedia */
 	--category-virtual-color: #e72e5c; /* Virtual and streamed media */
 	--category-music-color: #ff66d4; /* Music */
-	--category-score-color: #33ccff; /* Soundtrack & Score */
-	--category-writing-color: #e8c440; /* Written works (e.g., poetry, essays, fiction) */
+	--category-score-color: #cee8f2; /* Soundtrack & Score */
+	--category-writing-color: #f0dfa1; /* Written works (e.g., poetry, essays, fiction) */
 	--category-theater-color: #5fe25f; /* Theater and performance-based works */
-	--category-software-color: #88d9e6; /* Software and technological works */
-	--category-instrument-color: #ff7200; /* Instrument design and experimental interfaces */
+	--category-software-color: #0aaff0; /* Software and technological works */
 	--category-visual-color: #ab00ff; /* Visual art */
 	--category-participatory-color: #ffb400; /* Participatory & Community Projects */
 	--category-dot-color: #c3c6d6; /* Separator dot for categories */
     --category-management-color: #d9a7f9; /* lavender/purple-pink for soft structure */
-    --category-sci-comm-color: #77ddff;   /* sky blue for clarity & education */
-	--category-artistic-research-color: #48d1cc; /* New Bluish-Green */
+    --category-sci-comm-color: #b5ebe1;   /* sky blue for clarity & education */
+	--category-artistic-research-color: #1ad9c9; /* New Bluish-Green */
+	--category-fashion-color: #e6a3b1; /* New Fashion Category */
 }
 
 @media (prefers-color-scheme: light) {
@@ -110,15 +110,15 @@
 	--category-music-color: #1e7a4e; /* Music */
 	--category-score-color: #a64625; /* Soundtrack & Score */
 	--category-writing-color: #2e57a1; /* Written works  */
-	--category-theater-color: #7a3d7a; /* Theater and performance-based works */
+	--category-theater-color: #731d73; /* Theater and performance-based works */
 	--category-software-color: #2e72b5; /* Digital Applications & Technology works */
-	--category-instrument-color: #644737; /* Instrument design and experimental interfaces */
 	--category-visual-color: #8b3ebd; /* Visual art */
 	--category-participatory-color: #d49a00; /* Participatory & Community Projects */
-	--category-management-color: #6d3684; /* deep plum for grounded structure */
+	--category-management-color: #4a3952; /* deep plum for grounded structure */
     --category-sci-comm-color: #1a7a99;   /* ocean teal-blue for communication & clarity */
 	--category-dot-color: #514d3d; /* Separator dot for categories */
 	--category-artistic-research-color: #00796b; /* New Dark Teal */
+	--category-fashion-color: #a34f60; /* New Fashion Category */
 }
 }
 
@@ -448,12 +448,7 @@ div.categories p:not(:last-of-type)::after{
 }
 
 
-.category-instrument {
-	color: var(--category-instrument-color);
-	font-weight: bold;
-	margin-right: 0.5rem;
-	display: inline;
-}
+
 
 .category-visuals {
 	color: var(--category-visual-color);
@@ -514,14 +509,10 @@ div.categories p:not(:last-of-type)::after{
 }
 
 .category-software::before {
-	content: "Digital Technologies";
+	content: "Digital & Media Technologies";
 	font-weight: bold;
 }
 
-.category-instrument::before {
-	content: "Instrument Design & Sound Synthesis";
-	font-weight: bold;
-}
 
 .category-visuals::before {
 	content: "Visual Art & Graphics";
@@ -566,6 +557,18 @@ div.categories p:not(:last-of-type)::after{
 
 .category-artistic-research::before {
 	content: "Research-Art";
+	font-weight: bold;
+}
+
+.category-fashion {
+	color: var(--category-fashion-color);
+	font-weight: bold;
+	margin-right: 0.5rem;
+	display: inline;
+}
+
+.category-fashion::before {
+	content: "Fashion & Design";
 	font-weight: bold;
 }
 

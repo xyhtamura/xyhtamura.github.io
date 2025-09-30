@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TaboTa</title>
+    <title>Tabota</title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/theme/lucario.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/mode/javascript/javascript.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/addon/edit/matchbrackets.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
     <style>
         :root {
@@ -116,74 +118,84 @@
         .event-payload { position: absolute; transform: translate(15px, -50%); font-size: 12px; color: var(--json-string-color); white-space: nowrap; z-index: 11; }
         .grid-line-vertical { position: absolute; width: 1px; height: 100%; top: 0; background-color: var(--grid-line-color); }
 		
-		/* ADD THIS CSS TO YOUR EXISTING <style> TAG */
-
-.tabota-reference {
-    width: 100%;
-    margin-top: 20px;
-    padding: 20px;
-    background-color: var(--section-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-
-.tabota-reference h2 {
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 10px;
-    margin-top: 0;
-}
-
-.tabota-reference h3 {
-    color: var(--primary-color);
-    margin-top: 30px;
-    border-bottom: 1px solid #ffffff1a;
-    padding-bottom: 5px;
-}
-
-.tabota-reference h4 {
-    color: var(--point-color);
-    margin-top: 20px;
-    margin-bottom: 5px;
-}
-
-.tabota-reference p {
-    color: #ccc;
-    line-height: 1.6;
-    margin-top: 5px;
-}
-
-.tabota-reference ul {
-    list-style: none;
-    padding-left: 15px;
-}
-
-.tabota-reference li {
-    margin-bottom: 10px;
-}
-
-.tabota-reference code {
-    background-color: var(--bg-color);
-    color: var(--json-string-color);
-    padding: 2px 5px;
-    border-radius: 3px;
-    font-family: "Courier New", Courier, monospace;
-    font-size: 0.9em;
-}
-
-.tabota-reference .param {
-    color: var(--json-key-color);
-}
-
-.tabota-reference pre {
-    background-color: #1a1a1a;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    padding: 15px;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    font-size: 13px;
-}
+		/* REFERENCE SECTION STYLES */
+        .tabota-reference {
+            width: 100%;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .tabota-reference a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        .tabota-reference a:hover {
+            text-decoration: underline;
+        }
+        .tabota-reference h1, .tabota-reference h2 {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        .tabota-reference h3 {
+            color: var(--primary-color);
+            margin-top: 30px;
+            border-bottom: 1px solid #ffffff1a;
+            padding-bottom: 5px;
+        }
+        .tabota-reference h4 {
+            color: var(--point-color);
+            margin-top: 20px;
+            margin-bottom: 5px;
+        }
+        .tabota-reference p, .tabota-reference li {
+            color: #ccc;
+            line-height: 1.6;
+            margin-top: 5px;
+        }
+        .tabota-reference table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .tabota-reference th, .tabota-reference td {
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+            text-align: left;
+        }
+        .tabota-reference th {
+            background-color: #333;
+        }
+        .tabota-reference ul {
+            list-style: disc;
+            padding-left: 25px;
+        }
+        .tabota-reference li {
+            margin-bottom: 10px;
+        }
+        .tabota-reference code {
+            background-color: var(--bg-color);
+            color: var(--json-string-color);
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 0.9em;
+        }
+        .tabota-reference pre > code {
+            display: block;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .tabota-reference pre {
+            background-color: #1a1a1a;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 15px;
+            font-size: 13px;
+        }
         
     </style>
 </head>
@@ -223,147 +235,28 @@
             <button id="render-btn">Render Score</button>
         </div>
         
-         <h3>How It Works: The Core Concepts</h3>
-    <p>
-        A Tabota score is structured as a series of <strong>Sections</strong>. Each section has its own rules for how time (the X-axis) and values (the Y-axis) are interpreted.
-    </p>
-    <ul>
-        <li>
-            <strong>Temporal Regimes (The X-Axis)</strong>: This defines the "flow of time."
-            <ul>
-                <li><code>"metered"</code>: Traditional musical time with a BPM and beat grid.</li>
-                <li><code>"chronological"</code>: Absolute time measured in seconds.</li>
-                <li><code>"achronous"</code>: A sequence of events defined only by their order, not a specific time value.</li>
-            </ul>
-        </li>
-        <li>
-            <strong>Axis Modes (The Y-Axis)</strong>: This defines what the vertical values mean.
-            <ul>
-                <li><code>"frequency"</code>: For music. The Y-axis represents pitch in Hertz (Hz).</li>
-                <li><code>"categorical"</code>: For percussion or named triggers. The Y-axis is divided into lanes for each category (e.g., "Kick", "Snare").</li>
-                <li><code>"instructional"</code>: For performance art or abstract cues. The Y-axis is just for visual organization, and the core data is text inside an event's <code>payload</code>.</li>
-            </ul>
-        </li>
-        <li>
-            <strong>Events (The Primitives)</strong>: These are the actual building blocks of the score.
-            <ul>
-                <li><code>"point"</code>: An instantaneous event, like a drum hit or a single cue.</li>
-                <li><code>"line"</code>: An event with a duration, like a melodic glide or a sustained action.</li>
-                <li><code>"group"</code>: A container for events that should happen simultaneously in the <code>achronous</code> regime.</li>
-            </ul>
-        </li>
-    </ul>
-            <h3>Try Other Samples</h3>
-            <div class="sample-container"><div class="editor-header"><h4>Sample 1: Microtonal Scale</h4><button class="copy-btn" data-target="sample1">Copy & Render</button></div><pre><code id="sample1"></code></pre></div>
-            <div class="sample-container"><div class="editor-header"><h4>Sample 2: Theatrical Cue Sequence</h4><button class="copy-btn" data-target="sample2">Copy & Render</button></div><pre><code id="sample2"></code></pre></div>
+        <div class="about">
+             <h3>How It Works: The Core Concepts</h3>
+             <p>A Tabota score is structured as a series of <strong>Sections</strong>. Each section has its own rules for how time (the X-axis) and values (the Y-axis) are interpreted.</p>
+             <h3>Try Other Samples</h3>
+             <div class="sample-container"><div class="editor-header"><h4>Sample 1: Microtonal Scale</h4><button class="copy-btn" data-target="sample1">Copy & Render</button></div><pre><code id="sample1"></code></pre></div>
+             <div class="sample-container"><div class="editor-header"><h4>Sample 2: Theatrical Cue Sequence</h4><button class="copy-btn" data-target="sample2">Copy & Render</button></div><pre><code id="sample2"></code></pre></div>
         </div>
+        
+        <div class="tabota-reference">
+            <h2>Tabota Language Reference</h2>
+            <p>
+                This guide is dynamically loaded from <code>tabota_reference_guide.md</code>.
+                For validation, you can also view the <a href="tabota.schema.json" target="_blank" rel="noopener noreferrer">full JSON Schema file</a>.
+            </p>
+            <hr style="border-color: var(--border-color); margin: 20px 0;">
+            <div id="markdown-content">
+                <p>Loading reference guide...</p>
+            </div>
+        </div>
+
     </div>
-	<div class="tabota-reference">
-    <h2>Tabota Language Reference (v1.0)</h2>
-    <p>This is a comprehensive guide to all the objects and parameters used in the Tabota JSON language. Use this as a "stylebook" for creating your own scores.</p>
 
-    <h3>Top-Level Object</h3>
-    <p>Every Tabota file is a single JSON object with the following root properties:</p>
-    <ul>
-        <li><code class="param">"projectName"</code>: (String) The name of your project.</li>
-        <li><code class="param">"languageVersion"</code>: (String) The version of the Tabota spec this file adheres to (e.g., "1.0-alpha").</li>
-        <li><code class="param">"author"</code>: (String, Optional) The name of the composer/author.</li>
-        <li><code class="param">"score"</code>: (Array) The main container for all compositional data, consisting of one or more Section objects.</li>
-    </ul>
-
-    <h3>The Section Object</h3>
-    <p>The <code>score</code> array is composed of Section objects. Each section is a self-contained unit with its own rules for time, value, and events.</p>
-    <ul>
-        <li><code class="param">"sectionId"</code>: (String) A unique name for the section (e.g., "A1_Melody").</li>
-        <li><code class="param">"temporalRegime"</code>: (String) Defines how time flows. Must be one of: <code>"metered"</code>, <code>"chronological"</code>, or <code>"achronous"</code>.</li>
-        <li><code class="param">"regimeSettings"</code>: (Object) Parameters specific to the chosen temporal regime.</li>
-        <li><code class="param">"axisMode"</code>: (String) Defines what the Y-axis represents. Must be one of: <code>"frequency"</code>, <code>"categorical"</code>, or <code>"instructional"</code>.</li>
-        <li><code class="param">"modeSettings"</code>: (Object) Parameters specific to the chosen axis mode.</li>
-        <li><code class="param">"events"</code>: (Array) An array of Event objects that occur within this section.</li>
-    </ul>
-
-    <h3>Temporal Regimes & Settings</h3>
-    <h4>Regime: <code>"metered"</code></h4>
-    <p>For traditional musical time based on a tempo and beat structure.</p>
-    <ul>
-        <li><code class="param">"beats"</code>: (Number) The total duration of the section in beats. Required for visualization.</li>
-        <li><code class="param">"bpm"</code>: (Number, Optional) The tempo in beats per minute.</li>
-        <li><code class="param">"timeSignature"</code>: (String, Optional) The time signature (e.g., "4/4").</li>
-    </ul>
-    
-    <h4>Regime: <code>"chronological"</code></h4>
-    <p>For absolute time, independent of musical meter.</p>
-    <ul>
-        <li><code class="param">"duration"</code>: (Number) The total duration of the section. Required for visualization.</li>
-        <li><code class="param">"units"</code>: (String, Optional) The unit of time, typically <code>"seconds"</code>.</li>
-    </ul>
-
-    <h4>Regime: <code>"achronous"</code></h4>
-    <p>For a sequence of events where only the order matters, not the specific timing.</p>
-    <ul>
-        <li><code class="param">"indices"</code>: (Number) The total number of indexed "steps" in the sequence. Required for visualization.</li>
-    </ul>
-
-    <h3>Axis Modes & Settings</h3>
-    <h4>Mode: <code>"frequency"</code></h4>
-    <p>The Y-axis represents musical pitch in Hertz (Hz).</p>
-    <ul>
-        <li><code class="param">"minHz"</code> / <code class="param">"maxHz"</code>: (Number) The lowest and highest frequencies for the visualizer's Y-axis range.</li>
-        <li><code class="param">"tuning"</code>: (String, Optional) The name of a tuning system for snapping grids (e.g., "12-TET").</li>
-    </ul>
-    
-    <h4>Mode: <code>"categorical"</code></h4>
-    <p>The Y-axis is divided into named lanes for discrete triggers like percussion.</p>
-    <ul>
-        <li><code class="param">"categories"</code>: (Array of Strings) A list of names for each lane (e.g., <code>["Kick", "Snare", "Hi-Hat"]</code>).</li>
-    </ul>
-
-    <h4>Mode: <code>"instructional"</code></h4>
-    <p>The Y-axis has no specific meaning and is used for visual organization of abstract events like performance cues. It has no specific settings.</p>
-
-    <h3>Event Objects</h3>
-    <p>The <code>events</code> array in each section contains the core compositional data. All events can have an optional <code>"id"</code> and a <code>"payload"</code> object.</p>
-    
-    <h4>Type: <code>"point"</code></h4>
-    <p>An instantaneous event.</p>
-    <pre><code>{
-  "type": "point",
-  "time": 2.5,         // In "metered" or "chronological"
-  "index": 1,          // In "achronous"
-  "yValue": 587.33     // Can be Hz, a category name, or a % value
-}</code></pre>
-
-    <h4>Type: <code>"line"</code></h4>
-    <p>An event with a start and end point, representing duration or a glide.</p>
-    <pre><code>{
-  "type": "line",
-  "startTime": 0,      // or "startIndex"
-  "endTime": 2,        // or "endIndex"
-  "startYValue": 440.0,
-  "endYValue": 523.25,
-  "interpolation": "linear" // Optional: e.g., "ease-in-out"
-}</code></pre>
-
-    <h4>Type: <code>"group"</code></h4>
-    <p>A container for events that must occur synchronously in an <code>"achronous"</code> regime.</p>
-    <pre><code>{
-  "type": "group",
-  "index": 3,
-  "yValue": 50, // Visual anchor point for the group
-  "events": [
-    { "type": "point", "yValue": -20, "payload": { "text": "Event A" } },
-    { "type": "point", "yValue": 20, "payload": { "text": "Event B" } }
-  ]
-}</code></pre>
-
-    <h3>The <code>payload</code> Object</h3>
-    <p>The payload is a flexible object attached to any event, used to store extra data. This is how instructional and conditional logic is encoded.</p>
-    <ul>
-        <li><code class="param">"comment"</code>: (String) A descriptive comment that might show up as a tooltip.</li>
-        <li><code class="param">"text"</code>: (String) The primary text for an instructional event, like dialogue or a stage cue.</li>
-        <li><code class="param">"condition"</code>: (String) For interactive scores, a rule that must be met for the event to be triggered (e.g., <code>"userInput: 'Yes'"</code>).</li>
-    </ul>
-</div>
     <script>
         // --- STATE & CONFIG ---
         let zoom = { x: 1, y: 1 };
@@ -399,6 +292,7 @@
             document.getElementById('zoom-y-out').addEventListener('click', () => { zoom.y = Math.max(0.25, zoom.y / 1.25); renderScore(); });
 
             renderScore();
+            loadReferenceGuide(); // ADDED: Load the markdown file on page load
         });
 
         // --- DATA PROCESSING ---
@@ -461,7 +355,7 @@
             wrapper.append(yAxis, timelineView, xAxis);
             
             drawBackground(processedSections, timelineView, xAxis, yAxis, totalDuration);
-            drawEvents(processedEvents, timelineView, totalDuration, timelineHeight); // Pass height for line calc
+            drawEvents(processedEvents, timelineView, totalDuration, timelineHeight); 
             scoreContainer.appendChild(wrapper);
         }
 
@@ -474,7 +368,7 @@
                 const divider = document.createElement('div'); divider.className = 'section-divider'; divider.style.left = `${xStart}%`; const label = document.createElement('div'); label.className = 'section-divider-label'; label.textContent = section.sectionId; divider.appendChild(label); view.appendChild(divider);
             });
 
-            for (let i = 0; i <= totalDuration * zoom.x; i++) { // Add more lines when zoomed
+            for (let i = 0; i <= totalDuration * zoom.x; i++) {
                 const xPos = (i / totalDuration) * 100;
                 if (xPos > 100) break;
                 const line = document.createElement('div'); line.className = 'grid-line-vertical'; line.style.left = `${xPos}%`; view.appendChild(line);
@@ -489,7 +383,6 @@
         }
         
         function drawEvents(events, container, totalDuration, timelineHeight) {
-            // FIX: Use known dimensions for line calculation instead of measuring the DOM element.
             const timelineViewportWidth = document.getElementById('score-container').clientWidth;
             const fullTimelineWidth = timelineViewportWidth * zoom.x;
 
@@ -520,6 +413,22 @@
         function beautifyJson() { try { const ugly = codeEditor.getValue(); const obj = JSON.parse(ugly); const pretty = JSON.stringify(obj, undefined, 2); codeEditor.setValue(pretty); } catch (e) { console.error("Could not beautify invalid JSON."); } }
         function handleCopyClick(e) { const targetId = e.currentTarget.dataset.target; const textToCopy = targetId ? samples[targetId] : codeEditor.getValue(); navigator.clipboard.writeText(textToCopy).then(() => { const originalText = e.currentTarget.innerHTML; e.currentTarget.innerHTML = 'Copied!'; if (targetId) { codeEditor.setValue(JSON.stringify(JSON.parse(textToCopy), null, 2)); renderScore(); } setTimeout(() => { e.currentTarget.innerHTML = originalText; }, 1500); }).catch(err => console.error('Failed to copy: ', err)); }
         function syntaxHighlight(jsonString) { if (typeof jsonString != 'string') { jsonString = JSON.stringify(jsonString, undefined, 2); } jsonString = jsonString.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); return jsonString.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) { let cls = 'json-number'; if (/^"/.test(match)) { cls = /:$/.test(match) ? 'json-key' : 'json-string'; } else if (/true|false/.test(match)) { cls = 'json-boolean'; } return '<span class="' + cls + '">' + match + '</span>'; }); }
+        
+        // ADDED: Function to load and render the Markdown reference guide
+        async function loadReferenceGuide() {
+            const target = document.getElementById('markdown-content');
+            try {
+                const response = await fetch('tabota_reference_guide.md');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const markdownText = await response.text();
+                target.innerHTML = marked.parse(markdownText);
+            } catch (error) {
+                console.error('Could not load or parse the reference guide:', error);
+                target.innerHTML = `<p style="color: #ff8888;">Error: Could not load the reference guide (tabota_reference_guide.md). Please make sure the file is in the same folder as this HTML file.</p>`;
+            }
+        }
     </script>
 </body>
 </html>

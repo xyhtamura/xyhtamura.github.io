@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Style Guide</title>
+    <link rel="stylesheet" href="index.css">
+    <style>
+        /* Styles specific to this style guide page */
+        body {
+            /* This will now properly inherit from your index.css */
+            padding: 2%;
+            display: block;
+        }
+
+        .styleguide-h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--text-color);
+            font-family: var(--font-heading);
+            margin-bottom: 2rem;
+        }
+        
+        .styleguide-h2 {
+            border-bottom: 2px solid var(--tagline-color);
+            padding-bottom: 0.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1.5rem;
+            font-family: var(--font-heading);
+            color: var(--tagline-color);
+        }
+
+        .swatch-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .color-swatch {
+            border: 0px
+            border-radius: 8px;
+            overflow: hidden;
+            font-family: var(--font-detail);
+        }
+
+        .color-display {
+            height: 100px;
+        }
+
+        .color-info {
+            padding: 0.75rem;
+            background-color: var(--work-entry-bg);
+        }
+        
+        .color-info p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .font-showcase p {
+            font-size: 1.2rem;
+            padding: 1rem;
+            border-radius: 5px;
+            background-color: var(--work-entry-bg);
+        }
+        
+        .category-chain-container {
+            background-color: var(--work-entry-bg);
+            padding: 1.5rem;
+            border-radius: 10px;
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="styleguide-h1">Portfolio Style Guide</h1>
+
+    <h2 class="styleguide-h2">Color Palette</h2>
+    <div class="swatch-grid">
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--bg-color);"></div><div class="color-info"><p>--bg-color</p></div></div>
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--text-color);"></div><div class="color-info"><p>--text-color</p></div></div>
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--h2-color);"></div><div class="color-info"><p>--h2-color</p></div></div>
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--link-hover-color);"></div><div class="color-info"><p>--link-hover-color</p></div></div>
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--line-color);"></div><div class="color-info"><p>--line-color</p></div></div>
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--h3-color);"></div><div class="color-info"><p>--h3-color</p></div></div>
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--h4-color);"></div><div class="color-info"><p>--h4-color</p></div></div>
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--role-color);"></div><div class="color-info"><p>--role-color</p></div></div>
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--year-color);"></div><div class="color-info"><p>--year-color</p></div></div>
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--email-color);"></div><div class="color-info"><p>--email-color</p></div></div>
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--original-color);"></div><div class="color-info"><p>--original-color</p></div></div>
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--tagline-color);"></div><div class="color-info"><p>--tagline-color</p></div></div>
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--keywords-color);"></div><div class="color-info"><p>--keywords-color</p></div></div>
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--other-names);"></div><div class="color-info"><p>--other-names</p></div></div>
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--alt-title-color);"></div><div class="color-info"><p>--alt-title-color</p></div></div>
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--selection-background);"></div><div class="color-info"><p>--selection-background</p></div></div>
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--work-entry-bg);"></div><div class="color-info"><p>--work-entry-bg</p></div></div>
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--minor-work-entry-bg);"></div><div class="color-info"><p>--minor-work-entry-bg</p></div></div>
+    </div>
+    
+    <h2 class="styleguide-h2">Category Colors</h2>
+    <div class="swatch-grid">
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--category-research-color);"></div><div class="color-info"><p>--category-research-color</p></div></div>
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--category-intermedia-color);"></div><div class="color-info"><p>--category-intermedia-color</p></div></div>
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--category-virtual-color);"></div><div class="color-info"><p>--category-virtual-color</p></div></div>
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--category-music-color);"></div><div class="color-info"><p>--category-music-color</p></div></div>
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--category-score-color);"></div><div class="color-info"><p>--category-score-color</p></div></div>
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--category-writing-color);"></div><div class="color-info"><p>--category-writing-color</p></div></div>
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--category-theater-color);"></div><div class="color-info"><p>--category-theater-color</p></div></div>
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--category-software-color);"></div><div class="color-info"><p>--category-software-color</p></div></div>
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--category-visual-color);"></div><div class="color-info"><p>--category-visual-color</p></div></div>
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--category-participatory-color);"></div><div class="color-info"><p>--category-participatory-color</p></div></div>
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--category-management-color);"></div><div class="color-info"><p>--category-management-color</p></div></div>
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--category-sci-comm-color);"></div><div class="color-info"><p>--category-sci-comm-color</p></div></div>
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--category-artistic-research-color);"></div><div class="color-info"><p>--category-artistic-research-color</p></div></div>
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--category-fashion-color);"></div><div class="color-info"><p>--category-fashion-color</p></div></div>
+        <div class="color-swatch"><div class="color-display" style="background-color: var(--category-dot-color);"></div><div class="color-info"><p>--category-dot-color</p></div></div>
+    </div>
+    
+    <h2 class="styleguide-h2">Typography</h2>
+    <div class="font-showcase">
+        <p style="font-family: var(--font-heading);">Heading Font (--font-heading): "Quicksand"</p>
+        <p style="font-family: var(--font-body);">Body Font (--font-body): "Rubik"</p>
+        <p style="font-family: var(--font-accent);">Accent Font (--font-accent): "Averia Sans Libre"</p>
+        <p style="font-family: var(--font-detail);">Detail Font (--font-detail): "Lexend Deca"</p>
+        <p style="font-family: var(--font-keywords);">Keywords Font (--font-keywords): "Averia Libre"</p>
+        <p style="font-family: var(--font-special-accent);">Special Accent Font (--font-special-accent): "Dosis"</p>
+    </div>
+    
+    <h2 class="styleguide-h2">Component Showcase</h2>
+    
+    <div class="center-section" style="border: 1px dashed var(--h4-color); padding: 1rem; border-radius: 10px; margin-bottom: 2rem;">
+        <h1>Xyh Tamura</h1>
+        <p class="othernames">Cy Tamura · Cye Tamura · 田村再</p>
+        <p class="tagline">Transdisciplinary Arts & Research</p>
+        <div class="keywords"><p>Music × Writing × Art</p></div>
+        <p class="email"><a href="#" style="color: var(--email-color); text-decoration:none;">example@email.com</a></p>
+        <div class="social-links"><a href="#">Social Link Example</a></div>
+    </div>
+
+    <div class="work-entry">
+        <div class="categories"><p class="category-intermedia"></p><p class="category-software"></p></div>
+        <h2><span><a href="#" target="_blank">Standard Work Entry Title</a></span><span class="work-alt-title">Alternate Title</span></h2>
+        <h3>Exhibition or Context Name</h3>
+        <h4>Specific Project or Segment</h4>
+        <p class="role"><span class="original"></span> · <span class="role">Role Description</span></p>
+        <p class="year">2025</p>
+        <p>This is a description of the work. You can select this text to see the custom selection style. It also demonstrates a standard paragraph within a work entry.</p>
+    </div>
+
+    <div class="work-entry">
+        <div class="categories"><p class="category-artistic-research"></p></div>
+        <h2><a href="#" target="_blank">Complex Entry with Sub-Items</a></h2>
+        <p>A description of the main project.</p>
+        <div class="subentry">
+            <div class="sub-heading">Creation Tools (Sub-Heading)</div>
+            <div class="item">
+                <h2><a href="#" target="_blank">Tool One</a></h2>
+                <p>Description for the first tool.</p>
+            </div>
+            <div class="item">
+                <h2><a href="#" target="_blank">Tool Two</a></h2>
+                <p>Description for the second tool.</p>
+            </div>
+        </div>
+        <div class="iteration">
+            <p>presented at</p>
+            <h3><span><a href="#">Iteration/Performance Venue</a></span></h3>
+            <p class="year">2025</p>
+        </div>
+    </div>
+    
+    <div class="work-entry minor">
+        <div class="categories"><p class="category-music"></p></div>
+        <h2><a href="#" target="_blank">Minor Work Entry Title</a></h2>
+        <p class="role"><span class="original"></span></p>
+        <p class="year">2025</p>
+        <p><span>Brief description for a minor work.</span></p>
+    </div>
+    
+    <h2 class="styleguide-h2">Category Chain</h2>
+    <div class="category-chain-container">
+        <div class="categories">
+            <p class="category-research"></p>
+            <p class="category-artistic-research"></p>
+            <p class="category-intermedia"></p>
+            <p class="category-virtual"></p>
+            <p class="category-music"></p>
+            <p class="category-score"></p>
+            <p class="category-writing"></p>
+            <p class="category-theater"></p>
+            <p class="category-software"></p>
+            <p class="category-instrument"></p>
+            <p class="category-visuals"></p>
+            <p class="category-participatory"></p>
+            <p class="category-management"></p>
+            <p class="category-sci-comm"></p>
+            <p class="category-fashion"></p>
+        </div>
+    </div>
+
+
+</body>
+</html>

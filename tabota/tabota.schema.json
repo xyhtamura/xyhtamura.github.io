@@ -1,0 +1,548 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tabota.org/schema/v1.2",
+  "title": "Tabota Score Format",
+  "description": "A universal notation language for time-based events with nested timelines and external references",
+  "type": "object",
+  "required": ["projectName", "languageVersion", "score"],
+  "properties": {
+    "projectName": {
+      "type": "string",
+      "description": "Name of the composition or project"
+    },
+    "languageVersion": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+(-[a-z]+)?$",
+      "description": "Tabota specification version (e.g., '1.2')"
+    },
+    "author": {
+      "type": "string",
+      "description": "Composer or creator name"
+    },
+    "created": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of creation"
+    },
+    "modified": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of last modification"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional project-level metadata",
+      "properties": {
+        "description": {"type": "string"},
+        "tags": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "license": {"type": "string"}
+      }
+    },
+    "imports": {
+      "type": "array",
+      "description": "External Tabota files to import and reference",
+      "items": {"$ref": "#/definitions/Import"}
+    },
+    "score": {
+      "type": "array",
+      "description": "Array of sections that make up the composition",
+      "minItems": 1,
+      "items": {"$ref": "#/definitions/Section"}
+    }
+  },
+  
+  "definitions": {
+    "Import": {
+      "type": "object",
+      "required": ["id", "file"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Local identifier for this import"
+        },
+        "file": {
+          "type": "string",
+          "description": "Path to external Tabota JSON file (relative or absolute)"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["section", "track", "events", "full"],
+          "default": "full",
+          "description": "What to import from the file"
+        },
+        "target": {
+          "type": "string",
+          "description": "Specific section/track ID within the external file to import"
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Optional metadata about this import",
+          "properties": {
+            "version": {"type": "string"},
+            "checksum": {"type": "string"},
+            "url": {"type": "string"}
+          }
+        }
+      }
+    },
+    
+    "Section": {
+      "type": "object",
+      "properties": {
+        "sectionId": {
+          "type": "string",
+          "description": "Unique identifier for this section"
+        },
+        "externalRef": {
+          "type": "string",
+          "description": "Reference an imported section by ID instead of defining inline"
+        },
+        "externalFile": {
+          "type": "string",
+          "description": "Direct reference to external file (alternative to imports)"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+$",
+          "description": "Optional version for this section"
+        },
+        "temporalRegime": {
+          "type": "string",
+          "enum": ["metered", "chronological", "achronous"],
+          "description": "How time flows in this section"
+        },
+        "regimeSettings": {
+          "type": "object",
+          "description": "Configuration specific to the temporal regime",
+          "oneOf": [
+            {"$ref": "#/definitions/MeteredSettings"},
+            {"$ref": "#/definitions/ChronologicalSettings"},
+            {"$ref": "#/definitions/AchronousSettings"}
+          ]
+        },
+        "parallelTo": {
+          "type": "object",
+          "description": "Run this section in parallel with another section",
+          "required": ["section", "startAt"],
+          "properties": {
+            "section": {
+              "type": "string",
+              "description": "ID of parent section to align with"
+            },
+            "startAt": {
+              "type": "number",
+              "description": "Time/beat/index in parent section to start this section"
+            },
+            "anchorPosition": {
+              "oneOf": [
+                {"type": "number", "minimum": 0, "maximum": 1},
+                {"type": "string", "pattern": "^\\d+(\\.\\d+)?%$"}
+              ],
+              "default": 0,
+              "description": "Where in this section the anchor point is"
+            }
+          }
+        },
+        "tracks": {
+          "type": "array",
+          "description": "Multiple tracks within this section",
+          "items": {"$ref": "#/definitions/Track"}
+        },
+        "axisMode": {
+          "type": "string",
+          "enum": ["frequency", "categorical", "instructional"],
+          "description": "What the Y-axis represents (only if not using tracks)"
+        },
+        "modeSettings": {
+          "type": "object",
+          "description": "Configuration specific to the axis mode",
+          "oneOf": [
+            {"$ref": "#/definitions/FrequencySettings"},
+            {"$ref": "#/definitions/CategoricalSettings"},
+            {"$ref": "#/definitions/InstructionalSettings"}
+          ]
+        },
+        "events": {
+          "type": "array",
+          "description": "Events in this section",
+          "items": {"$ref": "#/definitions/Event"}
+        },
+        "childSections": {
+          "type": "array",
+          "description": "Nested sections with their own temporal regimes",
+          "items": {"$ref": "#/definitions/ChildSection"}
+        }
+      },
+      "oneOf": [
+        {
+          "required": ["externalRef"],
+          "description": "Reference an imported section"
+        },
+        {
+          "required": ["externalFile"],
+          "description": "Direct file reference"
+        },
+        {
+          "required": ["sectionId", "temporalRegime", "regimeSettings"],
+          "description": "Inline section definition"
+        }
+      ]
+    },
+    
+    "Track": {
+      "type": "object",
+      "properties": {
+        "trackId": {
+          "type": "string",
+          "description": "Unique identifier for this track"
+        },
+        "externalRef": {
+          "type": "string",
+          "description": "Reference an imported track by ID"
+        },
+        "externalFile": {
+          "type": "string",
+          "description": "Direct reference to external file containing a track"
+        },
+        "temporalRegime": {
+          "type": "string",
+          "enum": ["metered", "chronological", "achronous"],
+          "description": "Override parent section's temporal regime"
+        },
+        "regimeSettings": {
+          "type": "object",
+          "description": "Override parent section's regime settings"
+        },
+        "startOffset": {
+          "type": "number",
+          "description": "Time offset from parent section start"
+        },
+        "axisMode": {
+          "type": "string",
+          "enum": ["frequency", "categorical", "instructional"]
+        },
+        "modeSettings": {
+          "type": "object",
+          "oneOf": [
+            {"$ref": "#/definitions/FrequencySettings"},
+            {"$ref": "#/definitions/CategoricalSettings"},
+            {"$ref": "#/definitions/InstructionalSettings"}
+          ]
+        },
+        "events": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/Event"}
+        }
+      },
+      "oneOf": [
+        {"required": ["externalRef"]},
+        {"required": ["externalFile"]},
+        {"required": ["trackId", "axisMode"]}
+      ]
+    },
+    
+    "ChildSection": {
+      "type": "object",
+      "properties": {
+        "sectionId": {"type": "string"},
+        "externalRef": {
+          "type": "string",
+          "description": "Reference an imported section"
+        },
+        "externalFile": {
+          "type": "string",
+          "description": "Direct file reference"
+        },
+        "temporalRegime": {
+          "type": "string",
+          "enum": ["metered", "chronological", "achronous"]
+        },
+        "regimeSettings": {
+          "type": "object",
+          "oneOf": [
+            {"$ref": "#/definitions/MeteredSettings"},
+            {"$ref": "#/definitions/ChronologicalSettings"},
+            {"$ref": "#/definitions/AchronousSettings"}
+          ]
+        },
+        "startTrigger": {
+          "type": "object",
+          "required": ["parentTime"],
+          "properties": {
+            "parentTime": {
+              "type": "number",
+              "description": "Time in parent's timeline to start this child"
+            },
+            "childTime": {
+              "type": "number",
+              "default": 0,
+              "description": "Where in child's timeline to start"
+            },
+            "anchorPosition": {
+              "oneOf": [
+                {"type": "number", "minimum": 0, "maximum": 1},
+                {"type": "string", "pattern": "^\\d+(\\.\\d+)?%$"}
+              ],
+              "default": 0,
+              "description": "Which point in the child section aligns with parentTime"
+            }
+          }
+        },
+        "endTrigger": {
+          "type": "object",
+          "description": "Optional: when to stop the child section",
+          "properties": {
+            "parentTime": {"type": "number"},
+            "condition": {
+              "type": "string",
+              "enum": ["parentEnds", "childEnds", "manual"]
+            }
+          }
+        },
+        "axisMode": {
+          "type": "string",
+          "enum": ["frequency", "categorical", "instructional"]
+        },
+        "modeSettings": {"type": "object"},
+        "events": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/Event"}
+        },
+        "childSections": {
+          "type": "array",
+          "description": "Nested children can have their own children",
+          "items": {"$ref": "#/definitions/ChildSection"}
+        }
+      },
+      "oneOf": [
+        {
+          "required": ["externalRef", "startTrigger"],
+          "description": "Reference external section"
+        },
+        {
+          "required": ["externalFile", "startTrigger"],
+          "description": "Direct file reference"
+        },
+        {
+          "required": ["sectionId", "temporalRegime", "regimeSettings", "startTrigger"],
+          "description": "Inline child section"
+        }
+      ]
+    },
+    
+    "MeteredSettings": {
+      "type": "object",
+      "required": ["beats"],
+      "properties": {
+        "beats": {"type": "number", "minimum": 0},
+        "bpm": {"type": "number", "minimum": 1},
+        "timeSignature": {"type": "string", "pattern": "^\\d+/\\d+$"},
+        "subdivision": {"type": "integer", "minimum": 1}
+      }
+    },
+    
+    "ChronologicalSettings": {
+      "type": "object",
+      "required": ["duration"],
+      "properties": {
+        "duration": {"type": "number", "minimum": 0},
+        "units": {
+          "type": "string",
+          "enum": ["seconds", "milliseconds", "minutes"],
+          "default": "seconds"
+        }
+      }
+    },
+    
+    "AchronousSettings": {
+      "type": "object",
+      "required": ["indices"],
+      "properties": {
+        "indices": {"type": "integer", "minimum": 1}
+      }
+    },
+    
+    "FrequencySettings": {
+      "type": "object",
+      "properties": {
+        "minHz": {"type": "number", "minimum": 0, "default": 20},
+        "maxHz": {"type": "number", "minimum": 0, "default": 20000},
+        "tuning": {"type": "string"},
+        "a4": {"type": "number", "default": 440}
+      }
+    },
+    
+    "CategoricalSettings": {
+      "type": "object",
+      "required": ["categories"],
+      "properties": {
+        "categories": {
+          "type": "array",
+          "items": {"type": "string"},
+          "minItems": 1
+        }
+      }
+    },
+    
+    "InstructionalSettings": {
+      "type": "object"
+    },
+    
+    "Event": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["point", "line", "group", "reference", "external"]
+        },
+        "id": {"type": "string"},
+        "payload": {"$ref": "#/definitions/Payload"}
+      },
+      "oneOf": [
+        {"$ref": "#/definitions/PointEvent"},
+        {"$ref": "#/definitions/LineEvent"},
+        {"$ref": "#/definitions/GroupEvent"},
+        {"$ref": "#/definitions/ReferenceEvent"},
+        {"$ref": "#/definitions/ExternalEvent"}
+      ]
+    },
+    
+    "ExternalEvent": {
+      "type": "object",
+      "required": ["type", "externalRef"],
+      "properties": {
+        "type": {"const": "external"},
+        "externalRef": {
+          "type": "string",
+          "description": "ID of imported events or section"
+        },
+        "externalFile": {
+          "type": "string",
+          "description": "Direct file reference"
+        },
+        "time": {"type": "number"},
+        "index": {"type": "integer"},
+        "transform": {
+          "type": "object",
+          "description": "Transformations to apply to imported events",
+          "properties": {
+            "timeOffset": {"type": "number"},
+            "transpose": {"type": "number"},
+            "scale": {"type": "number"}
+          }
+        }
+      }
+    },
+    
+    "PointEvent": {
+      "type": "object",
+      "allOf": [
+        {
+          "properties": {
+            "type": {"const": "point"},
+            "yValue": {
+              "oneOf": [
+                {"type": "number"},
+                {"type": "string"}
+              ]
+            }
+          },
+          "required": ["type", "yValue"]
+        },
+        {
+          "oneOf": [
+            {"required": ["time"], "properties": {"time": {"type": "number"}}},
+            {"required": ["index"], "properties": {"index": {"type": "integer"}}},
+            {"required": ["relativeTime"], "properties": {"relativeTime": {"type": "object"}}}
+          ]
+        }
+      ]
+    },
+    
+    "LineEvent": {
+      "type": "object",
+      "allOf": [
+        {
+          "properties": {
+            "type": {"const": "line"},
+            "startYValue": {"oneOf": [{"type": "number"}, {"type": "string"}]},
+            "endYValue": {"oneOf": [{"type": "number"}, {"type": "string"}]},
+            "interpolation": {
+              "type": "string",
+              "enum": ["linear", "ease-in", "ease-out", "ease-in-out", "step", "exponential"],
+              "default": "linear"
+            }
+          },
+          "required": ["type", "startYValue", "endYValue"]
+        },
+        {
+          "oneOf": [
+            {"required": ["startTime", "endTime"]},
+            {"required": ["startTime", "duration"]},
+            {"required": ["endTime", "duration"]},
+            {"required": ["anchor", "duration"]},
+            {"required": ["startIndex", "endIndex"]},
+            {"required": ["startIndex", "duration"]},
+            {"required": ["endIndex", "duration"]}
+          ]
+        }
+      ]
+    },
+    
+    "GroupEvent": {
+      "type": "object",
+      "allOf": [
+        {
+          "properties": {
+            "type": {"const": "group"},
+            "yValue": {"type": "number"},
+            "events": {"type": "array"}
+          },
+          "required": ["type", "yValue", "events"]
+        },
+        {
+          "oneOf": [
+            {"required": ["time"]},
+            {"required": ["index"]}
+          ]
+        }
+      ]
+    },
+    
+    "ReferenceEvent": {
+      "type": "object",
+      "allOf": [
+        {
+          "properties": {
+            "type": {"const": "reference"},
+            "ref": {"type": "string"},
+            "transpose": {"type": "number"},
+            "offset": {"type": "number"}
+          },
+          "required": ["type", "ref"]
+        },
+        {
+          "oneOf": [
+            {"required": ["time"]},
+            {"required": ["index"]}
+          ]
+        }
+      ]
+    },
+    
+    "Payload": {
+      "type": "object",
+      "properties": {
+        "text": {"type": "string"},
+        "comment": {"type": "string"},
+        "condition": {"type": "object"},
+        "metadata": {"type": "object", "additionalProperties": true}
+      },
+      "additionalProperties": true
+    }
+  }
+}
