@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Suminagashi</title>
+    <style>
+        :root {
+            --background-color: #1a1d1a;
+            --panel-color: #252925;
+            --text-color: #d0d5d0;
+            --border-color: #3a3f3a;
+            --accent-color: #8a9a5b;
+            --accent-hover: #a2b56b;
+        }
+        * { box-sizing: border-box; }
+        body, html {
+            font-family: 'SF Mono', 'Menlo', 'Courier New', monospace;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #controls {
+            margin: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            background-color: var(--panel-color);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+        label { color: #aaa; }
+        button, input[type="color"] {
+            background-color: #333833;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        button:hover {
+            background-color: var(--border-color);
+            border-color: #555;
+        }
+        input[type="color"] { padding: 0.2rem 0.5rem; }
+        #saveButton {
+            background-color: var(--accent-color);
+            border-color: #72814a;
+            color: #111;
+            font-weight: bold;
+        }
+        #saveButton:hover { background-color: var(--accent-hover); }
+        input[type="range"] {
+            -webkit-appearance: none; appearance: none;
+            width: 120px; background: transparent;
+        }
+        input[type="range"]::-webkit-slider-runnable-track { height: 6px; background: var(--border-color); border-radius: 3px; }
+        input[type="range"]::-moz-range-track { height: 6px; background: var(--border-color); border-radius: 3px; }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 16px; width: 16px;
+            background: var(--text-color); border-radius: 50%; margin-top: -5px;
+            cursor: pointer; transition: background-color 0.2s;
+        }
+        input[type="range"]:hover::-webkit-slider-thumb { background: var(--accent-hover); }
+
+        #displayCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="controls">
+        <label for="inkColor">Ink Color:</label>
+        <input type="color" id="inkColor" value="#8A9A5B">
+        <label for="spread">Spread:</label>
+        <input type="range" id="spread" min="1" max="500" value="100">
+        <label for="flow">Flow:</label>
+        <input type="range" id="flow" min="0" max="100" value="36">
+        <button id="clearButton">Clear</button>
+        <button id="saveButton">Save Image</button>
+    </div>
+
+    <canvas id="displayCanvas"></canvas>
+    <canvas id="inkCanvas" style="display: none;"></canvas>
+
+    <script id="vertex-shader" type="x-shader/x-vertex">
+        attribute vec4 a_position;
+        void main() {
+            gl_Position = a_position;
+        }
+    </script>
+
+    <script id="fragment-shader" type="x-shader/x-fragment">
+        precision mediump float;
+        uniform vec2 u_resolution;
+        uniform float u_time;
+        uniform sampler2D u_inkTexture;
+        uniform float u_warp_amount;
+
+        // Simpler noise for the background
+        float random (vec2 st) {
+            return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
+        }
+
+        void main() {
+            vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+            
+            // Simplified warping logic for the Suminagashi effect
+            vec2 warp_offset = vec2(random(uv + u_time * 0.01), random(uv + u_time * 0.01 + 5.0));
+            vec2 warped_uv = uv + (warp_offset - 0.5) * u_warp_amount; // Centered warp
+            
+            // Look up the color from our ink texture using the warped coordinates
+            vec4 inkColor = texture2D(u_inkTexture, warped_uv);
+            
+            // A subtle, dark background
+            vec3 backgroundColor = vec3(0.05, 0.05, 0.06) + random(uv) * 0.02;
+
+            // Blend the ink on top of the background
+            vec3 finalColor = mix(backgroundColor, inkColor.rgb, inkColor.a);
+            
+            gl_FragColor = vec4(finalColor, 1.0);
+        }
+    </script>
+
+    <script>
+        // =================================================================================
+        // == SETUP & INITIALIZATION
+        // =================================================================================
+        const displayCanvas = document.getElementById('displayCanvas');
+        const gl = displayCanvas.getContext('webgl', { preserveDrawingBuffer: true });
+        
+        const inkCanvas = document.getElementById('inkCanvas');
+        const inkCtx = inkCanvas.getContext('2d', { willReadFrequently: true });
+
+        // --- Controls ---
+        const inkColorInput = document.getElementById('inkColor');
+        const spreadSlider = document.getElementById('spread');
+        const flowSlider = document.getElementById('flow');
+        const clearButton = document.getElementById('clearButton');
+        const saveButton = document.getElementById('saveButton');
+        
+        let isDrawing = false;
+        let currentGrowthModule = null;
+
+        if (!gl) { alert('WebGL not supported!'); }
+        
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        }
+
+        // =================================================================================
+        // == INK DRAWING LOGIC (from Pixel Lesions)
+        // =================================================================================
+        
+        const LichenGrowth = {
+            init: function(startX, startY, imageData, seedColor, threshold) {
+                this.frontier = [[startX, startY]];
+                this.infectedSet = new Set([`${startX},${startY}`]);
+                this.imageData = imageData;
+                this.seedColor = seedColor;
+                this.threshold = threshold;
+            },
+            step: function(batchSize) {
+                const newCoords = [];
+                const batchLimit = Math.min(this.frontier.length, batchSize);
+                for (let i = 0; i < batchLimit; i++) {
+                    if (this.frontier.length === 0) break;
+                    const randomIndex = Math.floor(Math.random() * this.frontier.length);
+                    const [currentX, currentY] = this.frontier.splice(randomIndex, 1)[0];
+                    newCoords.push({ x: currentX, y: currentY });
+                    const neighbors = [
+                        [currentX, currentY - 1], [currentX, currentY + 1],
+                        [currentX - 1, currentY], [currentX + 1, currentY]
+                    ];
+                    for (const [nx, ny] of neighbors) {
+                        const key = `${nx},${ny}`;
+                        if (nx >= 0 && nx < this.imageData.width && ny >= 0 && ny < this.imageData.height && !this.infectedSet.has(key)) {
+                            const neighborColor = getPixelColor(nx, ny, this.imageData);
+                            if (colorDistance(this.seedColor, neighborColor) < this.threshold) {
+                                this.infectedSet.add(key);
+                                this.frontier.push([nx, ny]);
+                            }
+                        }
+                    }
+                }
+                return { newCoords: newCoords, isDone: this.frontier.length === 0 };
+            }
+        };
+
+        function getPixelColor(x, y, imageData) {
+            const i = (y * imageData.width + x) * 4;
+            return { r: imageData.data[i], g: imageData.data[i + 1], b: imageData.data[i + 2] };
+        }
+        function colorDistance(c1, c2) {
+            return Math.sqrt(Math.pow(c1.r - c2.r, 2) + Math.pow(c1.g - c2.g, 2) + Math.pow(c1.b - c2.b, 2));
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            const rect = displayCanvas.getBoundingClientRect();
+            const x = Math.floor((e.clientX - rect.left) * (inkCanvas.width / rect.width));
+            const y = Math.floor((e.clientY - rect.top) * (inkCanvas.height / rect.height));
+
+            const initialImageData = inkCtx.getImageData(0, 0, inkCanvas.width, inkCanvas.height);
+            const seedColor = getPixelColor(x, y, initialImageData);
+            const threshold = parseInt(spreadSlider.value, 10);
+            
+            LichenGrowth.init(x, y, initialImageData, seedColor, threshold);
+            currentGrowthModule = LichenGrowth;
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+            currentGrowthModule = null;
+        }
+        
+        function drawInkStep() {
+            if (!isDrawing || !currentGrowthModule) return;
+
+            const BATCH_SIZE = 100; // How fast the ink spreads
+            const result = currentGrowthModule.step(BATCH_SIZE);
+            const color = inkColorInput.value;
+            inkCtx.fillStyle = color;
+
+            result.newCoords.forEach(coord => {
+                inkCtx.fillRect(coord.x, coord.y, 1, 1);
+            });
+            
+            if (result.isDone) {
+                stopDrawing();
+            }
+        }
+        
+        function clearCanvas() {
+            inkCtx.clearRect(0, 0, inkCanvas.width, inkCanvas.height);
+        }
+
+        function saveImage() {
+            const link = document.createElement('a');
+            link.download = 'suminagashi.png';
+            link.href = displayCanvas.toDataURL('image/png').replace('image/png', 'image/octet-stream');
+            link.click();
+        }
+
+        // =================================================================================
+        // == WEBGL RENDER LOGIC (from Hadean Flare)
+        // =================================================================================
+
+        function createShader(gl, type, source) { const shader = gl.createShader(type); gl.shaderSource(shader, source); gl.compileShader(shader); if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) { console.error('Shader compile error:', gl.getShaderInfoLog(shader)); gl.deleteShader(shader); return null; } return shader; }
+        function createProgram(gl, vertexShader, fragmentShader) { const program = gl.createProgram(); gl.attachShader(program, vertexShader); gl.attachShader(program, fragmentShader); gl.linkProgram(program); if (!gl.getProgramParameter(program, gl.LINK_STATUS)) { console.error('Program link error:', gl.getProgramInfoLog(program)); gl.deleteProgram(program); return null; } return program; }
+
+        const vsSource = document.getElementById('vertex-shader').text;
+        const fsSource = document.getElementById('fragment-shader').text;
+        const vertexShader = createShader(gl, gl.VERTEX_SHADER, vsSource);
+        const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
+        const program = createProgram(gl, vertexShader, fragmentShader);
+
+        const positionAttributeLocation = gl.getAttribLocation(program, "a_position");
+        const resolutionUniformLocation = gl.getUniformLocation(program, "u_resolution");
+        const timeUniformLocation = gl.getUniformLocation(program, "u_time");
+        const warpAmountUniformLocation = gl.getUniformLocation(program, "u_warp_amount");
+        const inkTextureLocation = gl.getUniformLocation(program, "u_inkTexture");
+
+        const positionBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+        const positions = [-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1];
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+        
+        // --- Texture Setup ---
+        const inkTexture = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, inkTexture);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+
+        function resize() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            if (displayCanvas.width !== width || displayCanvas.height !== height) {
+                displayCanvas.width = width;
+                displayCanvas.height = height;
+                inkCanvas.width = width;
+                inkCanvas.height = height;
+                gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+                clearCanvas();
+            }
+        }
+
+        function render(time) {
+            time *= 0.001; // convert to seconds
+            resize();
+            drawInkStep(); // Grow the ink if we're drawing
+
+            gl.clear(gl.COLOR_BUFFER_BIT);
+            gl.useProgram(program);
+            gl.enableVertexAttribArray(positionAttributeLocation);
+            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+            gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
+
+            // Update ink texture
+            gl.bindTexture(gl.TEXTURE_2D, inkTexture);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, inkCanvas);
+            
+            // Set uniforms
+            gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height);
+            gl.uniform1f(timeUniformLocation, time);
+            gl.uniform1f(warpAmountUniformLocation, flowSlider.value / 1000.0);
+            gl.uniform1i(inkTextureLocation, 0); // Use texture unit 0
+
+            gl.drawArrays(gl.TRIANGLES, 0, 6);
+            requestAnimationFrame(render);
+        }
+        
+        // =================================================================================
+        // == EVENT LISTENERS
+        // =================================================================================
+        displayCanvas.addEventListener('mousedown', startDrawing);
+        displayCanvas.addEventListener('mouseup', stopDrawing);
+        displayCanvas.addEventListener('mouseleave', stopDrawing);
+        clearButton.addEventListener('click', clearCanvas);
+        saveButton.addEventListener('click', saveImage);
+
+        // --- Start ---
+        requestAnimationFrame(render);
+    </script>
+</body>
+</html>
