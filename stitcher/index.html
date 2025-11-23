@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stitcher</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #050612;
+            --bg-alt: #0c0f1f;
+            --accent-1: #ff6ad5;
+            --accent-2: #33f2ff;
+            --accent-3: #ffe66d;
+            --text-main: #f6f6ff;
+            --text-soft: #a7a9c9;
+            --border-soft: rgba(255, 255, 255, 0.08);
+            --shadow-soft: 0 24px 80px rgba(0, 0, 0, 0.75);
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+            background:
+                radial-gradient(circle at 10% 20%, rgba(255,106,213,0.08) 0, transparent 55%),
+                radial-gradient(circle at 80% 0%, rgba(51,242,255,0.12) 0, transparent 60%),
+                radial-gradient(circle at 0% 100%, rgba(255,230,109,0.06) 0, transparent 55%),
+                var(--bg);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+            color: var(--text-main);
+        }
+
+        .shell {
+            max-width: 880px;
+            width: 100%;
+        }
+
+        .container {
+            background: linear-gradient(135deg, rgba(12,15,31,0.95), rgba(10,11,27,0.98));
+            border-radius: 24px;
+            border: 1px solid var(--border-soft);
+            box-shadow: var(--shadow-soft);
+            padding: 28px 26px 24px;
+            backdrop-filter: blur(18px);
+        }
+
+        @media (min-width: 720px) {
+            .container {
+                padding: 32px 34px 26px;
+            }
+        }
+
+        .header-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-family: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+            font-size: 26px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--accent-2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h1::before {
+            content: "◇";
+            font-size: 0.9em;
+            color: var(--accent-1);
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.18);
+            font-size: 11px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--text-soft);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .badge-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--accent-3) 0, var(--accent-1) 40%, transparent 70%);
+        }
+
+        .subtitle {
+            color: var(--text-soft);
+            margin-bottom: 18px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .subtitle strong {
+            color: var(--accent-3);
+            font-weight: 500;
+        }
+
+        .grid {
+            display: grid;
+            gap: 18px;
+        }
+
+        @media (min-width: 800px) {
+            .grid {
+                grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.4fr);
+                gap: 20px;
+            }
+        }
+
+        .panel {
+            background: radial-gradient(circle at 0 0, rgba(255,106,213,0.12), transparent 55%),
+                        radial-gradient(circle at 100% 0, rgba(51,242,255,0.10), transparent 55%),
+                        rgba(4,8,26,0.9);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.07);
+            padding: 18px 18px 16px;
+        }
+
+        .panel-title {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: var(--text-soft);
+            margin-bottom: 10px;
+        }
+
+        .panel-title span {
+            color: var(--accent-2);
+        }
+
+        .drop-zone {
+            border-radius: 18px;
+            padding: 42px 18px;
+            text-align: center;
+            background:
+                linear-gradient(135deg, rgba(11,21,48,0.98), rgba(15,9,35,0.98));
+            border: 1px dashed rgba(116,75,162,0.9);
+            box-shadow: 0 0 0 1px rgba(102,126,234,0.25), 0 14px 40px rgba(7,10,34,0.95);
+            transition: all 0.22s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .drop-zone::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 20% 0%, rgba(255,255,255,0.12), transparent 55%);
+            opacity: 0.25;
+            mix-blend-mode: screen;
+            pointer-events: none;
+        }
+
+        .drop-zone:hover,
+        .drop-zone.drag-over {
+            transform: translateY(-1px) scale(1.01);
+            border-color: var(--accent-2);
+            box-shadow: 0 0 0 1px rgba(51,242,255,0.35), 0 18px 50px rgba(5,255,245,0.16);
+            background: linear-gradient(135deg, rgba(9,20,58,1), rgba(19,9,48,1));
+        }
+
+        .drop-zone-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .drop-zone-text {
+            color: var(--accent-2);
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .drop-zone-subtext {
+            color: var(--text-soft);
+            font-size: 12px;
+        }
+
+        .file-list {
+            max-height: 180px;
+            overflow-y: auto;
+            margin-top: 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 12px;
+            display: none;
+            background: radial-gradient(circle at 0 0, rgba(255,255,255,0.06), transparent 70%),
+                        rgba(3,5,20,0.92);
+        }
+
+        .file-list.visible {
+            display: block;
+        }
+
+        .file-item {
+            padding: 6px 9px;
+            background: rgba(18,24,57,0.95);
+            border-radius: 8px;
+            margin-bottom: 6px;
+            font-size: 12px;
+            color: #d8dcff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .file-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .file-item span.icon {
+            font-size: 14px;
+        }
+
+        .filename-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 10px;
+            font-size: 13px;
+            margin-top: 14px;
+            background: rgba(5,8,29,0.92);
+            color: var(--text-main);
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+
+        .filename-input::placeholder {
+            color: rgba(170,175,210,0.8);
+        }
+
+        .filename-input:focus {
+            border-color: var(--accent-2);
+            background: rgba(8,14,44,0.96);
+            box-shadow: 0 0 0 1px rgba(51,242,255,0.46);
+        }
+
+        .button-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        button,
+        .bat-link {
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .stitch-btn {
+            flex: 1.2;
+            padding: 10px 18px;
+            background: linear-gradient(135deg, var(--accent-2), var(--accent-1));
+            color: #05040a;
+            box-shadow: 0 10px 30px rgba(51,242,255,0.32);
+        }
+
+        .stitch-btn:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 14px 40px rgba(51,242,255,0.4);
+        }
+
+        .stitch-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .clear-btn {
+            flex: 0.8;
+            padding: 10px 14px;
+            background: rgba(8,11,33,1);
+            color: var(--text-soft);
+            border: 1px solid rgba(255,255,255,0.14);
+        }
+
+        .clear-btn:hover {
+            background: rgba(15,18,45,1);
+            color: #e3e4ff;
+        }
+
+        .bat-link {
+            padding: 9px 14px;
+            background: transparent;
+            color: var(--accent-3);
+            border: 1px dashed rgba(255,230,109,0.8);
+            font-family: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .bat-link span {
+            font-size: 12px;
+        }
+
+        .bat-link:hover {
+            background: rgba(255,230,109,0.08);
+            box-shadow: 0 0 14px rgba(255,230,109,0.35);
+        }
+
+        .status {
+            margin-top: 12px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-size: 12px;
+            display: none;
+        }
+
+        .status.visible {
+            display: block;
+        }
+
+        .status.success {
+            background: rgba(33, 145, 87, 0.18);
+            color: #8ff3b7;
+            border: 1px solid rgba(143, 243, 183, 0.55);
+        }
+
+        .status.error {
+            background: rgba(188, 63, 76, 0.16);
+            color: #ffb5c2;
+            border: 1px solid rgba(255, 153, 170, 0.6);
+        }
+
+        .aside {
+            font-size: 12px;
+            color: var(--text-soft);
+            line-height: 1.5;
+        }
+
+        .aside code {
+            font-family: "JetBrains Mono", Menlo, Consolas, monospace;
+            font-size: 11px;
+            background: rgba(5,9,30,0.9);
+            padding: 2px 6px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .aside-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            color: var(--accent-1);
+            margin-bottom: 6px;
+        }
+
+        .aside-sep {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+            margin: 8px 0;
+            opacity: 0.6;
+        }
+
+        .aside-list {
+            margin-top: 4px;
+            list-style: none;
+        }
+
+        .aside-list li {
+            margin-bottom: 4px;
+        }
+
+        .footer-row {
+            margin-top: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            color: var(--text-soft);
+            opacity: 0.9;
+        }
+
+        .footer-row span.highlight {
+            color: var(--accent-2);
+        }
+
+        @media (max-width: 640px) {
+            .button-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .bat-link {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="shell">
+        <div class="container">
+            <div class="header-row">
+                <h1>Stitcher</h1>
+            </div>
+
+            <p class="subtitle">
+                Drag in fragments, export a single <strong>searchable text field</strong>.  
+                Stitcher treats everything as raw string material for you and your LLMs.
+            </p>
+
+            <div class="grid">
+                <!-- Left: Web stitcher -->
+                <div class="panel">
+                    <div class="panel-title"><span>Web</span> Stitch</div>
+
+                    <div class="drop-zone" id="dropZone">
+                        <div class="drop-zone-icon">🧵</div>
+                        <div class="drop-zone-text">Drop files here or click to browse</div>
+                        <div class="drop-zone-subtext">Any text-ish files</div>
+                    </div>
+
+                    <input type="file" id="fileInput" multiple style="display: none;">
+
+                    <div class="file-list" id="fileList"></div>
+
+                    <input
+                        type="text"
+                        class="filename-input"
+                        id="filenameInput"
+                        placeholder="Output filename (no extension)"
+                        value="combined_text"
+                    >
+
+                    <div class="button-row">
+                        <button class="stitch-btn" id="stitchBtn" disabled>
+                            <span>Stitch Files</span>
+                        </button>
+
+                        <button class="clear-btn" id="clearBtn">
+                            Clear Selection
+                        </button>
+
+                        <!-- Desktop Stitcher download -->
+                        <a class="bat-link" href="stitcher.bat" download>
+                            <span>⇩</span> Stitcher.bat
+                        </a>
+                    </div>
+
+                    <div class="status" id="status"></div>
+                </div>
+
+                <!-- Right: context + explanation -->
+                <div class="panel">
+                    
+                    <div class="aside">
+                        <p>
+                            Concatenates each file into one long text stream.
+                        </p>
+
+                        <div class="aside-sep"></div>
+                        <ul class="aside-list">
+                            <li>· works best with text-ish files such as *.txt, *.html, *.css, *.md, *.dll, *.py, *.m3u, *.json, etc.</li>
+                            <li>· uploading non-text-ish files such as *.jpg and *.gif will work, but will concatenate the image data as text.</li>
+                            <li>· final files are non-functional *.txt files</li>
+                        </ul>
+
+                        <div class="aside-sep"></div>
+                        <p>
+                            Downloadable desktop <code>Stitcher.bat</code> for Windows. Drag and drop files into Stitcher.bat. This version allows for both folder and file inputs. It will process everything inside a folder and its subfolders.
+                        </p>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const fileList = document.getElementById('fileList');
+        const filenameInput = document.getElementById('filenameInput');
+        const stitchBtn = document.getElementById('stitchBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const status = document.getElementById('status');
+
+        let selectedFiles = [];
+
+        // Click to browse
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        // Drag and drop handlers
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('drag-over');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        // File input handler
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            selectedFiles = Array.from(files);
+            updateFileList();
+            stitchBtn.disabled = selectedFiles.length === 0;
+            status.classList.remove('visible');
+        }
+
+        function updateFileList() {
+            if (selectedFiles.length === 0) {
+                fileList.classList.remove('visible');
+                fileList.innerHTML = "";
+                return;
+            }
+
+            fileList.classList.add('visible');
+            fileList.innerHTML = selectedFiles.map(f =>
+                `<div class="file-item"><span class="icon">📄</span>${f.name}</div>`
+            ).join('');
+        }
+
+        clearBtn.addEventListener('click', () => {
+            selectedFiles = [];
+            fileInput.value = '';
+            updateFileList();
+            stitchBtn.disabled = true;
+            status.classList.remove('visible');
+        });
+
+        stitchBtn.addEventListener('click', async () => {
+            if (selectedFiles.length === 0) return;
+
+            stitchBtn.disabled = true;
+            status.classList.remove('visible');
+
+            try {
+                let combinedText = '';
+
+                for (const file of selectedFiles) {
+                    const text = await file.text();
+                    combinedText += `========= BEGIN FILE: ${file.name} =========\n`;
+                    combinedText += `[SIZE: ${file.size} bytes]\n`;
+                    combinedText += `[TYPE: ${file.type || 'unknown'}]\n\n`;
+                    combinedText += text;
+                    combinedText += `\n\n========= END FILE: ${file.name} =========\n\n`;
+                }
+
+                const filename = (filenameInput.value.trim() || 'combined_text').replace(/\s+/g, '_');
+                const blob = new Blob([combinedText], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${filename}.txt`;
+                a.click();
+                URL.revokeObjectURL(url);
+
+                status.textContent = `✓ Created ${filename}.txt with ${selectedFiles.length} file(s).`;
+                status.className = 'status success visible';
+            } catch (error) {
+                status.textContent = `✗ Error: ${error.message}`;
+                status.className = 'status error visible';
+            } finally {
+                stitchBtn.disabled = selectedFiles.length === 0;
+            }
+        });
+    </script>
+</body>
+</html>
