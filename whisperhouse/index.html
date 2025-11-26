@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>whisper house | Program Notes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        /* Custom Font Settings */
+        .font-serif {
+            font-family: 'Cormorant Garamond', serif;
+        }
+        .font-sans {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Smooth Scroll Behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Subtle Fade In Animation */
+        .fade-in {
+            animation: fadeIn 1.2s ease-in-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-500 { animation-delay: 0.5s; }
+
+        /* Custom Selection Color */
+        ::selection {
+            background: #e2e8f0;
+            color: #1a202c;
+        }
+    </style>
+</head>
+<body class="bg-[#fcfbf9] text-slate-800 font-sans antialiased selection:bg-slate-200">
+
+    <!-- Main Container -->
+    <main class="max-w-4xl mx-auto px-6 py-12 md:py-20 border-x border-slate-100 min-h-screen bg-white shadow-sm">
+
+        <!-- Header / Title -->
+        <header class="text-center mb-20 fade-in">
+            <h1 class="font-serif text-6xl md:text-7xl lowercase tracking-tight text-slate-900 mb-4">whisper house</h1>
+            <div class="h-px w-24 bg-slate-300 mx-auto mb-6"></div>
+            <p class="text-slate-500 italic font-serif text-xl">A performance, a document, a ritual.</p>
+            
+            <div class="mt-8">
+                <a href="whisperhouse.pdf" class="inline-flex items-center px-6 py-3 border border-slate-300 text-sm font-medium rounded-sm text-slate-700 bg-white hover:bg-slate-50 hover:border-slate-400 transition-all duration-300 group">
+                    <svg class="w-4 h-4 mr-2 text-slate-400 group-hover:text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    Download Score
+                </a>
+            </div>
+        </header>
+
+        <!-- Definition Section -->
+        <section class="mb-20 fade-in delay-100">
+            <h2 class="font-serif text-3xl text-slate-900 mb-8 border-l-4 border-slate-200 pl-4">What is whisper house?</h2>
+            <p class="text-lg leading-relaxed text-slate-600 mb-8">
+                <span class="font-serif italic font-semibold text-slate-800">whisper house</span> is simultaneously a sound composition, a piece of literature, a fictional document, a performance art piece, experimental theater, a conceptual art piece, and a ritual. It is designed to function as any—or all—of these practices.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-slate-600">
+                <div class="space-y-4">
+                    <div class="p-4 bg-slate-50 rounded-sm border border-slate-100">
+                        <strong class="block text-slate-900 font-serif text-lg mb-1">As Composition</strong>
+                        The piece explores sounds created by the "Guests"—sounds mediated by the house through space and distance. An audio recording is a viable iteration of this work.
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-sm border border-slate-100">
+                        <strong class="block text-slate-900 font-serif text-lg mb-1">As Literature</strong>
+                        A poetic, experimental, visual-musical text that can simply be read. Its surreal instructions act as gestures of speculative fiction or magical realism.
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-sm border border-slate-100">
+                        <strong class="block text-slate-900 font-serif text-lg mb-1">As Fictional Document</strong>
+                        An artifact from an imaginary world, akin to the <em>Codex Seraphinianus</em>.
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-sm border border-slate-100">
+                        <strong class="block text-slate-900 font-serif text-lg mb-1">As Ritual</strong>
+                        The act of reading or performing the text constitutes a ritual. Its impossible acts resemble Zen koans—spiritual actions performed by practitioners.
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div class="p-4 bg-slate-50 rounded-sm border border-slate-100">
+                        <strong class="block text-slate-900 font-serif text-lg mb-1">As Performance Art</strong>
+                        Focuses on actions performed by participants within the site of the house. A video recording is a viable form.
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-sm border border-slate-100">
+                        <strong class="block text-slate-900 font-serif text-lg mb-1">As Theater</strong>
+                        An extended scene wherein actors portray the Guests.
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-sm border border-slate-100">
+                        <strong class="block text-slate-900 font-serif text-lg mb-1">As Conceptual Art</strong>
+                        The idea itself, enacted only in the mind, is the work. The surreal instructions are "impossible instructions," intended to be held in thought rather than performed, reminiscent of Yoko Ono’s <em>Grapefruit</em>.
+                    </div>
+                </div>
+            </div>
+            
+            <p class="mt-8 text-slate-600 italic border-l-2 border-slate-200 pl-4 py-2">
+                "There are many instructions in the piece that are surreal, impossible, or invisible. Participants may interpret these as they wish—omitting the impossible, enacting them symbolically, or holding them as internal affective gestures."
+            </p>
+        </section>
+
+        <!-- Logistics Section -->
+        <section class="mb-20 fade-in delay-200">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div>
+                    <h3 class="font-serif text-2xl text-slate-900 mb-4">Performance Notes</h3>
+                    <p class="text-slate-600 leading-relaxed mb-4">
+                        The piece features four performers, referred to as <strong>Guests</strong>.
+                    </p>
+                    <ul class="list-disc list-outside ml-5 space-y-2 text-slate-600 mb-6">
+                        <li>The fourth Guest will not act until the very end.</li>
+                        <li>Guest 1 begins with a phone or laptop.</li>
+                        <li>Guest 3 begins with an encyclopedia.</li>
+                        <li>Unspecified details are left to the performers' interpretation.</li>
+                    </ul>
+                    <p class="text-slate-600 text-sm">
+                        <em>Location Requirement:</em> Must be performed in a house. There should be at least one room with a door and a doorknob.
+                    </p>
+                </div>
+
+                <div class="bg-slate-900 text-slate-300 p-8 rounded-sm">
+                    <h3 class="font-serif text-2xl text-white mb-6">Materials Needed</h3>
+                    <ul class="space-y-3 font-light">
+                        <li class="flex items-center">
+                            <span class="w-2 h-2 bg-white rounded-full mr-3"></span> Encyclopedia
+                        </li>
+                        <li class="flex items-center">
+                            <span class="w-2 h-2 bg-white rounded-full mr-3"></span> Phone or Laptop
+                        </li>
+                        <li class="flex items-center">
+                            <span class="w-2 h-2 bg-white rounded-full mr-3"></span> Frying Pan
+                        </li>
+                        <li class="flex items-center">
+                            <span class="w-2 h-2 bg-white rounded-full mr-3"></span> Egg
+                        </li>
+                    </ul>
+                    <div class="mt-8 pt-6 border-t border-slate-700">
+                        <h4 class="font-serif text-xl text-white mb-2">The Audience</h4>
+                        <p class="text-sm opacity-80">
+                            If performed, the audience may be the performers themselves. Alternatively, the audience may be located anywhere in the house, separate from the performers.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Program Notes (Long Form) -->
+        <section class="mb-20 fade-in delay-300">
+            <h2 class="font-serif text-3xl text-slate-900 mb-8 border-l-4 border-slate-200 pl-4">Program Notes</h2>
+            
+            <div class="prose prose-slate max-w-none font-serif text-lg leading-loose text-slate-700">
+                <p>
+                    <span class="small-caps font-sans text-sm tracking-widest font-bold text-slate-400 uppercase">Concept</span><br>
+                    whisper house imagines a household vigil where individuals must constantly check on something—or someone—quite fragile. Like a holding pattern of care, they must move through the house gently, checking in on the fragile presence while trying not to disturb it.
+                </p>
+
+                <div class="my-8 h-px bg-slate-100 w-1/3 mx-auto"></div>
+
+                <p>
+                    The experience of this gentle vigil stems from four personal experiences regarding the thresholds of life and death.
+                </p>
+
+                <p>
+                    <strong>The first inspiration</strong> comes from the slow decline of our family cats. Suffering from feline immunodeficiency virus, their health degraded in a slow, predictable fade over months or years. It was difficult to discern the right moment for euthanasia; they would dip in health and then recover, prolonging the uncertainty. In their final weeks, my family of four would take turns peeking into the room of the dying cat. We confined them to a single room to monitor for changes, always ready to call the vet. I remember thinking I didn't want to bother a creature that was already suffering. Being gentle, careful, and checking one-by-one seemed the only right thing to do. We would wait, hoping they could hang on until morning for a house call, avoiding the trauma of physical transport. We did this for four cats, each passing a year or so apart during the pandemic.
+                </p>
+
+                <p>
+                    <strong>The second inspiration</strong> is the memory of my own sicknesses as a child. I remember people drifting in and out of my room, speaking softly, attending to me. Someone needed to check in constantly, yet the household had to keep running. Lying in bed, slightly delirious with fever, I heard the house through a filter: the distant sound of ironing, the sizzle of frying food, the opening and closing of doors and windows, footsteps. These sounds were my only connection to the world, and I often wondered if my cats’ experience of dying was similar to my experience of being sick—listening to the house from a distance.
+                </p>
+
+                <p>
+                    <strong>The third experience</strong> relates to my grandfather. When I was young, he suffered from cardiovascular issues and strokes. He drifted in and out of the hospital. At home, house helpers, my parents, or my aunt would sleep in his room to react to any nightly emergencies. It was an intense vigil that continued even when he was hospitalized. I visited him weekly for two years until he passed. sometimes I would just sit in the room with him—a silent presence.
+                </p>
+
+                <p>
+                    <strong>The final inspiration</strong> comes from the birth of my significantly younger siblings. They were so tiny, kept in a cradle in a quiet room. The dynamic was much the same: they required constant attention. During their afternoon naps, we took turns peeking at them to ensure they were safe while we continued our chores. We moved quietly, sneaking in to retrieve items or just to look. Always quiet. Always gentle. In many ways, this was not so different from the vigils for the sick and the dying.
+                </p>
+
+                <blockquote class="pl-6 border-l-2 border-slate-300 italic text-slate-500 my-8">
+                    "So, this is what whisper house tries to embody. There’s a presence in the piece of something fragile, at the cusp of life and death, but it’s not necessarily specified. It is just something fragile."
+                </blockquote>
+
+                <p>
+                    The piece can be interpreted as the soundscape from the point of view of the fragile, or from the point of view of the caretakers. I remember during those vigils, I had to stay attentive. I would find small, undemanding activities to feel productive, or simply to focus on something else so I wasn't obsessing over the situation. I needed to be occupied yet flexible, ready to make the correct action when the time came.
+                </p>
+            </div>
+        </section>
+
+        <!-- Questions Section -->
+        <section class="mb-16 fade-in delay-500 bg-slate-50 p-8 md:p-12 rounded-sm text-center">
+            <h3 class="font-serif text-2xl text-slate-900 mb-8">This piece asks questions</h3>
+            <p class="mb-8 text-slate-600">I leave many things open and unexplained because I want this piece to provoke inquiry.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left max-w-2xl mx-auto font-sans text-sm md:text-base text-slate-700">
+                <div class="p-3 border-b border-slate-200">Who are the audience, really?</div>
+                <div class="p-3 border-b border-slate-200">What is the house?</div>
+                <div class="p-3 border-b border-slate-200">Who—or what—is really being cared for?</div>
+                <div class="p-3 border-b border-slate-200">What is fragile here?</div>
+                <div class="p-3 border-b border-slate-200">Why are the Guests "guests"?</div>
+                <div class="p-3 border-b border-slate-200">How many characters are in this piece?</div>
+                <div class="p-3 border-b border-slate-200">What is being performed?</div>
+                <div class="p-3 border-b border-slate-200">Where is this taking place?</div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-400 text-sm font-sans pt-12 border-t border-slate-100">
+            <p>&copy; whisper house. All rights reserved.</p>
+        </footer>
+
+    </main>
+
+    <script>
+        // Simple script to handle fade-in elements on scroll if they are not immediately visible
+        document.addEventListener('DOMContentLoaded', () => {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            // Select elements that might need observation if removed from initial animation classes
+            // For now, the CSS animation handles the initial load, 
+            // but for a longer page, we could add scroll-trigger logic here.
+        });
+    </script>
+</body>
+</html>
