@@ -8,45 +8,138 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-    <style>
-        /* Custom Font Settings */
-        .font-serif {
-            font-family: 'Cormorant Garamond', serif;
+<style>
+    /* --- WEB VIEW STYLES (Unchanged) --- */
+    .font-serif { font-family: 'Cormorant Garamond', serif; }
+    .font-sans { font-family: 'Inter', sans-serif; }
+    html { scroll-behavior: smooth; }
+    
+    .fade-in {
+        animation: fadeIn 1.2s ease-in-out forwards;
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    @keyframes fadeIn {
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .delay-100 { animation-delay: 0.1s; }
+    .delay-200 { animation-delay: 0.2s; }
+    .delay-300 { animation-delay: 0.3s; }
+    .delay-500 { animation-delay: 0.5s; }
+    ::selection { background: #e2e8f0; color: #1a202c; }
+
+    /* --- PRINT STYLES (Compact & Tight) --- */
+    @media print {
+        
+        /* 1. Page Setup */
+        @page {
+            margin: 0.75in;
+            size: letter portrait;
         }
-        .font-sans {
-            font-family: 'Inter', sans-serif;
+
+        body {
+            background-color: white !important;
+            color: black !important;
+            font-size: 10pt !important; /* Slightly smaller for density */
+            line-height: 1.25 !important; /* Tighter line spacing */
+        }
+
+        /* 2. Compact Header */
+        header {
+            text-align: center;
+            margin-bottom: 1.5rem !important; /* Reduced bottom margin */
+            min-height: auto !important; 
+        }
+        h1 { 
+            font-size: 32pt !important; 
+            margin-bottom: 0.1rem !important; 
+            color: black !important;
+            line-height: 1 !important;
+        }
+        header p {
+            font-size: 11pt !important;
+            color: #444 !important;
+            margin-top: 0.5rem !important;
+        }
+        /* Hide web buttons */
+        header .mt-8 { display: none !important; }
+
+        /* 3. Section Flow */
+        section {
+            page-break-before: auto !important; 
+            margin-bottom: 1.5rem !important; /* Tighter section gaps */
         }
         
-        /* Smooth Scroll Behavior */
-        html {
-            scroll-behavior: smooth;
+        h2 {
+            font-size: 15pt !important;
+            border-left: none !important;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 3px;
+            margin-bottom: 0.5rem !important; /* Pull text closer to header */
+            break-after: avoid;
+        }
+        
+        h3 { 
+            font-size: 13pt !important; 
+            color: black !important; 
+            margin-bottom: 0.5rem !important;
         }
 
-        /* Subtle Fade In Animation */
+        /* 4. Layout Optimization (Grid) */
+        .grid {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 1rem !important; /* Reduced horizontal/vertical gap */
+            margin-bottom: 0 !important;
+        }
+        
+        /* 5. Ink Saving & "Materials" Box */
+        .bg-slate-900 {
+            background-color: transparent !important;
+            border: 1px solid #333 !important;
+            color: black !important;
+            padding: 0.75rem !important; /* Less padding inside the box */
+        }
+        
+        .text-slate-300, .text-white, .text-slate-500, .text-slate-600 {
+            color: black !important;
+        }
+        
+        /* Simplify lists */
+        ul { margin-bottom: 0.5rem !important; }
+        li { margin-bottom: 0.1rem !important; }
+
+        /* 6. Text Handling */
+        p { 
+            orphans: 3; 
+            widows: 3; 
+            text-align: justify;
+            margin-bottom: 0.5rem !important; /* Tighter paragraph spacing */
+        }
+        
+        .bg-slate-50 {
+            background-color: white !important;
+            border: none !important;
+            padding: 0 !important;
+        }
+
+        /* 7. Footer */
+        footer {
+            border-top: 1px solid #eee;
+            margin-top: 1.5rem;
+            padding-top: 0.5rem;
+            font-size: 8pt !important;
+        }
+
+        /* Reset Animations */
         .fade-in {
-            animation: fadeIn 1.2s ease-in-out forwards;
-            opacity: 0;
-            transform: translateY(20px);
+            animation: none !important;
+            opacity: 1 !important;
+            transform: none !important;
         }
-
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .delay-100 { animation-delay: 0.1s; }
-        .delay-200 { animation-delay: 0.2s; }
-        .delay-300 { animation-delay: 0.3s; }
-        .delay-500 { animation-delay: 0.5s; }
-
-        /* Custom Selection Color */
-        ::selection {
-            background: #e2e8f0;
-            color: #1a202c;
-        }
-    </style>
+    }
+</style>
 </head>
 <body class="bg-[#fcfbf9] text-slate-800 font-sans antialiased selection:bg-slate-200">
 
@@ -59,12 +152,6 @@
             <div class="h-px w-24 bg-slate-300 mx-auto mb-6"></div>
             <p class="text-slate-500 italic font-serif text-xl">A performance, a document, a ritual.</p>
             
-            <div class="mt-8">
-                <a href="whisperhouse.pdf" class="inline-flex items-center px-6 py-3 border border-slate-300 text-sm font-medium rounded-sm text-slate-700 bg-white hover:bg-slate-50 hover:border-slate-400 transition-all duration-300 group">
-                    <svg class="w-4 h-4 mr-2 text-slate-400 group-hover:text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                    Download Score
-                </a>
-            </div>
         </header>
 
         <!-- Definition Section -->
@@ -78,7 +165,7 @@
                 <div class="space-y-4">
                     <div class="p-4 bg-slate-50 rounded-sm border border-slate-100">
                         <strong class="block text-slate-900 font-serif text-lg mb-1">As Composition</strong>
-                        The piece explores sounds created by the "Guests"—sounds mediated by the house through space and distance. An audio recording is a viable iteration of this work.
+                        The piece explores sounds created by the "Guests" as they make sounds mediated by the house through space and distance. An audio recording is a viable iteration of this work.
                     </div>
                     <div class="p-4 bg-slate-50 rounded-sm border border-slate-100">
                         <strong class="block text-slate-900 font-serif text-lg mb-1">As Literature</strong>
@@ -261,10 +348,6 @@
             </div>
         </section>
 
-        <!-- Footer -->
-        <footer class="text-center text-slate-400 text-sm font-sans pt-12 border-t border-slate-100">
-            <p>&copy; whisper house. All rights reserved.</p>
-        </footer>
 
     </main>
 
