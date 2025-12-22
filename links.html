@@ -9,245 +9,189 @@
     <link rel="apple-touch-icon" sizes="180x180" href="xyh8metal.png" />
 	
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Averia+Sans+Libre:wght@300;400;700&display=swap" rel="stylesheet">
+
 
     <title>Xyh Tamura — Links</title>
 
- <style>
+ 
+<style>
   :root {
-    --bg: #07080b;
-
-    /* glass + depth */
-    --card: rgba(14, 16, 24, 0.78);
-    --card-border: rgba(255, 255, 255, 0.12);
-    --shadow: 0 25px 80px rgba(0, 0, 0, 0.65);
-
-    /* text */
-    --text: rgba(255, 255, 255, 0.94);
-    --muted: rgba(255, 255, 255, 0.68);
-
-    /* accent */
-    --accent: #a79bff;
-    --accent-soft: rgba(167, 155, 255, 0.22);
-
-    /* buttons */
-    --btn: rgba(255, 255, 255, 0.05);
-    --btn-hover: rgba(167, 155, 255, 0.14);
+    /* Colors pulled from your main index.css */
+    --bg: #2d3333; 
+    --panel: rgba(26, 22, 4, 0.45);
+    --border: rgba(135, 138, 232, 0.3);
+    
+    /* Toxic Pastel Accents */
+    --h2-color: #b787e8; /* Lavender */
+    --accent: #cdfc12;    /* Neon Lime */
+    --text: #efece7;
+    --sub-text: #bcd6d4;
+    
+    /* Fonts */
+    --font-heading: "Quicksand", sans-serif;
+    --font-body: "Rubik", sans-serif;
   }
 
-  * {
-    box-sizing: border-box;
-  }
+  * { box-sizing: border-box; cursor: crosshair; }
 
   body {
     margin: 0;
     min-height: 100vh;
-
-    font-family: "Averia Sans Libre", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-    font-weight: 400;
+    font-family: var(--font-body);
+    background-color: var(--bg);
     color: var(--text);
-
-    background:
-      radial-gradient(1200px 800px at 18% 12%, rgba(140, 120, 255, 0.22), transparent 55%),
-      radial-gradient(1000px 700px at 82% 28%, rgba(80, 210, 255, 0.18), transparent 55%),
-      radial-gradient(900px 700px at 42% 86%, rgba(255, 110, 190, 0.14), transparent 55%),
-      var(--bg);
-
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 30px 16px;
+    padding: 20px;
+    overflow-x: hidden;
+    /* Atmospheric "Research Glow" */
+    background: 
+      radial-gradient(circle at 10% 20%, rgba(183, 135, 232, 0.15), transparent 40%),
+      radial-gradient(circle at 90% 80%, rgba(205, 252, 18, 0.1), transparent 40%),
+      var(--bg);
   }
 
-  .background-overlay {
+  /* Scanline/Grain Overlay for that Hauntological feel */
+  body::before {
+    content: " ";
     position: fixed;
-    inset: 0;
+    top: 0; left: 0; bottom: 0; right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
+                linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+    z-index: 10;
+    background-size: 100% 3px, 3px 100%;
     pointer-events: none;
-    background: linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0.35),
-      rgba(0, 0, 0, 0.75)
-    );
+    opacity: 0.3;
   }
 
   .wrap {
     width: 100%;
-    max-width: 560px;
+    max-width: 480px;
     position: relative;
     z-index: 1;
   }
 
   .card {
-    background: var(--card);
-    border: 1px solid var(--card-border);
-    border-radius: 24px;
-    box-shadow: var(--shadow);
-    padding: 24px;
+    background: var(--panel);
     backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    /* Your signature organic border-radius from the website */
+    border-radius: 50% 35% 45% 25% / 15% 20% 15% 10%;
+    padding: 40px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+    transition: all 0.5s ease-in-out;
+  }
+
+  .card:hover {
+    border-radius: 45% 40% 30% 50% / 20% 15% 25% 15%;
   }
 
   .header {
-    display: grid;
-    grid-template-columns: 88px 1fr;
-    gap: 16px;
-    align-items: center;
-    margin-bottom: 16px;
+    text-align: center;
+
   }
 
   .avatar {
-    width: 88px;
-    height: 88px;
-    border-radius: 20px;
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 15px;
+    border-radius: 50% 35% 45% 25%;
     overflow: hidden;
-    border: 1px solid var(--card-border);
-    background: rgba(255, 255, 255, 0.04);
-    position: relative;
-  }
-
-  .avatar::after {
-    content: "";
-    position: absolute;
-    inset: -2px;
-    border-radius: 22px;
-    background: linear-gradient(
-      135deg,
-      var(--accent),
-      transparent 65%
-    );
-    opacity: 0.35;
-    pointer-events: none;
+    border: 2px solid var(--h2-color);
+    transform: rotate(-5deg);
   }
 
   .avatar img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    display: block;
   }
 
   h1 {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
     margin: 0;
-    font-size: 26px;
-    font-weight: 700;
-    letter-spacing: 0.4px;
-    line-height: 1.1;
-
-    background: linear-gradient(
-      90deg,
-      #ffffff,
-      #d6d0ff
-    );
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--text);
+    letter-spacing: 2px;
   }
 
   .sub {
-    margin: 6px 0 0 0;
-    font-size: 12.5px;
-    line-height: 1.4;
-    color: var(--muted);
-    letter-spacing: 0.6px;
-
+    font-size: 0.85rem;
+    color: var(--sub-text);
+    margin-top: 5px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
   }
 
   .tagline {
-    margin: 12px 0 18px 0;
-    font-size: 15px;
-    line-height: 1.55;
-    letter-spacing: 0.25px;
-    color: var(--muted);
+    font-size: 0.75rem;
+    text-align: center;
+
+    color: var(--h2-color);
+    font-weight: bold;
+    opacity: 0.8;
   }
 
   .links {
-    display: grid;
-    gap: 12px;
-    margin: 0;
-    padding: 0;
     list-style: none;
+    padding: 0;
+    margin: 0;
   }
 
- .links a {
+  .links li {
+    margin-bottom: 15px;
+  }
+
+  .links a {
     display: flex;
     align-items: center;
-    justify-content: flex-start; /* Changed from space-between to keep icon near text */
-    gap: 16px; /* Increased gap slightly for visual breathing room */
-
-    padding: 15px 16px;
-    border-radius: 18px;
-    border: 1px solid var(--card-border);
-    border-left: 3px solid transparent;
-
-    background: var(--btn);
+    padding: 12px 20px;
     color: var(--text);
     text-decoration: none;
-
-    transition:
-      transform 160ms ease,
-      background 160ms ease,
-      border-color 160ms ease,
-      box-shadow 160ms ease;
-  }
-
-  /* Add this new section for the icons */
-  .icon {
-    width: 24px;
-    height: 24px;
-    fill: var(--muted); /* Default color */
-    flex-shrink: 0; /* Prevents icon from squishing on small screens */
-    transition: fill 160ms ease;
-  }
-
-  .links a:hover .icon {
-    fill: var(--accent); /* Icon glows purple on hover */
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid transparent;
+    border-radius: 10px;
+    transition: all 0.2s ease;
   }
 
   .links a:hover {
-    background: var(--btn-hover);
-    border-left-color: var(--accent);
-    transform: translateY(-2px) scale(1.01);
-    box-shadow: 0 12px 34px rgba(0, 0, 0, 0.4);
+    background: rgba(183, 135, 232, 0.1);
+    border-color: var(--h2-color);
+    transform: translateX(5px);
+    color: var(--accent);
+
+  }
+
+  .icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 15px;
+    fill: var(--h2-color);
   }
 
   .label {
     display: flex;
     flex-direction: column;
-    gap: 3px;
   }
 
   .label strong {
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: 0.3px;
+    font-size: 1rem;
+    font-family: var(--font-heading);
   }
 
   .label span {
-    font-size: 12.5px;
-    color: var(--muted);
-    letter-spacing: 0.2px;
+    font-size: 0.7rem;
+    color: var(--sub-text);
   }
 
-  .footer {
-    margin-top: 16px;
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    flex-wrap: wrap;
-    color: var(--muted);
-    font-size: 12px;
-    letter-spacing: 0.3px;
-  }
-
-  .footer a {
-    color: var(--muted);
-    text-decoration: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
-  }
-
-  .footer a:hover {
-    color: var(--text);
-    border-bottom-color: rgba(255, 255, 255, 0.4);
+  @media (max-width: 480px) {
+    .card { border-radius: 20px; padding: 25px; }
   }
 </style>
-
   </head>
 
   <body>
@@ -262,12 +206,11 @@
           </div>
           <div>
             <h1>Xyh Tamura</h1>
-            <p class="sub">Cy Tamura · Cye Tamura · 田村再</p>
-            <p class="sub">Transdisciplinary Art, Singing-Songwriting, Research</p>
+
           </div>
         </div>
 
-        <p class="tagline">Music × Writing × Art · Science × Philosophy × Technology · Social Action</p>
+        <p class="tagline">Transdisciplinary Art, Singing-Songwriting, Research</p>
 
         <ul class="links">
           
@@ -349,8 +292,6 @@
       </section>
     </main>
 
-    <script>
-      document.getElementById("year").textContent = new Date().getFullYear();
-    </script>
+
   </body>
 </html>
