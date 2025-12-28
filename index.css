@@ -141,7 +141,7 @@ a {
     display: inline-block;
     
     /* Bubbly Shape */
-    padding: 0.3rem 0.4rem;
+    padding: 0.2rem 0.4rem;
     border-radius: 20px; /* More rounded for y2k 'capsule' feel */
     transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
@@ -166,7 +166,7 @@ a {
 .work-entry h3 > span:first-child > a:first-child,
 .year > a:first-child, .role > a:first-child
 {
-    margin-left: -0.5rem;
+    margin-left: -0.45rem;
 }
 
 a:hover {
