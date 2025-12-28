@@ -162,7 +162,9 @@ a {
 .work-entry h2:first-of-type a, 
 .work-entry h3 span:first-of-type a,
 .work-entry h4 span:first-of-type a,
-.iteration h3 span:first-of-type a
+.iteration h3 span:first-of-type a,
+.iteration h4 span:first-of-type a,
+.iteration h2 span:first-of-type a
 {
     margin-left: -0.4rem;
 }
