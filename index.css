@@ -64,8 +64,8 @@
 	--category-fashion-color: #e6a3b1; /* New Fashion Category */
 	
 /* Button Colors */
---btn-lavender: #3f3a59; /* From your --h2-color */
-    --btn-amber: #1c1610;    /* From your --original-color */
+--btn-lavender: rgb(62, 56, 89, 0.6); /* From your --h2-color */
+    --btn-amber: rgb(46, 43, 40, 0.6);    /* From your --original-color */
     --btn-glass-shine: rgba(191, 218, 245, 0.2);
     --btn-glass-shadow: rgba(2, 33, 0, 0.4);
 }
@@ -127,8 +127,8 @@
 	--category-fashion-color: #a34f60; /* New Fashion Category */
 	
 	/* Button Colors */
---btn-lavender: rgba(183, 135, 232, 0.3); /* From your --h2-color */
-    --btn-amber: rgba(240, 187, 134, 0.3);    /* From your --original-color */
+--btn-lavender: rgba(117, 205, 255, 0.3); /* From your --h2-color */
+    --btn-amber: rgba(255, 217, 120, 0.3);    /* From your --original-color */
     --btn-glass-shine: rgba(191, 218, 245, 0.35);
     --btn-glass-shadow: rgba(6, 4, 36, 0.4);
 }
@@ -144,7 +144,7 @@ a {
     padding: 0.2rem 0.3rem;
     border-radius: 20px; /* More rounded for y2k 'capsule' feel */
     transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    
+
     /* Glassy Gradient & Shine */
     /* Layer 1: A white gloss highlight on top | Layer 2: The Lavender-Amber gradient */
     background: 
@@ -157,6 +157,14 @@ a {
         0 4px 10px var(--btn-glass-shadow),      /* Outer shadow */
         inset 0 -3px 6px rgba(0, 0, 0, 0.2),      /* Inner bottom shadow */
         inset 0 2px 3px rgba(255, 255, 255, 0.4); /* Inner top highlight */
+}
+
+.work-entry h2:first-of-type a, 
+.work-entry h3 span:first-of-type a,
+.work-entry h4 span:first-of-type a,
+.iteration h3 span:first-of-type a
+{
+    margin-left: -0.4rem;
 }
 
 a:hover {
@@ -263,20 +271,30 @@ body {
 }
 
 .social-links {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 1.5rem;
+    gap: 0.4rem; /* Creates uniform vertical spacing between buttons */
 }
+
 .social-links a {
-	font-family: var(--font-accent);
-	margin: 0.2rem 0;
-	text-decoration: none;
-	color: var(--h2-color);
-	letter-spacing: 0.01em;
+    /* Refines the global 'a' button style for a compact list */
+    font-family: var(--font-accent);
+    margin: 0; 
+    width: 140px; /* Uniform width for the "Linktree" look */
+    padding: 0.4rem 0.8rem; /* Smaller padding than the dedicated links page */
+    text-align: center;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+margin-left: 0;
+    color: var(--text-color); /* Ensures text remains readable on the gradient */
 }
+
 .social-links a:hover {
-	color: var(--link-hover-color);
+    /* Enhances the hover state specifically for this list */
+    color: var(--link-hover-color); 
+    transform: translateY(-2px) scale(1.05);
 }
 h1 {
 	font-family: var(--font-body);
@@ -679,7 +697,7 @@ div.categories p:not(:last-of-type)::after{
 
 .work-entry.minor .categories p::before {
     font-size: 0.9rem; /* Smaller category label */
-	margin: 0.1rem;
+	margin: 0.1rem 0rem;
 	font-weight: 600;
 }
 

@@ -15,45 +15,91 @@
 
 
     <title>Xyh Tamura — Links</title>
-
- 
 <style>
   :root {
-    /* Colors pulled from your main index.css */
-    --bg: #2d3333; 
-    --panel: rgba(26, 22, 4, 0.45);
-    --border: rgba(135, 138, 232, 0.3);
+    /* Iridescent Palette from your photo */
+    --bg-dark: #1a1a1a;
+    --bg-light: #f0f4f4;
     
-    /* Toxic Pastel Accents */
-    --h2-color: #b787e8; /* Lavender */
-    --accent: #cdfc12;    /* Neon Lime */
-    --text: #efece7;
+    --neon-cyan: #00f2ff;
+    --neon-magenta: #eb4a67;
+    --neon-lime: #cdfc12;
+    --irid-glass: rgba(255, 255, 255, 0.1);
+    
+    --text-main: #efece7;
     --sub-text: #bcd6d4;
     
-    /* Fonts */
     --font-heading: "Quicksand", sans-serif;
     --font-body: "Rubik", sans-serif;
   }
 
-  * { box-sizing: border-box; cursor: crosshair; }
-
+  /* DARK MODE (Default) */
   body {
     margin: 0;
     min-height: 100vh;
     font-family: var(--font-body);
-    background-color: var(--bg);
-    color: var(--text);
+    background-color: var(--bg-dark);
+    color: var(--text-main);
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 20px;
     overflow-x: hidden;
-    /* Atmospheric "Research Glow" */
     background: 
-      radial-gradient(circle at 10% 20%, rgba(36, 158, 199, 0.15), transparent 40%),
-      radial-gradient(circle at 90% 80%, rgba(206, 96, 141, 0.1), rgba(54, 155, 75, 0.15),  transparent 40%),
-      var(--bg);
+      radial-gradient(circle at 10% 20%, rgba(0, 242, 255, 0.2), transparent 40%),
+      radial-gradient(circle at 90% 10%, rgba(255, 0, 255, 0.15), transparent 40%),
+      radial-gradient(circle at 50% 80%, rgba(205, 252, 18, 0.15), transparent 50%),
+      var(--bg-dark);
   }
+
+  /* LIGHT MODE REFINEMENTS */
+  @media (prefers-color-scheme: light) {
+    body {
+      background-color: var(--bg-light);
+      color: #1a1a1a; /* Darker primary text */
+      background: 
+        radial-gradient(circle at 10% 20%, rgba(38, 164, 204, 0.35), transparent 40%),
+        radial-gradient(circle at 90% 10%, rgba(209, 86, 92, 0.25), transparent 40%),
+        radial-gradient(circle at 50% 80%, rgba(51, 156, 74, 0.25), transparent 50%),
+        var(--bg-light);
+    }
+    
+    .card {
+      background: rgba(255, 253, 245, 0.7) !important;
+      border: 1px solid rgba(0, 0, 0, 0.15) !important;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12) !important;
+    }
+
+    /* Darkening link text and sub-labels for contrast */
+    .links a {
+      color: #1a1a1a !important;
+      background: 
+          linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 0%, transparent 50%),
+          linear-gradient(135deg, rgba(0, 242, 255, 0.2), rgba(54, 155, 75, 0.15)) !important;
+    }
+
+  :root {
+
+    --bg-dark: #1a1a1a;
+    --bg-light: #f0f4f4;
+    
+    --neon-cyan: #26a4cc;
+    --neon-magenta: #a05260;
+    --neon-lime: #399f53;
+    --irid-glass: rgba(255, 255, 255, 0.1);
+    
+    --text-main: #49453c;
+    --sub-text: #867059;
+    
+    --font-heading: "Quicksand", sans-serif;
+    --font-body: "Rubik", sans-serif;
+  }
+.label strong { color: #46433c !important; }
+    .icon { fill: #35408f !important; } /* Deeper purple for icons on light bg */
+  }
+
+  /* SHARED STYLES */
+  * { box-sizing: border-box; cursor: crosshair; }
 
   .wrap {
     width: 100%;
@@ -63,119 +109,92 @@
   }
 
   .card {
-    background: var(--panel);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--border);
-    /* Your signature organic border-radius from the website */
+    background: rgba(26, 22, 4, 0.45);
+    backdrop-filter: blur(16px);
     border-radius: 50% 35% 45% 25% / 15% 20% 15% 10%;
     padding: 40px;
-    box-shadow: 0 30px 60px rgba(0,0,0,0.4);
-    transition: all 0.5s ease-in-out;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .card:hover {
     border-radius: 45% 40% 30% 50% / 20% 15% 25% 15%;
   }
 
-  .header {
-    text-align: center;
-
-  }
-
   .avatar {
-    width: 100px;
-    height: 100px;
-    margin: 0 auto 15px;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 20px;
     border-radius: 50% 35% 45% 25%;
     overflow: hidden;
-    border: 2px solid var(--h2-color);
-    transform: rotate(-5deg);
+    transform: rotate(-3deg);
+    box-shadow: 0 0 20px rgba(0, 242, 255, 0.3);
   }
 
-  .avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; }
 
   h1 {
     font-family: var(--font-heading);
-    font-size: 1.8rem;
+    font-size: 2rem;
     margin: 0;
-    color: var(--text);
+    text-align: center;
     letter-spacing: 2px;
-  }
-
-  .sub {
-    font-size: 0.85rem;
-    color: var(--sub-text);
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    background: linear-gradient(to right, var(--neon-cyan), var(--neon-magenta));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
   .tagline {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     text-align: center;
-    margin: 20px 0;
-    color: var(--h2-color);
+    margin: 15px 0 25px;
+    color: var(--neon-lime);
+    text-transform: uppercase;
     font-weight: bold;
-    opacity: 0.8;
+    letter-spacing: 1px;
   }
 
-  .links {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .links li {
-    margin-bottom: 15px;
-  }
+  .links { list-style: none; padding: 0; margin: 0; }
+  .links li { margin-bottom: 18px; }
 
   .links a {
     display: flex;
     align-items: center;
-    padding: 12px 20px;
-    color: var(--text);
+    padding: 14px 22px;
+    color: var(--text-main);
     text-decoration: none;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid transparent;
-    border-radius: 10px;
-    transition: all 0.2s ease;
+    border-radius: 25px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    background: 
+        linear-gradient(to bottom, rgba(255,255,255,0.2) 0%, transparent 50%),
+        linear-gradient(135deg, rgba(0, 242, 255, 0.15), rgba(77, 72, 139, 0.15));
+    box-shadow: 
+        0 4px 15px rgba(0,0,0,0.3),
+        inset 0 -3px 6px rgba(0,0,0,0.2),
+        inset 0 2px 3px rgba(255,255,255,0.1);
+
   }
 
   .links a:hover {
-    background: rgba(183, 135, 232, 0.1);
-    border-color: var(--h2-color);
-    transform: translateX(5px);
-    color: var(--accent);
+    transform: translateY(-4px) scale(1.03);
 
+    background: 
+        linear-gradient(to bottom, rgba(255,255,255,0.3) 0%, transparent 50%),
+        linear-gradient(135deg, rgba(0, 242, 255, 0.25), rgba(77, 72, 139, 0.25));
+    box-shadow: 0 10px 25px rgba(0, 242, 255, 0.2);
   }
 
-  .icon {
-    width: 20px;
-    height: 20px;
-    margin-right: 15px;
-    fill: var(--h2-color);
+  .links a:active {
+    transform: translateY(2px) scale(0.97);
+    box-shadow: inset 0 4px 8px rgba(0,0,0,0.4);
   }
 
-  .label {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .label strong {
-    font-size: 1rem;
-    font-family: var(--font-heading);
-  }
-
-  .label span {
-    font-size: 0.7rem;
-    color: var(--sub-text);
-  }
+  .icon { width: 22px; height: 22px; margin-right: 15px; fill: var(--neon-cyan); }
+  .label strong { font-size: 1rem; font-family: var(--font-heading); display: block; }
+  .label span { font-size: 0.7rem; color: var(--sub-text); }
 
   @media (max-width: 480px) {
-    .card { border-radius: 20px; padding: 25px; }
+    .card { border-radius: 25px; padding: 25px; }
   }
 </style>
   </head>
