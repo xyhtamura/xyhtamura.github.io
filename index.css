@@ -159,6 +159,8 @@ a {
         inset 0 2px 3px rgba(255, 255, 255, 0.4); /* Inner top highlight */
 }
 
+.email
+
 /* Only triggers if the <a> is the very first thing inside <h2> */
 .work-entry h2 > a:first-child,
 .work-entry h2 > span:first-child > a:first-child,
@@ -278,6 +280,24 @@ body {
     align-items: center;
     margin-top: 1.5rem;
     gap: 0.4rem; /* Creates uniform vertical spacing between buttons */
+}
+
+/* Exempt the email link from button styling */
+.email a {
+    background: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    display: inline !important; /* Returns it to standard text flow */
+    transform: none !important; /* Removes the hover lift effect */
+}
+
+/* Optional: Ensure it doesn't "pop" on hover like a button */
+.email a:hover {
+    transform: none !important;
+    filter: none !important;
+    box-shadow: none !important;
+
 }
 
 .social-links a {
