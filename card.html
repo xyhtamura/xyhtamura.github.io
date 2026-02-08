@@ -3,251 +3,266 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xyh Tamura | Intermedia</title>
+    <title>Xyh Tamura Portfolio</title>
     <link href="https://fonts.googleapis.com/css2?family=Averia+Sans+Libre:wght@300;400;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            /* Hyper Light Drifter Cyans and Pinks + Hylics Earthy Muted Tones */
-            --bg-deep: #0d0208;
-            --clay-dust: #e2d1c3;
-            --hl-neon: #00ffd2;
-            --hl-pink: #ff0055;
-            --ror-purple: #2d004d;
-            --font-main: 'Averia Sans Libre', cursive;
-        }
+   <style>
+    :root {
+        /* Colors sampled from the image */
+        --bg-color: #2c3359;        /* Deep sky blue-purple */
+        --text-color: #fcf8e8;      /* Warm off-white light */
+        --accent-color: #f2d492;    /* Hazy sunlight gold */
+        --secondary-accent: #e8a598; /* Faded pink house */
+        --grid-bg: rgba(44, 51, 89, 0.6);
+        --font-main: 'Averia Sans Libre', cursive;
+    }
 
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--bg-deep);
-            color: var(--clay-dust);
-            font-family: var(--font-main);
-            overflow: hidden;
-            /* Subtle scanline effect for that RoR/HLD feel */
-            background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                              linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 4px, 3px 100%;
-        }
+    body, html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        /* Subtle gradient to mimic the sky in the image */
+        background: linear-gradient(180deg, #2c3359 0%, #4a5d4e 100%);
+        color: var(--text-color);
+        font-family: var(--font-main);
+        overflow: hidden;
+    }
 
-        /* Navigation - Game UI Style */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            height: 70px;
-            background: var(--ror-purple);
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            z-index: 1000;
-            border-bottom: 4px solid var(--hl-neon);
-            overflow-x: auto;
-            padding: 0 20px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-        }
+    nav {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        height: 60px;
+        background: rgba(44, 51, 89, 0.8);
+        backdrop-filter: blur(10px); /* Adds to the "dreamy" look */
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        z-index: 1000;
+        border-bottom: 1px solid rgba(242, 212, 146, 0.2);
+        overflow-x: auto;
+        padding: 0 10px;
+    }
 
-        .tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            font-size: 1rem;
-            white-space: nowrap;
-            opacity: 0.7;
-            color: var(--clay-dust);
-            text-shadow: 2px 2px var(--bg-deep);
-            transition: all 0.2s;
-            border: 2px solid transparent;
-        }
+    .tab {
+        padding: 10px 15px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        white-space: nowrap;
+        opacity: 0.6;
+        transition: all 0.3s ease;
+        color: var(--text-color);
+    }
 
-        .tab.active {
-            opacity: 1;
-            color: var(--hl-neon);
-            border: 2px solid var(--hl-neon);
-            background: var(--bg-deep);
-            transform: skew(-10deg); /* Hyper Light Drifter geometric tilt */
-        }
+    .tab.active {
+        opacity: 1;
+        color: var(--accent-color);
+        border-bottom: 2px solid var(--accent-color);
+        text-shadow: 0 0 8px rgba(242, 212, 146, 0.5);
+    }
 
-        .content-wrapper {
-            margin-top: 70px;
-            height: calc(100vh - 70px);
-            overflow-y: auto;
-            scroll-behavior: smooth;
-        }
+    .content-wrapper {
+        margin-top: 60px;
+        height: calc(100vh - 60px);
+        overflow-y: auto;
+        scroll-behavior: smooth;
+        /* Adds a slight "haze" overlay to the content */
+        background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.2) 100%);
+    }
 
-        .section {
-            display: none;
-            padding: 50px 25px;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100%;
-            box-sizing: border-box;
-        }
+    .section {
+        display: none;
+        padding: 40px 20px;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100%;
+        box-sizing: border-box;
+    }
 
-        .section.active { display: flex; }
+    .section.active { display: flex; }
 
-        /* Titles - Wobbly and Bold (Hylics vibe) */
-        h1 { 
-            font-size: 4rem; 
-            margin: 0; 
-            color: var(--hl-pink); 
-            text-shadow: 4px 4px 0px var(--ror-purple);
-            filter: drop-shadow(0 0 10px var(--hl-pink));
-        }
-        
-        h2 { 
-            font-size: 2.2rem; 
-            margin: 20px 0; 
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--hl-neon);
-            text-shadow: 3px 3px 0px var(--bg-deep);
-        }
+    h1 { 
+        font-size: 3.5rem; 
+        margin: 0; 
+        font-weight: 700;
+        color: var(--secondary-accent);
+        text-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+    }
+    
+    h2 { 
+        font-size: 2rem; 
+        margin: 10px 0; 
+        font-weight: 400; 
+        color: var(--accent-color); 
+    }
 
-        /* Image Grid - Organic and Glitchy */
-        .image-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            width: 100%;
-            max-width: 800px;
-        }
+    .image-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        width: 100%;
+        max-width: 1000px;
+        align-items: start; 
+    }
 
-        .img-slot {
-            aspect-ratio: 1 / 1;
-            background: #1a1a1a;
-            border: 3px solid var(--clay-dust);
-            /* Hylics "melted" border radius */
-            border-radius: 40% 10% 30% 15% / 20% 30% 10% 40%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 15px;
-            font-size: 0.9rem;
-            color: var(--clay-dust);
-            transition: transform 0.3s;
-            box-shadow: 8px 8px 0px var(--hl-pink);
-        }
+    .img-slot {
+        width: 100%;
+        background: var(--grid-bg);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        /* Gives the empty slots a "liminal" feel */
+        min-height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 10px;
+        font-size: 0.8rem;
+    }
 
-        .img-slot:nth-child(even) {
-            border-radius: 10% 40% 15% 30% / 30% 20% 40% 10%;
-            box-shadow: 8px 8px 0px var(--hl-neon);
-        }
+    .img-slot img {
+        width: 100%;
+        height: auto;
+        display: block;
+        /* Slight saturation boost to match the photo's edit style */
+        filter: saturate(1.1) contrast(1.05);
+    }
 
-        /* Interactive Arrows */
-        .nav-arrows {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            display: flex;
-            gap: 20px;
-        }
+    .arrow {
+        background: rgba(232, 165, 152, 0.2);
+        border: 1px solid var(--secondary-accent);
+        color: var(--text-color);
+        padding: 15px;
+        border-radius: 50%;
+        cursor: pointer;
+        backdrop-filter: blur(5px);
+        transition: background 0.3s;
+    }
 
-        .arrow {
-            background: var(--hl-pink);
-            border: none;
-            color: white;
-            padding: 20px;
-            cursor: pointer;
-            font-size: 1.5rem;
-            clip-path: polygon(20% 0%, 100% 0%, 80% 100%, 0% 100%); /* Geometric HLD shape */
-            box-shadow: 5px 5px 0px var(--bg-deep);
-        }
+    .arrow:hover {
+        background: var(--secondary-accent);
+        color: var(--bg-color);
+    }
 
-        .arrow:active { transform: translate(3px, 3px); box-shadow: none; }
-
-        @media (max-width: 600px) {
-            h1 { font-size: 3rem; }
-            h2 { font-size: 1.6rem; }
-            .image-grid { grid-template-columns: 1fr; }
-        }
-    </style>
+    @media (max-width: 600px) {
+        h1 { font-size: 2.5rem; }
+        h2 { font-size: 1.5rem; }
+        .image-grid { grid-template-columns: 1fr; }
+    }
+</style>
+</head>
 </head>
 <body>
 
-<nav>
-    <div class="tab active" onclick="showSection(0)">Init</div>
-    <div class="tab" onclick="showSection(1)">Pop</div>
+<nav id="navbar">
+    <div class="tab active" onclick="showSection(0)">Splash</div>
+    <div class="tab" onclick="showSection(1)">Music</div>
     <div class="tab" onclick="showSection(2)">Audio</div>
     <div class="tab" onclick="showSection(3)">Lit</div>
     <div class="tab" onclick="showSection(4)">Visual</div>
     <div class="tab" onclick="showSection(5)">Tech</div>
-    <div class="tab" onclick="showSection(6)">Theory</div>
+    <div class="tab" onclick="showSection(6)">Research</div>
 </nav>
 
 <div class="content-wrapper">
     <section class="section active">
-        <div style="margin-top: 25vh; text-align: center;">
+        <div class="header-box" style="margin-top: 20vh;">
             <h1>Xyh Tamura</h1>
-            <h2 style="color: var(--clay-dust);">Interdisciplinary Artist-Researcher</h2>
+            <h2>Interdisciplinary Artist, Singer-Songwriter, & Researcher</h2>
         </div>
     </section>
 
     <section class="section">
-        <h2>Experimental Pop & Songwriting</h2>
+        <div class="header-box">
+            <h2>Experimental Pop & Songwriting</h2>
+        </div>
         <div class="image-grid">
-            <div class="img-slot">Cyberpaean [cite: 123]</div>
-            <div class="img-slot">Zygote [cite: 169]</div>
-            <div class="img-slot">Pacing To [cite: 126]</div>
-            <div class="img-slot">Night Bus [cite: 74]</div>
+            <div class="img-slot"><img src="card/spotify.png"></div>
+            <div class="img-slot"><img src="card/per.gif"></div>
+            <div class="img-slot"><img src="card/manifest.jpeg"></div>
+            <div class="img-slot"><img src="card/vaporwave.jpeg"></div>
+			<div class="img-slot"><img src="card/tao.jpeg"></div>
+			<div class="img-slot"><img src="card/masm.jpeg"></div>
         </div>
     </section>
 
     <section class="section">
-        <h2>Audio Engineering & Scoring</h2>
+        <div class="header-box">
+            <h2>Composition & Audio Engineering</h2>
+        </div>
         <div class="image-grid">
-            <div class="img-slot">Memory of Jaro [cite: 156]</div>
-            <div class="img-slot">Second Life DJ [cite: 50]</div>
-            <div class="img-slot">Palibut-Libot [cite: 158]</div>
-            <div class="img-slot">Gaia Mystica [cite: 166]</div>
+            <div class="img-slot"><img src="card/palibut.jpg"></div>
+            
+            <div class="img-slot"><img src="card/carte.jpeg"></div>
+            <div class="img-slot"><img src="card/compose.jpeg"></div>
+			<div class="img-slot"><img src="card/handaan.jpg"></div>
+			<div class="img-slot"><img src="card/jaro.jpeg"></div>
+			<div class="img-slot"><img src="card/memory.jpeg"></div>
+			<div class="img-slot"><img src="card/spo.jpeg"></div>
+			<div class="img-slot"><img src="card/pod.jpeg"></div>
         </div>
     </section>
 
     <section class="section">
-        <h2>Electronic Literature</h2>
+        <div class="header-box">
+            <h2>Electronic Literature & Videopoetry</h2>
+        </div>
         <div class="image-grid">
-            <div class="img-slot">Of Another Shore [cite: 115]</div>
-            <div class="img-slot">LOVE-LETTER-FOR-YOU [cite: 111]</div>
-            <div class="img-slot">KuboCities [cite: 108]</div>
-            <div class="img-slot">Manifest [cite: 104]</div>
+            <div class="img-slot"><img src="card/iwanted.gif"></div>
+            <div class="img-slot"><img src="card/iloveyou.gif"></div>
+            <div class="img-slot"><img src="card/kubo.gif"></div>
+            <div class="img-slot"><img src="card/edi.gif"></div>
+<div class="img-slot"><img src="card/threefloor.jpeg"></div>
+
         </div>
     </section>
 
     <section class="section">
-        <h2>Visual & Intermedia</h2>
+        <div class="header-box">
+            <h2>Visual & Intermedia Art</h2>
+        </div>
         <div class="image-grid">
-            <div class="img-slot">Tanim-Kalye [cite: 97]</div>
-            <div class="img-slot">Insulae Incognita [cite: 103]</div>
-            <div class="img-slot">Heligobagus [cite: 100]</div>
-            <div class="img-slot">72 Munting Panahon [cite: 94]</div>
+            <div class="img-slot"><img src="tanim-kalye/tk.jpg"></div>
+            <div class="img-slot"><img src="card/insulae.gif"></div>
+            <div class="img-slot"><img src="card/buds.jpeg"></div>
+            <div class="img-slot"><img src="card/fash.jpeg"></div>
+			<div class="img-slot"><img src="card/sculpt.jpeg"></div>
         </div>
     </section>
 
     <section class="section">
-        <h2>Creative Tech</h2>
+        <div class="header-box">
+            <h2>Creative Technology</h2>
+        </div>
         <div class="image-grid">
-            <div class="img-slot">Sgueltch [cite: 143]</div>
-            <div class="img-slot">Pythia [cite: 142]</div>
-            <div class="img-slot">TaboTa [cite: 141]</div>
-            <div class="img-slot">HuníTsura [cite: 151]</div>
+            <div class="img-slot"><img src="card/lesions.gif"></div>
+            <div class="img-slot"><img src="card/huni.gif"></div>
+            <div class="img-slot"><img src="card/siltcrt.gif"></div>
+            <div class="img-slot"><img src="card/roil.gif"></div>
+			<div class="img-slot"><img src="card/tabo.jpeg"></div>
         </div>
     </section>
 
     <section class="section">
-        <h2>Research & Theory</h2>
+        <div class="header-box">
+            <h2>Research & Theory</h2>
+        </div>
         <div class="image-grid">
-            <div class="img-slot">Affect Atlas [cite: 36]</div>
-            <div class="img-slot">Synthetic Medievalisms [cite: 68]</div>
-            <div class="img-slot">Emergent Personhood [cite: 77]</div>
-            <div class="img-slot">Makwela [cite: 47]</div>
+            <div class="img-slot"><img src="card/frominte.jpeg"></div>
+			<div class="img-slot"><img src="card/upv.jpeg"></div>
+            <div class="img-slot"><img src="istorya-sang-balatyagon/img/01.png"></div>
+            <div class="img-slot"><img src="card/map.gif"></div>
+            
+			<div class="img-slot"><img src="card/nanyang.jpeg"></div>
         </div>
     </section>
 </div>
 
 <div class="nav-arrows">
-    <button class="arrow" onclick="moveSection(-1)">PREV</button>
-    <button class="arrow" onclick="moveSection(1)">NEXT</button>
+    <button class="arrow" onclick="moveSection(-1)">&#10094;</button>
+    <button class="arrow" onclick="moveSection(1)">&#10095;</button>
 </div>
 
 <script>
@@ -258,14 +273,19 @@
     function showSection(idx) {
         sections.forEach(s => s.classList.remove('active'));
         tabs.forEach(t => t.classList.remove('active'));
+        
         sections[idx].classList.add('active');
         tabs[idx].classList.add('active');
         currentIdx = idx;
-        tabs[idx].scrollIntoView({ behavior: 'smooth', inline: 'center' });
+        
+        // Ensure nav scroll is centered for small screens
+        tabs[idx].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
     }
 
     function moveSection(delta) {
-        let newIdx = (currentIdx + delta + sections.length) % sections.length;
+        let newIdx = currentIdx + delta;
+        if (newIdx < 0) newIdx = sections.length - 1;
+        if (newIdx >= sections.length) newIdx = 0;
         showSection(newIdx);
     }
 </script>
