@@ -789,3 +789,87 @@ div.categories p:not(:last-of-type)::after{
 .work-alt-title {
   color: var(--other-names);    /* Uses the new color variable */
 }
+
+/* --- Blog Dropdown Styles --- */
+.blog-dropdown {
+    text-align: center;
+}
+
+/* Style the summary to look EXACTLY like the social link buttons */
+.blog-dropdown summary {
+    display: inline-block;
+    font-family: var(--font-accent);
+    width: 140px; /* Matches your .social-links a */
+    padding: 0.4rem 0.8rem; 
+    text-align: center;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    color: var(--text-color);
+    cursor: pointer;
+    list-style: none; /* Hides default HTML triangle */
+    
+    /* Shape & Glassy Effect (copied from your global 'a' tags) */
+    border-radius: 20px;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    background: 
+        linear-gradient(to bottom, var(--btn-glass-shine) 0%, transparent 50%),
+        linear-gradient(135deg, var(--btn-lavender), var(--btn-amber));
+    box-shadow: 
+        0 4px 10px var(--btn-glass-shadow),
+        inset 0 -3px 6px rgba(0, 0, 0, 0.2),
+        inset 0 2px 3px rgba(255, 255, 255, 0.4);
+}
+
+/* Hide the webkit arrow */
+.blog-dropdown summary::-webkit-details-marker {
+    display: none;
+}
+
+/* Add custom open/close indicator */
+.blog-dropdown summary::after {
+    content: " ▼";
+    font-size: 0.7em;
+    vertical-align: middle;
+    opacity: 0.7;
+}
+
+.blog-dropdown[open] summary::after {
+    content: " ▲";
+}
+
+/* Hover and Active states for the summary button */
+.blog-dropdown summary:hover {
+    transform: translateY(-2px) scale(1.05);
+    color: var(--link-hover-color);
+    filter: saturate(1.3) brightness(1.1);
+    box-shadow: 0 6px 15px var(--btn-glass-shadow);
+}
+
+.blog-dropdown summary:active {
+    transform: translateY(2px) scale(0.97);
+    background: 
+        linear-gradient(to top, var(--btn-glass-shine) 0%, transparent 50%),
+        linear-gradient(135deg, var(--btn-lavender), var(--btn-amber));
+    box-shadow: 
+        inset 0 4px 8px rgba(0, 0, 0, 0.5), 
+        0 0 0 transparent;
+}
+
+/* Styling the expanded links container */
+.blog-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.6rem;
+}
+
+/* Adjust the inner blog links to fit long titles */
+.social-links .blog-dropdown .blog-links a {
+    width: auto;
+    max-width: 260px; /* Allows the button to expand for long article names */
+    white-space: normal; /* Allows text to wrap to the next line */
+    line-height: 1.3;
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+}

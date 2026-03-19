@@ -15,7 +15,7 @@
 
 ### The Regime Pair: Temporal + Axial
 
-A Tabota **Scoring Regime** is a pair of two settings that define the fundamental "physics" of a section: the **Temporal Regime** (how time flows) and the **Axis Mode** (what the Y-axis values mean).
+A Tabota **Scoring Regime** is a pair of two settings that define the fundamental language of a section: the **Temporal Regime** (how time flows) and the **Axis Mode** (what the Y-axis values mean).
 
 | Temporal Regime | Description | Use Cases |
 |----------------|-------------|-----------|
@@ -111,6 +111,8 @@ The referenced JSON file is a simple map of note names to their exact frequencie
 ---
 
 ## Positioning Systems
+
+Metered regimes will 
 
 ### 1. Absolute Positioning
 ```json

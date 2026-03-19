@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://xyhtamura.github.io/</loc>
+    <lastmod>2026-03-20</lastmod>
+    <priority>1.00</priority>
+  </url>
+  
+  <url>
+    <loc>https://xyhtamura.github.io/mapping-research-practice-self.html</loc>
+    <lastmod>2026-03-09</lastmod>
+    <priority>0.90</priority>
+  </url>
+
+  <url>
+    <loc>https://xyhtamura.github.io/tabota/</loc>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/tanim-kalye/</loc>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/72-munting-panahon/</loc>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/istorya-sang-balatyagon/</loc>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/of-another-shore/</loc>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://xyhtamura.github.io/sgueltch/</loc>
+    <priority>0.70</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/stitcher/</loc>
+    <priority>0.60</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/pythia/</loc>
+    <priority>0.60</priority>
+  </url>
+</urlset>

@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://tabota.org/schema/v1.4",
+  "$id": "https://tabota.org/schema/v1.5",
   "title": "Tabota Score Format",
-  "description": "A universal notation language for time-based events with nested timelines and external references",
+  "description": "A universal notation language for time-based events with nested timelines, external references, and type inheritance",
   "type": "object",
   "required": ["projectName", "languageVersion", "score"],
   "properties": {
@@ -13,7 +13,7 @@
     "languageVersion": {
       "type": "string",
       "pattern": "^\\d+\\.\\d+(-[a-z]+)?$",
-      "description": "Tabota specification version (e.g., '1.4')"
+      "description": "Tabota specification version (e.g., '1.5')"
     },
     "author": {
       "type": "string",
@@ -166,6 +166,11 @@
             {"$ref": "#/definitions/SymbolicSettings"}
           ]
         },
+        "defaultEventType": {
+          "type": "string",
+          "enum": ["point", "line", "group", "reference", "external"],
+          "description": "Sets the default event type for all events in this section."
+        },
         "events": {
           "type": "array",
           "description": "Events in this section",
@@ -233,6 +238,11 @@
             {"$ref": "#/definitions/InstructionalSettings"},
             {"$ref": "#/definitions/SymbolicSettings"}
           ]
+        },
+        "defaultEventType": {
+          "type": "string",
+          "enum": ["point", "line", "group", "reference", "external"],
+          "description": "Sets the default event type for all events in this track. Overrides section-level default."
         },
         "events": {
           "type": "array",
@@ -309,6 +319,10 @@
           "enum": ["frequency", "categorical", "instructional", "symbolic"]
         },
         "modeSettings": {"type": "object"},
+        "defaultEventType": {
+          "type": "string",
+          "enum": ["point", "line", "group", "reference", "external"]
+        },
         "events": {
           "type": "array",
           "items": {"$ref": "#/definitions/Event"}
@@ -397,25 +411,15 @@
       "type": "object",
       "properties": {
         "tuning": {
-          "description": "The tuning system to use. Can be a standard name or an object pointing to a custom file.",
+          "description": "The tuning system to use.",
           "oneOf": [
-            {
-              "type": "string",
-              "enum": ["12-TET"]
-            },
+            { "type": "string", "enum": ["12-TET"] },
             {
               "type": "object",
               "required": ["system", "file"],
               "properties": {
-                "system": {
-                  "type": "string",
-                  "const": "custom",
-                  "description": "Indicates a custom tuning file is being used."
-                },
-                "file": {
-                  "type": "string",
-                  "description": "Path to the JSON or .scl tuning map file."
-                }
+                "system": { "type": "string", "const": "custom" },
+                "file": { "type": "string" }
               }
             }
           ],
@@ -424,18 +428,35 @@
         "a4": {
           "type": "number",
           "default": 440,
-          "description": "Reference frequency for A4, used when the tuning system doesn't specify one."
+          "description": "Reference frequency for A4"
+        }
+      }
+    },
+
+    "MeterPosition": {
+      "type": "object",
+      "required": ["measure", "beat"],
+      "properties": {
+        "measure": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "The measure number (1-indexed)"
+        },
+        "beat": {
+          "type": "number",
+          "minimum": 0,
+          "description": "The beat within the measure (0-indexed)"
         }
       }
     },
     
     "Event": {
       "type": "object",
-      "required": ["type"],
       "properties": {
         "type": {
           "type": "string",
-          "enum": ["point", "line", "group", "reference", "external"]
+          "enum": ["point", "line", "group", "reference", "external"],
+          "description": "Optional if defaultEventType is set on the parent track/section."
         },
         "id": {"type": "string"},
         "payload": {"$ref": "#/definitions/Payload"}
@@ -451,22 +472,16 @@
     
     "ExternalEvent": {
       "type": "object",
-      "required": ["type", "externalRef"],
+      "required": ["externalRef"],
       "properties": {
         "type": {"const": "external"},
-        "externalRef": {
-          "type": "string",
-          "description": "ID of imported events or section"
-        },
-        "externalFile": {
-          "type": "string",
-          "description": "Direct file reference"
-        },
+        "externalRef": {"type": "string"},
+        "externalFile": {"type": "string"},
         "time": {"type": "number"},
         "index": {"type": "integer"},
+        "startMeter": {"$ref": "#/definitions/MeterPosition"},
         "transform": {
           "type": "object",
-          "description": "Transformations to apply to imported events",
           "properties": {
             "timeOffset": {"type": "number"},
             "transpose": {"type": "number"},
@@ -482,20 +497,17 @@
         {
           "properties": {
             "type": {"const": "point"},
-            "yValue": {
-              "oneOf": [
-                {"type": "number"},
-                {"type": "string"}
-              ]
-            }
+            "yValue": {"oneOf": [{"type": "number"}, {"type": "string"}]},
+            "startMeter": {"$ref": "#/definitions/MeterPosition"}
           },
-          "required": ["type", "yValue"]
+          "required": ["yValue"]
         },
         {
           "oneOf": [
             {"required": ["time"], "properties": {"time": {"type": "number"}}},
             {"required": ["index"], "properties": {"index": {"type": "integer"}}},
-            {"required": ["relativeTime"], "properties": {"relativeTime": {"type": "object"}}}
+            {"required": ["relativeTime"], "properties": {"relativeTime": {"type": "object"}}},
+            {"required": ["startMeter"]}
           ]
         }
       ]
@@ -518,20 +530,35 @@
               "type": "string",
               "enum": ["linear", "ease-in", "ease-out", "ease-in-out", "step", "exponential"],
               "default": "linear"
-            }
-          },
-          "required": ["type"]
+            },
+            "startMeter": {"$ref": "#/definitions/MeterPosition"},
+            "endMeter": {"$ref": "#/definitions/MeterPosition"}
+          }
         },
         {
-          "description": "Defines the event's duration",
+          "description": "Defines the event's duration positioning",
           "oneOf": [
+            // 1. Metered Combinations
+            {"required": ["startMeter", "endMeter"]},
+            {"required": ["startMeter", "duration"]},
+            {"required": ["endMeter", "duration"]},
+            
+            // 2. Flat Beats / Time Combinations
             {"required": ["startTime", "endTime"]},
             {"required": ["startTime", "duration"]},
             {"required": ["endTime", "duration"]},
-            {"required": ["anchor", "duration"]},
+            
+            // 3. Achronous (Index) Combinations
             {"required": ["startIndex", "endIndex"]},
             {"required": ["startIndex", "duration"]},
-            {"required": ["endIndex", "duration"]}
+            {"required": ["endIndex", "duration"]},
+            
+            // 4. Anchor Combinations
+            {"required": ["anchor", "duration"]},
+            
+            // 5. Hybrid (Meter + Flat Time)
+            {"required": ["startMeter", "endTime"]},
+            {"required": ["startTime", "endMeter"]}
           ]
         },
         {
@@ -551,14 +578,16 @@
           "properties": {
             "type": {"const": "group"},
             "yValue": {"type": "number"},
-            "events": {"type": "array"}
+            "events": {"type": "array"},
+            "startMeter": {"$ref": "#/definitions/MeterPosition"}
           },
-          "required": ["type", "yValue", "events"]
+          "required": ["yValue", "events"]
         },
         {
           "oneOf": [
             {"required": ["time"]},
-            {"required": ["index"]}
+            {"required": ["index"]},
+            {"required": ["startMeter"]}
           ]
         }
       ]
@@ -572,14 +601,16 @@
             "type": {"const": "reference"},
             "ref": {"type": "string"},
             "transpose": {"type": "number"},
-            "offset": {"type": "number"}
+            "offset": {"type": "number"},
+            "startMeter": {"$ref": "#/definitions/MeterPosition"}
           },
-          "required": ["type", "ref"]
+          "required": ["ref"]
         },
         {
           "oneOf": [
             {"required": ["time"]},
-            {"required": ["index"]}
+            {"required": ["index"]},
+            {"required": ["startMeter"]}
           ]
         }
       ]

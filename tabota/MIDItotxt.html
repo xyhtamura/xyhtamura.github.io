@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIDI to Tabota v1.5 Converter</title>
+    <script src="https://unpkg.com/@tonejs/midi"></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background-color: #1e1e1e; color: #d4d4d4; padding: 20px; max-width: 800px; margin: 0 auto; }
+        .container { border: 1px solid #333; padding: 25px; border-radius: 8px; background-color: #252526; }
+        h1 { color: #4ec9b0; margin-top: 0; }
+        input[type="file"] { margin: 15px 0; display: block; }
+        .options-group { margin: 20px 0; padding: 15px; border: 1px solid #404040; border-radius: 4px; background-color: #1e1e1e; display: flex; flex-direction: column; gap: 10px; }
+        .options-group label { cursor: pointer; }
+        button { background-color: #007acc; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 16px; margin-bottom: 20px; }
+        button:hover { background-color: #005f9e; }
+        textarea { width: 100%; height: 400px; background-color: #1e1e1e; color: #dcdcaa; border: 1px solid #333; border-radius: 4px; padding: 10px; font-family: monospace; resize: vertical; box-sizing: border-box; }
+        .download-btn { background-color: #4ec9b0; margin-left: 10px; display: none; text-decoration: none; color: #1e1e1e; font-weight: bold; padding: 10px 20px; border-radius: 4px; }
+        .download-btn:hover { background-color: #3da892; }
+        .controls { display: flex; align-items: center; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>MIDI to Tabota Converter (v1.5)</h1>
+    <p>Convert a .mid file into a valid Tabota v1.5 JSON score.</p>
+    
+    <input type="file" id="midiInput" accept=".mid,.midi" />
+    
+    <div class="options-group">
+        <strong>Positioning Format:</strong>
+        <label>
+            <input type="radio" name="formatToggle" value="meter-duration" checked> 
+            Meter + Duration (startMeter / duration) - <em>Best for readability</em>
+        </label>
+        <label>
+            <input type="radio" name="formatToggle" value="meter-full"> 
+            Full Meter (startMeter / endMeter) - <em>Best for structural symmetry</em>
+        </label>
+        <label>
+            <input type="radio" name="formatToggle" value="beats"> 
+            Flat Beats (startTime / duration) - <em>Best for raw math/grids</em>
+        </label>
+    </div>
+    
+    <div class="controls">
+        <button id="convertBtn">Generate Tabota JSON</button>
+        <a id="downloadLink" class="download-btn" href="#" download="score.json">Download JSON</a>
+    </div>
+
+    <textarea id="jsonOutput" placeholder="Your Tabota JSON will appear here..." readonly></textarea>
+</div>
+
+<script>
+    // Helper function to convert MIDI ticks to Tabota Measure/Beat objects
+    function ticksToMeter(ticks, ppq, beatsPerMeasure) {
+        const totalBeats = ticks / ppq;
+        // Measure is 1-indexed, Beat is 0-indexed
+        const measure = Math.floor(totalBeats / beatsPerMeasure) + 1;
+        // Use toFixed to avoid crazy floating point errors, then parse back to float
+        const beat = parseFloat((totalBeats % beatsPerMeasure).toFixed(3));
+        return { measure, beat };
+    }
+
+    document.getElementById('convertBtn').addEventListener('click', () => {
+        const fileInput = document.getElementById('midiInput');
+        const file = fileInput.files[0];
+        const formatOption = document.querySelector('input[name="formatToggle"]:checked').value;
+
+        if (!file) {
+            alert("Please select a MIDI file first!");
+            return;
+        }
+
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            const arrayBuffer = e.target.result;
+
+            try {
+                const midi = new Midi(arrayBuffer);
+                
+                const ppq = midi.header.ppq; 
+                const bpm = midi.header.tempos.length > 0 ? Math.round(midi.header.tempos[0].bpm) : 120;
+                
+                // Extract Time Signature (default to 4/4 if not found)
+                let timeSigNum = 4;
+                let timeSigDen = 4;
+                if (midi.header.timeSignatures.length > 0) {
+                    timeSigNum = midi.header.timeSignatures[0].timeSignature[0];
+                    timeSigDen = midi.header.timeSignatures[0].timeSignature[1];
+                }
+                const beatsPerMeasure = timeSigNum;
+
+                let maxTicks = 0;
+                const tabotaTracks = [];
+
+                midi.tracks.forEach((track, index) => {
+                    if (track.notes.length === 0) return;
+
+                    const events = [];
+                    
+                    track.notes.forEach(note => {
+                        const endTicks = note.ticks + note.durationTicks;
+                        if (endTicks > maxTicks) maxTicks = endTicks;
+
+                        const eventObj = {
+                            note: note.name
+                        };
+
+                        const durationBeats = parseFloat((note.durationTicks / ppq).toFixed(3));
+
+                        // Apply the chosen positioning formatting
+                        if (formatOption === 'meter-duration') {
+                            eventObj.startMeter = ticksToMeter(note.ticks, ppq, beatsPerMeasure);
+                            eventObj.duration = durationBeats;
+                        } else if (formatOption === 'meter-full') {
+                            eventObj.startMeter = ticksToMeter(note.ticks, ppq, beatsPerMeasure);
+                            eventObj.endMeter = ticksToMeter(endTicks, ppq, beatsPerMeasure);
+                        } else {
+                            eventObj.startTime = parseFloat((note.ticks / ppq).toFixed(3));
+                            eventObj.duration = durationBeats;
+                        }
+
+                        events.push(eventObj);
+                    });
+
+                    tabotaTracks.push({
+                        trackId: track.name ? track.name.replace(/\s+/g, '_') : `Track_${index + 1}`,
+                        axisMode: "symbolic",
+                        modeSettings: { tuning: "12-TET" },
+                        defaultEventType: "line",
+                        events: events
+                    });
+                });
+
+                const totalBeats = Math.ceil(maxTicks / ppq);
+
+                const tabotaScore = {
+                    projectName: file.name.split('.')[0] || "Converted MIDI Project",
+                    languageVersion: "1.5",
+                    score: [
+                        {
+                            sectionId: "Main_Import",
+                            temporalRegime: "metered",
+                            regimeSettings: {
+                                bpm: bpm,
+                                beats: totalBeats,
+                                timeSignature: `${timeSigNum}/${timeSigDen}`
+                            },
+                            tracks: tabotaTracks
+                        }
+                    ]
+                };
+
+                const jsonString = JSON.stringify(tabotaScore, null, 2);
+                document.getElementById('jsonOutput').value = jsonString;
+
+                const blob = new Blob([jsonString], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const downloadLink = document.getElementById('downloadLink');
+                downloadLink.href = url;
+                downloadLink.download = `${tabotaScore.projectName}_tabota.json`;
+                downloadLink.style.display = 'inline-block';
+
+            } catch (err) {
+                console.error(err);
+                alert("Error parsing MIDI file. Check console for details.");
+            }
+        };
+
+        reader.readAsArrayBuffer(file);
+    });
+</script>
+
+</body>
+</html>

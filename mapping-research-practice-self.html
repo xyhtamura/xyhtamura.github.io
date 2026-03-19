@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="description" content="An exploration of the intersections between academic research, artistic practice, and the situated self by Xyh Tamura.">
+<meta name="keywords" content="Xyh Tamura, Research-Creation, Artistic Research, Autoethnography, Intermedia Poetics, Philosophy of Practice">
+<meta property="og:title" content="Mapping Research, Practice, and Self — Xyh Tamura">
+<meta property="og:description" content="A theoretical mapping of knowledge production and artistic making.">
+<meta property="og:url" content="https://xyhtamura.github.io/mapping-research-practice-self.html">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mapping Research, Practice, and Self — Xyh Tamura</title>
+  <style>
+  :root{
+    --bg:#f4efe8;
+    --bg2:#ece4da;
+    --paper:rgba(255,251,247,.9);
+    --ink:#1a1818;
+    --muted:#6f655f;
+    --line:rgba(92,74,63,.22);
+
+    /* more "you": twilight / mineral / archipelagic */
+    --accent:#5b4fd1;
+    --accent-soft:#7c71ee;
+    --accent-2:#138a7a;
+    --accent-3:#b86a4b;
+
+    --shadow:0 18px 50px rgba(48,28,20,.10);
+    --shadow-soft:0 8px 24px rgba(48,28,20,.06);
+    --radius:20px;
+    --max:880px;
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+
+  body{
+    margin:0;
+    font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+    color:var(--ink);
+    line-height:1.78;
+    background:
+      radial-gradient(circle at top left, rgba(91,79,209,.08), transparent 34%),
+      radial-gradient(circle at top right, rgba(19,138,122,.07), transparent 30%),
+      linear-gradient(180deg, var(--bg2) 0%, var(--bg) 38%, #f7f2ec 100%);
+    text-rendering:optimizeLegibility;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .site-wrap{
+    padding:56px 20px 96px;
+  }
+
+  .post{
+    max-width:var(--max);
+    margin:0 auto;
+    background:var(--paper);
+    backdrop-filter:blur(8px);
+    border:1px solid rgba(255,255,255,.6);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:56px 62px 72px;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .post::before{
+    content:"";
+    position:absolute;
+    inset:0 0 auto 0;
+    height:6px;
+    background:linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
+    opacity:.95;
+  }
+
+  .eyebrow{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:.78rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--accent-2);
+    margin-bottom:18px;
+    font-weight:700;
+  }
+
+  h1{
+    font-size:clamp(2.25rem, 5vw, 3.75rem);
+    line-height:1.02;
+    font-weight:600;
+    letter-spacing:-.02em;
+    margin:0 0 16px;
+    max-width:12ch;
+  }
+
+  .meta{
+    font-family: Arial, Helvetica, sans-serif;
+    color:var(--muted);
+    font-size:.95rem;
+    margin-bottom:34px;
+    padding-bottom:22px;
+    border-bottom:1px solid var(--line);
+  }
+
+  .meta a,
+  .footer a{
+    color:var(--accent);
+    text-decoration:none;
+    border-bottom:1px solid transparent;
+    transition:.2s ease;
+  }
+
+  .meta a:hover,
+  .footer a:hover{
+    color:var(--accent-2);
+    border-bottom-color:currentColor;
+  }
+
+  .lede{
+    font-size:1.16rem;
+    line-height:1.85;
+    color:#2a2523;
+    margin-bottom:34px;
+    max-width:58ch;
+  }
+
+  p{
+    margin:0 0 1.25em;
+    font-size:1.06rem;
+  }
+
+  strong{
+    color:#141212;
+  }
+
+  em{
+    color:#332c48;
+  }
+
+  .defs{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:14px;
+    margin:30px 0 34px;
+  }
+
+  .def{
+    position:relative;
+    padding:16px 18px 16px 22px;
+    background:linear-gradient(180deg, rgba(255,255,255,.72), rgba(248,242,236,.88));
+    border:1px solid rgba(91,79,209,.12);
+    border-radius:16px;
+    box-shadow:var(--shadow-soft);
+  }
+
+  .def::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:14px;
+    bottom:14px;
+    width:4px;
+    border-radius:999px;
+    background:linear-gradient(180deg, var(--accent), var(--accent-2));
+  }
+
+  .def strong{
+    display:inline-block;
+    min-width:96px;
+    color:var(--accent);
+  }
+
+  .figure{
+    margin:46px auto 46px;
+    padding:28px 18px 18px;
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+
+  .figure-title{
+    text-align:center;
+    font-family: Arial, Helvetica, sans-serif;
+    text-transform:uppercase;
+    letter-spacing:.16em;
+    color:var(--muted);
+    font-size:.78rem;
+    margin-bottom:20px;
+  }
+
+  .triangle-wrap{
+    max-width:700px;
+    margin:0 auto;
+    padding:12px;
+    border-radius:22px;
+    background:
+      radial-gradient(circle at center, rgba(91,79,209,.05), transparent 60%),
+      rgba(255,255,255,.35);
+  }
+
+  svg{
+    width:100%;
+    height:auto;
+    display:block;
+  }
+
+  .label{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:20px;
+    font-weight:700;
+    letter-spacing:.11em;
+    fill:#201d24;
+  }
+
+  .small{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:13px;
+    fill:var(--muted);
+    letter-spacing:.04em;
+  }
+
+  .note{
+    text-align:center;
+    color:var(--muted);
+    font-size:.96rem;
+    line-height:1.7;
+    margin-top:14px;
+    max-width:60ch;
+    margin-left:auto;
+    margin-right:auto;
+  }
+
+  .pairings{
+    margin:28px 0 22px;
+    padding:22px 24px;
+    background:
+      linear-gradient(180deg, rgba(91,79,209,.05), rgba(19,138,122,.04));
+    border:1px solid rgba(91,79,209,.14);
+    border-radius:18px;
+    box-shadow:var(--shadow-soft);
+  }
+
+  .pairings h2{
+    font-size:.95rem;
+    margin:0 0 14px;
+    font-family: Arial, Helvetica, sans-serif;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--accent-2);
+  }
+
+  .pairings p:last-child{
+    margin-bottom:0;
+  }
+
+  .footer{
+    margin-top:46px;
+    padding-top:22px;
+    border-top:1px solid var(--line);
+    font-family: Arial, Helvetica, sans-serif;
+    color:var(--muted);
+    font-size:.93rem;
+  }
+
+  ::selection{
+    background:rgba(91,79,209,.18);
+  }
+
+  @media (max-width: 860px){
+    .post{
+      padding:38px 28px 48px;
+      border-radius:18px;
+    }
+
+    h1{
+      max-width:none;
+    }
+  }
+
+  @media (max-width: 700px){
+    .site-wrap{
+      padding:24px 12px 56px;
+    }
+
+    .post{
+      padding:28px 18px 38px;
+    }
+
+    .lede,
+    p{
+      font-size:1rem;
+    }
+
+    .label{
+      font-size:17px;
+    }
+
+    .small{
+      font-size:12px;
+    }
+
+    .pairings,
+    .def{
+      padding-left:16px;
+      padding-right:16px;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="site-wrap">
+    <article class="post">
+      <div class="eyebrow">Blog Post</div>
+      <h1>Mapping Research, Practice, and Self</h1>
+      <div class="meta">
+        By <strong>Xyh Tamura</strong> · March 09, 2026 ·
+        <a href="https://xyhtamura.github.io">xyhtamura.github.io</a>
+      </div>
+
+      <p class="lede">
+        Recent developments have brought into closer relation three domains:
+        knowledge production, making and practice, and the positioning of the self within these activities.
+        It is useful to map these domains to understand how they are currently articulated across global contexts,
+        and where they might be heading.
+      </p>
+
+      <section class="defs">
+        <div class="def">
+          <p><strong>Research</strong>forms of knowledge production legible to academic institutions.</p>
+        </div>
+        <div class="def">
+          <p><strong>Practice</strong>modes of making that produce actions, artifacts, and effects whose significance exceeds academic validation.</p>
+        </div>
+        <div class="def">
+          <p><strong>Self</strong>the situated experience, positionality, and embodiment of the practitioner.</p>
+        </div>
+      </section>
+
+      <figure class="figure">
+
+        <div class="triangle-wrap">
+       <svg viewBox="0 0 700 550" role="img">
+  <line x1="150" y1="140" x2="550" y2="140" stroke="#a9977f" stroke-width="3"/>
+  <line x1="150" y1="140" x2="350" y2="440" stroke="#a9977f" stroke-width="3"/>
+  <line x1="550" y1="140" x2="350" y2="440" stroke="#a9977f" stroke-width="3"/>
+
+  <circle cx="150" cy="140" r="8" fill="#3f5c7a"/>
+  <circle cx="550" cy="140" r="8" fill="#7a5a3f"/>
+  <circle cx="350" cy="440" r="8" fill="#4f6b4a"/>
+
+  <text x="150" y="100" text-anchor="middle" class="label">RESEARCH</text>
+  <text x="550" y="100" text-anchor="middle" class="label">PRACTICE</text>
+  <text x="350" y="485" text-anchor="middle" class="label">SELF</text>
+
+  <text x="350" y="115" text-anchor="middle" class="small" font-weight="bold" fill="#1f1f1f">
+    Research ↔ Practice
+  </text>
+  <text x="350" y="132" text-anchor="middle" class="small">
+    research-creation · artistic research · design · engineering
+  </text>
+
+  <text x="250" y="260" transform="rotate(56.3 250 290)" text-anchor="middle" class="small" font-weight="bold" fill="#1f1f1f">
+    Research ↔ Self
+  </text>
+  <text x="250" y="278" transform="rotate(56.3 250 290)" text-anchor="middle" class="small">
+    autotheory · autoethnography
+  </text>
+
+  <text x="450" y="260" transform="rotate(-56.3 450 290)" text-anchor="middle" class="small" font-weight="bold" fill="#1f1f1f">
+    Self ↔ Practice
+  </text>
+  <text x="450" y="278" transform="rotate(-56.3 450 290)" text-anchor="middle" class="small">
+    poetics · artist statements · biographies
+  </text>
+</svg>
+        </div>
+
+      </figure>
+
+      <section class="pairings">
+        <h2>Recognized formations across the nodes</h2>
+        <p><strong>Research ↔ Practice:</strong> Practice-Based Research, Research-Creation, Artistic Research, Design, Engineering</p>
+        <p><strong>Research ↔ Self:</strong> Autotheory, Autoethnography</p>
+        <p><strong>Self ↔ Practice:</strong> Practitioner Narratives, Biographies, Artist Statements, Poetics</p>
+      </section>
+
+      <p>
+        This mapping does not aim to enclose or strictly define these categories, but more to indicate tendencies and orientations.
+        These formations already overlap extensively. For instance, autotheory and autoethnography often function as artistic
+        artifacts in their own right. Practice-based research frequently incorporates reflexive or biographical elements,
+        even if these are backgrounded. Conversely, artist statements and poetics engage with theory, though their primary
+        emphasis remains on the relationship between the creator and their practice.
+      </p>
+
+      <p>
+        At the same time, texts such as <em><a href="https://www.researchgate.net/publication/311531234_Poetics_and_Creative_Writing_Research">Poetics and Creative Writing Research</a></em> by Kim Lasky suggest that writing poetics itself
+        constitutes a form of knowledge production. This is indeed so, but it might be helpful to think about how this relates
+        to other types of research and how it relates to the self.
+      </p>
+
+      <p>
+        The term “practice” here is also necessarily slippery. Academic research itself is also a practice. For the purposes
+        of this mapping, however, I provisionally distinguish “research” in a sense closer to the Wilhelm von Humboldtian model:
+        forms of inquiry that are institutionally recognized, often peer-reviewed, and structured by specific norms of validation
+        according to field.
+      </p>
+
+      <p>
+        All of these terms are currently useful insofar as they illuminate different ways of interfacing these nodes. At the same time,
+        even a preliminary mapping reveals gaps, asymmetries, and directions for further development. For example, in creative writing
+        programs, articulations between Self and Practice are often foregrounded through poetics and dedicated coursework, whereas in
+        fine arts and visual arts contexts, these relations may be present but less explicitly theorized despite being necessary for every artist.
+        In music composition, the relation between self and practice is frequently embedded within compositional training, yet rarely isolated
+        as an object of reflection in its own right.
+      </p>
+
+      <p>
+        Similarly, autotheory and autoethnography can blur into practice when they engage directly with processes of making,
+        complicating distinctions between reflection and production. Practice-based research often benefits from self-reflexive inquiry,
+        yet in fields such as engineering and design, the role of the self is frequently minimized or excluded. In more conventional research
+        domains, particularly within STEM fields, both the self and the process of inquiry are often bracketed in favor of results,
+        leaving little room for reflexive or practice-oriented accounts.
+      </p>
+
+      <p>
+        As these domains continue to intersect, we are likely to see further hybridizations that challenge existing distinctions.
+        Rather than resolving these tensions, it may be more productive to attend to how these nodes are related within different
+        practices, and to consider how we might more deliberately articulate these relations in our own work.
+      </p>
+
+      <div class="footer">
+        Posted by Xyh Tamura · Main page:
+        <a href="https://xyhtamura.github.io">xyhtamura.github.io</a>
+      </div>
+    </article>
+  </div>
+</body>
+</html>

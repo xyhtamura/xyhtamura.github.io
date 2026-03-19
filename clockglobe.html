@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chrono-Geographic Time Map</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; margin: 0; padding: 20px; background-color: #1e1e24; color: #e0e0e0; }
+        #controls { width: 380px; background: #2b2b36; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; }
+        #visualization { flex-grow: 1; display: flex; justify-content: center; align-items: center; }
+        canvas { background: #121216; border-radius: 50%; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        h3 { margin-top: 0; border-bottom: 2px solid #444; padding-bottom: 10px; color: #fff; }
+        .control-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; font-size: 13px; }
+        select { width: 100%; padding: 5px; margin-bottom: 10px; background: #3a3a48; color: white; border: 1px solid #555; border-radius: 4px; }
+        .checkbox-group label { display: inline-flex; align-items: center; margin-right: 15px; margin-bottom: 8px; font-size: 13px; cursor: pointer; }
+        .checkbox-group input { margin-right: 5px; }
+        .city-list { display: flex; flex-direction: column; gap: 5px; max-height: 200px; overflow-y: auto; border: 1px solid #444; padding: 10px; border-radius: 4px; background: #222; }
+        .city-item { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+    </style>
+</head>
+<body>
+
+    <div id="controls">
+        <h3>Map Controls</h3>
+        
+        <div class="control-group">
+            <label for="refCity"><strong>Reference City (Axis):</strong></label>
+            <select id="refCity"></select>
+        </div>
+
+        <div class="control-group">
+            <label for="refAngle"><strong>Axis Position (Radians):</strong></label>
+            <select id="refAngle">
+                <option value="0">0 (Right / 3 o'clock)</option>
+                <option value="1.5708">π/2 (Bottom / 6 o'clock)</option>
+                <option value="3.1416">π (Left / 9 o'clock)</option>
+                <option value="4.7124" selected>3π/2 (Top / 12 o'clock)</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label for="poleView"><strong>Projection Center:</strong></label>
+            <select id="poleView">
+                <option value="north">North Pole View</option>
+                <option value="south">South Pole View</option>
+            </select>
+        </div>
+
+        <div class="control-group checkbox-group">
+            <label><strong>Harmonic Grid Lines:</strong></label><br>
+            <label><input type="checkbox" id="grid3" checked> π/3 (4h)</label>
+            <label><input type="checkbox" id="grid4" checked> π/4 (3h)</label>
+            <label><input type="checkbox" id="grid6" checked> π/6 (2h)</label>
+            <label><input type="checkbox" id="grid8"> π/8 (1.5h)</label>
+            <label><input type="checkbox" id="grid12" checked> π/12 (1h)</label>
+            <label><input type="checkbox" id="grid24"> π/24 (30m)</label>
+        </div>
+
+        <div class="control-group">
+            <label><strong>Select Cities:</strong></label>
+            <div class="city-list" id="cityCheckboxes"></div>
+        </div>
+    </div>
+
+    <div id="visualization">
+        <canvas id="timeMap" width="800" height="800"></canvas>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('timeMap');
+        const ctx = canvas.getContext('2d');
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
+        const radius = 360; // Max radius (South Pole in NP view)
+
+        // Dataset with actual Latitudes
+const cities = [
+    // Reference
+    { name: "Pasig (PH)", std: 8, lat: 14.58, active: true },
+    
+    // Asia & Pacific
+    { name: "Tokyo", std: 9, lat: 35.68, active: true },
+    { name: "Beijing", std: 8, lat: 39.90, active: true },
+    { name: "Hong Kong", std: 8, lat: 22.31, active: true },
+    { name: "Seoul", std: 9, lat: 37.56, active: true },
+    { name: "Singapore", std: 8, lat: 1.35, active: true },
+    { name: "Jakarta", std: 7, lat: -6.20, active: true },
+    { name: "Bangkok", std: 7, lat: 13.75, active: false },
+    { name: "Mumbai", std: 5.5, lat: 19.07, active: true },
+    { name: "Kathmandu", std: 5.75, lat: 27.71, active: true }, // The rare +5:45
+    { name: "Sydney", std: 10, lat: -33.86, active: true },
+    { name: "Eucla (AUS)", std: 8.75, lat: -31.67, active: true }, // The rare +8:45
+    { name: "Auckland", std: 12, lat: -36.85, active: true },
+    { name: "Honolulu", std: -10, lat: 21.31, active: true },
+    
+    // Middle East & Africa
+    { name: "Dubai", std: 4, lat: 25.20, active: true },
+    { name: "Tehran", std: 3.5, lat: 35.68, active: true },
+    { name: "Jerusalem", std: 2, lat: 31.76, active: true },
+    { name: "Cairo", std: 2, lat: 30.04, active: true },
+    { name: "Nairobi", std: 3, lat: -1.29, active: false },
+    { name: "Cape Town", std: 2, lat: -33.92, active: true },
+    
+    // Europe
+    { name: "London", std: 0, lat: 51.50, active: true },
+    { name: "Paris", std: 1, lat: 48.85, active: true },
+    { name: "Berlin", std: 1, lat: 52.52, active: false },
+    { name: "Athens", std: 2, lat: 37.98, active: true },
+    { name: "Moscow", std: 3, lat: 55.75, active: true },
+    { name: "Reykjavik", std: 0, lat: 64.14, active: true },
+    { name: "Svalbard", std: 1, lat: 78.22, active: true }, // Extreme North
+    
+    // Americas
+    { name: "Montreal", std: -5, lat: 45.50, active: true },
+    { name: "New York", std: -5, lat: 40.71, active: true },
+    { name: "Chicago", std: -6, lat: 41.87, active: false },
+    { name: "Los Angeles", std: -8, lat: 34.05, active: true },
+    { name: "Anchorage", std: -9, lat: 61.21, active: true },
+    { name: "Mexico City", std: -6, lat: 19.43, active: true },
+    { name: "Sao Paulo", std: -3, lat: -23.55, active: true },
+    { name: "Buenos Aires", std: -3, lat: -34.60, active: false },
+    { name: "Ushuaia", std: -3, lat: -54.80, active: true } // Extreme South
+];
+
+        const refCitySelect = document.getElementById('refCity');
+        const cityCheckboxes = document.getElementById('cityCheckboxes');
+        
+        cities.forEach((city, index) => {
+            const option = document.createElement('option');
+            option.value = index;
+            option.text = city.name;
+            if(city.name === "Pasig (PH)") option.selected = true;
+            refCitySelect.appendChild(option);
+
+            const div = document.createElement('div');
+            div.className = 'city-item';
+            div.innerHTML = `<input type="checkbox" id="chk_${index}" ${city.active ? 'checked' : ''}> <label for="chk_${index}">${city.name}</label>`;
+            cityCheckboxes.appendChild(div);
+
+            document.getElementById(`chk_${index}`).addEventListener('change', (e) => {
+                cities[index].active = e.target.checked;
+                draw();
+            });
+        });
+
+        document.querySelectorAll('select, input[type="checkbox"]').forEach(el => {
+            el.addEventListener('change', draw);
+        });
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const refIndex = document.getElementById('refCity').value;
+            const refAngle = parseFloat(document.getElementById('refAngle').value);
+            const isNorthPole = document.getElementById('poleView').value === 'north';
+            
+            const showPi3 = document.getElementById('grid3').checked;
+            const showPi4 = document.getElementById('grid4').checked;
+            const showPi6 = document.getElementById('grid6').checked;
+            const showPi8 = document.getElementById('grid8').checked;
+            const showPi12 = document.getElementById('grid12').checked;
+            const showPi24 = document.getElementById('grid24').checked;
+
+            const refCity = cities[refIndex];
+            const refOffset = refCity.std;
+
+            // Draw Harmonic Grids (48 steps = Pi/24 increments)
+            for (let i = 0; i < 48; i++) {
+                let angle = i * (Math.PI / 24);
+                
+                let isPi3 = i % 16 === 0;
+                let isPi4 = i % 12 === 0;
+                let isPi6 = i % 8 === 0;
+                let isPi8 = i % 6 === 0;
+                let isPi12 = i % 4 === 0;
+                let isPi24 = true;
+
+                // Determine highest tier harmonic for styling
+                let drawLine = false;
+                if (isPi3 && showPi3) { ctx.strokeStyle = 'rgba(255, 99, 132, 0.5)'; ctx.lineWidth = 1.5; drawLine = true; }
+                else if (isPi4 && showPi4) { ctx.strokeStyle = 'rgba(255, 159, 64, 0.4)'; ctx.lineWidth = 1.2; drawLine = true; }
+                else if (isPi6 && showPi6) { ctx.strokeStyle = 'rgba(54, 162, 235, 0.4)'; ctx.lineWidth = 1.0; drawLine = true; }
+                else if (isPi8 && showPi8) { ctx.strokeStyle = 'rgba(153, 102, 255, 0.3)'; ctx.lineWidth = 0.8; drawLine = true; }
+                else if (isPi12 && showPi12) { ctx.strokeStyle = 'rgba(200, 200, 200, 0.2)'; ctx.lineWidth = 0.5; drawLine = true; }
+                else if (isPi24 && !isPi12 && !isPi8 && !isPi6 && !isPi4 && !isPi3 && showPi24) { 
+                    ctx.strokeStyle = 'rgba(100, 100, 100, 0.15)'; ctx.lineWidth = 0.3; drawLine = true; 
+                }
+
+                if (drawLine) {
+                    ctx.beginPath();
+                    ctx.moveTo(cx, cy);
+                    ctx.lineTo(cx + radius * Math.cos(angle), cy + radius * Math.sin(angle));
+                    ctx.stroke();
+                }
+            }
+
+            // Draw concentric latitude rings
+            ctx.lineWidth = 1;
+            // Equator (r/2)
+            ctx.beginPath();
+            ctx.arc(cx, cy, radius / 2, 0, 2 * Math.PI);
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+            ctx.setLineDash([5, 5]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            // Outer bounds
+            ctx.beginPath();
+            ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
+            ctx.strokeStyle = '#555';
+            ctx.stroke();
+
+            // Draw Cities
+            cities.filter(c => c.active).forEach(city => {
+                const hourDiff = city.std - refOffset;
+                let angleOffset = hourDiff * (Math.PI / 12);
+                
+                let finalAngle = isNorthPole ? refAngle - angleOffset : refAngle + angleOffset;
+
+                // Calculate Radius based on exact latitude
+                // North Pole view: Center is 90N. Equator is r/2. South Pole is r.
+                let latDistance = isNorthPole ? (90 - city.lat) : (90 + city.lat);
+                let distance = radius * (latDistance / 180);
+
+                const x = cx + distance * Math.cos(finalAngle);
+                const y = cy + distance * Math.sin(finalAngle);
+
+                // Draw point
+                ctx.beginPath();
+                ctx.arc(x, y, 5, 0, 2 * Math.PI);
+                ctx.fillStyle = city.name === refCity.name ? '#ff4757' : '#1e90ff';
+                ctx.fill();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+
+                // Draw label
+                ctx.fillStyle = '#e0e0e0';
+                ctx.font = city.name === refCity.name ? 'bold 12px sans-serif' : '11px sans-serif';
+                ctx.textAlign = 'center';
+                
+                const textWidth = ctx.measureText(city.name).width;
+                ctx.fillStyle = 'rgba(30, 30, 36, 0.8)';
+                ctx.fillRect(x - textWidth/2 - 4, y - 20, textWidth + 8, 14);
+                
+                ctx.fillStyle = city.name === refCity.name ? '#ff4757' : '#e0e0e0';
+                ctx.fillText(city.name, x, y - 9);
+            });
+        }
+
+        draw();
+    </script>
+</body>
+</html>

@@ -235,10 +235,10 @@
             <button id="render-btn">Render Score</button>
         </div>
         
-        <div class="about">
+<div class="about">
              <h3>How It Works: The Core Concepts</h3>
              <p>A Tabota score is structured as a series of <strong>Sections</strong>. Each section has its own rules for how time (the X-axis) and values (the Y-axis) are interpreted.</p>
-             <h3>Try Other Samples</h3>
+             <p style="color: #4ec9b0;"><strong>v1.5 Update:</strong> In <code>metered</code> regimes, you can now position events using <code>startMeter</code> and <code>endMeter</code> objects (e.g., <code>{"measure": 2, "beat": 1.5}</code>). You can also use <code>defaultEventType</code> on Tracks/Sections to inherit event types automatically.</p>             <h3>Try Other Samples</h3>
              <div class="sample-container"><div class="editor-header"><h4>Sample 1: Microtonal Scale</h4><button class="copy-btn" data-target="sample1">Copy & Render</button></div><pre><code id="sample1"></code></pre></div>
              <div class="sample-container"><div class="editor-header"><h4>Sample 2: Theatrical Cue Sequence</h4><button class="copy-btn" data-target="sample2">Copy & Render</button></div><pre><code id="sample2"></code></pre></div>
         </div>
@@ -296,24 +296,69 @@
         });
 
         // --- DATA PROCESSING ---
+// --- DATA PROCESSING ---
         function processScore(scoreData) {
             let globalTime = 0;
             const processedSections = [];
             const processedEvents = [];
             let totalDuration = 0;
 
+            // Helper for meter math
+            function meterToBeats(meterObj, beatsPerMeasure) {
+                return ((meterObj.measure - 1) * beatsPerMeasure) + meterObj.beat;
+            }
+
             (scoreData.score || []).forEach(section => {
                 const duration = section.regimeSettings.beats || section.regimeSettings.duration || section.regimeSettings.indices || 1;
                 const sectionStartTime = globalTime;
                 
+                // Default to 4 beats per measure if no time signature is provided
+                const beatsPerMeasure = section.regimeSettings?.timeSignature ? 
+                    parseInt(section.regimeSettings.timeSignature.split('/')[0]) : 4;
+                
                 processedSections.push({ ...section, startTime: sectionStartTime, duration });
 
-                (section.events || []).forEach(event => {
-                    const localStartTime = event.time ?? event.startTime ?? event.startIndex ?? 0;
-                    const localEndTime = event.endTime ?? event.endIndex ?? localStartTime;
+                // Gather events from both Section and Track levels
+                const allEventsWithContext = [];
+                if (section.events) {
+                    section.events.forEach(e => allEventsWithContext.push({ event: e, trackContext: null }));
+                }
+                if (section.tracks) {
+                    section.tracks.forEach(track => {
+                        if (track.events) {
+                            track.events.forEach(e => allEventsWithContext.push({ event: e, trackContext: track }));
+                        }
+                    });
+                }
+
+                allEventsWithContext.forEach(({ event, trackContext }) => {
+                    // 1. Apply defaultEventType Inheritance
+                    const inheritedType = trackContext?.defaultEventType || section.defaultEventType || "point";
+                    const eventType = event.type || inheritedType;
+
+                    // 2. Handle startMeter / endMeter Math
+                    let localStartTime = event.time ?? event.startTime ?? event.startIndex;
+                    let localEndTime = event.endTime ?? event.endIndex;
+
+                    if (event.startMeter !== undefined && localStartTime === undefined) {
+                        localStartTime = meterToBeats(event.startMeter, beatsPerMeasure);
+                    }
+                    if (localStartTime === undefined) localStartTime = 0; // Safety fallback
+
+                    // Calculate End Time
+                    if (event.endMeter !== undefined && localEndTime === undefined) {
+                        localEndTime = meterToBeats(event.endMeter, beatsPerMeasure);
+                    } else if (event.duration !== undefined && localEndTime === undefined) {
+                        localEndTime = localStartTime + event.duration;
+                    } else if (localEndTime === undefined) {
+                        localEndTime = localStartTime; // Default to a point
+                    }
+
+                    // 3. Push to renderer
                     processedEvents.push({
                         ...event,
-                        section,
+                        type: eventType, // Ensure the visualizer sees the inherited type!
+                        section: trackContext || section, // Draw using track's axisMode if it exists
                         globalStartTime: sectionStartTime + localStartTime,
                         globalEndTime: sectionStartTime + localEndTime
                     });
@@ -323,7 +368,6 @@
             totalDuration = globalTime;
             return { processedSections, processedEvents, totalDuration };
         }
-
         // --- RENDER LOGIC ---
         function renderScore() {
             const scoreContainer = document.getElementById('score-container');
