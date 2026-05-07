@@ -7,7 +7,7 @@
 	--font-body: "Rubik", "Noto Sans", sans-serif;
 	--font-accent: "Averia Sans Libre", "Noto Sans", sans-serif; 
 	--font-detail: "Lexend Deca", "Noto Sans", sans-serif;
-	--font-keywords: "Averia Libre", serif;
+	--font-blurb: "Averia Libre", serif;
 	--font-special-accent: "Dosis", sans-serif;
 
 	/* Background, Titles, and Body Text Colors */
@@ -31,7 +31,7 @@
 	--email-color: #9fc4ee; /* Email address */
 	--original-color: #f0bb86; /* Indicator for originally conceptualized works */ 
 	--tagline-color: #c8d3db; /* A prominent purple for emphasis */
-	--keywords-color: #f2dceb; 
+	--blurb-color: #f2dceb; 
 	--other-names: #c8dbcc;
 	--alt-title-color: #a0b8a5; /* New variable for dark mode */
 	
@@ -93,7 +93,7 @@
 	--email-color: #546f79; /* Email address */
 	--original-color: #e3780e; /* Indicator for originally conceptualized works */
 	--tagline-color: #323738;   /* A vibrant purple for light backgrounds */
-	--keywords-color: #2e262b;    /* A deep teal for clarity */
+	--blurb-color: #2e262b;    /* A deep teal for clarity */
 	--other-names: #323832;
 	--alt-title-color: #4a5e4f; /* New variable for light mode */
 	
@@ -261,10 +261,10 @@ body {
 	margin: 0.5rem 0 0.4rem 0;
 }
 
-.center-section .keywords {
-	font-family: var(--font-keywords);
-	color: var(--keywords-color); /* Use the new variable */
-	font-size: 0.95rem;
+.center-section .blurb {
+	font-family: var(--font-blurb);
+	color: var(--blurb-color); /* Use the new variable */
+	font-size: 1rem;
 	line-height: 1.3;
    max-width: 50%;
     margin-left: auto;
@@ -272,12 +272,12 @@ body {
 	
 }
 
-.center-section .keywords p {
+.center-section .blurb p {
     margin: 0;
 	
 }
 
-.center-section .keywords p {
+.center-section .blurb p {
     margin: 0;
 }
 
