@@ -7,45 +7,267 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
     <style>
-        /* Custom Font Settings */
-        .font-serif {
-            font-family: 'Cormorant Garamond', serif;
+              /* ─── Tokens ─────────────────────────────────────────── */
+        :root {
+            --bg:        #f0eddf;   /* parchment with yellow-green hue cast */
+            --bg-panel:  #f7f4e8;   /* lighter parchment for cards */
+            --bg-dark:   #101c1a;   /* teal-black (not neutral) */
+            --bg-mauve:  #e8e0e6;   /* low-chroma mauve for questions grid */
+ 
+            --text-primary:   #1c1a14;  /* warm near-black */
+            --text-secondary: #4a4535;  /* warm mid-brown */
+            --text-muted:     #7a7260;  /* warm muted */
+            --text-dark-on:   #c8d4cc;  /* text on dark panel */
+            --text-dark-dim:  #7a9490;  /* dimmer text on dark panel */
+ 
+            --rust:    #b84428;   /* rust-orange — the intrusion */
+            --olive:   #6b6e42;   /* dull olive — commits to neither warm nor cool */
+            --sage:    #8aab8a;   /* muted sage for subtle accents */
+            --teal-mid:#2a5c54;   /* mid teal for dark panel headings */
+ 
+            --rule:    #c8c2a8;   /* parchment-toned rule */
         }
-        .font-sans {
-            font-family: 'Inter', sans-serif;
+ 
+        /* ─── Base ───────────────────────────────────────────── */
+        html { scroll-behavior: smooth; }
+ 
+        body {
+            background-color: var(--bg);
+            color: var(--text-primary);
+            font-family: 'Spectral', Georgia, serif;
+            -webkit-font-smoothing: antialiased;
         }
-        
-        /* Smooth Scroll Behavior */
-        html {
-            scroll-behavior: smooth;
-        }
-
-        /* Subtle Fade In Animation */
-        .fade-in {
-            animation: fadeIn 1.2s ease-in-out forwards;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .delay-100 { animation-delay: 0.1s; }
-        .delay-200 { animation-delay: 0.2s; }
-        .delay-300 { animation-delay: 0.3s; }
-        .delay-500 { animation-delay: 0.5s; }
-
-        /* Custom Selection Color */
+ 
+        /* ─── Typography ─────────────────────────────────────── */
+        .font-serif  { font-family: 'Spectral', Georgia, serif; }
+        .font-mono   { font-family: 'DM Mono', 'Courier New', monospace; }
+ 
+        /* override tailwind font-sans to DM Mono for metadata/labels */
+        .font-sans   { font-family: 'DM Mono', monospace; }
+ 
+        /* ─── Selection ──────────────────────────────────────── */
         ::selection {
-            background: #e2e8f0;
-            color: #1a202c;
+            background: #b84428;
+            color: #f0eddf;
         }
+ 
+        /* ─── Animation ──────────────────────────────────────── */
+        .fade-in {
+            animation: fadeIn 1.4s ease-out forwards;
+            opacity: 0;
+            transform: translateY(16px);
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.25s; }
+        .delay-300 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.6s; }
+ 
+        /* ─── Layout shell ───────────────────────────────────── */
+        main {
+            background-color: var(--bg);
+            border-color: var(--rule) !important;
+            box-shadow: none !important;
+        }
+ 
+        /* ─── Header ─────────────────────────────────────────── */
+        h1 {
+            color: var(--text-primary) !important;
+            letter-spacing: -0.03em !important;
+            font-weight: 300 !important;
+        }
+ 
+        /* The divider line under h1 */
+        header .h-px { background-color: var(--olive) !important; }
+ 
+        /* Subtitle */
+        header p.italic {
+            color: var(--text-muted) !important;
+            font-weight: 300;
+            letter-spacing: 0.01em;
+        }
+ 
+        /* Download button */
+        header a {
+            border-color: var(--olive) !important;
+            color: var(--text-secondary) !important;
+            background: transparent !important;
+            font-family: 'DM Mono', monospace !important;
+            font-size: 0.72rem !important;
+            letter-spacing: 0.06em !important;
+            border-radius: 0 !important;
+        }
+        header a:hover {
+            background-color: var(--olive) !important;
+            border-color: var(--olive) !important;
+            color: var(--bg) !important;
+        }
+        header a svg { color: var(--olive) !important; }
+        header a:hover svg { color: var(--bg) !important; }
+ 
+        /* ─── Section headings ───────────────────────────────── */
+        /* h2 with border-l (What is / Program Notes) */
+        h2.font-serif {
+            color: var(--text-primary) !important;
+            border-color: var(--rust) !important;  /* rust intrusion */
+            font-weight: 300 !important;
+            letter-spacing: -0.01em;
+        }
+ 
+        /* h3 plain */
+        h3.font-serif {
+            color: var(--text-primary) !important;
+            font-weight: 300 !important;
+        }
+ 
+        /* ─── Body text ──────────────────────────────────────── */
+        .text-slate-600, .text-slate-700 {
+            color: var(--text-secondary) !important;
+        }
+        .text-slate-500 {
+            color: var(--text-muted) !important;
+        }
+        .text-slate-800, .text-slate-900 {
+            color: var(--text-primary) !important;
+        }
+        .text-slate-400 {
+            color: var(--text-muted) !important;
+        }
+ 
+        /* ─── Cards (bg-slate-50 / border-slate-100) ─────────── */
+        .bg-slate-50 {
+            background-color: var(--bg-panel) !important;
+        }
+        .border-slate-100 {
+            border-color: var(--rule) !important;
+        }
+ 
+        /* Card headings */
+        .bg-slate-50 strong.block {
+            color: var(--text-primary) !important;
+            font-weight: 600;
+        }
+ 
+        /* ─── Italic blockquote / border-l-2 ────────────────── */
+        .border-l-2 {
+            border-color: var(--rust) !important;
+        }
+        .border-l-4 {
+            border-color: var(--rust) !important;
+        }
+        .italic.border-l-2,
+        blockquote {
+            color: var(--text-muted) !important;
+            font-style: italic;
+            font-weight: 300;
+        }
+ 
+        /* ─── Horizontal rules / dividers ────────────────────── */
+        .bg-slate-100, .bg-slate-200, .bg-slate-300 {
+            background-color: var(--rule) !important;
+        }
+        .border-slate-200 {
+            border-color: var(--rule) !important;
+        }
+        .border-slate-300 {
+            border-color: var(--rule) !important;
+        }
+ 
+        /* ─── Bullet dots ─────────────────────────────────────── */
+        .bg-slate-500 {
+            background-color: var(--olive) !important;
+        }
+ 
+        /* ─── Dark panel (Materials Needed) ──────────────────── */
+        .bg-slate-900 {
+            background-color: var(--bg-dark) !important;
+        }
+        .text-slate-300 {
+            color: var(--text-dark-on) !important;
+        }
+        .text-white {
+            color: #ddeae6 !important;
+            font-weight: 300 !important;
+        }
+        .border-slate-700 {
+            border-color: var(--teal-mid) !important;
+        }
+        /* sub-headings in dark panel */
+        .bg-slate-900 h4 {
+            color: #ddeae6 !important;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.72rem;
+            letter-spacing: 0.08em;
+            font-weight: 400;
+            text-transform: uppercase;
+        }
+        /* list items in dark panel */
+        .bg-slate-900 li {
+            color: var(--text-dark-on) !important;
+            font-weight: 300;
+        }
+        .bg-slate-900 .opacity-80 {
+            color: var(--text-dark-dim) !important;
+            opacity: 1 !important;
+        }
+        /* bullet dots in dark panel */
+        .bg-slate-900 .bg-slate-500 {
+            background-color: var(--sage) !important;
+        }
+ 
+        /* ─── Prose long-form ────────────────────────────────── */
+        .prose p { color: var(--text-secondary) !important; }
+        .prose strong { color: var(--text-primary) !important; }
+ 
+        /* metadata label (CONCEPT) */
+        .prose .font-sans.text-sm {
+            color: var(--olive) !important;
+            letter-spacing: 0.12em;
+            font-size: 0.65rem !important;
+        }
+ 
+        /* ─── Questions grid ─────────────────────────────────── */
+        section.bg-slate-50 {
+            background-color: var(--bg-mauve) !important;
+            border-radius: 0 !important;
+        }
+        section.bg-slate-50 h3 {
+            color: var(--text-primary) !important;
+        }
+        section.bg-slate-50 p {
+            color: var(--text-secondary) !important;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.78rem;
+        }
+        section.bg-slate-50 .border-b {
+            border-color: #c8bfc6 !important;
+            color: var(--text-secondary) !important;
+            font-family: 'Spectral', serif;
+            font-style: italic;
+            font-size: 0.95rem;
+        }
+ 
+        /* ─── Footer ─────────────────────────────────────────── */
+        footer {
+            border-color: var(--rule) !important;
+        }
+        footer p {
+            color: var(--text-muted) !important;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.68rem;
+            letter-spacing: 0.08em;
+        }
+ 
+        /* ─── Prose blockquote override ──────────────────────── */
+        .prose blockquote {
+            border-color: var(--rust) !important;
+            color: var(--text-muted) !important;
+        }
+
     </style>
 </head>
 <body class="bg-[#fcfbf9] text-slate-800 font-sans antialiased selection:bg-slate-200">
@@ -104,7 +326,7 @@
                     </div>
                     <div class="p-4 bg-slate-50 rounded-sm border border-slate-100">
                         <strong class="block text-slate-900 font-serif text-lg mb-1">As Conceptual Art</strong>
-                        The idea itself, enacted only in the mind, is the work. The surreal instructions are "impossible instructions," intended to be held in thought rather than performed, reminiscent of Yoko Ono’s <em>Grapefruit</em>.
+                        The idea itself, enacted only in the mind, is the work. The surreal instructions are "impossible instructions," intended to be held in thought rather than performed, reminiscent of Yoko Ono's <em>Grapefruit</em>.
                     </div>
                 </div>
             </div>
@@ -223,7 +445,7 @@
                 </p>
 
                 <p>
-                    <strong>The second inspiration</strong> is the memory of my own sicknesses as a child. I remember people drifting in and out of my room, speaking softly, attending to me. Someone needed to check in constantly, yet the household had to keep running. Lying in bed, slightly delirious with fever, I heard the house through a filter: the distant sound of ironing, the sizzle of frying food, the opening and closing of doors and windows, footsteps. These sounds were my only connection to the world, and I often wondered if my cats’ experience of dying was similar to my experience of being sick—listening to the house from a distance.
+                    <strong>The second inspiration</strong> is the memory of my own sicknesses as a child. I remember people drifting in and out of my room, speaking softly, attending to me. Someone needed to check in constantly, yet the household had to keep running. Lying in bed, slightly delirious with fever, I heard the house through a filter: the distant sound of ironing, the sizzle of frying food, the opening and closing of doors and windows, footsteps. These sounds were my only connection to the world, and I often wondered if my cats' experience of dying was similar to my experience of being sick—listening to the house from a distance.
                 </p>
 
                 <p>
@@ -235,7 +457,7 @@
                 </p>
 
                 <blockquote class="pl-6 border-l-2 border-slate-300 italic text-slate-500 my-8">
-                    "So, this is what whisper house tries to embody. There’s a presence in the piece of something fragile, at the cusp of life and death, but it’s not necessarily specified. It is just something fragile."
+                    "So, this is what whisper house tries to embody. There's a presence in the piece of something fragile, at the cusp of life and death, but it's not necessarily specified. It is just something fragile."
                 </blockquote>
 
                 <p>
@@ -269,14 +491,8 @@
     </main>
 
     <script>
-        // Simple script to handle fade-in elements on scroll if they are not immediately visible
         document.addEventListener('DOMContentLoaded', () => {
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.1
-            };
-
+            const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
             const observer = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -286,10 +502,6 @@
                     }
                 });
             }, observerOptions);
-
-            // Select elements that might need observation if removed from initial animation classes
-            // For now, the CSS animation handles the initial load, 
-            // but for a longer page, we could add scroll-trigger logic here.
         });
     </script>
 </body>
