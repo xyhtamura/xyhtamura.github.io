@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Averia+Sans+Libre:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Averia+Serif+Libre:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+ <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<svg class="goo-defs" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="goo-sm">
+      <feTurbulence type="fractalNoise" baseFrequency="0.028 0.042" numOctaves="2" seed="3" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="goo-md">
+      <feTurbulence type="fractalNoise" baseFrequency="0.018 0.029" numOctaves="3" seed="7" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="goo-lg">
+      <feTurbulence type="fractalNoise" baseFrequency="0.012 0.019" numOctaves="3" seed="12" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="9" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+</svg>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true">
+  <button class="lb-close" id="lbClose" aria-label="Close">&#x2715;</button>
+  <img id="lbImg" src="" alt="">
+</div>
+
+<header>
+  <div class="portfolio-name" id="pName">Portfolio</div>
+  <nav class="section-tabs" id="secTabs" aria-label="Sections"></nav>
+  <select class="mobile-sel" id="mobileSel" aria-label="Jump to section"></select>
+</header>
+
+<main id="mainArea" role="main"></main>
+
+<footer>
+  <button class="nav-btn" id="prevBtn" aria-label="Previous">&#x2190; prev</button>
+  <div class="counter-wrap">
+    <div class="slide-counter">
+      <span class="cur" id="slideNum">01</span>
+      <span style="opacity:.35">/</span>
+      <span id="slideTotal">01</span>
+    </div>
+    <div class="section-dots" id="secDots"></div>
+  </div>
+  <button class="nav-btn" id="nextBtn" aria-label="Next">next &#x2192;</button>
+</footer>
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script>
+</script>
+</body>
+</html>
