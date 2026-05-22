@@ -2,7 +2,13 @@ const PORTFOLIO = {
   name: "Xyh Tamura",
   sections: [
     { id: "intermedia", label: "Intermedia"},
-	{ id: "music", label: "music" }
+	{ id: "music", label: "music" },
+	{ id: "theater", label: "Theater" },
+	  { id: "technology", label: "Technology" },
+
+  
+    { id: "scoring", label: "Scoring" },
+  { id: "research", label: "Research" }
     // You can append "major-works", "instruments", etc. here
   ]
 };
@@ -226,7 +232,7 @@ const slides = [
     ]
   },
   // --------------------------------------------------
-  // 4. SECTION: MUSIC
+  // 2. SECTION: MUSIC
   // --------------------------------------------------
   {
     kind: "divider",
@@ -362,6 +368,177 @@ const slides = [
       }
     ]
   },
+    // --------------------------------------------------
+  // 2. SECTION: THEATER
+  // --------------------------------------------------
+  {
+    kind: "divider",
+    sec: {
+      id: "theater",
+      label: "Theater",
+      description: "Electronic, experimental, and vocal works."
+    }
+  },
+{
+    kind: "piece",
+    piece: {
+      title: "Pacing To",
+      year: "2015",
+      tags: ["Synthpop", "Vaporpop", "Collaboration", "Album Art"],
+      media: [
+        { type: "image", src: "../card/masm.jpeg", label: "film still — oceanic archive" },
+		{ type: "image", src: "https://f4.bcbits.com/img/0004708717_10.jpg", label: "film still — oceanic archive" },
+		{ type: "youtube", id: "ffGUR_9GX6E" }
+      ],
+      blurb: "something.",
+      links: []
+    }
+},
+// --------------------------------------------------
+  // SECTION: TECHNOLOGY
+  // --------------------------------------------------
+  {
+    kind: "divider",
+    sec: {
+      id: "technology",
+      label: "Technology",
+      description: "Creative tools, instruments, software, web systems, experimental interfaces, and speculative technical prototypes."
+    }
+  },
+  {
+    kind: "piece",
+    piece: {
+      title: "Project Title",
+      year: "2025",
+      tags: ["Creative Code", "Software", "Tool", "Prototype"],
+      media: [
+        { type: "image", src: "../card/placeholder.jpg", label: "project image" }
+      ],
+      blurb: "Short description of the technology project.",
+      links: []
+    }
+  },
+
+  // --------------------------------------------------
+  // SECTION: SCORING
+  // --------------------------------------------------
+  {
+    kind: "divider",
+    sec: {
+      id: "scoring",
+      label: "Scoring",
+      description: "Commissioned composition, sound design, and music for film, documentary, podcast, and media projects."
+    }
+  },
+  {
+    kind: "piece",
+    piece: {
+      title: "Project Title",
+      year: "2026",
+      tags: ["Film", "Composition", "Sound Design", "Commission"],
+      media: [
+        { type: "image", src: "../card/placeholder.jpg", label: "project image" },
+        { type: "youtube", id: "VIDEO_ID" }
+      ],
+      blurb: "Short description of the scoring project.",
+      links: []
+    }
+  },
+
+  // --------------------------------------------------
+  // SECTION: RESEARCH
+  // --------------------------------------------------
+  {
+    kind: "divider",
+    sec: {
+      id: "research",
+      label: "Research",
+      description: "Academic, para-academic, autotheoretical, participatory, and arts-based research."
+    }
+  },
+{
+  kind: "grid",
+  sec: { id: "research", label: "Research" },
+  pieces: [
+    {
+      id: "hauntotechnics",
+      title: "Hauntotechnics",
+      year: "2026",
+      tags: ["autotheory"],
+      blurb: "Hauntotechnics is an autotheoretical research essay that understands haunting as both cultural memory and technological mediation. Bringing Derrida’s hauntology together with Yuk Hui’s cosmotechnics, it argues that ghosts emerge through specific bodies, rituals, histories, media systems, infrastructures, and habits of recognition. Moving across Filipino multo, Japanese yūrei, vaporwave, Hiroshima, U.S.–Philippine colonial memory, and Ringu, the essay proposes “hauntotechnics” as the co-mutation between ghosts and the systems through which societies learn what to notice, repeat, aestheticize, forget, or call common sense."
+    },
+    {
+      id: "practice-sharing-iii",
+      title: "Practice Sharing III",
+      year: "2026",
+      tags: ["artistic research"],
+      blurb: "This practice sharing reflected on my intermedia approach to language as a material, cultural, and technological medium shaped by bodies, histories, interfaces, and modalities. Through examples in web-based literature, code, sound poetry, installation, and performance scores, I traced how my work shifted from using media to present language toward treating code, sound, notation, and performance as compositional systems that actively transform what language can do.",
+      exhibitions: [
+        {
+          venue: "Journal for Artistic Research",
+          event: "Language-Based Artistic Research Group",
+          year: "2026 forthcoming"
+        }
+      ]
+    },
+    {
+      id: "from-interiority-to-interaction",
+      title: "From Interiority to Interaction: Reframing Personhood, Communication, and Affect with Artificial Interaction Partners through Japanese Cultures",
+      year: "2025",
+      tags: ["Philosophy of Technology"],
+      blurb: "Shifts debates about AI, robots, and large language models away from whether they possess “real” consciousness or intelligence, and toward the social roles they already perform in human life. Drawing on Japanese robotics, technoanimism, relational personhood, and ontological fluidity, the paper examines artificial interaction partners—from AIBO robot pets and android Buddhist figures to companion robots and LLMs—as technologies that mediate affect, communication, ritual, kinship, and care. It argues that technological personhood is not an internal property, but something that emerges through interaction."
+    },
+    {
+      id: "commitments-of-physical-modeling",
+      title: "The Commitments of Physical Modeling: Timbre, Mediation, and Virtual Instrument Construction",
+      year: "2026",
+      tags: ["Timbre Studies"],
+      blurb: "Examines how timbre is constructed in virtual instrument design, especially through physical modeling synthesis. Rather than treating timbre as a fixed property that can be recovered from physical mechanisms alone, this research argues that timbral identity emerges from an assemblage of materials, mediation technologies, acoustic spaces, bodily cues, and culturally trained listening. Using physical modeling as a case study, the paper shows how virtual instruments inevitably make “commitments” about what counts as the instrument, what kind of listener is being addressed, and which aspects of timbral experience are being prioritized.",
+      exhibitions: [
+        {
+          venue: "Université de Montréal",
+          event: "International Conference on Timbre",
+          year: "July 2026"
+        }
+      ]
+    },
+    {
+      id: "dungeon-synth-synthetic-medievalisms",
+      title: "Dungeon Synth as Transcultural and Transtemporal Construction: Synthetic Medievalisms",
+      year: "2026",
+      tags: ["Medieval Reception"],
+      blurb: "Studies dungeon synth as a form of mediated world-building rather than a straightforward revival of medieval music. The project argues that the genre’s “medieval” atmosphere is assembled through layers of prior imagination: Norwegian black metal’s lo-fi mythic austerity, American and Japanese video game music, early MIDI and sound-chip aesthetics, fantasy literature, tabletop gaming, zines, pixel art, and online genre communities. By tracing these references across cultures and historical moments, the paper frames dungeon synth as a synthetic medievalism: a music of dungeons, ruins, forests, and quests that returns not directly to the Middle Ages, but to the late twentieth-century media systems that had already transformed the medieval into fantasy."
+    },
+    {
+      id: "night-bus-intermedia-musicopoetics",
+      title: "Intermedia Musicopoetics and Transpractice Songwriting in “Night Bus”",
+      year: "2026",
+      tags: ["music composition"],
+      blurb: "A conference presentation around Night Bus, an experimental pop composition that thinks about how the singer-songwriter genre can expand through intermedial practice, drawing together contemporary music, poetry, electronic sound, and Philippine cultural memory. Developed as part of the intermedia poetic suite Of Another Shore, the song treats pop as a hybrid artform where sung phrases behave like poetic lines, shaped by enjambment, asemic vocality, timbre, polytonality, ostinato, and electronic transformation. Inspired by soliranin and indolanin, Filipino song forms often referenced in literature but lacking definitive recorded versions, Night Bus reimagines rowing and work-song rhythms within an urban transit setting, layering maritime, riverine, mythological, and funerary imagery onto contemporary city life.",
+	  exhibitions: [
+        {
+          venue: "University of the Philippines",
+          event: "Saliksik-Musika II",
+          year: "June 2025"
+        }
+      ]
+    },
+    {
+      id: "feeling-together",
+      title: "Feeling Together: Affective Circuits and the Relational Self in Philippine Cultures Beyond Literary Individualism",
+      year: "2025",
+      tags: ["affect theory"],
+      blurb: "Examines how emotion and personhood operate beyond Western models of the self as private, bounded, and individual. Centering Filipino concepts such as loób and kapwa, the project argues that affect is not simply an inner state but a relational force that emerges through language, social expectations, media, ethical responsibility, and shared cultural worlds. Through philosophical and literary analysis, participant interviews, and autoethnographic reflection, the research explores affective phenomena such as hiyâ, kilíg, and húgot, showing how these blur the boundaries between feeling, action, virtue, perception, and performance.",
+	  exhibitions: [
+        {
+          venue: "Nanyang Technological University",
+          event: "Feeling Formal",
+          year: "Jule 2025"
+        }
+      ]
+    }
+  ]
+}
 ];
 
 // Dynamically calculates the start and end slides for each section
