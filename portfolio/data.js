@@ -243,7 +243,9 @@ const slides = [
       year: "2015",
       tags: ["Synthpop", "Vaporpop", "Collaboration", "Album Art"],
       media: [
-        { type: "placeholder", label: "Album Cover / Audio" }
+        { type: "image", src: "../card/masm.jpeg", label: "film still — oceanic archive" },
+		{ type: "image", src: "https://f4.bcbits.com/img/0004708717_10.jpg", label: "film still — oceanic archive" },
+		{ type: "youtube", id: "ffGUR_9GX6E" }
       ],
       blurb: "A collaboration with Brazilian artist MASM. This is a synthpop and vaporpop 6-track EP. Besides these genres, it takes influences from industrial music, bossa nova, trap EDM, eurodance, R&B, and minimalist music. It was mixed to have the sensation of being listened through an old device. It explores ideas of memories and the haunting of the past, as well as the inevitable change, development, and decay of reality. Also was the album artist for this incorporating 3d graphics, vector graphics, mixing different types of technological degradation such as glitch, paper, and vhs. draws on glowing 80's neon on black screen imagery as well as spray painted high color movie posters.",
       links: []
