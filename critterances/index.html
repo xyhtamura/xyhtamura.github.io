@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Critterances</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Eater&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      /* Aggressive Nickelodeon x Wild Things Palette */
+      --slime: #a0ff00;
+      --orange: #ff5e00;
+      --rust: #a84724;
+      --dirt: #3d3126;
+      --metal: #9ba3a0;
+      --dark: #1f1712;
+      --paper: #f4ebd9;
+      --teal: #00b4d8;
+      --tongue: #ff4b6e;
+      
+      --radius-lg: 30px 50px 20px 40px;
+      --radius-md: 15px 25px 10px 20px;
+      --shadow: 8px 8px 0px var(--dark);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: var(--dirt);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      /* Zany chunky font stack for body text */
+      font-family: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', 'Arial Rounded MT Bold', sans-serif;
+      color: var(--dark);
+      background-color: var(--dirt);
+      background-image: 
+        radial-gradient(rgba(168, 71, 36, 0.4) 15%, transparent 16%),
+        radial-gradient(rgba(168, 71, 36, 0.4) 15%, transparent 16%);
+      background-size: 60px 60px;
+      background-position: 0 0, 30px 30px;
+      padding: 30px;
+    }
+
+    /* Slime splats in the background */
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      z-index: -1;
+      border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+      background: var(--slime);
+      border: 8px solid var(--dark);
+      animation: wobble 8s infinite alternate ease-in-out;
+    }
+
+    body::before {
+      width: 40vmin; height: 40vmin;
+      left: -10vmin; top: 5vmin;
+      box-shadow: inset -10px -10px 0 rgba(0,0,0,0.1);
+    }
+
+    body::after {
+      width: 50vmin; height: 40vmin;
+      right: -15vmin; bottom: -5vmin;
+      background: var(--orange);
+      animation-duration: 12s;
+    }
+
+    @keyframes wobble {
+      0% { transform: rotate(0deg) scale(0.9); border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+      100% { transform: rotate(15deg) scale(1.1); border-radius: 60% 40% 30% 70% / 50% 60% 40% 50%; }
+    }
+
+    main {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+      position: relative;
+    }
+
+    /* The Main Junkyard Console */
+    .shell {
+      position: relative;
+      background: var(--metal);
+      border: 8px solid var(--dark);
+      border-radius: var(--radius-lg);
+      padding: clamp(20px, 4vw, 40px);
+      box-shadow: 16px 16px 0px rgba(0, 0, 0, 0.4), inset 0 0 40px rgba(0,0,0,0.1);
+    }
+
+    header {
+      display: grid;
+      gap: 20px;
+      align-items: end;
+      margin-bottom: 30px;
+    }
+
+    @media (min-width: 860px) {
+      header {
+        grid-template-columns: minmax(0, 1fr) 280px;
+      }
+    }
+
+    .eyebrow {
+      display: inline-block;
+      background: var(--dark);
+      color: var(--slime);
+      border-radius: 10px 20px 5px 15px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transform: rotate(-2deg);
+    }
+
+    h1 {
+      margin: 15px 0 25px 0;
+      font-family: 'Eater', cursive;
+      font-size: clamp(3rem, 9vw, 6rem);
+      line-height: 1.1;
+      color: var(--slime);
+      /* Adjusted shadow for the jagged Eater font */
+      text-shadow: 4px 4px 0px var(--dark), 8px 8px 0px var(--orange);
+      transform: rotate(-3deg);
+    }
+
+    h1 .split {
+      display: block;
+      padding-left: 0.5em;
+      color: var(--paper);
+    }
+
+    p {
+      color: var(--dark);
+      line-height: 1.6;
+      max-width: 65ch;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    /* The Critter */
+    .critter {
+      position: relative;
+      min-height: 220px;
+      background: var(--rust);
+      border: 8px solid var(--dark);
+      border-radius: 50% 40% 60% 40% / 40% 60% 40% 60%;
+      box-shadow: inset -15px -15px 0px rgba(0,0,0,0.2), var(--shadow);
+      overflow: hidden;
+      animation: wobble 6s infinite ease-in-out;
+    }
+
+    /* Wall-E Binocular Eye */
+    .critter::before {
+      content: "";
+      position: absolute;
+      width: 60px; height: 60px;
+      background: var(--teal);
+      border: 6px solid var(--dark);
+      border-radius: 50%;
+      top: 30px; left: 40px;
+      box-shadow: inset 8px 8px 0 rgba(255,255,255,0.5), 4px 4px 0 var(--dark);
+    }
+    
+    /* Second smaller asymmetrical eye */
+    .critter::after {
+      content: "";
+      position: absolute;
+      width: 35px; height: 35px;
+      background: var(--slime);
+      border: 6px solid var(--dark);
+      border-radius: 50%;
+      top: 45px; left: 110px;
+      box-shadow: inset 4px 4px 0 rgba(255,255,255,0.5), 4px 4px 0 var(--dark);
+    }
+
+    /* Wild Things Monster Mouth */
+    .mouth {
+      position: absolute;
+      width: 110px;
+      height: 50px;
+      left: 50%;
+      top: 65%;
+      translate: -50% -50%;
+      background: var(--dark);
+      border-bottom-left-radius: 50px;
+      border-bottom-right-radius: 50px;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      border-top: 8px dashed var(--paper);
+      border-bottom: 12px solid var(--tongue);
+      animation: pulseMouth 1.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulseMouth {
+      0% { transform: scaleY(0.6); }
+      100% { transform: scaleY(1.1); }
+    }
+
+    .critter-label {
+      position: absolute;
+      bottom: 15px; width: 100%;
+      text-align: center;
+    }
+
+    .tag {
+      background: var(--orange);
+      color: var(--dark);
+      padding: 6px 12px;
+      border: 3px solid var(--dark);
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      display: inline-block;
+      transform: rotate(3deg);
+      box-shadow: 3px 3px 0 var(--dark);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+
+    /* Paper/Whiteboard Cards */
+    .card {
+      position: relative;
+      grid-column: span 12;
+      background: var(--paper);
+      border: 6px solid var(--dark);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    @media (min-width: 760px) {
+      .state-card { grid-column: span 4; }
+      .wide { grid-column: span 8; }
+      .side { grid-column: span 4; }
+    }
+
+    .state-card {
+      min-height: 250px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .state-card:nth-child(1) { transform: rotate(-2deg); }
+    .state-card:nth-child(2) { transform: rotate(1.5deg); }
+    .state-card:nth-child(3) { transform: rotate(-1deg); }
+
+    .state-title {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 15px;
+      border-bottom: 4px solid var(--dark);
+      padding-bottom: 10px;
+    }
+
+    .state-title h2, .card h2 {
+      margin: 0;
+      font-size: 1.4rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .card h2 {
+      margin-bottom: 15px;
+      color: var(--orange);
+      text-shadow: 2px 2px 0px var(--dark);
+    }
+
+    .pill {
+      font-size: 0.8rem;
+      color: var(--dark);
+      background: var(--slime);
+      padding: 4px 8px;
+      border: 3px solid var(--dark);
+      border-radius: 10px;
+      font-weight: bold;
+      box-shadow: 2px 2px 0 var(--dark);
+    }
+
+    /* Chunky physical buttons */
+    button {
+      appearance: none;
+      width: 100%;
+      background: var(--teal);
+      color: white;
+      border: 4px solid var(--dark);
+      border-radius: 15px 25px 10px 20px;
+      padding: 14px 15px;
+      font-family: inherit;
+      font-size: 1.1rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 8px 0 var(--dark);
+      transition: all 0.1s;
+      margin-top: auto;
+    }
+
+    button:hover {
+      background: #00c6ed;
+      transform: translateY(2px);
+      box-shadow: 0 6px 0 var(--dark);
+    }
+
+    button:active {
+      transform: translateY(8px);
+      box-shadow: 0 0 0 var(--dark);
+    }
+
+    button.active {
+      background: var(--slime);
+      color: var(--dark);
+    }
+
+    button.stop {
+      background: var(--orange);
+    }
+
+    .controls { display: grid; gap: 20px; }
+
+    label {
+      display: grid; gap: 10px;
+      font-size: 1.1rem; font-weight: bold;
+    }
+
+    .value-row {
+      display: flex; justify-content: space-between;
+    }
+
+    .value-row strong {
+      background: var(--orange);
+      color: var(--dark);
+      border: 2px solid var(--dark);
+      padding: 2px 8px;
+      border-radius: 5px;
+    }
+
+    /* Custom Sliders */
+    input[type="range"] {
+      appearance: none; width: 100%;
+      background: var(--metal);
+      border: 4px solid var(--dark);
+      border-radius: 10px; height: 24px;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      appearance: none;
+      width: 32px; height: 32px;
+      background: var(--slime);
+      border: 4px solid var(--dark);
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: inset -3px -3px 0 rgba(0,0,0,0.2);
+    }
+    
+    input[type="range"]::-webkit-slider-thumb:active {
+      background: var(--orange);
+    }
+
+    code, pre {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    pre {
+      background: var(--dark);
+      color: var(--slime);
+      border: 4px solid var(--orange);
+      border-radius: 10px 20px 10px 20px;
+      padding: 15px;
+      overflow: auto;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      box-shadow: inset 4px 4px 0 rgba(0,0,0,0.3);
+    }
+
+    .status {
+      display: flex; align-items: center; gap: 12px;
+      margin-top: 15px; font-weight: bold;
+      background: var(--dark);
+      color: var(--slime);
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    .dot {
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--rust);
+      border: 3px solid var(--paper);
+    }
+
+    .dot.on {
+      background: var(--slime);
+      border-color: var(--dark);
+      box-shadow: 0 0 15px var(--slime);
+    }
+
+    .small { font-size: 0.95rem; line-height: 1.4; }
+    .note { margin-top: 12px; font-size: 0.85rem; font-weight: bold; color: var(--rust); }
+
+    footer {
+      display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between;
+      margin-top: 25px; color: var(--dark); font-weight: bold;
+      font-size: 0.9rem; text-transform: uppercase;
+      border-top: 4px dashed var(--dark);
+      padding-top: 15px;
+    }
+
+    ::selection { background: var(--slime); color: var(--dark); }
+
+    @media (max-width: 520px) {
+      body { padding: 15px; }
+      .state-card { transform: rotate(0deg) !important; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="shell">
+      <header>
+        <div>
+          <span class="eyebrow">Sgueltch Audio Bestiary</span>
+          <h1>Critter<span class="split">ances</span></h1>
+          <p class="lede">
+            A messy browser toy for procedural chirps, murmurs, droplets, and little garbage-bots thinking with their mouths.
+          </p>
+        </div>
+
+        <aside class="critter" aria-label="A junk-bot critter mascot">
+          <span class="mouth" aria-hidden="true"></span>
+          <div class="critter-label">
+            <span class="tag">Ooze Engine</span>
+          </div>
+        </aside>
+      </header>
+
+      <section class="grid">
+        <article class="card state-card">
+          <div class="state-title">
+            <h2>Transcribing</h2>
+            <span class="pill">Soft Scan</span>
+          </div>
+          <p class="small">Light filtered grains: a listening critter tasting syllables in the rusty air.</p>
+          <button data-state="transcribing">Summon</button>
+        </article>
+
+        <article class="card state-card">
+          <div class="state-title">
+            <h2>Thinking</h2>
+            <span class="pill">Metabolic</span>
+          </div>
+          <p class="small">Lower, denser chirps and murmurs: not a notification, more like an organ deciding.</p>
+          <button data-state="thinking">Summon</button>
+        </article>
+
+        <article class="card state-card">
+          <div class="state-title">
+            <h2>Crafting</h2>
+            <span class="pill">Eager</span>
+          </div>
+          <p class="small">Bright droplets and quick phonemes: the trash-creature is knitting itself together.</p>
+          <button data-state="crafting">Summon</button>
+        </article>
+
+        <article class="card wide">
+          <h2>Creature Controls</h2>
+          <div class="controls">
+            <label>
+              <span class="value-row"><span>Master Volume</span><strong id="intensityValue">0.65</strong></span>
+              <input id="intensity" type="range" min="0" max="1" step="0.01" value="0.65" />
+            </label>
+            <label>
+              <span class="value-row"><span>Swarm Density</span><strong id="densityValue">0.25×</strong></span>
+              <input id="density" type="range" min="0.05" max="2.5" step="0.01" value="0.25" />
+            </label>
+            <button class="stop" id="stopButton">Return Creature to the Slime</button>
+          </div>
+          <div class="status">
+            <span id="statusDot" class="dot"></span>
+            <span id="statusText">Idle</span>
+          </div>
+        </article>
+
+        <article class="card side">
+          <h2>Current Module API</h2>
+          <pre>irisSound.start("transcribing");
+irisSound.start("thinking");
+irisSound.start("crafting");
+irisSound.stop();
+irisSound.setIntensity(0.8);
+irisSound.setDensity(1.4);</pre>
+        </article>
+      </section>
+
+      <footer>
+        <span>Critterances / Zany Procedural Engine</span>
+        <span>Sound states for garbage-bots</span>
+      </footer>
+    </div>
+  </main>
+
+<script src="ss.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const stateButtons = document.querySelectorAll('button[data-state]');
+      const stopButton = document.getElementById('stopButton');
+      const intensitySlider = document.getElementById('intensity');
+      const intensityValue = document.getElementById('intensityValue');
+      const densitySlider = document.getElementById('density');
+      const densityValue = document.getElementById('densityValue');
+      const statusText = document.getElementById('statusText');
+      const statusDot = document.getElementById('statusDot');
+
+      // 1. Handle State Buttons (Summoning)
+      stateButtons.forEach(btn => {
+        btn.addEventListener('click', async () => {
+          // Update UI: remove 'active' from all, add to the clicked one
+          stateButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          // Trigger the sound engine
+          const state = btn.getAttribute('data-state');
+          try {
+            await irisSound.start(state);
+            statusText.innerText = state.charAt(0).toUpperCase() + state.slice(1);
+            statusDot.classList.add('on');
+          } catch (err) {
+            console.error("Audio engine failed to start:", err);
+          }
+        });
+      });
+
+      // 2. Handle Stop Button (Return to Slime)
+      stopButton.addEventListener('click', () => {
+        irisSound.stop();
+        
+        // Reset UI
+        stateButtons.forEach(b => b.classList.remove('active'));
+        statusText.innerText = 'Idle';
+        statusDot.classList.remove('on');
+      });
+
+      // 3. Handle Volume/Intensity Slider
+      intensitySlider.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value);
+        irisSound.setIntensity(val);
+        intensityValue.innerText = val.toFixed(2);
+      });
+
+      // 4. Handle Density Slider
+      densitySlider.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value);
+        irisSound.setDensity(val);
+        densityValue.innerText = val.toFixed(2) + '×';
+      });
+    });
+  </script>
+</body>
+</html>
