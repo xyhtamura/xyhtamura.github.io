@@ -171,8 +171,8 @@ class IrisSoundEngine {
 
         // ── Phrase-level global movement ────────────────────────────────────
         grand: {
-          phraseMin:      2,
-          phraseMax:      5,
+          phraseMin:      1,
+          phraseMax:      3.5,
           filterFreqMin:  1000,
           filterFreqMax:  4000,
           qMin:           0.4,
@@ -186,8 +186,8 @@ class IrisSoundEngine {
           pitchMin:       0.90,
           pitchMax:       1.10,
           restChance:     0.80,
-          restMin:        0.5,
-          restMax:        2
+          restMin:        0.2,
+          restMax:        1.5
         }
       },
 
