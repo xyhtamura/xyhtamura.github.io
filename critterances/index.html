@@ -9,427 +9,416 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Eater&display=swap" rel="stylesheet">
 
-  <style>
-    :root {
-      /* Aggressive Nickelodeon x Wild Things Palette */
-      --slime: #a0ff00;
-      --orange: #ff5e00;
-      --rust: #a84724;
-      --dirt: #3d3126;
-      --metal: #9ba3a0;
-      --dark: #1f1712;
-      --paper: #f4ebd9;
-      --teal: #00b4d8;
-      --tongue: #ff4b6e;
-      
-      --radius-lg: 30px 50px 20px 40px;
-      --radius-md: 15px 25px 10px 20px;
-      --shadow: 8px 8px 0px var(--dark);
-    }
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Eater&family=Fredoka+One&display=swap');
 
-    * {
-      box-sizing: border-box;
-    }
+  :root {
+    --slime:    #AAFF00;
+    --orange:   #FF6B00;
+    --banana:   #FFE900;
+    --hot-pink: #FF2D78;
+    --purple:   #6B2FFF;
+    --dark:     #18000A;
+    --paper:    #FFFCE8;
+    --teal:     #00CFFF;
+    --tongue:   #FF2D78;
 
-    html {
-      background: var(--dirt);
-    }
+    --radius-lg: 30px 50px 20px 40px;
+    --radius-md: 15px 25px 10px 20px;
+    --shadow: 8px 8px 0px var(--dark);
+  }
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      overflow-x: hidden;
-      /* Zany chunky font stack for body text */
-      font-family: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', 'Arial Rounded MT Bold', sans-serif;
-      color: var(--dark);
-      background-color: var(--dirt);
-      background-image: 
-        radial-gradient(rgba(168, 71, 36, 0.4) 15%, transparent 16%),
-        radial-gradient(rgba(168, 71, 36, 0.4) 15%, transparent 16%);
-      background-size: 60px 60px;
-      background-position: 0 0, 30px 30px;
-      padding: 30px;
-    }
+  * { box-sizing: border-box; }
 
-    /* Slime splats in the background */
-    body::before,
-    body::after {
-      content: "";
-      position: fixed;
-      z-index: -1;
-      border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
-      background: var(--slime);
-      border: 8px solid var(--dark);
-      animation: wobble 8s infinite alternate ease-in-out;
-    }
+  html { background: var(--orange); }
 
-    body::before {
-      width: 40vmin; height: 40vmin;
-      left: -10vmin; top: 5vmin;
-      box-shadow: inset -10px -10px 0 rgba(0,0,0,0.1);
-    }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-family: 'Fredoka One', 'Comic Sans MS', 'Chalkboard SE', 'Arial Rounded MT Bold', sans-serif;
+    color: var(--dark);
+    background-color: var(--orange);
+    background-image:
+      radial-gradient(var(--banana) 18%, transparent 19%),
+      radial-gradient(var(--banana) 18%, transparent 19%);
+    background-size: 60px 60px;
+    background-position: 0 0, 30px 30px;
+    padding: 30px;
+  }
 
-    body::after {
-      width: 50vmin; height: 40vmin;
-      right: -15vmin; bottom: -5vmin;
-      background: var(--orange);
-      animation-duration: 12s;
-    }
+  body::before,
+  body::after {
+    content: "";
+    position: fixed;
+    z-index: -1;
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    background: var(--slime);
+    border: 8px solid var(--dark);
+    animation: wobble 8s infinite alternate ease-in-out;
+  }
 
-    @keyframes wobble {
-      0% { transform: rotate(0deg) scale(0.9); border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
-      100% { transform: rotate(15deg) scale(1.1); border-radius: 60% 40% 30% 70% / 50% 60% 40% 50%; }
-    }
+  body::before {
+    width: 55vmin; height: 55vmin;
+    left: -18vmin; top: 0vmin;
+    box-shadow: inset -10px -10px 0 rgba(0,0,0,0.1);
+  }
 
-    main {
-      width: min(1120px, 100%);
-      margin: 0 auto;
-      position: relative;
-    }
+  body::after {
+    width: 65vmin; height: 52vmin;
+    right: -22vmin; bottom: -10vmin;
+    background: var(--purple);
+    animation-duration: 12s;
+  }
 
-    /* The Main Junkyard Console */
-    .shell {
-      position: relative;
-      background: var(--metal);
-      border: 8px solid var(--dark);
-      border-radius: var(--radius-lg);
-      padding: clamp(20px, 4vw, 40px);
-      box-shadow: 16px 16px 0px rgba(0, 0, 0, 0.4), inset 0 0 40px rgba(0,0,0,0.1);
-    }
+  @keyframes wobble {
+    0%   { transform: rotate(0deg)  scale(0.9); border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+    100% { transform: rotate(15deg) scale(1.1); border-radius: 60% 40% 30% 70% / 50% 60% 40% 50%; }
+  }
 
-    header {
-      display: grid;
-      gap: 20px;
-      align-items: end;
-      margin-bottom: 30px;
-    }
+  main {
+    width: min(1120px, 100%);
+    margin: 0 auto;
+    position: relative;
+  }
 
-    @media (min-width: 860px) {
-      header {
-        grid-template-columns: minmax(0, 1fr) 280px;
-      }
-    }
+  /* The Main Junkyard Console — banana yellow instead of metal grey */
+  .shell {
+    position: relative;
+    background: var(--banana);
+    border: 10px solid var(--dark);
+    border-radius: var(--radius-lg);
+    padding: clamp(20px, 4vw, 40px);
+    box-shadow: 22px 22px 0px var(--dark), inset 0 0 50px rgba(255, 107, 0, 0.1);
+  }
 
-    .eyebrow {
-      display: inline-block;
-      background: var(--dark);
-      color: var(--slime);
-      border-radius: 10px 20px 5px 15px;
-      padding: 8px 16px;
-      font-size: 0.9rem;
-      font-weight: 900;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      transform: rotate(-2deg);
-    }
+  header {
+    display: grid;
+    gap: 20px;
+    align-items: end;
+    margin-bottom: 30px;
+  }
 
-    h1 {
-      margin: 15px 0 25px 0;
-      font-family: 'Eater', cursive;
-      font-size: clamp(3rem, 9vw, 6rem);
-      line-height: 1.1;
-      color: var(--slime);
-      /* Adjusted shadow for the jagged Eater font */
-      text-shadow: 4px 4px 0px var(--dark), 8px 8px 0px var(--orange);
-      transform: rotate(-3deg);
-    }
+  @media (min-width: 860px) {
+    header { grid-template-columns: minmax(0, 1fr) 280px; }
+  }
 
-    h1 .split {
-      display: block;
-      padding-left: 0.5em;
-      color: var(--paper);
-    }
+  .eyebrow {
+    display: inline-block;
+    background: var(--hot-pink);
+    color: var(--paper);
+    border-radius: 10px 20px 5px 15px;
+    border: 3px solid var(--dark);
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transform: rotate(-2deg);
+    box-shadow: 4px 4px 0 var(--dark);
+  }
 
-    p {
-      color: var(--dark);
-      line-height: 1.6;
-      max-width: 65ch;
-      font-weight: 600;
-      font-size: 1.1rem;
-    }
+  h1 {
+    margin: 15px 0 25px 0;
+    font-family: 'Eater', cursive;
+    font-size: clamp(3rem, 9vw, 6rem);
+    line-height: 1.1;
+    color: var(--hot-pink);
+    text-shadow: 4px 4px 0px var(--dark), 8px 8px 0px var(--orange);
+    transform: rotate(-3deg);
+  }
 
-    /* The Critter */
-    .critter {
-      position: relative;
-      min-height: 220px;
-      background: var(--rust);
-      border: 8px solid var(--dark);
-      border-radius: 50% 40% 60% 40% / 40% 60% 40% 60%;
-      box-shadow: inset -15px -15px 0px rgba(0,0,0,0.2), var(--shadow);
-      overflow: hidden;
-      animation: wobble 6s infinite ease-in-out;
-    }
+  h1 .split {
+    display: block;
+    padding-left: 0.5em;
+    color: var(--purple);
+  }
 
-    /* Wall-E Binocular Eye */
-    .critter::before {
-      content: "";
-      position: absolute;
-      width: 60px; height: 60px;
-      background: var(--teal);
-      border: 6px solid var(--dark);
-      border-radius: 50%;
-      top: 30px; left: 40px;
-      box-shadow: inset 8px 8px 0 rgba(255,255,255,0.5), 4px 4px 0 var(--dark);
-    }
-    
-    /* Second smaller asymmetrical eye */
-    .critter::after {
-      content: "";
-      position: absolute;
-      width: 35px; height: 35px;
-      background: var(--slime);
-      border: 6px solid var(--dark);
-      border-radius: 50%;
-      top: 45px; left: 110px;
-      box-shadow: inset 4px 4px 0 rgba(255,255,255,0.5), 4px 4px 0 var(--dark);
-    }
+  p {
+    color: var(--dark);
+    line-height: 1.6;
+    max-width: 65ch;
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
 
-    /* Wild Things Monster Mouth */
-    .mouth {
-      position: absolute;
-      width: 110px;
-      height: 50px;
-      left: 50%;
-      top: 65%;
-      translate: -50% -50%;
-      background: var(--dark);
-      border-bottom-left-radius: 50px;
-      border-bottom-right-radius: 50px;
-      border-top-left-radius: 10px;
-      border-top-right-radius: 10px;
-      border-top: 8px dashed var(--paper);
-      border-bottom: 12px solid var(--tongue);
-      animation: pulseMouth 1.5s ease-in-out infinite alternate;
-    }
+  /* The Critter — purple body, banana + slime eyes */
+  .critter {
+    position: relative;
+    min-height: 220px;
+    background: var(--purple);
+    border: 8px solid var(--dark);
+    border-radius: 50% 40% 60% 40% / 40% 60% 40% 60%;
+    box-shadow: inset -15px -15px 0px rgba(0,0,0,0.15), var(--shadow);
+    overflow: hidden;
+    animation: wobble 6s infinite ease-in-out;
+  }
 
-    @keyframes pulseMouth {
-      0% { transform: scaleY(0.6); }
-      100% { transform: scaleY(1.1); }
-    }
+  .critter::before {
+    content: "";
+    position: absolute;
+    width: 60px; height: 60px;
+    background: var(--banana);
+    border: 6px solid var(--dark);
+    border-radius: 50%;
+    top: 30px; left: 40px;
+    box-shadow: inset 8px 8px 0 rgba(255,255,255,0.5), 4px 4px 0 var(--dark);
+  }
 
-    .critter-label {
-      position: absolute;
-      bottom: 15px; width: 100%;
-      text-align: center;
-    }
+  .critter::after {
+    content: "";
+    position: absolute;
+    width: 35px; height: 35px;
+    background: var(--slime);
+    border: 6px solid var(--dark);
+    border-radius: 50%;
+    top: 45px; left: 110px;
+    box-shadow: inset 4px 4px 0 rgba(255,255,255,0.5), 4px 4px 0 var(--dark);
+  }
 
-    .tag {
-      background: var(--orange);
-      color: var(--dark);
-      padding: 6px 12px;
-      border: 3px solid var(--dark);
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-weight: 900;
-      text-transform: uppercase;
-      display: inline-block;
-      transform: rotate(3deg);
-      box-shadow: 3px 3px 0 var(--dark);
-    }
+  .mouth {
+    position: absolute;
+    width: 110px; height: 50px;
+    left: 50%; top: 65%;
+    translate: -50% -50%;
+    background: var(--dark);
+    border-bottom-left-radius: 50px;
+    border-bottom-right-radius: 50px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-top: 8px dashed var(--banana);
+    border-bottom: 12px solid var(--hot-pink);
+    animation: pulseMouth 1.5s ease-in-out infinite alternate;
+  }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 24px;
-    }
+  @keyframes pulseMouth {
+    0%   { transform: scaleY(0.6); }
+    100% { transform: scaleY(1.2); }
+  }
 
-    /* Paper/Whiteboard Cards */
-    .card {
-      position: relative;
-      grid-column: span 12;
-      background: var(--paper);
-      border: 6px solid var(--dark);
-      border-radius: var(--radius-md);
-      padding: 20px;
-      box-shadow: var(--shadow);
-    }
+  .critter-label {
+    position: absolute;
+    bottom: 15px; width: 100%;
+    text-align: center;
+  }
 
-    @media (min-width: 760px) {
-      .state-card { grid-column: span 4; }
-      .wide { grid-column: span 8; }
-      .side { grid-column: span 4; }
-    }
+  .tag {
+    background: var(--slime);
+    color: var(--dark);
+    padding: 6px 12px;
+    border: 3px solid var(--dark);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    display: inline-block;
+    transform: rotate(3deg);
+    box-shadow: 3px 3px 0 var(--dark);
+  }
 
-    .state-card {
-      min-height: 250px;
-      display: flex;
-      flex-direction: column;
-    }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 24px;
+  }
 
-    .state-card:nth-child(1) { transform: rotate(-2deg); }
-    .state-card:nth-child(2) { transform: rotate(1.5deg); }
-    .state-card:nth-child(3) { transform: rotate(-1deg); }
+  /* Cards — white base, each state card gets its own pastel tint */
+  .card {
+    position: relative;
+    grid-column: span 12;
+    background: var(--paper);
+    border: 6px solid var(--dark);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    box-shadow: var(--shadow);
+  }
 
-    .state-title {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 15px;
-      border-bottom: 4px solid var(--dark);
-      padding-bottom: 10px;
-    }
+  @media (min-width: 760px) {
+    .state-card { grid-column: span 4; }
+    .wide       { grid-column: span 8; }
+    .side       { grid-column: span 4; }
+  }
 
-    .state-title h2, .card h2 {
-      margin: 0;
-      font-size: 1.4rem;
-      font-weight: 900;
-      text-transform: uppercase;
-    }
+  .state-card {
+    min-height: 250px;
+    display: flex;
+    flex-direction: column;
+  }
 
-    .card h2 {
-      margin-bottom: 15px;
-      color: var(--orange);
-      text-shadow: 2px 2px 0px var(--dark);
-    }
+  .state-card:nth-child(1) { transform: rotate(-2deg);  background: #FFF0FA; }
+  .state-card:nth-child(2) { transform: rotate(1.5deg); background: #F0FFE0; }
+  .state-card:nth-child(3) { transform: rotate(-1deg);  background: #EEF0FF; }
 
-    .pill {
-      font-size: 0.8rem;
-      color: var(--dark);
-      background: var(--slime);
-      padding: 4px 8px;
-      border: 3px solid var(--dark);
-      border-radius: 10px;
-      font-weight: bold;
-      box-shadow: 2px 2px 0 var(--dark);
-    }
+  .state-title {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 15px;
+    border-bottom: 4px solid var(--dark);
+    padding-bottom: 10px;
+  }
 
-    /* Chunky physical buttons */
-    button {
-      appearance: none;
-      width: 100%;
-      background: var(--teal);
-      color: white;
-      border: 4px solid var(--dark);
-      border-radius: 15px 25px 10px 20px;
-      padding: 14px 15px;
-      font-family: inherit;
-      font-size: 1.1rem;
-      font-weight: 900;
-      text-transform: uppercase;
-      cursor: pointer;
-      box-shadow: 0 8px 0 var(--dark);
-      transition: all 0.1s;
-      margin-top: auto;
-    }
+  .state-title h2, .card h2 {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 900;
+    text-transform: uppercase;
+  }
 
-    button:hover {
-      background: #00c6ed;
-      transform: translateY(2px);
-      box-shadow: 0 6px 0 var(--dark);
-    }
+  .card h2 {
+    margin-bottom: 15px;
+    color: var(--purple);
+    text-shadow: 2px 2px 0px var(--dark);
+  }
 
-    button:active {
-      transform: translateY(8px);
-      box-shadow: 0 0 0 var(--dark);
-    }
+  .pill {
+    font-size: 0.8rem;
+    color: var(--dark);
+    background: var(--banana);
+    padding: 4px 10px;
+    border: 2px solid var(--dark);
+    border-radius: 10px;
+    font-weight: bold;
+    box-shadow: 2px 2px 0 var(--dark);
+  }
 
-    button.active {
-      background: var(--slime);
-      color: var(--dark);
-    }
+  /* Chunky physical buttons — hot pink default */
+  button {
+    appearance: none;
+    width: 100%;
+    background: var(--hot-pink);
+    color: white;
+    border: 4px solid var(--dark);
+    border-radius: 15px 25px 10px 20px;
+    padding: 14px 15px;
+    font-family: inherit;
+    font-size: 1.1rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 8px 0 var(--dark);
+    transition: all 0.1s;
+    margin-top: auto;
+  }
 
-    button.stop {
-      background: var(--orange);
-    }
+  button:hover {
+    background: #ff5a8a;
+    transform: translateY(2px);
+    box-shadow: 0 6px 0 var(--dark);
+  }
 
-    .controls { display: grid; gap: 20px; }
+  button:active {
+    transform: translateY(8px);
+    box-shadow: 0 0 0 var(--dark);
+  }
 
-    label {
-      display: grid; gap: 10px;
-      font-size: 1.1rem; font-weight: bold;
-    }
+  button.active {
+    background: var(--slime);
+    color: var(--dark);
+  }
 
-    .value-row {
-      display: flex; justify-content: space-between;
-    }
+  button.stop {
+    background: var(--orange);
+    color: white;
+  }
 
-    .value-row strong {
-      background: var(--orange);
-      color: var(--dark);
-      border: 2px solid var(--dark);
-      padding: 2px 8px;
-      border-radius: 5px;
-    }
+  .controls { display: grid; gap: 20px; }
 
-    /* Custom Sliders */
-    input[type="range"] {
-      appearance: none; width: 100%;
-      background: var(--metal);
-      border: 4px solid var(--dark);
-      border-radius: 10px; height: 24px;
-    }
+  label {
+    display: grid; gap: 10px;
+    font-size: 1.1rem; font-weight: bold;
+  }
 
-    input[type="range"]::-webkit-slider-thumb {
-      appearance: none;
-      width: 32px; height: 32px;
-      background: var(--slime);
-      border: 4px solid var(--dark);
-      border-radius: 50%;
-      cursor: pointer;
-      box-shadow: inset -3px -3px 0 rgba(0,0,0,0.2);
-    }
-    
-    input[type="range"]::-webkit-slider-thumb:active {
-      background: var(--orange);
-    }
+  .value-row { display: flex; justify-content: space-between; }
 
-    code, pre {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    }
+  .value-row strong {
+    background: var(--hot-pink);
+    color: white;
+    border: 2px solid var(--dark);
+    padding: 2px 8px;
+    border-radius: 5px;
+    box-shadow: 2px 2px 0 var(--dark);
+  }
 
-    pre {
-      background: var(--dark);
-      color: var(--slime);
-      border: 4px solid var(--orange);
-      border-radius: 10px 20px 10px 20px;
-      padding: 15px;
-      overflow: auto;
-      font-size: 0.9rem;
-      line-height: 1.4;
-      box-shadow: inset 4px 4px 0 rgba(0,0,0,0.3);
-    }
+  /* Sliders — orange track, slime thumb */
+  input[type="range"] {
+    appearance: none; width: 100%;
+    background: var(--orange);
+    border: 4px solid var(--dark);
+    border-radius: 10px; height: 24px;
+  }
 
-    .status {
-      display: flex; align-items: center; gap: 12px;
-      margin-top: 15px; font-weight: bold;
-      background: var(--dark);
-      color: var(--slime);
-      padding: 10px;
-      border-radius: 10px;
-    }
+  input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 36px; height: 36px;
+    background: var(--slime);
+    border: 4px solid var(--dark);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: inset -3px -3px 0 rgba(0,0,0,0.2), 3px 3px 0 var(--dark);
+  }
 
-    .dot {
-      width: 16px; height: 16px;
-      border-radius: 50%;
-      background: var(--rust);
-      border: 3px solid var(--paper);
-    }
+  input[type="range"]::-webkit-slider-thumb:active {
+    background: var(--banana);
+  }
 
-    .dot.on {
-      background: var(--slime);
-      border-color: var(--dark);
-      box-shadow: 0 0 15px var(--slime);
-    }
+  code, pre {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
 
-    .small { font-size: 0.95rem; line-height: 1.4; }
-    .note { margin-top: 12px; font-size: 0.85rem; font-weight: bold; color: var(--rust); }
+  pre {
+    background: var(--dark);
+    color: var(--slime);
+    border: 4px solid var(--hot-pink);
+    border-radius: 10px 20px 10px 20px;
+    padding: 15px;
+    overflow: auto;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    box-shadow: inset 4px 4px 0 rgba(0,0,0,0.3);
+  }
 
-    footer {
-      display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between;
-      margin-top: 25px; color: var(--dark); font-weight: bold;
-      font-size: 0.9rem; text-transform: uppercase;
-      border-top: 4px dashed var(--dark);
-      padding-top: 15px;
-    }
+  .status {
+    display: flex; align-items: center; gap: 12px;
+    margin-top: 15px; font-weight: bold;
+    background: var(--dark);
+    color: var(--slime);
+    padding: 10px;
+    border-radius: 10px;
+  }
 
-    ::selection { background: var(--slime); color: var(--dark); }
+  .dot {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--orange);
+    border: 3px solid var(--paper);
+  }
 
-    @media (max-width: 520px) {
-      body { padding: 15px; }
-      .state-card { transform: rotate(0deg) !important; }
-    }
-  </style>
+  .dot.on {
+    background: var(--slime);
+    border-color: var(--dark);
+    box-shadow: 0 0 15px var(--slime);
+  }
+
+  .small { font-size: 0.95rem; line-height: 1.4; }
+  .note  { margin-top: 12px; font-size: 0.85rem; font-weight: bold; color: var(--purple); }
+
+  footer {
+    display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between;
+    margin-top: 25px; color: var(--dark); font-weight: bold;
+    font-size: 0.9rem; text-transform: uppercase;
+    border-top: 4px dashed var(--dark);
+    padding-top: 15px;
+  }
+
+  ::selection { background: var(--slime); color: var(--dark); }
+
+  @media (max-width: 520px) {
+    body { padding: 15px; }
+    .state-card { transform: rotate(0deg) !important; }
+  }
+</style>
 </head>
 <body>
   <main>
@@ -445,9 +434,6 @@
 
         <aside class="critter" aria-label="A junk-bot critter mascot">
           <span class="mouth" aria-hidden="true"></span>
-          <div class="critter-label">
-            <span class="tag">Ooze Engine</span>
-          </div>
         </aside>
       </header>
 
