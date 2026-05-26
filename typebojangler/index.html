@@ -11,17 +11,17 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     :root {
-      --bg: #0d0a0c;
-      --surface: #151013;
-      --surface-2: #1e1620;
-      --surface-3: #251b27;
-      --ink: #f5eddc;
-      --ink-dim: #8a7860;
-      --border: rgba(255, 122, 26, 0.15);
-      --border-2: rgba(255, 122, 26, 0.07);
-      --acid: #ff7a1a;
+      --bg: #0f0b1e;
+      --surface: #170f2c;
+      --surface-2: #1f1538;
+      --surface-3: #2a1d4a;
+      --ink: #ede8ff;
+      --ink-dim: #7868a8;
+      --border: rgba(150, 130, 210, 0.16);
+      --border-2: rgba(150, 130, 210, 0.08);
+      --acid: #ffe040;
       --coral: #ff3d8f;
-      --ice: #ffe234;
+      --ice: #3dd8c8;
       --sidebar-w: 308px;
     }
 
@@ -42,26 +42,31 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 9px 18px;
-      border-bottom: 1px solid var(--border);
-      background: rgba(21, 16, 19, 0.97);
+      padding: 10px 18px;
+      border-bottom: 1px dashed var(--border);
+      background: rgba(23, 15, 44, 0.97);
       flex-shrink: 0;
       z-index: 10;
     }
 
     .app-title {
-      font-size: 0.78rem;
+      font-family: 'Averia Sans Libre', sans-serif;
+      font-size: 1.45rem;
       font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
+      letter-spacing: -0.01em;
       color: var(--acid);
+      line-height: 1;
+      text-shadow:
+        0.03em 0.02em 0 rgba(255, 61, 143, 0.55),
+        -0.025em -0.02em 0 rgba(61, 216, 200, 0.45);
     }
 
     .app-subtitle {
-      font-size: 0.65rem;
+      font-size: 0.63rem;
       color: var(--ink-dim);
-      margin-top: 1px;
-      letter-spacing: 0.04em;
+      margin-top: 3px;
+      letter-spacing: 0.01em;
+      font-style: italic;
     }
 
     .header-actions { display: flex; gap: 7px; }
@@ -71,11 +76,11 @@
       font-family: 'Bricolage Grotesque', sans-serif;
       font-size: 0.72rem;
       font-weight: 700;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
       border: none;
       cursor: pointer;
-      border-radius: 999px;
+      border-radius: 5px;
       padding: 7px 15px;
       transition: opacity 0.12s, transform 0.08s;
       display: inline-flex;
@@ -87,7 +92,7 @@
 
     .btn-primary {
       background: var(--acid);
-      color: #1a0800;
+      color: #0f0b1e;
     }
     .btn-primary:hover { opacity: 0.88; }
 
@@ -123,11 +128,11 @@
       flex: 1;
       padding: 10px 10px 4px;
       scrollbar-width: thin;
-      scrollbar-color: rgba(255, 122, 26, 0.18) transparent;
+      scrollbar-color: rgba(150, 130, 210, 0.22) transparent;
     }
     .sidebar-scroll::-webkit-scrollbar { width: 3px; }
     .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
-    .sidebar-scroll::-webkit-scrollbar-thumb { background: rgba(255, 122, 26, 0.22); border-radius: 3px; }
+    .sidebar-scroll::-webkit-scrollbar-thumb { background: rgba(150, 130, 210, 0.25); border-radius: 3px; }
 
     /* ── Collapsible sections ────────────────── */
     .ctrl-section { margin-bottom: 2px; }
@@ -139,16 +144,15 @@
       padding: 7px 6px;
       cursor: pointer;
       user-select: none;
-      border-radius: 7px;
+      border-radius: 4px;
       transition: background 0.1s;
     }
     .ctrl-section-header:hover { background: var(--surface-2); }
 
     .ctrl-section-title {
-      font-size: 0.62rem;
+      font-size: 0.67rem;
       font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.04em;
       color: var(--acid);
       flex: 1;
     }
@@ -171,8 +175,8 @@
     }
 
     .ctrl-divider {
-      height: 1px;
-      background: var(--border-2);
+      height: 0;
+      border-bottom: 1px dashed var(--border);
       margin: 4px 4px;
     }
 
@@ -215,8 +219,8 @@
       transition: border-color 0.12s, box-shadow 0.12s;
     }
     textarea:focus, select:focus, input[type="number"]:focus {
-      border-color: rgba(255, 122, 26, 0.5);
-      box-shadow: 0 0 0 2px rgba(255, 122, 26, 0.09);
+      border-color: rgba(255, 224, 64, 0.45);
+      box-shadow: 0 0 0 2px rgba(255, 224, 64, 0.08);
     }
 
     textarea {
@@ -228,7 +232,7 @@
     select {
       cursor: pointer;
       appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='5' viewBox='0 0 9 5'%3E%3Cpath d='M0 0l4.5 5L9 0z' fill='%23ff7a1a' opacity='0.7'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='5' viewBox='0 0 9 5'%3E%3Cpath d='M0 0l4.5 5L9 0z' fill='%23ffe040' opacity='0.65'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: right 9px center;
       padding-right: 26px;
@@ -238,7 +242,7 @@
       -webkit-appearance: none;
       appearance: none;
       width: 100%;
-      height: 3px;
+      height: 4px;
       background: var(--surface-3);
       border-radius: 2px;
       outline: none;
@@ -247,20 +251,20 @@
     }
     input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
       background: var(--acid);
       cursor: pointer;
       transition: transform 0.1s, box-shadow 0.12s;
     }
     input[type="range"]::-webkit-slider-thumb:hover {
-      transform: scale(1.25);
-      box-shadow: 0 0 8px rgba(255, 122, 26, 0.6);
+      transform: scale(1.2);
+      box-shadow: 0 0 10px rgba(255, 224, 64, 0.55);
     }
     input[type="range"]::-moz-range-thumb {
-      width: 12px; height: 12px;
-      border: none; border-radius: 50%;
+      width: 14px; height: 14px;
+      border: none; border-radius: 3px;
       background: var(--acid); cursor: pointer;
     }
 
@@ -276,16 +280,16 @@
       cursor: pointer;
       transition: border-color 0.12s;
     }
-    .color-ctrl:hover { border-color: rgba(255, 122, 26, 0.4); }
+    .color-ctrl:hover { border-color: rgba(255, 224, 64, 0.35); }
 
     input[type="color"] {
       -webkit-appearance: none;
       width: 26px; height: 26px;
-      border: none; border-radius: 6px;
+      border: none; border-radius: 4px;
       cursor: pointer; background: none; padding: 0; flex-shrink: 0;
     }
     input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
-    input[type="color"]::-webkit-color-swatch { border: 1px solid rgba(255,255,255,0.08); border-radius: 5px; }
+    input[type="color"]::-webkit-color-swatch { border: 1px solid rgba(255,255,255,0.08); border-radius: 3px; }
 
     .color-hex {
       font-family: 'Fragment Mono', 'Fira Code', monospace;
@@ -305,7 +309,7 @@
     }
     .seed-row input[type="number"]::-webkit-outer-spin-button,
     .seed-row input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
-    .seed-row .btn { flex: 1; border-radius: 9px; justify-content: center; font-size: 0.68rem; padding: 7px 10px; }
+    .seed-row .btn { flex: 1; border-radius: 5px; justify-content: center; font-size: 0.68rem; padding: 7px 10px; }
 
     /* Align toggle */
     .align-toggle { display: flex; gap: 4px; }
@@ -315,7 +319,7 @@
       font-weight: 600;
       letter-spacing: 0.02em;
       padding: 5px 10px;
-      border-radius: 7px;
+      border-radius: 4px;
       border: 1px solid var(--border);
       background: var(--surface-2);
       color: var(--ink-dim);
@@ -325,22 +329,22 @@
       text-align: center;
     }
     .align-btn.active {
-      background: rgba(255, 122, 26, 0.12);
-      border-color: rgba(255, 122, 26, 0.45);
+      background: rgba(255, 224, 64, 0.1);
+      border-color: rgba(255, 224, 64, 0.4);
       color: var(--acid);
     }
 
     /* ── Sidebar bottom ───────────────────────── */
     .sidebar-actions {
       padding: 10px;
-      border-top: 1px solid var(--border);
+      border-top: 1px dashed var(--border);
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 6px;
       flex-shrink: 0;
     }
     .sidebar-actions .btn {
-      border-radius: 9px;
+      border-radius: 5px;
       padding: 9px 12px;
       justify-content: center;
       font-size: 0.7rem;
@@ -363,9 +367,9 @@
       pointer-events: none;
       z-index: 0;
       background:
-        radial-gradient(ellipse at 15% 20%, rgba(255, 122, 26, 0.07), transparent 38%),
-        radial-gradient(ellipse at 85% 75%, rgba(255, 227, 52, 0.05), transparent 40%),
-        radial-gradient(ellipse at 50% 50%, rgba(255, 61, 143, 0.04), transparent 55%);
+        radial-gradient(ellipse at 12% 18%, rgba(255, 224, 64, 0.06), transparent 36%),
+        radial-gradient(ellipse at 88% 78%, rgba(61, 216, 200, 0.05), transparent 38%),
+        radial-gradient(ellipse at 55% 48%, rgba(255, 61, 143, 0.04), transparent 52%);
     }
 
     /* Stage */
@@ -377,20 +381,6 @@
       align-items: flex-start;
       justify-content: center;
       z-index: 1;
-    }
-
-    /* Subtle grid lines on stage bg */
-    .stage::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent 0 19px,
-        rgba(255,255,255,0.013) 20px
-      );
-      z-index: 0;
     }
 
     #render-canvas {
@@ -423,7 +413,7 @@
   <header class="app-header">
     <div>
       <div class="app-title">TypeBojangler</div>
-      <div class="app-subtitle">organic text renderer — seeded jitter engine</div>
+      <div class="app-subtitle">your type will not cooperate</div>
     </div>
     <div class="header-actions">
       <button class="btn btn-ghost" id="btn-reset">Reset all</button>
@@ -441,13 +431,14 @@
         <!-- TEXT -->
         <div class="ctrl-section">
           <div class="ctrl-section-header">
-            <span class="ctrl-section-title">Text</span>
+            <span class="ctrl-section-title">text</span>
             <span class="ctrl-chevron">▾</span>
           </div>
           <div class="ctrl-body">
             <div class="ctrl">
-              <textarea id="text-input" spellcheck="false">soft text refuses the grid.
-breathing ink and noise.</textarea>
+              <textarea id="text-input" spellcheck="false">You wouldn't 
+steal a 
+type</textarea>
             </div>
           </div>
         </div>
@@ -457,7 +448,7 @@ breathing ink and noise.</textarea>
         <!-- TYPOGRAPHY -->
         <div class="ctrl-section">
           <div class="ctrl-section-header">
-            <span class="ctrl-section-title">Typography</span>
+            <span class="ctrl-section-title">letterforms</span>
             <span class="ctrl-chevron">▾</span>
           </div>
           <div class="ctrl-body">
@@ -513,8 +504,8 @@ breathing ink and noise.</textarea>
             <div class="ctrl">
               <div class="ctrl-label"><span class="ctrl-label-text">Base ink color</span></div>
               <div class="color-ctrl">
-                <input type="color" id="base-color" value="#ddeedd">
-                <span class="color-hex" id="base-color-hex">#DDEEDD</span>
+                <input type="color" id="base-color" value="#ede8ff">
+                <span class="color-hex" id="base-color-hex">#EDE8FF</span>
               </div>
             </div>
 
@@ -535,15 +526,15 @@ breathing ink and noise.</textarea>
         <!-- BACKDROP -->
         <div class="ctrl-section">
           <div class="ctrl-section-header">
-            <span class="ctrl-section-title">Backdrop</span>
+            <span class="ctrl-section-title">backdrop</span>
             <span class="ctrl-chevron">▾</span>
           </div>
           <div class="ctrl-body">
             <div class="ctrl">
               <div class="ctrl-label"><span class="ctrl-label-text">Background color</span></div>
               <div class="color-ctrl">
-                <input type="color" id="backdrop-color" value="#07090a">
-                <span class="color-hex" id="backdrop-color-hex">#07090A</span>
+                <input type="color" id="backdrop-color" value="#0f0b1e">
+                <span class="color-hex" id="backdrop-color-hex">#0F0B1E</span>
               </div>
             </div>
           </div>
@@ -554,7 +545,7 @@ breathing ink and noise.</textarea>
         <!-- SEED -->
         <div class="ctrl-section">
           <div class="ctrl-section-header">
-            <span class="ctrl-section-title">Seed</span>
+            <span class="ctrl-section-title">randomness</span>
             <span class="ctrl-chevron">▾</span>
           </div>
           <div class="ctrl-body">
@@ -573,7 +564,7 @@ breathing ink and noise.</textarea>
         <!-- GEOMETRY -->
         <div class="ctrl-section">
           <div class="ctrl-section-header">
-            <span class="ctrl-section-title">Geometry</span>
+            <span class="ctrl-section-title">movement</span>
             <span class="ctrl-chevron">▾</span>
           </div>
           <div class="ctrl-body">
@@ -652,7 +643,7 @@ breathing ink and noise.</textarea>
         <!-- COLOR DRIFT -->
         <div class="ctrl-section">
           <div class="ctrl-section-header">
-            <span class="ctrl-section-title">Color Drift</span>
+            <span class="ctrl-section-title">color drift</span>
             <span class="ctrl-chevron">▾</span>
           </div>
           <div class="ctrl-body">
@@ -690,7 +681,7 @@ breathing ink and noise.</textarea>
         <!-- OPACITY -->
         <div class="ctrl-section">
           <div class="ctrl-section-header">
-            <span class="ctrl-section-title">Opacity</span>
+            <span class="ctrl-section-title">opacity</span>
             <span class="ctrl-chevron">▾</span>
           </div>
           <div class="ctrl-body">
@@ -720,7 +711,7 @@ breathing ink and noise.</textarea>
         <!-- EFFECTS -->
         <div class="ctrl-section">
           <div class="ctrl-section-header">
-            <span class="ctrl-section-title">Effects</span>
+            <span class="ctrl-section-title">effects</span>
             <span class="ctrl-chevron">▾</span>
           </div>
           <div class="ctrl-body">
@@ -812,10 +803,10 @@ breathing ink and noise.</textarea>
 
     // ── Defaults ──────────────────────────────────────────────────────────
     const DEFAULTS = {
-      text: 'soft text refuses the grid.\nbreathing ink and noise.',
+      text: "You wouldn't \nsteal a \ntype",
       font: "'Averia Sans Libre', sans-serif",
       baseSize: 64, lineHeight: 1.1, letterSpacing: 0,
-      baseColor: '#ddeedd', backdropColor: '#07090a',
+      baseColor: '#ede8ff', backdropColor: '#0f0b1e',
       seed: 1042, irregularity: 45, sizeJitter: 25, sizeDrift: 0,
       rotation: 15, jitterX: 0, jitterY: 0, baselineWobble: 30, spacingChaos: 15,
       driftHue: 0, driftSat: 0, driftLight: 0,
