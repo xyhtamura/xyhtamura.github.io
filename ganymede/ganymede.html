@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ganymede</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --panel-bg: rgba(3, 5, 14, 0.94);
+      --ice:    #4899d4;
+      --violet: #8844cc;
+      --frost:  #aaddff;
+      --magenta:#cc4488;
+      --dim:    #28384e;
+      --text:   #6a90b0;
+      --val:    #88ccee;
+      --border: rgba(72, 153, 212, 0.14);
+      --pw:  228px;
+      --th:   36px;
+      --tab:  18px;
+      --font: 'Share Tech Mono', 'Courier New', monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #000; font-family: var(--font); }
+
+    #glCanvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+
+    /* ── DROP ZONE ──────────────────────────── */
+    #dropZone {
+      position: fixed; inset: 0; z-index: 50;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(3, 5, 14, 0.82);
+      transition: background 0.3s;
+      cursor: pointer;
+    }
+    #dropZone.drag-over { background: rgba(3, 5, 14, 0.92); }
+    #dropZone.hidden    { display: none; }
+
+    /* scanning line */
+    #dropZone::after {
+      content: ''; position: absolute; left: 0; right: 0; height: 1px;
+      background: linear-gradient(to right, transparent 0%, var(--ice) 40%, var(--frost) 50%, var(--ice) 60%, transparent 100%);
+      opacity: 0.25; animation: scanLine 4s linear infinite; pointer-events: none;
+    }
+    @keyframes scanLine { from { top: 0; } to { top: 100%; } }
+
+    #dropInner {
+      text-align: center; user-select: none; pointer-events: none;
+      padding: 48px 60px;
+      border: 1px solid rgba(72, 153, 212, 0.2);
+      border-radius: 4px;
+      position: relative;
+    }
+    /* corner ticks */
+    #dropInner::before, #dropInner::after {
+      content: ''; position: absolute;
+      width: 14px; height: 14px;
+    }
+    #dropInner::before {
+      top: -1px; left: -1px;
+      border-top: 2px solid var(--ice); border-left: 2px solid var(--ice);
+      border-radius: 2px 0 0 0;
+    }
+    #dropInner::after {
+      bottom: -1px; right: -1px;
+      border-bottom: 2px solid var(--ice); border-right: 2px solid var(--ice);
+      border-radius: 0 0 2px 0;
+    }
+    #dropIcon { font-size: 28px; color: var(--ice); opacity: 0.7; margin-bottom: 14px; }
+    #dropTitle {
+      font-size: 13px; letter-spacing: 0.38em; color: var(--frost);
+      opacity: 0.9; margin-bottom: 10px;
+    }
+    #dropSub { font-size: 9px; letter-spacing: 0.18em; color: var(--text); margin-bottom: 6px; }
+    #dropHint { font-size: 8px; letter-spacing: 0.1em; color: var(--dim); }
+
+    /* ── TOP BAR ────────────────────────────── */
+    #topBar {
+      position: fixed; top: 0; left: 0; right: 0; height: var(--th);
+      background: rgba(3,5,14,0.9); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 5px; padding: 0 8px 0 12px;
+      z-index: 100; backdrop-filter: blur(10px);
+      transition: opacity 0.4s, transform 0.5s cubic-bezier(0.22,1,0.36,1);
+    }
+    #titleWrap { display: flex; align-items: center; gap: 7px; flex-shrink: 0; }
+    #statusOrb {
+      width: 7px; height: 7px; border-radius: 50%; background: var(--dim); flex-shrink: 0;
+      transition: background 0.5s, box-shadow 0.5s;
+    }
+    #statusOrb.live { background: var(--frost); box-shadow: 0 0 6px var(--frost); animation: orbPulse 2.5s ease-in-out infinite; }
+    @keyframes orbPulse { 0%,100%{opacity:1}50%{opacity:0.4} }
+    #titleText { font-size: 10px; letter-spacing: 0.28em; color: var(--ice); opacity: 0.9; flex-shrink: 0; }
+    .sep { width: 1px; height: 16px; background: var(--border); flex-shrink: 0; }
+    #vuWrap { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+    #vuLabel { font-size: 8px; color: var(--dim); letter-spacing: 0.1em; }
+    #vuMeter { width: 52px; height: 7px; background: rgba(0,0,0,0.5); border: 1px solid var(--border); border-radius: 1px; overflow: hidden; }
+    #vuFill   { height: 100%; width: 0%; background: linear-gradient(to right, var(--frost) 0%, var(--ice) 60%, var(--violet) 100%); transition: width 0.04s linear; }
+    #seismicWrap { font-size: 8px; color: var(--dim); letter-spacing: 0.08em; flex-shrink: 0; }
+    #seismicVal  { color: var(--val); }
+    .spacer { flex: 1; }
+    .tbtn {
+      padding: 0 8px; height: 22px; font-family: var(--font); font-size: 9px; letter-spacing: 0.1em;
+      color: var(--dim); background: transparent; border: 1px solid rgba(40,56,78,0.45); border-radius: 2px;
+      cursor: pointer; transition: all 0.15s; display: flex; align-items: center; flex-shrink: 0; white-space: nowrap;
+    }
+    .tbtn:hover  { color: var(--ice); border-color: var(--ice); background: rgba(72,153,212,0.08); }
+    .tbtn.active { color: var(--ice); border-color: var(--ice); background: rgba(72,153,212,0.12); }
+    .tbtn.phos   { color: var(--frost); border-color: rgba(170,221,255,0.3); }
+    .tbtn.phos:hover { background: rgba(170,221,255,0.07); border-color: var(--frost); }
+    .tbtn.phos.done  { color: var(--dim); border-color: transparent; cursor: default; pointer-events: none; }
+    .tbtn.warn:hover { color: var(--magenta); border-color: var(--magenta); background: rgba(204,68,136,0.07); }
+    .tbtn.rx-on  { color: var(--frost); border-color: rgba(170,221,255,0.35); }
+    .tbtn.rx-on:hover  { background: rgba(170,221,255,0.07); }
+    .tbtn.rx-off { color: var(--dim); border-color: rgba(40,56,78,0.3); }
+    .tbtn.rx-off:hover { color: var(--magenta); border-color: var(--magenta); }
+
+    /* ── PANEL ──────────────────────────────── */
+    #panel {
+      position: fixed; top: var(--th); right: 0;
+      width: var(--pw); height: calc(100% - var(--th));
+      background: var(--panel-bg); border-left: 1px solid var(--border);
+      z-index: 90; display: flex; overflow: hidden;
+      transform: translateX(0);
+      transition: transform 0.38s cubic-bezier(0.22,1,0.36,1), opacity 0.4s;
+      backdrop-filter: blur(12px);
+    }
+    #panel::after {
+      content:''; pointer-events:none; position:absolute; inset:0; z-index:10;
+      background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.08) 3px, rgba(0,0,0,0.08) 4px);
+    }
+    #panel.hidden { transform: translateX(calc(var(--pw) - var(--tab))); }
+    #panelScroll {
+      flex:1; overflow-y:auto; overflow-x:hidden; padding: 8px 12px 28px;
+      scrollbar-width:thin; scrollbar-color: var(--border) transparent;
+    }
+    #panelScroll::-webkit-scrollbar { width:3px; }
+    #panelScroll::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+    #panelTab {
+      width:var(--tab); min-width:var(--tab); flex-shrink:0;
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer; font-size:10px; color:var(--dim);
+      border-left:1px solid var(--border); user-select:none;
+      transition:color 0.15s, background 0.15s; z-index:11;
+    }
+    #panelTab:hover { color:var(--ice); background:rgba(72,153,212,0.07); }
+
+    /* ── SECTION HEADER ─────────────────────── */
+    .sec {
+      font-size:9px; letter-spacing:0.28em; color:var(--ice);
+      margin:14px 0 8px; padding-bottom:5px;
+      border-bottom:1px solid var(--border);
+      display:flex; align-items:center; gap:5px;
+    }
+    .sec:first-child { margin-top:4px; }
+    .sec::before { content:'◇'; color:var(--violet); font-size:9px; }
+
+    /* ── SLIDERS ────────────────────────────── */
+    .cr { margin-bottom:9px; }
+    .cl { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:3px; }
+    .cn { font-size:8px; letter-spacing:0.1em; color:var(--dim); }
+    .cv { font-size:9px; color:var(--val); min-width:40px; text-align:right; }
+    input[type=range] {
+      -webkit-appearance:none; appearance:none;
+      width:100%; height:16px; background:transparent; cursor:pointer; display:block;
+    }
+    input[type=range]::-webkit-slider-runnable-track {
+      height:2px;
+      background:linear-gradient(to right, var(--ice) var(--pct,0%), rgba(40,56,78,0.4) var(--pct,0%));
+      border-radius:1px;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance:none; width:9px; height:9px; margin-top:-3.5px;
+      background:var(--ice); border-radius:1px; transform:rotate(45deg);
+      box-shadow:0 0 5px rgba(72,153,212,0.55);
+    }
+    input[type=range]::-moz-range-track { height:2px; background:rgba(40,56,78,0.4); border-radius:1px; }
+    input[type=range]::-moz-range-progress { height:2px; background:var(--ice); border-radius:1px; }
+    input[type=range]::-moz-range-thumb { width:9px; height:9px; background:var(--ice); border:none; border-radius:1px; }
+    input[type=range].dimmed { opacity:0.3; pointer-events:none; }
+
+    /* ── FIT MODE BUTTONS ───────────────────── */
+    .fit-group { display:flex; gap:3px; margin-bottom:8px; }
+    .fit-btn {
+      flex:1; padding:5px 0; font-family:var(--font); font-size:8px; letter-spacing:0.1em;
+      color:var(--dim); background:transparent; border:1px solid rgba(40,56,78,0.45); border-radius:2px;
+      cursor:pointer; text-align:center; transition:all 0.15s;
+    }
+    .fit-btn:hover { color:var(--ice); border-color:var(--ice); }
+    .fit-btn.active { color:var(--ice); border-color:var(--ice); background:rgba(72,153,212,0.1); }
+
+    /* ── OSCILLOSCOPE ───────────────────────── */
+    #oscCanvas {
+      width:100%; height:42px; display:block;
+      background:rgba(2,4,12,0.92); border:1px solid rgba(40,56,78,0.4);
+      border-radius:2px; margin-bottom:8px;
+    }
+
+    /* ── AUDIO REACTIVE TOGGLE ──────────────── */
+    #pRxToggle {
+      display:none; width:100%; padding:5px; margin-bottom:5px;
+      font-family:var(--font); font-size:9px; letter-spacing:0.14em;
+      border:1px solid rgba(170,221,255,0.25); border-radius:2px;
+      cursor:pointer; text-align:center; transition:all 0.15s;
+      background:rgba(170,221,255,0.05); color:var(--frost);
+    }
+    #pRxToggle:hover { background:rgba(170,221,255,0.1); }
+    #pRxToggle.off { color:var(--dim); border-color:rgba(40,56,78,0.35); background:transparent; }
+    #pRxToggle.off:hover { color:var(--magenta); border-color:var(--magenta); background:rgba(204,68,136,0.05); }
+
+    /* ── PANEL BUTTONS ──────────────────────── */
+    .pbtn {
+      display:block; width:100%; padding:5px; margin-bottom:5px;
+      font-family:var(--font); font-size:9px; letter-spacing:0.14em;
+      color:var(--text); background:transparent; border:1px solid var(--border); border-radius:2px;
+      cursor:pointer; text-align:center; transition:all 0.15s;
+    }
+    .pbtn:hover  { color:var(--ice); border-color:var(--ice); background:rgba(72,153,212,0.07); }
+    .pbtn.active { color:var(--ice); border-color:var(--ice); background:rgba(72,153,212,0.1); }
+    .pbtn.phos   { color:var(--frost); border-color:rgba(170,221,255,0.25); }
+    .pbtn.phos:hover { background:rgba(170,221,255,0.07); border-color:var(--frost); }
+    .pbtn:disabled { opacity:0.35; cursor:default; }
+
+    /* ── CRYSTAL DIVIDER ────────────────────── */
+    .crystal {
+      height:1px; margin:9px 0;
+      background:repeating-linear-gradient(90deg,
+        transparent 0px, transparent 4px,
+        var(--ice) 4px, var(--ice) 5px,
+        transparent 5px, transparent 13px,
+        var(--violet) 13px, var(--violet) 14px,
+        transparent 14px, transparent 26px
+      );
+      opacity:0.2;
+    }
+
+    /* ── KEY LEGEND ─────────────────────────── */
+    .kr { display:flex; align-items:baseline; gap:6px; margin-bottom:5px; }
+    .kb { font-size:8px; color:var(--ice); background:rgba(72,153,212,0.08); border:1px solid rgba(72,153,212,0.2); border-radius:2px; padding:1px 4px; min-width:26px; text-align:center; flex-shrink:0; }
+    .kd { font-size:8px; color:var(--dim); letter-spacing:0.05em; }
+
+    /* ── DARK UI ────────────────────────────── */
+    body.dark-ui #topBar { opacity:0; pointer-events:none; transform:translateY(-100%); }
+    body.dark-ui #panel  { opacity:0; pointer-events:none; }
+    #revDot {
+      position:fixed; bottom:14px; right:14px; width:8px; height:8px; border-radius:50%;
+      background:rgba(72,153,212,0.2); border:1px solid rgba(72,153,212,0.15);
+      z-index:200; pointer-events:none; opacity:0; transition:opacity 0.6s; cursor:pointer;
+    }
+    body.dark-ui #revDot { opacity:1; pointer-events:auto; animation:revPulse 4s ease-in-out infinite; }
+    @keyframes revPulse { 0%,100%{opacity:0.15}50%{opacity:0.55} }
+  </style>
+</head>
+<body>
+
+  <canvas id="glCanvas"></canvas>
+
+  <!-- UPLOAD DROP ZONE -->
+  <div id="dropZone">
+    <div id="dropInner">
+      <div id="dropIcon">◇</div>
+      <div id="dropTitle">GANYMEDE</div>
+      <div id="dropSub">drag image here · or click to browse</div>
+      <div id="dropHint">.jpg · .png · .webp · .gif</div>
+    </div>
+  </div>
+  <input type="file" id="fileInput" accept="image/*" style="display:none">
+
+  <!-- TOP BAR -->
+  <div id="topBar">
+    <div id="titleWrap">
+      <span id="statusOrb"></span>
+      <span id="titleText">GANYMEDE</span>
+    </div>
+    <div class="sep"></div>
+    <button id="audioBtn" class="tbtn phos">⬡ INIT AUDIO</button>
+    <button id="rxBtn" class="tbtn rx-on" style="display:none">⚡ REACTIVE</button>
+    <div id="vuWrap">
+      <span id="vuLabel">AMP</span>
+      <div id="vuMeter"><div id="vuFill"></div></div>
+    </div>
+    <span id="seismicWrap">SEI&nbsp;<span id="seismicVal">0.000</span></span>
+    <div class="spacer"></div>
+    <button id="freezeTopBtn" class="tbtn">⏸ FREEZE</button>
+    <div class="sep"></div>
+    <button id="darkBtn" class="tbtn warn">⊘ DARK</button>
+    <button id="fsBtn"   class="tbtn">⛶ FULLSCREEN</button>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div id="panel">
+    <div id="panelScroll">
+
+      <!-- SUBSTRATE -->
+      <div class="sec">SUBSTRATE</div>
+      <button id="changeImgBtn" class="pbtn" style="display:none">↑ CHANGE IMAGE</button>
+      <div id="imgInfo" style="font-size:8px;color:var(--dim);letter-spacing:0.08em;margin-bottom:6px;display:none;"></div>
+      <div class="fit-group">
+        <button class="fit-btn active" data-mode="fill">FILL</button>
+        <button class="fit-btn"        data-mode="fit">FIT</button>
+        <button class="fit-btn"        data-mode="stretch">STRETCH</button>
+      </div>
+
+      <div class="crystal"></div>
+
+      <!-- FIELD -->
+      <div class="sec">FIELD</div>
+      <div class="cr">
+        <div class="cl"><span class="cn">FIELD DENSITY</span><span class="cv" id="v-noiseScale">2.5</span></div>
+        <input type="range" id="s-noiseScale" min="0.5" max="8" step="0.1" value="2.5">
+      </div>
+      <div class="cr">
+        <div class="cl"><span class="cn">DISTORTION</span><span class="cv" id="v-warpAmt">0.12</span></div>
+        <input type="range" id="s-warpAmt" min="0" max="0.8" step="0.005" value="0.12">
+      </div>
+      <div class="cr">
+        <div class="cl"><span class="cn">DISTORTION RATE</span><span class="cv" id="v-warpSpd">0.020</span></div>
+        <input type="range" id="s-warpSpd" min="0" max="0.1" step="0.001" value="0.02">
+      </div>
+      <div class="cr">
+        <div class="cl"><span class="cn">DRIFT VELOCITY</span><span class="cv" id="v-scrollSpd">0.40</span></div>
+        <input type="range" id="s-scrollSpd" min="0" max="2" step="0.05" value="0.4">
+      </div>
+      <div class="cr">
+        <div class="cl"><span class="cn">DRIFT RANGE</span><span class="cv" id="v-scrollMag">1.5</span></div>
+        <input type="range" id="s-scrollMag" min="0" max="4" step="0.1" value="1.5">
+      </div>
+
+      <div class="crystal"></div>
+
+      <!-- LATTICE -->
+      <div class="sec">LATTICE</div>
+      <button id="tileBtn" class="pbtn">◻ TILING: OFF</button>
+      <div class="cr" id="tileScaleRow">
+        <div class="cl"><span class="cn">ZOOM / TILE</span><span class="cv" id="v-tileScale">1.0×</span></div>
+        <input type="range" id="s-tileScale" class="dimmed" min="0.1" max="8" step="0.05" value="1" disabled>
+      </div>
+
+      <div class="crystal"></div>
+
+      <!-- OPTICS -->
+      <div class="sec">OPTICS</div>
+      <div class="cr">
+        <div class="cl"><span class="cn">LENS WARP</span><span class="cv" id="v-lens">0.000</span></div>
+        <input type="range" id="s-lens" min="-0.8" max="0.8" step="0.01" value="0">
+      </div>
+      <div class="cr">
+        <div class="cl"><span class="cn">ABERRATION</span><span class="cv" id="v-chroma">0.000</span></div>
+        <input type="range" id="s-chroma" min="0" max="1" step="0.01" value="0">
+      </div>
+
+      <div class="crystal"></div>
+
+      <!-- SPECTRUM -->
+      <div class="sec">SPECTRUM</div>
+      <div class="cr">
+        <div class="cl"><span class="cn">HUE SHIFT</span><span class="cv" id="v-hue">0.000</span></div>
+        <input type="range" id="s-hue" min="0" max="1" step="0.005" value="0">
+      </div>
+      <div class="cr">
+        <div class="cl"><span class="cn">SATURATION</span><span class="cv" id="v-sat">1.00</span></div>
+        <input type="range" id="s-sat" min="0" max="2.5" step="0.05" value="1">
+      </div>
+      <div class="cr">
+        <div class="cl"><span class="cn">BRIGHTNESS</span><span class="cv" id="v-bright">1.00</span></div>
+        <input type="range" id="s-bright" min="0.1" max="2.5" step="0.05" value="1">
+      </div>
+      <div class="cr">
+        <div class="cl"><span class="cn">VIGNETTE</span><span class="cv" id="v-vignette">1.00</span></div>
+        <input type="range" id="s-vignette" min="0" max="3" step="0.05" value="1">
+      </div>
+
+      <div class="crystal"></div>
+
+      <!-- RESONANCE -->
+      <div class="sec">RESONANCE</div>
+      <button id="pAudioBtn" class="pbtn phos">⬡ INITIALIZE AUDIO</button>
+      <button id="pRxToggle">⚡ AUDIO REACTIVE: ON</button>
+      <canvas id="oscCanvas"></canvas>
+      <div class="cr">
+        <div class="cl"><span class="cn">IDLE FLUX</span><span class="cv" id="v-baseSpd">0.030</span></div>
+        <input type="range" id="s-baseSpd" min="0" max="0.5" step="0.005" value="0.03">
+      </div>
+      <div class="cr">
+        <div class="cl"><span class="cn">SEISMIC GAIN</span><span class="cv" id="v-audioMult">8.0</span></div>
+        <input type="range" id="s-audioMult" min="0" max="20" step="0.5" value="8">
+      </div>
+      <div class="cr">
+        <div class="cl"><span class="cn">VISCOSITY</span><span class="cv" id="v-smoothing">0.85</span></div>
+        <input type="range" id="s-smoothing" min="0" max="0.99" step="0.01" value="0.85">
+      </div>
+
+      <div class="crystal"></div>
+
+      <!-- SYSTEM -->
+      <div class="sec">SYSTEM</div>
+      <button id="pFreezeBtn" class="pbtn">⏸ FREEZE</button>
+
+      <div class="crystal"></div>
+
+      <!-- KEYS -->
+      <div class="sec">KEYS</div>
+      <div class="kr"><span class="kb">H</span><span class="kd">toggle panel</span></div>
+      <div class="kr"><span class="kb">F</span><span class="kd">fullscreen</span></div>
+      <div class="kr"><span class="kb">U</span><span class="kd">hide all UI</span></div>
+      <div class="kr"><span class="kb">A</span><span class="kd">toggle reactive</span></div>
+      <div class="kr"><span class="kb">SPC</span><span class="kd">freeze / resume</span></div>
+      <div class="kr"><span class="kb">O</span><span class="kd">open image</span></div>
+
+    </div>
+    <div id="panelTab" title="Toggle panel (H)">◀</div>
+  </div>
+
+  <div id="revDot" title="Press U to show UI"></div>
+
+  <!-- SHADERS -->
+  <script id="vertex-shader" type="x-shader/x-vertex">
+    attribute vec4 a_position;
+    void main() { gl_Position = a_position; }
+  </script>
+
+  <script id="fragment-shader" type="x-shader/x-fragment">
+    precision mediump float;
+
+    uniform sampler2D u_image;
+    uniform vec2  u_resolution;
+    uniform vec2  u_scroll_offset;
+    uniform float u_noise_scale;
+    uniform float u_warp_amount;
+    uniform float u_warp_speed;
+    uniform float u_tile_scale;
+    uniform float u_tile_enabled;  /* 0 or 1 */
+    uniform vec2  u_tile_pan;      /* accumulating drift offset through the tile field */
+    uniform float u_lens_amount;
+    uniform float u_chroma;
+    uniform float u_hue_shift;
+    uniform float u_saturation;
+    uniform float u_brightness;
+    uniform float u_vignette;
+    uniform vec2  u_uv_scale;      /* aspect-ratio correction */
+    uniform float u_audio_pulse;   /* scaled amplitude */
+
+    vec3 rgb2hsv(vec3 c){vec4 K=vec4(0.,-1./3.,2./3.,-1.);vec4 p=mix(vec4(c.bg,K.wz),vec4(c.gb,K.xy),step(c.b,c.g));vec4 q=mix(vec4(p.xyw,c.r),vec4(c.r,p.yzx),step(p.x,c.r));float d=q.x-min(q.w,q.y);float e=1e-10;return vec3(abs(q.z+(q.w-q.y)/(6.*d+e)),d/(q.x+e),q.x);}
+    vec3 hsv2rgb(vec3 c){vec4 K=vec4(1.,2./3.,1./3.,3.);vec3 p=abs(fract(c.xxx+K.xyz)*6.-K.www);return c.z*mix(K.xxx,clamp(p-K.xxx,0.,1.),c.y);}
+    vec2 hash(vec2 p){p=vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3)));return-1.+2.*fract(sin(p)*43758.5453123);}
+    float noise(in vec2 p){const float K1=.366025404,K2=.211324865;vec2 i=floor(p+(p.x+p.y)*K1);vec2 a=p-i+(i.x+i.y)*K2;vec2 o=(a.x>a.y)?vec2(1.,0.):vec2(0.,1.);vec2 b=a-o+K2;vec2 c=a-1.+2.*K2;vec3 h=max(.5-vec3(dot(a,a),dot(b,b),dot(c,c)),0.);vec3 n=h*h*h*h*vec3(dot(a,hash(i+0.)),dot(b,hash(i+o)),dot(c,hash(i+1.)));return dot(n,vec3(70.));}
+
+    void main() {
+      vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+
+      /* 1. Lens distortion — barrel (positive) or pincushion (negative) */
+      vec2 lc  = uv - 0.5;
+      float r2 = dot(lc, lc);
+      vec2 lensUV = lc * (1.0 + u_lens_amount * r2) + 0.5;
+
+      /* 2. Noise warp */
+      vec2 sc = u_scroll_offset;
+      vec2 wo = vec2(
+        noise(lensUV * u_noise_scale * 0.5 + sc * u_warp_speed),
+        noise(lensUV * u_noise_scale * 0.5 + sc * u_warp_speed + 10.0)
+      );
+      vec2 warpedUV = lensUV + wo * (u_warp_amount + u_audio_pulse * 0.12);
+
+      /* 3. Audio zoom pulse (subtle push toward center on loud beats) */
+      float zoom = 1.0 - u_audio_pulse * 0.035;
+      warpedUV = (warpedUV - 0.5) * zoom + 0.5;
+
+      /* 4. Sample image.
+         Tile-enabled: fract(uv * scale + pan) works for ALL scale values.
+           scale < 1  → zoomed-in window drifting through the endless field
+           scale = 1  → one tile drifting past
+           scale > 1  → multiple tiles drifting past
+         u_tile_pan accumulates in JS and wraps in [0,1) for float precision.
+         Non-tile: aspect-corrected UV, optional centred zoom-in, no wrapping. */
+      vec3 col;
+      if (u_tile_enabled > 0.5) {
+        vec2 tUV = fract(warpedUV * u_tile_scale + u_tile_pan);
+        vec2 ab  = (tUV - 0.5) * u_chroma * 0.07;
+        float r  = texture2D(u_image, fract(tUV + ab)).r;
+        float g  = texture2D(u_image, tUV            ).g;
+        float b  = texture2D(u_image, fract(tUV - ab)).b;
+        col = vec3(r, g, b);
+      } else {
+        /* Non-tiled: aspect-corrected, then optional centred zoom-in */
+        vec2 tUV = (warpedUV - 0.5) * u_uv_scale + 0.5;
+        if (u_tile_scale < 1.0) {
+          tUV = (tUV - 0.5) * u_tile_scale + 0.5;
+        }
+        float inB   = step(0.,tUV.x)*step(tUV.x,1.)*step(0.,tUV.y)*step(tUV.y,1.);
+        vec2 ab     = (tUV - 0.5) * u_chroma * 0.07;
+        vec2 safeUV = clamp(tUV,      0.001, 0.999);
+        vec2 safeR  = clamp(tUV + ab, 0.001, 0.999);
+        vec2 safeB  = clamp(tUV - ab, 0.001, 0.999);
+        float r     = texture2D(u_image, safeR).r;
+        float g     = texture2D(u_image, safeUV).g;
+        float b     = texture2D(u_image, safeB).b;
+        col = vec3(r, g, b) * inB;
+      }
+
+      /* 5. Hue / saturation / brightness */
+      vec3 hsv = rgb2hsv(col);
+      hsv.x = fract(hsv.x + u_hue_shift);
+      hsv.y = clamp(hsv.y * u_saturation, 0.0, 1.0);
+      hsv.z = clamp(hsv.z * u_brightness, 0.0, 1.0);
+      col   = hsv2rgb(hsv);
+
+      /* 6. Vignette */
+      float dist = length(uv - 0.5) * 1.6;
+      col *= 1.0 - smoothstep(0.4, 1.0, dist * u_vignette * 0.6);
+
+      gl_FragColor = vec4(col, 1.0);
+    }
+  </script>
+
+  <script>
+  /* ── WebGL setup ────────────────────────────────────────────────────────── */
+  const canvas = document.getElementById('glCanvas');
+  const gl     = canvas.getContext('webgl');
+  if (!gl) alert('WebGL not supported!');
+
+  function mkShader(type, src) {
+    const s = gl.createShader(type); gl.shaderSource(s,src); gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) { console.error(gl.getShaderInfoLog(s)); return null; }
+    return s;
+  }
+  const prog = (() => {
+    const p = gl.createProgram();
+    gl.attachShader(p, mkShader(gl.VERTEX_SHADER,   document.getElementById('vertex-shader').text));
+    gl.attachShader(p, mkShader(gl.FRAGMENT_SHADER, document.getElementById('fragment-shader').text));
+    gl.linkProgram(p);
+    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) { console.error(gl.getProgramInfoLog(p)); return null; }
+    return p;
+  })();
+
+  const aPos        = gl.getAttribLocation(prog,  'a_position');
+  const uRes        = gl.getUniformLocation(prog, 'u_resolution');
+  const uScr        = gl.getUniformLocation(prog, 'u_scroll_offset');
+  const uNSc        = gl.getUniformLocation(prog, 'u_noise_scale');
+  const uWAm        = gl.getUniformLocation(prog, 'u_warp_amount');
+  const uWSp        = gl.getUniformLocation(prog, 'u_warp_speed');
+  const uTileScale  = gl.getUniformLocation(prog, 'u_tile_scale');
+  const uTileOn     = gl.getUniformLocation(prog, 'u_tile_enabled');
+  const uTilePan    = gl.getUniformLocation(prog, 'u_tile_pan');
+  const uLens       = gl.getUniformLocation(prog, 'u_lens_amount');
+  const uChroma     = gl.getUniformLocation(prog, 'u_chroma');
+  const uHue        = gl.getUniformLocation(prog, 'u_hue_shift');
+  const uSat        = gl.getUniformLocation(prog, 'u_saturation');
+  const uBright     = gl.getUniformLocation(prog, 'u_brightness');
+  const uVig        = gl.getUniformLocation(prog, 'u_vignette');
+  const uUVScale    = gl.getUniformLocation(prog, 'u_uv_scale');
+  const uPulse      = gl.getUniformLocation(prog, 'u_audio_pulse');
+  const uImage      = gl.getUniformLocation(prog, 'u_image');
+
+  const vbuf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, vbuf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]), gl.STATIC_DRAW);
+
+  /* ── Texture ────────────────────────────────────────────────────────────── */
+  let texture   = gl.createTexture();
+  let imageLoaded = false;
+  let imgW = 1, imgH = 1;
+
+  /* Default 1×1 neutral texture */
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([30,40,55,255]));
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+
+  function uploadImage(img) {
+    imgW = img.width; imgH = img.height;
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    imageLoaded = true;
+    updateUVScale();
+    document.getElementById('imgInfo').textContent = `${imgW} × ${imgH} px`;
+    document.getElementById('imgInfo').style.display = '';
+    document.getElementById('changeImgBtn').style.display = '';
+    document.getElementById('dropZone').classList.add('hidden');
+  }
+
+  function loadFile(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => { uploadImage(img); URL.revokeObjectURL(url); };
+    img.src = url;
+  }
+
+  /* ── File input / drag-drop ─────────────────────────────────────────────── */
+  const fileInput = document.getElementById('fileInput');
+  const dropZone  = document.getElementById('dropZone');
+
+  dropZone.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', e => loadFile(e.target.files[0]));
+
+  document.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  document.addEventListener('dragleave', e => { if (!e.relatedTarget) dropZone.classList.remove('drag-over'); });
+  document.addEventListener('drop', e => {
+    e.preventDefault(); dropZone.classList.remove('drag-over');
+    loadFile(e.dataTransfer.files[0]);
+  });
+
+  document.getElementById('changeImgBtn').addEventListener('click', () => fileInput.click());
+
+  /* ── UV scale (aspect-ratio correction) ─────────────────────────────────── */
+  let fitMode = 'fill';
+  let uvScale = [1, 1];
+
+  function updateUVScale() {
+    const ia = imgW / imgH;
+    const ca = canvas.width / canvas.height;
+    if (fitMode === 'stretch') { uvScale = [1, 1]; return; }
+    if (fitMode === 'fill') {
+      uvScale = [Math.min(1, ia / ca), Math.min(1, ca / ia)];
+    } else { /* fit */
+      uvScale = [Math.max(1, ca / ia), Math.max(1, ia / ca)];
+    }
+  }
+
+  document.querySelectorAll('.fit-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.fit-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      fitMode = btn.dataset.mode;
+      updateUVScale();
+    });
+  });
+
+  window.addEventListener('resize', updateUVScale);
+
+  /* ── Parameters ─────────────────────────────────────────────────────────── */
+  let P = {
+    noiseScale:2.5, warpAmt:0.12, warpSpd:0.02,
+    scrollSpd:0.4, scrollMag:1.5,
+    tileScale:1.0, tileEnabled:false,
+    lens:0, chroma:0,
+    hue:0, sat:1, bright:1, vignette:1,
+    baseSpd:0.03, audioMult:8, smoothing:0.85,
+  };
+
+  /* ── Slider binding ─────────────────────────────────────────────────────── */
+  const sliders = {};
+  function bindSlider(key, fmt) {
+    const el=document.getElementById('s-'+key), vEl=document.getElementById('v-'+key);
+    function refresh() {
+      const min=parseFloat(el.min),max=parseFloat(el.max),v=parseFloat(el.value);
+      el.style.setProperty('--pct',((v-min)/(max-min)*100).toFixed(1)+'%');
+      vEl.textContent = fmt ? fmt(v) : v.toFixed(2);
+      P[key] = v;
+    }
+    el.addEventListener('input', refresh); refresh();
+    sliders[key] = { set(v){ el.value=v; refresh(); } };
+  }
+
+  bindSlider('noiseScale', v=>v.toFixed(1));
+  bindSlider('warpAmt',    v=>v.toFixed(3));
+  bindSlider('warpSpd',    v=>v.toFixed(3));
+  bindSlider('scrollSpd',  v=>v.toFixed(2));
+  bindSlider('scrollMag',  v=>v.toFixed(1));
+  bindSlider('tileScale',  v => v < 1 ? (1/v).toFixed(1)+'× zoom' : v.toFixed(1)+'×');
+  bindSlider('lens',       v=>{
+    const s = v>0?'▸ BARREL':v<0?'▸ PIN':'0.000';
+    return v===0?'0.000':(v>0?'+':'')+v.toFixed(3);
+  });
+  bindSlider('chroma',     v=>v.toFixed(3));
+  bindSlider('hue',        v=>v.toFixed(3));
+  bindSlider('sat',        v=>v.toFixed(2));
+  bindSlider('bright',     v=>v.toFixed(2));
+  bindSlider('vignette',   v=>v.toFixed(2));
+  bindSlider('baseSpd',    v=>v.toFixed(3));
+  bindSlider('audioMult',  v=>v.toFixed(1));
+  bindSlider('smoothing',  v=>v.toFixed(2));
+
+  /* ── Tile toggle ────────────────────────────────────────────────────────── */
+  document.getElementById('tileBtn').addEventListener('click', () => {
+    P.tileEnabled = !P.tileEnabled;
+    const btn = document.getElementById('tileBtn');
+    btn.textContent = P.tileEnabled ? '◼ TILING: ON' : '◻ TILING: OFF';
+    btn.classList.toggle('active', P.tileEnabled);
+    const sl = document.getElementById('s-tileScale');
+    sl.classList.toggle('dimmed', !P.tileEnabled);
+    sl.disabled = !P.tileEnabled;
+  });
+
+  /* ── Oscilloscope ───────────────────────────────────────────────────────── */
+  const oscC   = document.getElementById('oscCanvas');
+  const oscCtx = oscC.getContext('2d');
+  oscC.height  = 42;
+  let audioReady=false, audioEnabled=true, smoothAmp=0;
+  let audioCtx2, analyser, dataArray;
+
+  function drawOsc() {
+    const w = oscC.clientWidth || 188;
+    if (oscC.width !== w) oscC.width = w;
+    const h = oscC.height;
+    oscCtx.clearRect(0,0,w,h);
+    oscCtx.fillStyle='rgba(2,4,12,0.95)'; oscCtx.fillRect(0,0,w,h);
+    if (audioReady && dataArray) {
+      analyser.getByteFrequencyData(dataArray);
+      const bins=Math.floor(dataArray.length*0.65), bw=w/bins;
+      for(let i=0;i<bins;i++){
+        const t=dataArray[i]/255;
+        oscCtx.fillStyle=audioEnabled?`rgba(170,221,255,${0.3+t*0.7})`:`rgba(80,100,120,${0.15+t*0.2})`;
+        oscCtx.fillRect(i*bw,h-t*h,Math.max(1,bw-0.5),t*h);
+      }
+      const ly=h*(1-Math.min(smoothAmp,1)*0.92);
+      oscCtx.strokeStyle=audioEnabled?'rgba(72,153,212,0.6)':'rgba(60,80,100,0.3)';
+      oscCtx.lineWidth=1; oscCtx.beginPath(); oscCtx.moveTo(0,ly); oscCtx.lineTo(w,ly); oscCtx.stroke();
+      if(!audioEnabled){
+        oscCtx.fillStyle='rgba(204,68,136,0.4)'; oscCtx.font='8px Share Tech Mono,monospace';
+        oscCtx.textAlign='center'; oscCtx.fillText('REACTIVE OFF',w/2,10);
+      }
+    } else {
+      oscCtx.strokeStyle='rgba(40,56,78,0.5)'; oscCtx.lineWidth=1; oscCtx.setLineDash([3,5]);
+      oscCtx.beginPath(); oscCtx.moveTo(0,h/2); oscCtx.lineTo(w,h/2); oscCtx.stroke();
+      oscCtx.setLineDash([]);
+      oscCtx.fillStyle='rgba(40,56,78,0.5)'; oscCtx.font='8px Share Tech Mono,monospace';
+      oscCtx.textAlign='center'; oscCtx.fillText('NO SIGNAL',w/2,h/2-5);
+    }
+  }
+
+  /* ── Audio init ─────────────────────────────────────────────────────────── */
+  async function initAudio() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+      audioCtx2  = new (window.AudioContext||window.webkitAudioContext)();
+      analyser   = audioCtx2.createAnalyser(); analyser.fftSize=256;
+      audioCtx2.createMediaStreamSource(stream).connect(analyser);
+      dataArray  = new Uint8Array(analyser.frequencyBinCount);
+      audioReady = true;
+      document.getElementById('statusOrb').classList.add('live');
+      ['audioBtn','pAudioBtn'].forEach(id=>{
+        const b=document.getElementById(id);
+        b.textContent='⬡ AUDIO LIVE'; b.classList.remove('phos'); b.classList.add('done');
+        if(id==='pAudioBtn') b.disabled=true;
+      });
+      document.getElementById('rxBtn').style.display='';
+      document.getElementById('pRxToggle').style.display='';
+    } catch(e){ console.error(e); alert('Microphone access required.'); }
+  }
+  document.getElementById('audioBtn').addEventListener('click', initAudio);
+  document.getElementById('pAudioBtn').addEventListener('click', initAudio);
+
+  /* ── Audio reactive toggle ──────────────────────────────────────────────── */
+  function setRxUI() {
+    const on=audioEnabled;
+    const b=document.getElementById('rxBtn');
+    b.className='tbtn '+(on?'rx-on':'rx-off');
+    const p=document.getElementById('pRxToggle');
+    p.textContent='⚡ AUDIO REACTIVE: '+(on?'ON':'OFF');
+    p.className=on?'':'off';
+  }
+  function toggleRx(){ audioEnabled=!audioEnabled; setRxUI(); }
+  document.getElementById('rxBtn').addEventListener('click', toggleRx);
+  document.getElementById('pRxToggle').addEventListener('click', toggleRx);
+
+  /* ── Freeze / panel / dark / fullscreen ─────────────────────────────────── */
+  let frozen=false, panelOpen=true, darkUI=false;
+
+  function setFreezeLabel(){
+    const lbl=frozen?'▶ RESUME':'⏸ FREEZE';
+    ['freezeTopBtn','pFreezeBtn'].forEach(id=>{
+      const b=document.getElementById(id); b.textContent=lbl; b.classList.toggle('active',frozen);
+    });
+  }
+  function toggleFreeze(){ frozen=!frozen; setFreezeLabel(); }
+  document.getElementById('freezeTopBtn').addEventListener('click', toggleFreeze);
+  document.getElementById('pFreezeBtn').addEventListener('click', toggleFreeze);
+
+  function togglePanel(){
+    panelOpen=!panelOpen;
+    document.getElementById('panel').classList.toggle('hidden',!panelOpen);
+    document.getElementById('panelTab').textContent=panelOpen?'◀':'▶';
+  }
+  document.getElementById('panelTab').addEventListener('click', togglePanel);
+
+  function toggleDark(){ darkUI=!darkUI; document.body.classList.toggle('dark-ui',darkUI); document.getElementById('darkBtn').classList.toggle('active',darkUI); }
+  document.getElementById('darkBtn').addEventListener('click', toggleDark);
+  document.getElementById('revDot').addEventListener('click', toggleDark);
+
+  function toggleFS(){
+    if(!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{});
+    else document.exitFullscreen();
+  }
+  document.getElementById('fsBtn').addEventListener('click', toggleFS);
+  document.addEventListener('fullscreenchange',()=>{
+    const on=!!document.fullscreenElement;
+    document.getElementById('fsBtn').textContent=on?'⊡ EXIT FULL':'⛶ FULLSCREEN';
+    document.getElementById('fsBtn').classList.toggle('active',on);
+  });
+
+  document.addEventListener('keydown', e=>{
+    if(e.target.tagName==='INPUT') return;
+    switch(e.key.toLowerCase()){
+      case'h': togglePanel();  break;
+      case'f': toggleFS();     break;
+      case'u': toggleDark();   break;
+      case'a': if(audioReady) toggleRx(); break;
+      case'o': fileInput.click(); break;
+      case' ': e.preventDefault(); toggleFreeze(); break;
+    }
+  });
+
+  /* ── Render loop ────────────────────────────────────────────────────────── */
+  let lastTime=0, gTime=0;
+  let tilePan = [0, 0]; /* accumulating offset through tile field, wrapped to [0,1) */
+
+  /* Scroll wander — overlapping sinusoids at incommensurate frequencies.
+     No JS noise library needed; the result is non-periodic and smooth. */
+  function scrollWander(t, spd, mag) {
+    const s = t * spd;
+    return [
+      (Math.sin(s*1.000)*Math.cos(s*0.618) + Math.sin(s*2.175)*0.28) * mag,
+      (Math.cos(s*0.866)*Math.sin(s*1.234) + Math.cos(s*1.732)*0.28) * mag,
+    ];
+  }
+
+  function render(time) {
+    const dt=(time-lastTime)*0.001; lastTime=time;
+    if(isNaN(dt)||dt>0.5){ requestAnimationFrame(render); return; }
+
+    /* Audio */
+    let curAmp=0;
+    if(audioReady){
+      analyser.getByteFrequencyData(dataArray);
+      let sum=0; for(let i=0;i<dataArray.length;i++) sum+=dataArray[i];
+      curAmp=(sum/dataArray.length)/255;
+    }
+    smoothAmp=smoothAmp*P.smoothing+curAmp*(1-P.smoothing);
+    const effAmp=audioEnabled?smoothAmp:0;
+
+    document.getElementById('vuFill').style.width=(Math.min(effAmp,1)*100)+'%';
+    document.getElementById('seismicVal').textContent=effAmp.toFixed(3);
+    drawOsc();
+
+    /* Time advance */
+    let dynDt = 0;
+    if(!frozen) {
+      dynDt  = dt * (P.baseSpd + effAmp * P.audioMult * 0.08);
+      gTime += dynDt;
+    }
+
+    /* Tile pan — accumulates indefinitely, giving endless drift through the tile field.
+       Direction rotates via gTime so it never simply reverses on itself.
+       We wrap to [0,1) each frame only to keep the value small for float precision;
+       fract() in the shader handles any value correctly anyway. */
+    if (P.tileEnabled && !frozen) {
+      const angle = gTime * 1.1 + Math.sin(gTime * 0.37) * 1.5;
+      const spd   = P.scrollMag * 0.055 * dynDt;
+      tilePan[0] += Math.cos(angle) * spd;
+      tilePan[1] += Math.sin(angle) * spd;
+      tilePan[0]  = ((tilePan[0] % 1) + 1) % 1;
+      tilePan[1]  = ((tilePan[1] % 1) + 1) % 1;
+    }
+
+    /* Canvas resize */
+    if(canvas.width!==window.innerWidth||canvas.height!==window.innerHeight){
+      canvas.width=window.innerWidth; canvas.height=window.innerHeight;
+      updateUVScale();
+    }
+
+    gl.viewport(0,0,canvas.width,canvas.height);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.useProgram(prog);
+    gl.enableVertexAttribArray(aPos);
+    gl.bindBuffer(gl.ARRAY_BUFFER,vbuf);
+    gl.vertexAttribPointer(aPos,2,gl.FLOAT,false,0,0);
+
+    /* Bind texture */
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.uniform1i(uImage, 0);
+
+    /* Scroll wander */
+    const [sx,sy] = scrollWander(gTime, P.scrollSpd, P.scrollMag);
+
+    /* Uniforms */
+    gl.uniform2f(uRes,    canvas.width, canvas.height);
+    gl.uniform2f(uScr,    sx, sy);
+    gl.uniform1f(uNSc,    P.noiseScale);
+    gl.uniform1f(uWAm,    P.warpAmt);
+    gl.uniform1f(uWSp,    P.warpSpd);
+    gl.uniform1f(uTileScale, P.tileScale);
+    gl.uniform1f(uTileOn,    P.tileEnabled ? 1 : 0);
+    gl.uniform2f(uTilePan,   tilePan[0], tilePan[1]);
+    gl.uniform1f(uLens,   P.lens);
+    gl.uniform1f(uChroma, P.chroma);
+    gl.uniform1f(uHue,    P.hue);
+    gl.uniform1f(uSat,    P.sat);
+    gl.uniform1f(uBright, P.bright);
+    gl.uniform1f(uVig,    P.vignette);
+    gl.uniform2f(uUVScale, uvScale[0], uvScale[1]);
+    gl.uniform1f(uPulse,  effAmp);
+
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    requestAnimationFrame(render);
+  }
+
+  updateUVScale();
+  requestAnimationFrame(render);
+  </script>
+</body>
+</html>
