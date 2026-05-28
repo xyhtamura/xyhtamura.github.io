@@ -3,103 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pythia</title>
+    <title>Pythia — Paracognitive Granular Delay</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
+
         <header>
-            <h1>Pythia</h1>
-            <p>Paracognitive Granular Delay</p>
+            <div class="vapor-field" aria-hidden="true">
+                <div class="wisp"></div>
+                <div class="wisp"></div>
+                <div class="wisp"></div>
+                <div class="wisp"></div>
+                <div class="wisp"></div>
+                <div class="wisp"></div>
+            </div>
+            <div class="title-row">
+                <h1>Pythia</h1>
+                <span class="build-tag">pneuma · granular</span>
+            </div>
+
         </header>
 
         <div class="io-panel">
             <div class="input-group">
-                <h3>1. Control Signal</h3>
-                <p>The audio that triggers and shapes the effect.</p>
+                <h3><span class="idx">01</span>&nbsp;Control Signal</h3>
+                <p class="note">drives the effect — its amplitude envelope becomes the shape of what happens</p>
                 <input type="file" id="control-input" accept="audio/*">
             </div>
             <div class="input-group" id="source-input-group">
-                <h3>2. Source Signal</h3>
-                <p>The audio used for the granular textures.</p>
+                <h3><span class="idx">02</span>&nbsp;Source Signal</h3>
+                <p class="note">the material — scattered, granularized, redistributed in time</p>
                 <input type="file" id="source-input" accept="audio/*">
             </div>
         </div>
-        
+
         <div class="option-group">
             <input type="checkbox" id="self-sample-checkbox">
-            <label for="self-sample-checkbox">Use Control Signal as Source</label>
+            <label for="self-sample-checkbox">
+                Use Control as Source
+                <span class="note-inline">&nbsp;— enables lookahead, the signal reads itself</span>
+            </label>
         </div>
 
         <div class="mode-selector">
-             <div class="radio-group">
+            <span class="mode-label">mode —</span>
+            <div class="radio-group">
                 <input type="radio" id="mode-continuous" name="mode" value="continuous" checked>
-                <label for="mode-continuous">Delay Mode</label>
+                <label for="mode-continuous">Delay</label>
             </div>
             <div class="radio-group">
                 <input type="radio" id="mode-triggered" name="mode" value="triggered">
-                <label for="mode-triggered">Threshold Mode</label>
+                <label for="mode-triggered">Threshold</label>
             </div>
         </div>
 
-
         <div class="controls-panel">
+
             <div class="playback-controls">
                 <button id="play-button" disabled>Load Files to Start</button>
                 <button id="record-button" disabled>Record</button>
             </div>
-            <div class="slider-group" id="delay-group">
-                <label for="delay">Envelope Delay (s)</label>
-                <input type="range" id="delay" min="-2" max="2" value="0" step="0.01">
-                <span id="delay-value">0.00</span>
-            </div>
-            <div class="slider-group" id="threshold-group">
-                <label for="threshold">Trigger Threshold</label>
-                <input type="range" id="threshold" min="0" max="1" value="0.1" step="0.01">
-                <span id="threshold-value">0.10</span>
-            </div>
 
-            <div class="slider-group">
-                <label for="grain-size">Grain Size (ms)</label>
-                <input type="range" id="grain-size" min="10" max="500" value="150" step="1">
-                <span id="grain-size-value">150</span>
-            </div>
-            <div class="slider-group">
-                <label for="grain-density">Grain Density</label>
-                <input type="range" id="grain-density" min="1" max="100" value="20" step="1">
-                <span id="grain-density-value">20</span>
-            </div>
-            <div class="slider-group" id="lookahead-group">
-                <label for="lookahead">Lookahead (s)</label>
-                <input type="range" id="lookahead" min="0" max="5" value="0.5" step="0.01" disabled>
-                <span id="lookahead-value">0.50</span>
-            </div>
-             <div class="slider-group">
-                <label for="mix">Dry / Wet Mix</label>
-                <input type="range" id="mix" min="0" max="1" value="0.7" step="0.01">
-                <span id="mix-value">0.70</span>
-            </div>
-            <div class="slider-group">
-                <label for="density-jitter">Density Jitter</label>
-                <input type="range" id="density-jitter" min="0" max="1" value="0" step="0.01">
-                <span id="density-jitter-value">0.00</span>
-            </div>
-            <div class="slider-group">
-                <label for="envelope-shape">Envelope Shape</label>
-                <input type="range" id="envelope-shape" min="0.01" max="0.99" value="0.5" step="0.01">
-                <span id="envelope-shape-value">0.50</span>
+            <div class="params-section">
+
+                <div class="slider-group" id="delay-group">
+                    <label for="delay">Envelope Delay</label>
+                    <input type="range" id="delay" min="-2" max="2" value="0" step="0.01">
+                    <span id="delay-value" class="val">0.00<small>s</small></span>
+                </div>
+
+                <div class="slider-group" id="threshold-group">
+                    <label for="threshold">Trigger Threshold</label>
+                    <input type="range" id="threshold" min="0" max="1" value="0.1" step="0.01">
+                    <span id="threshold-value" class="val">0.10</span>
+                </div>
+
+                <div class="slider-group">
+                    <label for="grain-size">Grain Size</label>
+                    <input type="range" id="grain-size" min="10" max="500" value="150" step="1">
+                    <span id="grain-size-value" class="val">150<small>ms</small></span>
+                </div>
+
+                <div class="slider-group">
+                    <label for="grain-density">Grain Density</label>
+                    <input type="range" id="grain-density" min="1" max="100" value="20" step="1">
+                    <span id="grain-density-value" class="val">20</span>
+                </div>
+
+                <div class="slider-group" id="lookahead-group">
+                    <label for="lookahead">Lookahead</label>
+                    <input type="range" id="lookahead" min="0" max="5" value="0.5" step="0.01" disabled>
+                    <span id="lookahead-value" class="val">0.50<small>s</small></span>
+                </div>
+
+                <div class="slider-group">
+                    <label for="mix">Dry / Wet</label>
+                    <input type="range" id="mix" min="0" max="1" value="0.7" step="0.01">
+                    <span id="mix-value" class="val">0.70</span>
+                </div>
+
+                <div class="slider-group">
+                    <label for="density-jitter">Density Jitter</label>
+                    <input type="range" id="density-jitter" min="0" max="1" value="0" step="0.01">
+                    <span id="density-jitter-value" class="val">0.00</span>
+                </div>
+
+                <div class="slider-group">
+                    <label for="envelope-shape">Envelope Shape</label>
+                    <input type="range" id="envelope-shape" min="0.01" max="0.99" value="0.5" step="0.01">
+                    <span id="envelope-shape-value" class="val">0.50</span>
+                </div>
+
             </div>
         </div>
-         <div class="visualization">
-            <h3>Control Signal Level</h3>
-            <div class="meter-container">
-                <div id="level-meter" class="meter-bar"></div>
+
+        <div class="visualization">
+            <h3>Control Level</h3>
+            <div class="meter-wrap">
+                <div class="meter-container">
+                    <div id="level-meter" class="meter-bar"></div>
+                </div>
+                <div class="meter-scale">
+                    <span>—</span>
+                    <span>25</span>
+                    <span>50</span>
+                    <span>75</span>
+                    <span>—</span>
+                </div>
             </div>
         </div>
+
         <div id="recordings-container" class="recordings-container">
-             <h3>Recordings</h3>
-             <ul id="recordings-list"></ul>
+            <h3>Recordings</h3>
+            <ul id="recordings-list"></ul>
         </div>
+
     </div>
     <script src="pythia.js"></script>
 </body>
