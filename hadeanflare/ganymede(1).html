@@ -330,24 +330,6 @@
 
       <div class="crystal"></div>
 
-      <!-- TRANSFORM -->
-      <div class="sec">TRANSFORM</div>
-      <div style="display:flex;gap:3px;margin-bottom:7px;">
-        <button class="edge-btn" id="flipHBtn">↔ FLIP H</button>
-        <button class="edge-btn" id="flipVBtn">↕ FLIP V</button>
-      </div>
-      <div class="cr">
-        <div class="cl"><span class="cn">ROTATION</span><span class="cv" id="v-rotate">0°</span></div>
-        <input type="range" id="s-rotate" min="0" max="360" step="1" value="0">
-      </div>
-      <div style="display:flex;gap:3px;">
-        <button class="edge-btn" id="rotateCCW">⟲ −90°</button>
-        <button class="edge-btn" id="rotateCW">+90° ⟳</button>
-        <button class="edge-btn" id="rotateReset">0°</button>
-      </div>
-
-      <div class="crystal"></div>
-
       <!-- FIELD -->
       <div class="sec">FIELD</div>
       <div class="cr">
@@ -498,8 +480,6 @@
     uniform float u_vignette;
     uniform vec2  u_uv_scale;      /* aspect-ratio correction */
     uniform float u_audio_pulse;   /* scaled amplitude */
-    uniform float u_rotate;        /* rotation in radians, applied to warped field */
-    uniform vec2  u_flip;          /* (flipX, flipY), each 0 or 1 */
 
     vec3 rgb2hsv(vec3 c){vec4 K=vec4(0.,-1./3.,2./3.,-1.);vec4 p=mix(vec4(c.bg,K.wz),vec4(c.gb,K.xy),step(c.b,c.g));vec4 q=mix(vec4(p.xyw,c.r),vec4(c.r,p.yzx),step(p.x,c.r));float d=q.x-min(q.w,q.y);float e=1e-10;return vec3(abs(q.z+(q.w-q.y)/(6.*d+e)),d/(q.x+e),q.x);}
     vec3 hsv2rgb(vec3 c){vec4 K=vec4(1.,2./3.,1./3.,3.);vec3 p=abs(fract(c.xxx+K.xyz)*6.-K.www);return c.z*mix(K.xxx,clamp(p-K.xxx,0.,1.),c.y);}
@@ -525,20 +505,6 @@
       /* 3. Audio zoom pulse (subtle push toward center on loud beats) */
       float zoom = 1.0 - u_audio_pulse * 0.035;
       warpedUV = (warpedUV - 0.5) * zoom + 0.5;
-
-      /* 3b. Flip and rotation — applied to the whole warped field before sampling.
-             In tile mode this rotates/flips the tile field itself.
-             In non-tile mode it rotates/flips the image (black corners appear when
-             rotated past 0° because the image no longer fills the screen — use
-             FILL or STRETCH fit mode to compensate, or embrace the border). */
-      if (u_flip.x > 0.5) warpedUV.x = 1.0 - warpedUV.x;
-      if (u_flip.y > 0.5) warpedUV.y = 1.0 - warpedUV.y;
-      {
-        float cosA = cos(u_rotate);
-        float sinA = sin(u_rotate);
-        vec2  c    = warpedUV - 0.5;
-        warpedUV   = vec2(c.x*cosA - c.y*sinA, c.x*sinA + c.y*cosA) + 0.5;
-      }
 
       /* 4. Sample image.
          Tile-enabled — three edge modes:
@@ -648,8 +614,6 @@
   const uUVScale    = gl.getUniformLocation(prog, 'u_uv_scale');
   const uPulse      = gl.getUniformLocation(prog, 'u_audio_pulse');
   const uImage      = gl.getUniformLocation(prog, 'u_image');
-  const uRotate     = gl.getUniformLocation(prog, 'u_rotate');
-  const uFlip       = gl.getUniformLocation(prog, 'u_flip');
 
   const vbuf = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vbuf);
@@ -814,7 +778,6 @@
     noiseScale:2.5, warpAmt:0.12, warpSpd:0.02,
     scrollSpd:0.4, scrollMag:1.5,
     tileScale:1.0, tileEnabled:false, tileMode:0, tileBlend:0.5,
-    rotate:0, flipX:false, flipY:false,
     lens:0, chroma:0,
     hue:0, sat:1, bright:1, vignette:1,
     baseSpd:0.03, audioMult:8, smoothing:0.85,
@@ -841,26 +804,6 @@
   bindSlider('scrollMag',  v=>v.toFixed(1));
   bindSlider('tileScale',  v => v < 1 ? (1/v).toFixed(1)+'× zoom' : v.toFixed(1)+'×');
   bindSlider('tileBlend',  v => v.toFixed(2));
-  bindSlider('rotate',     v => Math.round(v) + '°');
-
-  /* ── Flip + rotate controls ─────────────────────────────────────────────── */
-  document.getElementById('flipHBtn').addEventListener('click', () => {
-    P.flipX = !P.flipX;
-    document.getElementById('flipHBtn').classList.toggle('active', P.flipX);
-  });
-  document.getElementById('flipVBtn').addEventListener('click', () => {
-    P.flipY = !P.flipY;
-    document.getElementById('flipVBtn').classList.toggle('active', P.flipY);
-  });
-  document.getElementById('rotateCCW').addEventListener('click', () => {
-    sliders['rotate'].set(((P.rotate - 90) % 360 + 360) % 360);
-  });
-  document.getElementById('rotateCW').addEventListener('click', () => {
-    sliders['rotate'].set((P.rotate + 90) % 360);
-  });
-  document.getElementById('rotateReset').addEventListener('click', () => {
-    sliders['rotate'].set(0);
-  });
   bindSlider('lens',       v=>{
     const s = v>0?'▸ BARREL':v<0?'▸ PIN':'0.000';
     return v===0?'0.000':(v>0?'+':'')+v.toFixed(3);
@@ -1118,8 +1061,6 @@
     gl.uniform1f(uVig,    P.vignette);
     gl.uniform2f(uUVScale, uvScale[0], uvScale[1]);
     gl.uniform1f(uPulse,  effAmp);
-    gl.uniform1f(uRotate, P.rotate * Math.PI / 180);
-    gl.uniform2f(uFlip,   P.flipX ? 1 : 0, P.flipY ? 1 : 0);
 
     gl.drawArrays(gl.TRIANGLES, 0, 6);
     requestAnimationFrame(render);

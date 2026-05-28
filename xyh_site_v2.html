@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>xyh tamura — intermedia artist-researcher</title>
+<meta name="description" content="Xyh Tamura (also Cy / Cye Tamura) — Filipino-Japanese intermedia artist-researcher, singer-songwriter, and creative technologist based in Quezon City. Poems, songs, plays, papers, and instruments.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Averia+Libre:ital,wght@0,400;0,700;1,400&family=Averia+Sans+Libre:ital,wght@0,400;0,700;1,400&family=Quicksand:wght@400;500;700&family=Rubik:ital,wght@0,400;0,500;1,400&family=Lexend+Deca:wght@400;500&family=Dosis:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* ─────────────────────────────────────────────
+   TOKENS — pulled from your live index.css
+   ───────────────────────────────────────────── */
+:root{
+  --font-heading:"Quicksand","Noto Sans",sans-serif;
+  --font-body:"Rubik","Noto Sans",sans-serif;
+  --font-accent:"Averia Sans Libre","Noto Sans",sans-serif;
+  --font-detail:"Lexend Deca","Noto Sans",sans-serif;
+  --font-blurb:"Averia Libre",serif;
+  --font-special:"Dosis",sans-serif;
+
+  --bg-color:#2d3333;
+  --text-color:#efece7;
+  --h2-color:#b787e8;
+  --link-hover-color:#cdfc12;
+  --line-color:#3f3d45;
+  --line-hover-color:#988fff;
+  --h3-color:#e4dfed;
+  --h4-color:#c9f2cf;
+  --role-color:#e0bfbf;
+  --year-color:#bcd6d4;
+  --email-color:#9fc4ee;
+  --original-color:#f0bb86;
+  --tagline-color:#c8d3db;
+  --blurb-color:#f2dceb;
+  --other-names:#c8dbcc;
+  --alt-title-color:#a0b8a5;
+
+  --selection-text:#26245c;
+  --selection-background:#a4bfab;
+  --scrollbar-color:#e887dd;
+  --scrollbar-track-color:#26261e;
+
+  --work-entry-bg:rgba(26,22,4,0.30);
+  --sub-entry-bg:rgba(26,22,4,0.30);
+  --minor-work-entry-bg:rgba(12,23,23,0.10);
+
+  --category-research-color:#f07167;
+  --category-intermedia-color:#7a52f3;
+  --category-virtual-color:#e72e5c;
+  --category-music-color:#ff66d4;
+  --category-score-color:#cee8f2;
+  --category-writing-color:#f0dfa1;
+  --category-theater-color:#5fe25f;
+  --category-software-color:#0aaff0;
+  --category-visual-color:#ab00ff;
+  --category-participatory-color:#ffb400;
+  --category-management-color:#d9a7f9;
+  --category-sci-comm-color:#b5ebe1;
+  --category-artistic-research-color:#1ad9c9;
+  --category-fashion-color:#e6a3b1;
+  --category-dot-color:#c3c6d6;
+
+  --btn-lavender:rgba(62,56,89,0.6);
+  --btn-amber:rgba(46,43,40,0.6);
+  --btn-glass-shine:rgba(191,218,245,0.2);
+  --btn-glass-shadow:rgba(2,33,0,0.4);
+}
+@media (prefers-color-scheme:light){
+:root{
+  --bg-color:#c5ccb6;
+  --text-color:#23213b;
+  --h2-color:#b236e4;
+  --link-hover-color:#87a510;
+  --line-color:rgba(135,138,232,0.7);
+  --line-hover-color:#988fff;
+  --h3-color:#365858;
+  --h4-color:#4c5e49;
+  --role-color:#584809;
+  --year-color:#3f857e;
+  --email-color:#546f79;
+  --original-color:#e3780e;
+  --tagline-color:#323738;
+  --blurb-color:#2e262b;
+  --other-names:#323832;
+  --alt-title-color:#4a5e4f;
+  --selection-text:#a9b5db;
+  --selection-background:#32543b;
+  --scrollbar-color:#392363;
+  --scrollbar-track-color:#a0ccb7;
+  --work-entry-bg:rgba(224,255,244,0.3);
+  --sub-entry-bg:rgba(224,255,244,0.3);
+  --minor-work-entry-bg:rgba(255,255,255,0.1);
+  --category-research-color:#b32846;
+  --category-intermedia-color:#402f89;
+  --category-virtual-color:#2c9c87;
+  --category-music-color:#1e7a4e;
+  --category-score-color:#a64625;
+  --category-writing-color:#2e57a1;
+  --category-theater-color:#731d73;
+  --category-software-color:#2e72b5;
+  --category-visual-color:#8b3ebd;
+  --category-participatory-color:#d49a00;
+  --category-management-color:#4a3952;
+  --category-sci-comm-color:#1a7a99;
+  --category-artistic-research-color:#00796b;
+  --category-fashion-color:#a34f60;
+  --category-dot-color:#514d3d;
+  --btn-lavender:rgba(117,205,255,0.3);
+  --btn-amber:rgba(255,217,120,0.3);
+  --btn-glass-shine:rgba(191,218,245,0.35);
+  --btn-glass-shadow:rgba(6,4,36,0.4);
+}
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:var(--font-body);
+  background:var(--bg-color);
+  color:var(--text-color);
+  margin:0;padding:2.5rem 1rem 5rem;
+  line-height:1.35;letter-spacing:0.01em;
+  display:flex;flex-direction:column;align-items:center;
+}
+.wrap{width:100%;max-width:820px;}
+::selection{background:var(--selection-background);color:var(--selection-text);}
+
+::-webkit-scrollbar{width:14px;height:14px;}
+::-webkit-scrollbar-track{background:var(--scrollbar-track-color);}
+::-webkit-scrollbar-thumb{background:var(--scrollbar-color);border-radius:40%;border:3px solid var(--scrollbar-track-color);}
+::-webkit-scrollbar-thumb:hover{background:var(--link-hover-color);}
+
+/* glassy capsule — your global <a> look, scoped to .glass */
+.glass{
+  font-family:var(--font-accent);
+  color:var(--text-color);text-decoration:none;
+  display:inline-block;padding:0.35rem 0.85rem;border-radius:20px;
+  transition:all .2s cubic-bezier(.175,.885,.32,1.275);
+  background:
+    linear-gradient(to bottom,var(--btn-glass-shine) 0%,transparent 50%),
+    linear-gradient(135deg,var(--btn-lavender),var(--btn-amber));
+  box-shadow:0 4px 10px var(--btn-glass-shadow),
+    inset 0 -3px 6px rgba(0,0,0,.2),
+    inset 0 2px 3px rgba(255,255,255,.4);
+  cursor:pointer;border:none;
+}
+.glass:hover{transform:translateY(-2px) scale(1.04);color:var(--link-hover-color);filter:saturate(1.3) brightness(1.1);box-shadow:0 6px 15px var(--btn-glass-shadow);}
+.glass:active{transform:translateY(2px) scale(.97);background:linear-gradient(to top,var(--btn-glass-shine) 0%,transparent 50%),linear-gradient(135deg,var(--btn-lavender),var(--btn-amber));box-shadow:inset 0 4px 8px rgba(0,0,0,.5),0 0 0 transparent;}
+
+/* ── HEADER ── */
+.intro{text-align:center;margin-bottom:1.6rem;}
+.avatar{
+  width:140px;height:140px;margin:0 auto 1rem;
+  border-radius:52% 48% 57% 43% / 46% 54% 46% 54%;
+  background:linear-gradient(135deg,#7a52f3,#e72e5c 45%,#ffb400 80%,#1ad9c9);
+  rotate:-4deg;box-shadow:0 8px 24px var(--btn-glass-shadow);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-special);color:rgba(255,255,255,.7);font-size:.8rem;letter-spacing:.1em;
+  animation:blob 14s ease-in-out infinite;
+  overflow:hidden;
+}
+/* swap this div for: <img class="avatar" src="me.jpg" alt="Xyh Tamura"> */
+@keyframes blob{
+  0%,100%{border-radius:52% 48% 57% 43% / 46% 54% 46% 54%;}
+  50%{border-radius:43% 57% 48% 52% / 56% 44% 56% 44%;}
+}
+h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2rem,6vw,3rem);letter-spacing:.02em;margin:0;}
+.othernames{font-family:var(--font-heading);font-weight:700;color:var(--other-names);margin:.2rem 0 .6rem;font-size:.95rem;}
+.tagline{font-family:var(--font-heading);font-weight:700;font-size:1.05rem;color:var(--tagline-color);margin:.4rem 0;}
+.blurb{font-family:var(--font-blurb);color:var(--blurb-color);font-size:1rem;line-height:1.45;max-width:54ch;margin:.6rem auto 0;}
+.blurb em{font-style:italic;color:var(--h4-color);}
+
+/* ── GALLERY (vibe mosaic, horizontal scroll, bleeds off-edge) ── */
+.gallery{
+  width:100%;margin:1.8rem 0 1.4rem;
+  display:flex;gap:10px;overflow-x:auto;padding:.4rem .2rem 1rem;
+  scrollbar-width:thin;scroll-snap-type:x proximity;
+  -webkit-mask-image:linear-gradient(to right,transparent,#000 3%,#000 97%,transparent);
+  mask-image:linear-gradient(to right,transparent,#000 3%,#000 97%,transparent);
+}
+.tile{
+  flex:0 0 auto;height:148px;border-radius:12px;scroll-snap-align:start;
+  padding: 0; overflow: hidden; position: relative;
+  box-shadow:0 4px 14px var(--btn-glass-shadow);
+  display:flex;align-items:flex-end;padding:.5rem;
+  font-family:var(--font-special);font-size:.7rem;color:rgba(255,255,255,.6);letter-spacing:.08em;
+  transition:transform .25s cubic-bezier(.175,.885,.32,1.275),box-shadow .25s;
+  background-size:200% 200%;animation:drift 18s ease infinite;
+}
+.tile:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 8px 24px var(--btn-glass-shadow),0 0 0 1px var(--line-hover-color);}
+@keyframes drift{0%,100%{background-position:0% 50%;}50%{background-position:100% 50%;}}
+.t1{width:200px;background-image:linear-gradient(135deg,#7a52f3,#00509c,#1ad9c9);}
+.t2{width:148px;background-image:linear-gradient(135deg,#ff66d4,#e72e5c,#f0bb86);filter:url(#goo-md);}
+.t3{width:240px;background-image:linear-gradient(135deg,#0aaff0,#988fff,#cdfc12);}
+.t4{width:148px;background-image:linear-gradient(135deg,#ab00ff,#7a52f3,#e72e5c);}
+.t5{width:200px;background-image:linear-gradient(135deg,#1ad9c9,#b5ebe1,#cdfc12);filter:url(#goo-sm);}
+.t6{width:172px;background-image:linear-gradient(135deg,#ffb400,#f07167,#ff66d4);}
+.goo-defs{position:absolute;width:0;height:0;}
+
+.tile img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: inherit; }
+
+/* ── SOCIALS (centered, scrollable on overflow, never left-clipped) ── */
+.socials{
+  width:100%;overflow-x:auto;display:flex;gap:.5rem;
+  justify-content:safe center;justify-content:center;
+  padding:.2rem .5rem .8rem;scrollbar-width:thin;margin-bottom:.4rem;
+}
+.socials .glass{font-size:.82rem;white-space:nowrap;flex:0 0 auto;}
+
+/* ── FILTER ── */
+.filter{
+  display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;
+  justify-content:center;
+  padding:1rem 0;margin:.4rem 0 1.6rem;
+  border-top:1px solid var(--line-color);border-bottom:1px solid var(--line-color);
+}
+.filter .lbl{font-family:var(--font-special);font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--tagline-color);margin-right:.3rem;}
+.fbtn{
+  font-family:var(--font-accent);font-size:.76rem;letter-spacing:.02em;
+  background:transparent;border:1px solid var(--line-color);color:var(--text-color);
+  cursor:pointer;padding:.18rem .6rem;border-radius:20px;
+  transition:all .18s cubic-bezier(.175,.885,.32,1.275);
+}
+.fbtn:hover{color:var(--link-hover-color);border-color:var(--line-hover-color);transform:translateY(-1px);}
+.fbtn.on{color:#15131f;font-weight:700;border-color:transparent;text-shadow:0 1px 1px rgba(255,255,255,.25);}
+.fbtn[data-cat="all"].on{background:var(--text-color);color:var(--bg-color);}
+.fbtn[data-cat="research"].on{background:var(--category-research-color);}
+.fbtn[data-cat="intermedia"].on{background:var(--category-intermedia-color);color:#fff;}
+.fbtn[data-cat="virtual"].on{background:var(--category-virtual-color);color:#fff;}
+.fbtn[data-cat="music"].on{background:var(--category-music-color);}
+.fbtn[data-cat="score"].on{background:var(--category-score-color);}
+.fbtn[data-cat="writing"].on{background:var(--category-writing-color);}
+.fbtn[data-cat="theater"].on{background:var(--category-theater-color);}
+.fbtn[data-cat="software"].on{background:var(--category-software-color);}
+.fbtn[data-cat="visuals"].on{background:var(--category-visual-color);color:#fff;}
+.fbtn[data-cat="participatory"].on{background:var(--category-participatory-color);}
+.fbtn[data-cat="management"].on{background:var(--category-management-color);}
+.fbtn[data-cat="sci-comm"].on{background:var(--category-sci-comm-color);}
+.fbtn[data-cat="artistic-research"].on{background:var(--category-artistic-research-color);}
+.fbtn[data-cat="fashion"].on{background:var(--category-fashion-color);}
+
+/* ── INDEX ── */
+.index{list-style:none;margin:0;padding:0;}
+.entry{border-bottom:1px solid var(--line-color);transition:background .2s;}
+.entry summary{
+  display:grid;grid-template-columns:4.6rem 1fr auto;gap:.9rem;align-items:baseline;
+  padding:.85rem .4rem;cursor:pointer;list-style:none;border-radius:12px;
+}
+.entry summary::-webkit-details-marker{display:none;}
+.entry summary:hover{background:var(--work-entry-bg);}
+.entry summary:hover .title{color:var(--link-hover-color);}
+.entry .year{font-family:var(--font-detail);font-size:.78rem;color:var(--year-color);padding-top:.25rem;letter-spacing:.02em;}
+.entry .title{font-family:var(--font-accent);font-size:1.08rem;color:var(--text-color);line-height:1.25;transition:color .15s;}
+.entry .title em{font-style:italic;}
+.entry.major .title{font-size:1.3rem;font-weight:700;}
+.entry.major{border-bottom:1px solid var(--line-hover-color);}
+.entry.minor .title{font-size:.96rem;color:var(--alt-title-color);}
+.entry.minor .year{font-size:.72rem;}
+.orig{color:var(--original-color);font-family:var(--font-special);font-size:.78rem;font-weight:700;vertical-align:.05em;cursor:help;}
+
+.chips{display:flex;flex-wrap:wrap;gap:.28rem;justify-content:flex-end;max-width:13rem;}
+.chip{font-family:var(--font-special);font-weight:700;font-size:.62rem;letter-spacing:.03em;padding:.1rem .42rem;border-radius:20px;color:#15131f;white-space:nowrap;line-height:1.5;text-shadow:0 1px 1px rgba(255,255,255,.2);}
+.chip.research{background:var(--category-research-color);}
+.chip.intermedia{background:var(--category-intermedia-color);color:#fff;text-shadow:none;}
+.chip.virtual{background:var(--category-virtual-color);color:#fff;text-shadow:none;}
+.chip.music{background:var(--category-music-color);}
+.chip.score{background:var(--category-score-color);}
+.chip.writing{background:var(--category-writing-color);}
+.chip.theater{background:var(--category-theater-color);}
+.chip.software{background:var(--category-software-color);}
+.chip.visuals{background:var(--category-visual-color);color:#fff;text-shadow:none;}
+.chip.participatory{background:var(--category-participatory-color);}
+.chip.management{background:var(--category-management-color);}
+.chip.sci-comm{background:var(--category-sci-comm-color);}
+.chip.artistic-research{background:var(--category-artistic-research-color);}
+.chip.fashion{background:var(--category-fashion-color);}
+
+.body{padding:.2rem .4rem 1.4rem 5.5rem;max-width:64ch;}
+.body .media{
+  height:200px;border-radius:12px;margin:.2rem 0 1rem;
+  background:linear-gradient(135deg,#2a2540,#3a2d52,#1f3a3a);
+  box-shadow:inset 0 0 40px rgba(0,0,0,.3),0 4px 14px var(--btn-glass-shadow);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-special);font-size:.72rem;color:rgba(255,255,255,.4);letter-spacing:.1em;
+}
+.body p{font-family:var(--font-detail);font-size:.94rem;line-height:1.55;margin:.5rem 0;}
+.body .ctx{font-family:var(--font-accent);color:var(--h3-color);font-size:.9rem;margin:.3rem 0;}
+.body .role{color:var(--role-color);}
+/* collection sub-items */
+.subs{margin:.9rem 0 .4rem;padding:.2rem 0 0;border-top:1px dashed var(--line-color);}
+.sub{margin:.7rem 0;padding-left:.9rem;border-left:2px solid var(--line-color);}
+.sub h4{font-family:var(--font-accent);color:var(--h4-color);font-size:1rem;margin:0 0 .15rem;font-weight:400;}
+.sub p{font-size:.86rem;margin:.1rem 0;color:var(--text-color);}
+/* outlinks footer */
+.outlinks{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.1rem;}
+.outlinks .glass{font-size:.78rem;padding:.3rem .8rem;}
+.outlinks .visit{background:linear-gradient(to bottom,rgba(255,255,255,.25) 0%,transparent 50%),linear-gradient(135deg,rgba(122,82,243,.4),rgba(26,217,201,.3));}
+.collab-note{font-family:var(--font-detail);font-size:.78rem;color:var(--year-color);align-self:center;margin-right:.2rem;}
+
+.entry[hidden]{display:none;}
+
+/* ── COLOPHON ── */
+.colophon{margin-top:4rem;padding-top:1.6rem;border-top:1px solid var(--line-color);font-family:var(--font-detail);font-size:.78rem;color:var(--alt-title-color);line-height:1.8;text-align:center;}
+.colophon a{color:var(--email-color);text-decoration:none;}
+.colophon a:hover{color:var(--link-hover-color);}
+.colophon .row{display:flex;flex-wrap:wrap;gap:.4rem 1.3rem;justify-content:center;}
+
+/* ── MOBILE ── */
+@media (max-width:600px){
+  body{padding:1.6rem .9rem 4rem;}
+  .entry summary{grid-template-columns:3.4rem 1fr;grid-template-rows:auto auto;gap:.25rem .7rem;}
+  .chips{grid-column:1/-1;justify-content:flex-start;padding-left:4.1rem;max-width:none;}
+  .body{padding-left:4.1rem;}
+  .blurb{max-width:100%;}
+}
+@media (prefers-reduced-motion:reduce){
+  .tile,.avatar{animation:none;}
+  *{scroll-behavior:auto;}
+}
+</style>
+</head>
+<body>
+
+<!-- goo filters from your live site -->
+<svg class="goo-defs" xmlns="http://www.w3.org/2000/svg"><defs>
+  <filter id="goo-sm"><feTurbulence type="fractalNoise" baseFrequency="0.028 0.042" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.5" xChannelSelector="R" yChannelSelector="G"/></filter>
+  <filter id="goo-md"><feTurbulence type="fractalNoise" baseFrequency="0.018 0.029" numOctaves="3" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="5" xChannelSelector="R" yChannelSelector="G"/></filter>
+</defs></svg>
+
+<div class="wrap">
+
+  <header class="intro">
+     <img class="avatar" src="xyh01.jpg" alt="再">
+    <h1>xyh tamura</h1>
+    <div class="othernames">also Cy · Cye Tamura</div>
+    <div class="tagline">transdisciplinary artist-researcher · singer-songwriter · creative technologist</div>
+    <div class="blurb">
+      Xyh is a Filipino-Japanese creator working through intermedia art, experimental pop, electronic literature, science and technology, research, and theory. Their work orbits issues of selfhood, media, posthuman relations, ecological-technological worlds, and the ways cultures metabolize systems.
+    </div>
+  </header>
+
+  <nav class="socials" aria-label="links">
+    <a class="glass" href="mailto:xyhtamura0@gmail.com">email</a>
+    <a class="glass" href="https://www.instagram.com/xyh.tamura/" target="_blank" rel="noopener">instagram</a>
+    <a class="glass" href="https://open.spotify.com/artist/6sC8YWzht783z5DhjB1j0N" target="_blank" rel="noopener">spotify</a>
+    <a class="glass" href="https://soundcloud.com/xyh-tamura" target="_blank" rel="noopener">soundcloud</a>
+	<a class="glass" href="https://www.researchgate.net/profile/Xyh-Tamura" target="_blank" rel="noopener">researchgate</a>
+  </nav>
+
+  <!-- vibe mosaic: swap tiles for <img>/<video>; goo applied to t2 & t5 -->
+<section class="gallery" aria-label="selected images">
+    <div class="tile t1"><img src="card/per.gif" alt=""></div>
+    <a href="https://vimeo.com/1019003508" target="_blank" rel="noopener" class="tile t2"><img src="card/manifest.jpeg" alt=""></a>
+    <div class="tile t3"><img src="card/threefloor.jpeg" alt=""></div>
+    <a href="https://xyhtamura.github.io/sgueltch/pixel-lesions/" target="_blank" class="tile t4"><img src="card/lesions.gif" alt=""></a>
+    <a href="https://xyhtamura.github.io/kubocities/" target="_blank" class="tile t5"><img src="card/kubo.gif" alt=""></a>
+    <div class="tile t6"><img src="card/insulae.gif" alt=""></div>
+    
+    <a href="https://ppk80.github.io/plasticoid/" class="tile t1"><img src="card/plasticoid.gif" alt=""></a>
+    <div class="tile t2"><img src="card/fash.jpeg" alt=""></div>
+    <a href="https://ppk80.github.io/hunitsura/" target="_blank" class="tile t3"><img src="card/huni.gif" alt=""></a>
+    <a href="https://ppk80.github.io/loveletterforyou.html" target="_blank" class="tile t4"><img src="card/iloveyou.gif" alt=""></a>
+    <a href="https://cyberpaean.bandcamp.com/album/piyesta-plaza-1985-to-1995-airwaves" target="_blank" class="tile t5"><img src="card/vaporwave.jpeg" alt=""></a>
+    <a href="https://www.researchgate.net/publication/401526519_Dungeon_Synth_as_Transcultural_and_Transtemporal_Construction_Synthetic_Medievalisms" target="_blank" class="tile t6"><img src="card/ds.gif" alt=""></a>
+    
+    <div class="tile t1"><img src="card/sculpt.jpeg" alt=""></div>
+    <div class="tile t2"><img src="card/sl.gif" alt=""></div>
+    <a href="https://xyhtamura.github.io/istorya-sang-balatyagon/" target="_blank" class="tile t3"><img src="card/map.gif" alt=""></a>
+    <a href="https://journals.ub.uni-koeln.de/index.php/phidi/article/view/11659" target="_blank" class="tile t4"><img src="card/frominte.jpeg" alt=""></a>
+  </section>
+
+
+
+  <nav class="filter" aria-label="filter by category">
+    <span class="lbl">filter</span>
+    <button class="fbtn on" data-cat="all">all</button>
+    <button class="fbtn" data-cat="intermedia">intermedia</button>
+    <button class="fbtn" data-cat="writing">writing</button>
+    <button class="fbtn" data-cat="music">music</button>
+    <button class="fbtn" data-cat="score">score</button>
+    <button class="fbtn" data-cat="theater">theater</button>
+    <button class="fbtn" data-cat="software">digital tech</button>
+    <button class="fbtn" data-cat="visuals">visual</button>
+    <button class="fbtn" data-cat="virtual">virtual</button>
+    <button class="fbtn" data-cat="research">research</button>
+    <button class="fbtn" data-cat="artistic-research">research-art</button>
+    <button class="fbtn" data-cat="participatory">participatory</button>
+    <button class="fbtn" data-cat="sci-comm">sci-comm</button>
+    <button class="fbtn" data-cat="management">management</button>
+    <button class="fbtn" data-cat="fashion">fashion</button>
+  </nav>
+
+  <main class="index">
+
+    <details class="entry major" data-cats="intermedia writing" id="of-another-shore" open>
+      <summary>
+        <span class="year">2025→</span>
+        <span class="title"><em>Of Another Shore</em> <span class="orig" title="originally conceptualized">✶</span></span>
+        <span class="chips"><span class="chip intermedia">intermedia</span><span class="chip writing">writing</span></span>
+      </summary>
+      <div class="body">
+        <div class="media">[ image / videopoem still ]</div>
+        <p class="ctx">MFA thesis · UP Diliman Creative Writing (Poetry)</p>
+        <p>An intermedia suite of electronic literature, experimental pop, videopoetry, web art, glitch art, conceptual performance, and music. Structured as a decentralized hypertext network linking poems, songs, videos, scores, simulations, and interactive texts into a constellation of personal, cultural, geological, virtual, and speculative worlds.</p>
+        <p>Drawing from Filipino-Japanese heritage, family history, multilingual poetics, deep time, dreams, death, and digital media. The suite treats the present as a porous shore between inaccessible pasts and futures.</p>
+        <div class="outlinks">
+          <a class="glass visit" href="#">▷ enter the suite</a>
+          <a class="glass" href="#of-another-shore">link ⚲</a>
+        </div>
+      </div>
+    </details>
+
+    <details class="entry major" data-cats="intermedia music software" id="eosforos">
+      <summary>
+        <span class="year">2025</span>
+        <span class="title"><em>Eosforos</em></span>
+        <span class="chips"><span class="chip intermedia">intermedia</span><span class="chip music">music</span><span class="chip software">digital</span></span>
+      </summary>
+      <div class="body">
+        <div class="media">[ live A/V — Kaos Magick ]</div>
+        <p class="ctx">Diana Aviado's <em>Kaos Magick</em> · with Tusa Montes (Saronay, Kulintang, Tambi)</p>
+        <p>An intermedia project exploring the primordial Hadean eon through atonal music, custom software, generative video, and live audiovisual performance — a queer cosmogony drawn from the unstable plasma of the early sun and the violent formation of the Earth. <span class="role">composer, performer, software</span></p>
+        <div class="subs">
+          <div class="sub"><h4>Init</h4><p>Digital-organic soundscape from manipulated '90s and Y2K OS startup sounds, linking primordial creation to digital initialization.</p></div>
+          <div class="sub"><h4>Theia</h4><p>Voice, synth, and drum piece sung from the perspective of the colliding protoplanet Theia — microtonal melody, guttural vocalization, voice-electronic hybridization.</p></div>
+          <div class="sub"><h4>Hadean Flare <span class="chip software">digital</span></h4><p>Browser-based WebGL generative visualizer and live tool: an audio-reactive noise field driven by a fully configurable gradient system.</p></div>
+          <div class="sub"><h4>Antemelos <span class="chip software">digital</span></h4><p>Hertz-based microtonal melody generator for non-scale vocal lines that stay singable while sounding unstable and primordial.</p></div>
+        </div>
+        <div class="outlinks">
+          <a class="glass visit" href="#">▷ listen</a>
+          <a class="glass" href="#">▷ Hadean Flare</a>
+          <a class="glass" href="#">▷ Antemelos</a>
+          <span class="collab-note">w/</span><a class="glass" href="#">Tusa Montes ↗</a>
+        </div>
+      </div>
+    </details>
+
+    <details class="entry major" data-cats="theater writing" id="biopsy">
+      <summary>
+        <span class="year">2026</span>
+        <span class="title"><em>Biopsy</em></span>
+        <span class="chips"><span class="chip theater">theater</span><span class="chip writing">writing</span></span>
+      </summary>
+      <div class="body">
+        <p>A one-act play set at Philippine General Hospital. Three tumors — Hematoma, Glioblastoma, and Meningioma — perform, interrupt, and inherit the roles of the humans and institutions around them. Asks what it means to become a person, a patient, a doctor, or an institution by repeating the forms that made you.</p>
+        <div class="outlinks"><a class="glass" href="#biopsy">link ⚲</a></div>
+      </div>
+    </details>
+
+    <details class="entry" data-cats="software" id="gahuema">
+      <summary>
+        <span class="year">2025</span>
+        <span class="title">GaHueMa <span class="orig" title="originally conceptualized">✶</span></span>
+        <span class="chips"><span class="chip software">digital</span></span>
+      </summary>
+      <div class="body">
+        <p>A web-based image processing system that reconceptualizes hue as a relational, topological medium. A user-defined anchor hue transforms colors through attraction, repulsion, inversion, compression, and expansion across the color wheel, without touching saturation or luminosity. HSL or OKLCH; CPU or GPU.</p>
+        <div class="outlinks"><a class="glass visit" href="#">▷ open tool</a></div>
+      </div>
+    </details>
+
+    <details class="entry" data-cats="software" id="tabota">
+      <summary>
+        <span class="year">2025</span>
+        <span class="title">TaboTa <span class="orig" title="originally conceptualized">✶</span></span>
+        <span class="chips"><span class="chip software">digital</span></span>
+      </summary>
+      <div class="body">
+        <p>A JSON-based compositional language and event-sequencing environment. Moves past the note-and-duration model of sheet music and MIDI: flexible temporal regimes and user-definable axes for frequency, symbolic pitch, percussion lanes, lighting cues, text instructions, and interactive events in one structure. From Hiligaynon <em>tabo</em> (to meet) and Japanese <em>ta</em> (field).</p>
+        <div class="outlinks"><a class="glass visit" href="#">▷ docs</a></div>
+      </div>
+    </details>
+
+    <details class="entry" data-cats="software visuals" id="sgueltch">
+      <summary>
+        <span class="year">2025</span>
+        <span class="title">Sgueltch <span class="orig" title="originally conceptualized">✶</span></span>
+        <span class="chips"><span class="chip software">digital</span><span class="chip visuals">visual</span></span>
+      </summary>
+      <div class="body">
+        <p>An aesthetic philosophy and a software suite. Shifts digital aesthetics away from glitch art's rigid, pixelated, grid-bound disruptions toward organic, fluid, biologically inflected distortions — drawn from fluid flow, growth, diffusion, viscosity, and bodily transformation. Glitches that ooze, breathe, spread, stain, and mutate.</p>
+        <div class="subs">
+          <div class="sub"><h4>Pixel Lesions</h4><p>Pixel sorting as biological infection — lesion-like forms spread across an image like lichen or slime mold.</p></div>
+          <div class="sub"><h4>SiltCRT</h4><p>Shader-based CRT decay reimagined beyond the pixel grid via Voronoi tessellation, turbulence, chromatic bleed.</p></div>
+          <div class="sub"><h4>Gurgulator</h4><p>Granular resynthesizer for wet, unstable, gurgling textures.</p></div>
+        </div>
+        <div class="outlinks"><a class="glass visit" href="#">▷ the suite</a></div>
+      </div>
+    </details>
+
+    <details class="entry" data-cats="artistic-research participatory visuals" id="tanim-kalye">
+      <summary>
+        <span class="year">2025</span>
+        <span class="title">Tanim-Kalye</span>
+        <span class="chips"><span class="chip artistic-research">research-art</span><span class="chip participatory">participatory</span><span class="chip visuals">visual</span></span>
+      </summary>
+      <div class="body">
+        <div class="media">[ acetate glyph-maps, Carinderia Sefali ]</div>
+        <p class="ctx">Quezon City Biennial · with Krus na Ligas residents, the LGU & UP Institute of Biology</p>
+        <p>A research-art and poetry installation that reimagines the street map of Krus na Ligas as a living plant assemblage. Roads recreated from color-inverted images of local flora, printed on acetate and suspended over a window — cyanotype-like glyphs, lightboxes, talismans, x-rays of unseen city blocks.</p>
+        <div class="outlinks"><a class="glass visit" href="#">▷ documentation</a><a class="glass" href="#">exhibition text ↗</a></div>
+      </div>
+    </details>
+
+    <details class="entry" data-cats="music participatory virtual" id="piyesta-plaza">
+      <summary>
+        <span class="year">2025</span>
+        <span class="title">Piyesta Plaza <span class="orig" title="originally conceptualized">✶</span></span>
+        <span class="chips"><span class="chip music">music</span><span class="chip participatory">participatory</span><span class="chip virtual">virtual</span></span>
+      </summary>
+      <div class="body">
+        <p class="ctx">Mono by Phono · conceptualizer, event designer, performer, composer <span class="role">as Cyberpaean</span></p>
+        <p>A Filipino vaporwave and hauntology event series tracing Philippine history through 90s OPM, 80s ballads, Martial Law-era disco, Manila Sound, Golden Age cinema soundtracks, folk songs, vintage commercials, and archival footage. Expanded into <em>Piyesta Plaza 1985–1995 Airwaves</em>, a full-length album and live A/V performance on the 1986 People Power Revolution and the early-90s earthquakes.</p>
+        <div class="outlinks"><a class="glass visit" href="#">▷ Airwaves album</a></div>
+      </div>
+    </details>
+
+    <details class="entry" data-cats="intermedia music virtual" id="manifest">
+      <summary>
+        <span class="year">2024–25→</span>
+        <span class="title"><em>Manifest</em></span>
+        <span class="chips"><span class="chip intermedia">intermedia</span><span class="chip music">music</span><span class="chip virtual">virtual</span></span>
+      </summary>
+      <div class="body">
+        <div class="media">[ short film / live score still ]</div>
+        <p class="ctx">with Bea Mariano · live score at Search Mindscape Foundation's <em>Of Oceans and Currents</em></p>
+        <p>A collaborative short film and videopoem stitching shipwrecks, Manila skylines, construction sites, archival photographs, handwashing footage, microorganisms, and oceanic imagery. The title evokes the ship manifest, ghostly manifestation, the making-real of the future, and the Pacific reach of manifest destiny.</p>
+        <div class="outlinks"><a class="glass visit" href="#">▷ watch</a><span class="collab-note">w/</span><a class="glass" href="#">Bea Mariano ↗</a></div>
+      </div>
+    </details>
+
+    <details class="entry" data-cats="software" id="mivvi">
+      <summary>
+        <span class="year">2026</span>
+        <span class="title">Mivvi</span>
+        <span class="chips"><span class="chip software">digital</span></span>
+      </summary>
+      <div class="body">
+        <p>An AI plush-robot familiar integrating Raspberry Pi hardware, removable electronics, audio I/O, and an animated screen-face. Its voice is <em>Critterances</em>, a procedural creature-sound engine that also stands alone as a web toy.</p>
+        <div class="outlinks"><a class="glass visit" href="#">▷ Critterances toy</a><span class="collab-note">w/</span><a class="glass" href="#">Mithi Sevilla ↗</a></div>
+      </div>
+    </details>
+
+    <details class="entry" data-cats="research" id="commitments">
+      <summary>
+        <span class="year">2026</span>
+        <span class="title">The Commitments of Physical Modeling</span>
+        <span class="chips"><span class="chip research">research</span></span>
+      </summary>
+      <div class="body">
+        <p class="ctx">International Conference on Timbre · Université de Montréal · July 2026</p>
+        <p>Argues that timbral identity in virtual instruments emerges from an assemblage of materials, mediation technologies, acoustic spaces, bodily cues, and culturally trained listening — not recoverable from physical mechanisms alone. Reframes physical modeling as a media-specific practice for constructing new timbral worlds.</p>
+      </div>
+    </details>
+
+    <details class="entry" data-cats="research" id="hauntotechnics">
+      <summary>
+        <span class="year">2026</span>
+        <span class="title">Hauntotechnics</span>
+        <span class="chips"><span class="chip research">research</span></span>
+      </summary>
+      <div class="body">
+        <p class="ctx">forthcoming · Artem Research Collective</p>
+        <p>An autotheoretical essay bringing Derrida's hauntology into dialogue with Yuk Hui's cosmotechnics: ghosts do not return universally, but appear through specific bodies, rituals, histories, media systems, infrastructures, and habits of recognition. Moves across Filipino multo, Japanese yūrei, vaporwave, and Ringu's videotape curse.</p>
+      </div>
+    </details>
+
+    <details class="entry" data-cats="intermedia writing" id="table-of-metalloids">
+      <summary>
+        <span class="year">2025→</span>
+        <span class="title"><em>Table of Metalloids</em></span>
+        <span class="chips"><span class="chip intermedia">intermedia</span><span class="chip writing">writing</span></span>
+      </summary>
+      <div class="body">
+        <p>An interactive collection organized around the seven metalloids, presented as a digital periodic table. Each element's properties become a generative constraint for New Weird fiction, slipstream, body horror, kinetic poetry, science writing, and prose poetry — termite symbiosis, programmable skin, undersea cables, metallic wolves, radioactive decay.</p>
+        <div class="outlinks"><a class="glass visit" href="#">▷ open table</a></div>
+      </div>
+    </details>
+
+    <details class="entry" data-cats="intermedia writing" id="galvanism">
+      <summary>
+        <span class="year">2025</span>
+        <span class="title"><em>Galvanism</em></span>
+        <span class="chips"><span class="chip intermedia">intermedia</span><span class="chip writing">writing</span></span>
+      </summary>
+      <div class="body">
+        <p>A web-based poetic sequence about body porosity in the 2000s Philippines, framing electricity as life-force, infrastructure, weather, media, empire, and nervous sensation. A Filipino-Japanese neuroqueer speaker whose body becomes a conductive membrane for television, dial-up, typhoons, ghosts, floods, voltage, and history.</p>
+        <div class="outlinks"><a class="glass visit" href="#">▷ read</a></div>
+      </div>
+    </details>
+
+    <details class="entry" data-cats="virtual visuals" id="open4">
+      <summary>
+        <span class="year">2025</span>
+        <span class="title"><em>Open4</em></span>
+        <span class="chips"><span class="chip virtual">virtual</span><span class="chip visuals">visual</span></span>
+      </summary>
+      <div class="body">
+        <p>Long, looped ambient videos made from non-explicit transitional footage in archival gay adult media from the 1980s on — isolating rooms, hallways, pools, beds. Shifts attention from action to atmosphere, anticipation, and disappearance; on queer temporality and the ephemerality of worlds that may no longer exist.</p>
+        <div class="outlinks"><a class="glass visit" href="#">▷ watch</a></div>
+      </div>
+    </details>
+
+    <details class="entry" data-cats="virtual music fashion visuals" id="second-life">
+      <summary>
+        <span class="year">2022→</span>
+        <span class="title">Second Life — Worlds &amp; Worldbuilding</span>
+        <span class="chips"><span class="chip virtual">virtual</span><span class="chip music">music</span><span class="chip fashion">fashion</span></span>
+      </summary>
+      <div class="body">
+        <p>Resident DJ, fashion designer, event coordinator, 3D mesh artist. Curated genre sets (vaporwave, exotica, electro swing, seapunk, EBM, noise) as temporary worlds — designing posters, building sets, changing skies. Plus avatar fashion impossible in physical space: dresses made from floating pearls, leaves, blobs, dandelion particles. <span class="role">Blender · Substance Painter</span></p>
+      </div>
+    </details>
+
+    <details class="entry" data-cats="participatory sci-comm artistic-research" id="istorya">
+      <summary>
+        <span class="year">2025</span>
+        <span class="title">Istorya sang Bȧlatyagon</span>
+        <span class="chips"><span class="chip participatory">participatory</span><span class="chip sci-comm">sci-comm</span><span class="chip artistic-research">research-art</span></span>
+      </summary>
+      <div class="body">
+        <p class="ctx">Atipan+ Gender Audit · Iloilo · researcher, developer, translator, facilitator</p>
+        <p>A participatory "Affect Atlas" — a menstrual-awareness workshop method using storytelling, word-image mapping, and performance across Panay and Guimaras. Personal output: a critical essay and digital installation on how humor, mapping, and performance make stigmatized topics discussable while producing qualitative data.</p>
+      </div>
+    </details>
+
+    <details class="entry" data-cats="management participatory" id="vaporwave">
+      <summary>
+        <span class="year">2014→</span>
+        <span class="title">r/Vaporwave — Community Architecture</span>
+        <span class="chips"><span class="chip management">management</span><span class="chip participatory">participatory</span></span>
+      </summary>
+      <div class="body">
+        <p>Moderator and community architect. Built the structure, guidelines, and curation that grew the subreddit into a hub for the vaporwave movement — 400,000+ members. Authored the wiki and definitions; founded sibling communities for hauntology, plunderphonics, drone, ambient, and lowercase.</p>
+      </div>
+    </details>
+
+    <details class="entry" data-cats="score" id="naughty-maids">
+      <summary>
+        <span class="year">2026</span>
+        <span class="title">Naughty Maids</span>
+        <span class="chips"><span class="chip score">score</span></span>
+      </summary>
+      <div class="body">
+        <p class="ctx">The Comedy Film Festival 2026 entry · music composer</p>
+        <p>Sounds from cleaning and household products plus Southern Californian instruments, infused into a Jablonsky/Beal-inspired soundtrack for a multi-genre dramedy. Ends with a jingle inspired by Filipino and Euro 90s novelty songs.</p>
+      </div>
+    </details>
+
+    <details class="entry" data-cats="intermedia writing" id="love-letter">
+      <summary>
+        <span class="year">2025</span>
+        <span class="title">LOVE-LETTER-FOR-YOU.TXT</span>
+        <span class="chips"><span class="chip intermedia">intermedia</span><span class="chip writing">writing</span></span>
+      </summary>
+      <div class="body">
+        <p>An algorithmic poem based on the ILOVEYOU virus, written through its creator's imagined persona and a postcolonial reading of internet access and desire. Its words are replaced one by one with ILOVEYOU until the phrase overtakes the text — the poem performs its own viral collapse.</p>
+        <div class="outlinks"><a class="glass visit" href="#">▷ run it</a></div>
+      </div>
+    </details>
+
+    <details class="entry minor" data-cats="music writing" id="breakfast">
+      <summary>
+        <span class="year">2025</span>
+        <span class="title">breakfast</span>
+        <span class="chips"><span class="chip music">music</span><span class="chip writing">writing</span></span>
+      </summary>
+      <div class="body">
+        <p>A lo-fi spoken-word poem recorded on a phone during an early-morning walk — shaped by breath, footsteps, and traffic; a roadside animal death against an eroticized vision of a runner.</p>
+        <div class="outlinks"><a class="glass visit" href="#">▷ listen</a></div>
+      </div>
+    </details>
+
+    <details class="entry minor" data-cats="theater music" id="magic-staff">
+      <summary>
+        <span class="year">1999</span>
+        <span class="title"><em>The Magic Staff</em> <span class="orig" title="originally conceptualized">✶</span></span>
+        <span class="chips"><span class="chip theater">theater</span><span class="chip music">music</span></span>
+      </summary>
+      <div class="body">
+        <p class="ctx">Meralco Theatre · librettist, songwriter, lead actor</p>
+        <p>A full-scale musical conceived and written at age nine, staged with Fides Cuyugan-Asensio, Bernardo Bernardo, and Monique Wilson.</p>
+      </div>
+    </details>
+
+  </main>
+
+  <footer class="colophon">
+    <div class="row">
+      <a href="mailto:xyhtamura0@gmail.com">xyhtamura0@gmail.com</a>
+      <span>github / instagram / bandcamp @xyhtamura</span>
+    </div>
+    <div class="row" style="margin-top:.4rem;opacity:.7;">
+      <span>last touched 2026.05.28</span>
+      <span>quicksand · rubik · averia · lexend · dosis</span>
+      <span>no analytics, no cookies</span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const btns=document.querySelectorAll('.fbtn');
+const entries=document.querySelectorAll('.entry');
+const active=new Set();
+const allBtn=document.querySelector('[data-cat="all"]');
+btns.forEach(b=>b.addEventListener('click',()=>{
+  const c=b.dataset.cat;
+  if(c==='all'){active.clear();btns.forEach(x=>x.classList.toggle('on',x.dataset.cat==='all'));}
+  else{
+    allBtn.classList.remove('on');
+    if(active.has(c)){active.delete(c);b.classList.remove('on');}
+    else{active.add(c);b.classList.add('on');}
+    if(active.size===0)allBtn.classList.add('on');
+  }
+  entries.forEach(e=>{
+    const cats=e.dataset.cats.split(' ');
+    e.hidden=!(active.size===0||[...active].some(t=>cats.includes(t)));
+  });
+}));
+</script>
+</body>
+</html>

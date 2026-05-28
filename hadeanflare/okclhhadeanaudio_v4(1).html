@@ -6,66 +6,28 @@
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
     :root {
-      /* ── OKLCH base palette ─────────────────────────────── */
-      --panel-bg:  oklch(0.06 0.01  150 / 0.94);
-      --gold:      oklch(0.64 0.15   73);
-      --ember:     oklch(0.52 0.18   35);
-      --phos:      oklch(0.72 0.19  155);
-      --dim:       oklch(0.38 0.055 149);
-      --text:      oklch(0.67 0.065 149);
-      --val:       oklch(0.75 0.135  83);
-      --border:    oklch(0.64 0.15   73 / 0.17);
-
-      /* ── alpha variants (gold) ─────────────────────────── */
-      --gold-a07:  oklch(0.64 0.15  73 / 0.07);
-      --gold-a08:  oklch(0.64 0.15  73 / 0.08);
-      --gold-a10:  oklch(0.64 0.15  73 / 0.10);
-      --gold-a12:  oklch(0.64 0.15  73 / 0.12);
-      --gold-a18:  oklch(0.64 0.15  73 / 0.18);
-      --gold-a22:  oklch(0.64 0.15  73 / 0.22);
-      --gold-a55:  oklch(0.64 0.15  73 / 0.55);
-
-      /* ── alpha variants (ember) ────────────────────────── */
-      --ember-a06: oklch(0.52 0.18  35 / 0.06);
-      --ember-a08: oklch(0.52 0.18  35 / 0.08);
-      --ember-a20: oklch(0.52 0.18  35 / 0.20);
-      --ember-a45: oklch(0.52 0.18  35 / 0.45);
-
-      /* ── alpha variants (phos) ─────────────────────────── */
-      --phos-a06:  oklch(0.72 0.19 155 / 0.06);
-      --phos-a07:  oklch(0.72 0.19 155 / 0.07);
-      --phos-a08:  oklch(0.72 0.19 155 / 0.08);
-      --phos-a12:  oklch(0.72 0.19 155 / 0.12);
-      --phos-a28:  oklch(0.72 0.19 155 / 0.28);
-      --phos-a30:  oklch(0.72 0.19 155 / 0.30);
-      --phos-a40:  oklch(0.72 0.19 155 / 0.40);
-      --phos-a50:  oklch(0.72 0.19 155 / 0.50);
-
-      /* ── alpha variants (dim) ──────────────────────────── */
-      --dim-a20:   oklch(0.38 0.055 149 / 0.20);
-      --dim-a30:   oklch(0.38 0.055 149 / 0.30);
-      --dim-a35:   oklch(0.38 0.055 149 / 0.35);
-      --dim-a45:   oklch(0.38 0.055 149 / 0.45);
-
-      /* ── track / surface colors ────────────────────────── */
-      --track-bg:  oklch(0.35 0.055 149 / 0.35);
-      --surf-dk:   oklch(0.05 0.01  150 / 0.92);
-      --surf-bg:   oklch(0.06 0.01  150 / 0.9);
-
-      --pw:  228px;
-      --th:   36px;
-      --tab:  18px;
+      --panel-bg: rgba(4, 8, 5, 0.94);
+      --gold:     #c08818;
+      --ember:    #c63c18;
+      --phos:     #1abf72;
+      --dim:      #3a5a40;
+      --text:     #7aaa80;
+      --val:      #d4b040;
+      --border:   rgba(192, 136, 24, 0.17);
+      --pw:   228px;
+      --th:    36px;
+      --tab:   18px;
       --font: 'Share Tech Mono', 'Courier New', monospace;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { width: 100%; height: 100%; overflow: hidden; background: oklch(0 0 0); font-family: var(--font); }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #000; font-family: var(--font); }
 
     #glCanvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
 
     /* ── TOP BAR ──────────────────────────── */
     #topBar {
       position: fixed; top: 0; left: 0; right: 0; height: var(--th);
-      background: var(--surf-bg); border-bottom: 1px solid var(--border);
+      background: rgba(4,8,5,0.9); border-bottom: 1px solid var(--border);
       display: flex; align-items: center; gap: 5px; padding: 0 8px 0 12px;
       z-index: 100; backdrop-filter: blur(10px);
       transition: opacity 0.4s, transform 0.5s cubic-bezier(0.22,1,0.36,1);
@@ -81,25 +43,25 @@
     .sep { width: 1px; height: 16px; background: var(--border); flex-shrink: 0; }
     #vuWrap { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
     #vuLabel { font-size: 8px; color: var(--dim); letter-spacing: 0.1em; }
-    #vuMeter { width: 52px; height: 7px; background: oklch(0 0 0 / 0.5); border: 1px solid var(--border); border-radius: 1px; overflow: hidden; }
+    #vuMeter { width: 52px; height: 7px; background: rgba(0,0,0,0.5); border: 1px solid var(--border); border-radius: 1px; overflow: hidden; }
     #vuFill   { height: 100%; width: 0%; background: linear-gradient(to right, var(--phos) 0%, var(--gold) 65%, var(--ember) 100%); transition: width 0.04s linear; }
     #seismicWrap { font-size: 8px; color: var(--dim); letter-spacing: 0.08em; flex-shrink: 0; }
     #seismicVal  { color: var(--val); }
     .spacer { flex: 1; }
     .tbtn {
       padding: 0 8px; height: 22px; font-family: var(--font); font-size: 9px; letter-spacing: 0.1em;
-      color: var(--dim); background: transparent; border: 1px solid var(--dim-a30); border-radius: 2px;
+      color: var(--dim); background: transparent; border: 1px solid rgba(58,90,64,0.3); border-radius: 2px;
       cursor: pointer; transition: all 0.15s; display: flex; align-items: center; flex-shrink: 0; white-space: nowrap;
     }
-    .tbtn:hover  { color: var(--gold); border-color: var(--gold); background: var(--gold-a08); }
-    .tbtn.active { color: var(--gold); border-color: var(--gold); background: var(--gold-a12); }
-    .tbtn.phos   { color: var(--phos); border-color: var(--phos-a30); }
-    .tbtn.phos:hover { background: var(--phos-a08); border-color: var(--phos); }
+    .tbtn:hover  { color: var(--gold); border-color: var(--gold); background: rgba(192,136,24,0.08); }
+    .tbtn.active { color: var(--gold); border-color: var(--gold); background: rgba(192,136,24,0.12); }
+    .tbtn.phos   { color: var(--phos); border-color: rgba(26,191,114,0.3); }
+    .tbtn.phos:hover { background: rgba(26,191,114,0.08); border-color: var(--phos); }
     .tbtn.phos.done  { color: var(--dim); border-color: transparent; cursor: default; pointer-events: none; }
-    .tbtn.warn:hover { color: var(--ember); border-color: var(--ember); background: var(--ember-a08); }
-    .tbtn.rx-on  { color: var(--phos); border-color: var(--phos-a40); }
-    .tbtn.rx-on:hover  { background: var(--phos-a08); }
-    .tbtn.rx-off { color: var(--dim); border-color: var(--dim-a20); }
+    .tbtn.warn:hover { color: var(--ember); border-color: var(--ember); background: rgba(198,60,24,0.08); }
+    .tbtn.rx-on  { color: var(--phos); border-color: rgba(26,191,114,0.4); }
+    .tbtn.rx-on:hover  { background: rgba(26,191,114,0.08); }
+    .tbtn.rx-off { color: var(--dim); border-color: rgba(58,90,64,0.2); }
     .tbtn.rx-off:hover { color: var(--ember); border-color: var(--ember); }
 
     /* ── PANEL ────────────────────────────── */
@@ -114,7 +76,7 @@
     }
     #panel::after {
       content:''; pointer-events:none; position:absolute; inset:0; z-index:10;
-      background: repeating-linear-gradient(0deg, transparent, transparent 3px, oklch(0 0 0 / 0.1) 3px, oklch(0 0 0 / 0.1) 4px);
+      background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.1) 3px, rgba(0,0,0,0.1) 4px);
     }
     #panel.hidden { transform: translateX(calc(var(--pw) - var(--tab))); }
     #panelScroll {
@@ -130,7 +92,7 @@
       border-left:1px solid var(--border); user-select:none;
       transition:color 0.15s,background 0.15s; z-index:11;
     }
-    #panelTab:hover { color:var(--gold); background:var(--gold-a07); }
+    #panelTab:hover { color:var(--gold); background:rgba(192,136,24,0.07); }
 
     /* ── SECTIONS ─────────────────────────── */
     .sec {
@@ -153,15 +115,15 @@
     }
     input[type=range]::-webkit-slider-runnable-track {
       height:2px;
-      background:linear-gradient(to right,var(--phos) var(--pct,0%), var(--track-bg) var(--pct,0%));
+      background:linear-gradient(to right,var(--phos) var(--pct,0%), rgba(37,80,44,0.35) var(--pct,0%));
       border-radius:1px;
     }
     input[type=range]::-webkit-slider-thumb {
       -webkit-appearance:none; width:9px; height:9px; margin-top:-3.5px;
       background:var(--gold); border-radius:1px; transform:rotate(45deg);
-      box-shadow:0 0 5px var(--gold-a55);
+      box-shadow:0 0 5px rgba(192,136,24,0.55);
     }
-    input[type=range]::-moz-range-track { height:2px; background:var(--track-bg); border-radius:1px; }
+    input[type=range]::-moz-range-track { height:2px; background:rgba(37,80,44,0.35); border-radius:1px; }
     input[type=range]::-moz-range-progress { height:2px; background:var(--phos); border-radius:1px; }
     input[type=range]::-moz-range-thumb { width:9px; height:9px; background:var(--gold); border:none; border-radius:1px; }
     input[type=range]:disabled::-webkit-slider-runnable-track { opacity:0.25; }
@@ -170,7 +132,7 @@
     /* ── OSCILLOSCOPE ─────────────────────── */
     #oscCanvas {
       width:100%; height:42px; display:block;
-      background:var(--surf-dk); border:1px solid var(--dim-a35);
+      background:rgba(2,6,3,0.92); border:1px solid rgba(58,90,64,0.35);
       border-radius:2px; margin-bottom:8px;
     }
 
@@ -178,13 +140,13 @@
     #pRxToggle {
       display:none; width:100%; padding:5px; margin-bottom:5px;
       font-family:var(--font); font-size:9px; letter-spacing:0.14em;
-      border:1px solid var(--phos-a30); border-radius:2px;
+      border:1px solid rgba(26,191,114,0.3); border-radius:2px;
       cursor:pointer; text-align:center; transition:all 0.15s;
-      background:var(--phos-a06); color:var(--phos);
+      background:rgba(26,191,114,0.06); color:var(--phos);
     }
-    #pRxToggle:hover { background:var(--phos-a12); }
-    #pRxToggle.off { color:var(--dim); border-color:var(--dim-a30); background:transparent; }
-    #pRxToggle.off:hover { color:var(--ember); border-color:var(--ember); background:var(--ember-a06); }
+    #pRxToggle:hover { background:rgba(26,191,114,0.12); }
+    #pRxToggle.off { color:var(--dim); border-color:rgba(58,90,64,0.3); background:transparent; }
+    #pRxToggle.off:hover { color:var(--ember); border-color:var(--ember); background:rgba(198,60,24,0.06); }
 
     /* ── GRADIENT SECTION ─────────────────── */
     #gradPrev {
@@ -195,7 +157,7 @@
 
     /* Stop card */
     .stop-card {
-      background:oklch(0 0 0 / 0.15); border:1px solid var(--dim-a20);
+      background:rgba(0,0,0,0.15); border:1px solid rgba(58,90,64,0.2);
       border-radius:3px; padding:5px 5px 4px; margin-bottom:5px;
     }
     .stop-top {
@@ -204,7 +166,7 @@
     .sr-lbl { font-size:8px; color:var(--dim); width:14px; flex-shrink:0; letter-spacing:0.05em; }
     .sr-dot {
       width:10px; height:10px; border-radius:50%; flex-shrink:0;
-      border:1px solid oklch(1 0 0 / 0.08); transition:background 0.1s;
+      border:1px solid rgba(255,255,255,0.08); transition:background 0.1s;
     }
     /* color picker */
     input[type=color].cp {
@@ -219,17 +181,17 @@
       font-family:var(--font); font-size:7px; letter-spacing:0.06em;
       padding:0 4px; height:18px; flex-shrink:0;
       color:var(--dim); background:transparent;
-      border:1px solid var(--dim-a30); border-radius:2px;
+      border:1px solid rgba(58,90,64,0.3); border-radius:2px;
       cursor:pointer; transition:all 0.15s;
     }
     .lb:hover  { color:var(--gold); border-color:var(--gold); }
-    .lb.locked { color:var(--ember); border-color:var(--ember); background:var(--ember-a08); }
+    .lb.locked { color:var(--ember); border-color:var(--ember); background:rgba(198,60,24,0.08); }
     /* remove button */
     .rm-btn {
       font-family:var(--font); font-size:14px; line-height:1;
       width:18px; height:18px; flex-shrink:0;
       color:var(--dim); background:transparent;
-      border:1px solid var(--dim-a20); border-radius:2px;
+      border:1px solid rgba(58,90,64,0.2); border-radius:2px;
       cursor:pointer; transition:all 0.15s;
       display:flex; align-items:center; justify-content:center; padding:0;
     }
@@ -253,12 +215,12 @@
       border:1px solid var(--border); border-radius:2px;
       cursor:pointer; text-align:center; transition:all 0.15s;
     }
-    .pbtn:hover  { color:var(--gold); border-color:var(--gold); background:var(--gold-a08); }
-    .pbtn.active { color:var(--gold); border-color:var(--gold); background:var(--gold-a10); }
-    .pbtn.danger { color:var(--ember); border-color:var(--ember-a20); }
-    .pbtn.danger:hover { background:var(--ember-a08); color:var(--ember); border-color:var(--ember); }
-    .pbtn.phos   { color:var(--phos); border-color:var(--phos-a28); }
-    .pbtn.phos:hover { background:var(--phos-a07); border-color:var(--phos); }
+    .pbtn:hover  { color:var(--gold); border-color:var(--gold); background:rgba(192,136,24,0.08); }
+    .pbtn.active { color:var(--gold); border-color:var(--gold); background:rgba(192,136,24,0.1); }
+    .pbtn.danger { color:var(--ember); border-color:rgba(198,60,24,0.2); }
+    .pbtn.danger:hover { background:rgba(198,60,24,0.08); color:var(--ember); border-color:var(--ember); }
+    .pbtn.phos   { color:var(--phos); border-color:rgba(26,191,114,0.28); }
+    .pbtn.phos:hover { background:rgba(26,191,114,0.07); border-color:var(--phos); }
     .pbtn:disabled { opacity:0.4; cursor:default; }
     .pbtn.small { font-size:8px; padding:4px; margin-bottom:0; }
 
@@ -268,14 +230,14 @@
       background:repeating-linear-gradient(90deg,
         var(--ember) 0px,var(--ember) 1px,transparent 1px,transparent 5px,
         var(--gold)  5px,var(--gold)  6px,transparent 6px,transparent 11px,
-        var(--phos-a50) 11px,var(--phos-a50) 12px,transparent 12px,transparent 22px);
+        rgba(26,191,114,0.5) 11px,rgba(26,191,114,0.5) 12px,transparent 12px,transparent 22px);
       opacity:0.18; animation:strataMove 10s linear infinite;
     }
     @keyframes strataMove { from{background-position:0} to{background-position:44px} }
 
     /* ── KEY LEGEND ───────────────────────── */
     .kr { display:flex; align-items:baseline; gap:6px; margin-bottom:5px; }
-    .kb { font-size:8px; color:var(--gold); background:var(--gold-a10); border:1px solid var(--gold-a22); border-radius:2px; padding:1px 4px; min-width:26px; text-align:center; flex-shrink:0; }
+    .kb { font-size:8px; color:var(--gold); background:rgba(192,136,24,0.1); border:1px solid rgba(192,136,24,0.22); border-radius:2px; padding:1px 4px; min-width:26px; text-align:center; flex-shrink:0; }
     .kd { font-size:8px; color:var(--dim); letter-spacing:0.05em; }
 
     /* ── DARK UI ──────────────────────────── */
@@ -283,11 +245,19 @@
     body.dark-ui #panel  { opacity:0; pointer-events:none; }
     #revDot {
       position:fixed; bottom:14px; right:14px; width:8px; height:8px; border-radius:50%;
-      background:var(--gold-a22); border:1px solid var(--gold-a18);
+      background:rgba(192,136,24,0.22); border:1px solid rgba(192,136,24,0.18);
       z-index:200; pointer-events:none; opacity:0; transition:opacity 0.6s; cursor:pointer;
     }
     body.dark-ui #revDot { opacity:1; pointer-events:auto; animation:revPulse 4s ease-in-out infinite; }
     @keyframes revPulse { 0%,100%{opacity:0.18}50%{opacity:0.65} }
+	
+	/* ── OKLCH MINI SLIDERS ───────────────── */
+    .oklch-wrap { display: flex; flex-direction: column; gap: 2px; flex: 1; padding: 0 4px; }
+    .oklch-row { display: flex; align-items: center; gap: 4px; }
+    .oklch-lbl { font-size: 7px; color: var(--dim); width: 6px; flex-shrink: 0; }
+    .oklch-row input[type=range] { height: 6px; }
+    .oklch-row input[type=range]::-webkit-slider-runnable-track { height: 1px; background: rgba(58,90,64,0.35); }
+    .oklch-row input[type=range]::-webkit-slider-thumb { width: 6px; height: 6px; margin-top: -2.5px; box-shadow: none; }
   </style>
 </head>
 <body>
@@ -386,6 +356,10 @@
         <div class="cl"><span class="cn">CHAOS FACTOR</span><span class="cv" id="v-speedVar">0.30</span></div>
         <input type="range" id="s-speedVar" min="0" max="1" step="0.01" value="0.3">
       </div>
+	  <div class="cr">
+        <div class="cl"><span class="cn">INTERPOLATION</span><span class="cv" id="v-colorSpace">RGB</span></div>
+        <button id="colorSpaceBtn" class="pbtn small">SWITCH TO OKLCH</button>
+      </div>
 
       <div class="strata"></div>
 
@@ -439,7 +413,7 @@
     void main() { gl_Position = a_position; }
   </script>
 
-  <script id="fragment-shader" type="x-shader/x-fragment">
+<script id="fragment-shader" type="x-shader/x-fragment">
     precision mediump float;
 
     uniform vec2  u_resolution;
@@ -448,26 +422,58 @@
     uniform float u_warp_amount;
     uniform float u_warp_speed;
     uniform float u_saturation;
-    /* MAX 8 stops. All array indices below are compile-time constants —
-       GLSL ES 1.0 does not allow non-constant uniform array indexing. */
+    uniform int   u_color_space; // 0 = RGB, 1 = OKLCH
+
     uniform vec3  u_stop_col[8];
     uniform float u_stop_pos[8];
-    uniform float u_stop_count; /* passed as float; used only in step(), never as index */
+    uniform float u_stop_count;
 
     vec3 rgb2hsv(vec3 c){vec4 K=vec4(0.,-1./3.,2./3.,-1.);vec4 p=mix(vec4(c.bg,K.wz),vec4(c.gb,K.xy),step(c.b,c.g));vec4 q=mix(vec4(p.xyw,c.r),vec4(c.r,p.yzx),step(p.x,c.r));float d=q.x-min(q.w,q.y);float e=1e-10;return vec3(abs(q.z+(q.w-q.y)/(6.*d+e)),d/(q.x+e),q.x);}
     vec3 hsv2rgb(vec3 c){vec4 K=vec4(1.,2./3.,1./3.,3.);vec3 p=abs(fract(c.xxx+K.xyz)*6.-K.www);return c.z*mix(K.xxx,clamp(p-K.xxx,0.,1.),c.y);}
+    
+    // --- OKLCH to sRGB Conversions ---
+    vec3 oklch2oklab(vec3 c) {
+        return vec3(c.x, c.y * cos(c.z), c.y * sin(c.z));
+    }
+    vec3 oklab2lin(vec3 c) {
+        float l_ = c.x + 0.3963377774 * c.y + 0.2158037573 * c.z;
+        float m_ = c.x - 0.1055613458 * c.y - 0.0638541728 * c.z;
+        float s_ = c.x - 0.0894841775 * c.y - 1.2914855480 * c.z;
+        l_ = l_ * l_ * l_; m_ = m_ * m_ * m_; s_ = s_ * s_ * s_;
+        float r =  4.0767416621 * l_ - 3.3077115913 * m_ + 0.2309699292 * s_;
+        float g = -1.2684380046 * l_ + 2.6097574011 * m_ - 0.3413193965 * s_;
+        float b = -0.0041960863 * l_ - 0.7034186147 * m_ + 1.7076147010 * s_;
+        return vec3(r, g, b);
+    }
+    vec3 lin2srgb(vec3 c) {
+        vec3 a = 1.055 * pow(max(c, 0.0), vec3(1.0 / 2.4)) - 0.055;
+        vec3 b = c * 12.92;
+        return mix(b, a, step(c, vec3(0.0031308)));
+    }
+    vec3 oklch2srgb(vec3 c) {
+        return lin2srgb(oklab2lin(oklch2oklab(c)));
+    }
+
     vec2 hash(vec2 p){p=vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3)));return-1.+2.*fract(sin(p)*43758.5453123);}
     float noise(in vec2 p){const float K1=.366025404,K2=.211324865;vec2 i=floor(p+(p.x+p.y)*K1);vec2 a=p-i+(i.x+i.y)*K2;vec2 o=(a.x>a.y)?vec2(1.,0.):vec2(0.,1.);vec2 b=a-o+K2;vec2 c=a-1.+2.*K2;vec3 h=max(.5-vec3(dot(a,a),dot(b,b),dot(c,c)),0.);vec3 n=h*h*h*h*vec3(dot(a,hash(i+0.)),dot(b,hash(i+o)),dot(c,hash(i+1.)));return dot(n,vec3(70.));}
 
-    /* Blend col toward the interpolated color of segment [I,J] when:
-         active  — this segment index exists given the current stop count
-         inRange — nv falls within [pos[I], pos[J]] (inclusive both ends) */
-    vec3 blendSeg(vec3 col, float nv, float minCount,
-                  vec3 cA, vec3 cB, float pA, float pB) {
+    vec3 blendSeg(vec3 col, float nv, float minCount, vec3 cA, vec3 cB, float pA, float pB) {
       float active  = step(minCount,  u_stop_count + 0.5);
       float inRange = step(pA, nv) * step(nv, pB);
-      float t       = clamp((nv - pA) / max(pB - pA, 0.0001), 0.0, 1.0);
-      return mix(col, mix(cA, cB, smoothstep(0.0, 1.0, t)), active * inRange);
+      float t       = smoothstep(0.0, 1.0, clamp((nv - pA) / max(pB - pA, 0.0001), 0.0, 1.0));
+      
+      vec3 mixedCol;
+      if (u_color_space == 1) {
+          // Shortest-path hue interpolation
+          float hB = cB.z;
+          float d = hB - cA.z;
+          if (d > 3.14159265) hB -= 6.2831853;
+          else if (d < -3.14159265) hB += 6.2831853;
+          mixedCol = mix(cA, vec3(cB.x, cB.y, hB), t);
+      } else {
+          mixedCol = mix(cA, cB, t);
+      }
+      return mix(col, mixedCol, active * inRange);
     }
 
     void main() {
@@ -477,8 +483,6 @@
       vec2 wuv = uv + (wo * u_warp_amount);
       float nv = (noise(wuv * u_noise_scale + u_scroll_offset) + 1.0) * 0.5;
 
-      /* Fully unrolled gradient: 7 possible segments (for up to 8 stops).
-         Every array index is a literal constant — no dynamic indexing. */
       vec3 col = u_stop_col[0];
       col = blendSeg(col,nv,2., u_stop_col[0],u_stop_col[1],u_stop_pos[0],u_stop_pos[1]);
       col = blendSeg(col,nv,3., u_stop_col[1],u_stop_col[2],u_stop_pos[1],u_stop_pos[2]);
@@ -488,9 +492,14 @@
       col = blendSeg(col,nv,7., u_stop_col[5],u_stop_col[6],u_stop_pos[5],u_stop_pos[6]);
       col = blendSeg(col,nv,8., u_stop_col[6],u_stop_col[7],u_stop_pos[6],u_stop_pos[7]);
 
-      vec3 hsv = rgb2hsv(col);
-      hsv.y   *= u_saturation;
-      col      = hsv2rgb(hsv);
+      if (u_color_space == 1) {
+          col.y *= u_saturation; // OKLCH y is Chroma
+          col = oklch2srgb(col);
+      } else {
+          vec3 hsv = rgb2hsv(col);
+          hsv.y   *= u_saturation;
+          col      = hsv2rgb(hsv);
+      }
       gl_FragColor = vec4(col, 1.0);
     }
   </script>
@@ -530,6 +539,7 @@
   const uStopCol   = gl.getUniformLocation(prog, 'u_stop_col[0]');
   const uStopPos   = gl.getUniformLocation(prog, 'u_stop_pos[0]');
   const uStopCount = gl.getUniformLocation(prog, 'u_stop_count');
+  const uColSpc    = gl.getUniformLocation(prog, 'u_color_space');
 
   const vbuf = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vbuf);
@@ -557,7 +567,7 @@
 
   /* ── Gradient Stop State ───────────────────────────────────────────────── */
   let nextId = 0;
-  function createStop(pos, opts = {}) {
+function createStop(pos, opts = {}) {
     return {
       id:         nextId++,
       pos:        Math.max(0, Math.min(1, pos)),
@@ -566,6 +576,7 @@
       speed:      opts.speed !== undefined ? opts.speed : 0.04 + Math.random() * 0.06,
       locked:     opts.locked     || false,
       fixedColor: opts.fixedColor || '#808080',
+      oklch:      opts.oklch      || [0.6, 0.15, Math.random() * 360] 
     };
   }
 
@@ -589,17 +600,17 @@
   }
 
   /* ── Gradient UI ───────────────────────────────────────────────────────── */
-  function updateGradientUI() {
-    /* Preview bar with actual stop positions */
-    const stops_css = actualCols.map((c,i) =>
-      `rgb(${c[0]*255|0},${c[1]*255|0},${c[2]*255|0}) ${(stops[i].pos*100).toFixed(1)}%`
-    ).join(', ');
+function updateGradientUI() {
+    const stops_css = actualCols.map((c,i) => {
+      let rgb = useOklch ? oklchToRgb01(c[0], c[1], c[2]) : c;
+      return `rgb(${rgb[0]*255|0},${rgb[1]*255|0},${rgb[2]*255|0}) ${(stops[i].pos*100).toFixed(1)}%`
+    }).join(', ');
     document.getElementById('gradPrev').style.background = `linear-gradient(to right,${stops_css})`;
 
-    /* Live dots */
     stops.forEach((stop, i) => {
       const dot = document.getElementById('sd-' + stop.id);
-      if (dot) dot.style.background = `rgb(${actualCols[i][0]*255|0},${actualCols[i][1]*255|0},${actualCols[i][2]*255|0})`;
+      let rgb = useOklch ? oklchToRgb01(actualCols[i][0], actualCols[i][1], actualCols[i][2]) : actualCols[i];
+      if (dot) dot.style.background = `rgb(${rgb[0]*255|0},${rgb[1]*255|0},${rgb[2]*255|0})`;
     });
   }
 
@@ -617,113 +628,126 @@
   }
 
   /* Full rebuild of the stop list DOM */
-  function rebuildStopUI() {
+function rebuildStopUI() {
     const container = document.getElementById('stopsList');
     container.innerHTML = '';
 
     stops.forEach((stop, i) => {
-      const isFirst  = i === 0;
-      const isLast   = i === stops.length - 1;
-      const canRm    = !isFirst && !isLast;
+      const isFirst = i === 0, isLast = i === stops.length - 1, canRm = !isFirst && !isLast;
+      const card = document.createElement('div'); card.className = 'stop-card';
 
-      const card = document.createElement('div');
-      card.className = 'stop-card';
+      const top = document.createElement('div'); top.className = 'stop-top';
+      
+      let colorUI = '';
+      if (useOklch) {
+        colorUI = `
+          <div class="oklch-wrap">
+            <div class="oklch-row"><span class="oklch-lbl">L</span><input type="range" id="ol-${stop.id}" min="0" max="1" step="0.01" value="${stop.oklch[0]}"></div>
+            <div class="oklch-row"><span class="oklch-lbl">C</span><input type="range" id="oc-${stop.id}" min="0" max="0.4" step="0.005" value="${stop.oklch[1]}"></div>
+            <div class="oklch-row"><span class="oklch-lbl">H</span><input type="range" id="oh-${stop.id}" min="0" max="360" step="1" value="${stop.oklch[2]}"></div>
+          </div>
+        `;
+      } else {
+        colorUI = `<input type="color" class="cp" id="scp-${stop.id}" value="${stop.fixedColor}">`;
+      }
 
-      /* — top row — */
-      const top = document.createElement('div');
-      top.className = 'stop-top';
       top.innerHTML = `
         <span class="sr-lbl">C${i+1}</span>
         <span class="sr-dot" id="sd-${stop.id}"></span>
         <button class="lb${stop.locked?' locked':''}" id="lb-${stop.id}">${stop.locked?'LOCK':'AUTO'}</button>
-        <input type="color" class="cp" id="scp-${stop.id}" value="${stop.fixedColor}">
+        ${colorUI}
         <button class="rm-btn" id="rm-${stop.id}" ${canRm?'':' disabled'}>−</button>
       `;
       card.appendChild(top);
 
-      /* — position row — */
-      const posRow = document.createElement('div');
-      posRow.className = 'stop-pos-row';
-
+      // ... keep existing position row code here ...
+      const posRow = document.createElement('div'); posRow.className = 'stop-pos-row';
       if (isFirst || isLast) {
-        posRow.innerHTML = `
-          <span class="pos-fixed">${isFirst?'▸ ORIGIN (0.00)':'▸ TERMINUS (1.00)'}</span>
-        `;
+        posRow.innerHTML = `<span class="pos-fixed">${isFirst?'▸ ORIGIN (0.00)':'▸ TERMINUS (1.00)'}</span>`;
       } else {
-        const prevPos = stops[i-1].pos + 0.005;
-        const nextPos = stops[i+1].pos - 0.005;
+        const prevPos = stops[i-1].pos + 0.005, nextPos = stops[i+1].pos - 0.005;
         const pct = ((stop.pos - prevPos) / (nextPos - prevPos) * 100).toFixed(1);
         posRow.innerHTML = `
-          <input type="range" class="sr-pos" id="sp-${stop.id}"
-            min="${prevPos.toFixed(3)}" max="${nextPos.toFixed(3)}"
-            step="0.005" value="${stop.pos.toFixed(3)}"
-            style="--pct:${pct}%">
+          <input type="range" class="sr-pos" id="sp-${stop.id}" min="${prevPos.toFixed(3)}" max="${nextPos.toFixed(3)}" step="0.005" value="${stop.pos.toFixed(3)}" style="--pct:${pct}%">
           <span class="stop-pos-val" id="spv-${stop.id}">${stop.pos.toFixed(2)}</span>
         `;
       }
-      card.appendChild(posRow);
-      container.appendChild(card);
+      card.appendChild(posRow); container.appendChild(card);
 
-      /* — wire events — */
-      /* Lock toggle: mutate in-place, update button without full rebuild */
+      /* Lock toggle */
       document.getElementById('lb-' + stop.id).addEventListener('click', () => {
         stop.locked = !stop.locked;
         const btn = document.getElementById('lb-' + stop.id);
         if (stop.locked) {
-          /* snap picker to current noise color */
-          stop.fixedColor = rgb01ToHex(...actualCols[i]);
-          document.getElementById('scp-' + stop.id).value = stop.fixedColor;
+          if (useOklch) {
+            stop.oklch = [actualCols[i][0], actualCols[i][1], actualCols[i][2] * 180 / Math.PI];
+            document.getElementById('ol-'+stop.id).value = stop.oklch[0];
+            document.getElementById('oc-'+stop.id).value = stop.oklch[1];
+            document.getElementById('oh-'+stop.id).value = stop.oklch[2];
+          } else {
+            stop.fixedColor = rgb01ToHex(...actualCols[i]);
+            document.getElementById('scp-'+stop.id).value = stop.fixedColor;
+          }
           btn.textContent = 'LOCK'; btn.classList.add('locked');
         } else {
           btn.textContent = 'AUTO'; btn.classList.remove('locked');
         }
       });
 
-      /* Color picker: update fixedColor, mark locked without rebuild */
-      document.getElementById('scp-' + stop.id).addEventListener('input', e => {
-        stop.fixedColor = e.target.value;
-        if (!stop.locked) {
-          stop.locked = true;
-          const btn = document.getElementById('lb-' + stop.id);
-          if (btn) { btn.textContent = 'LOCK'; btn.classList.add('locked'); }
-        }
-      });
-
-      /* Remove */
-      if (canRm) {
-        document.getElementById('rm-' + stop.id).addEventListener('click', () => {
-          stops.splice(i, 1);
-          actualCols.splice(i, 1);
-          rebuildStopUI();
-          document.getElementById('addStopBtn').disabled = stops.length >= MAX_STOPS;
+      /* Color inputs */
+      if (useOklch) {
+        const updateOklch = () => {
+          stop.oklch = [
+            parseFloat(document.getElementById('ol-'+stop.id).value),
+            parseFloat(document.getElementById('oc-'+stop.id).value),
+            parseFloat(document.getElementById('oh-'+stop.id).value)
+          ];
+          if (!stop.locked) {
+            stop.locked = true;
+            document.getElementById('lb-'+stop.id).textContent='LOCK'; 
+            document.getElementById('lb-'+stop.id).classList.add('locked');
+          }
+          actualCols[i] = [stop.oklch[0], stop.oklch[1], stop.oklch[2] * Math.PI / 180];
+          updateGradientUI();
+        };
+        ['ol','oc','oh'].forEach(id => document.getElementById(`${id}-${stop.id}`).addEventListener('input', updateOklch));
+      } else {
+        document.getElementById('scp-' + stop.id).addEventListener('input', e => {
+          stop.fixedColor = e.target.value;
+          if (!stop.locked) {
+            stop.locked = true;
+            document.getElementById('lb-'+stop.id).textContent='LOCK'; 
+            document.getElementById('lb-'+stop.id).classList.add('locked');
+          }
+          actualCols[i] = hexToRgb01(stop.fixedColor);
+          updateGradientUI();
         });
       }
 
-      /* Position slider */
+      /* Remove & Position sliders remain unchanged ... */
+      if (canRm) {
+        document.getElementById('rm-' + stop.id).addEventListener('click', () => {
+          stops.splice(i, 1); actualCols.splice(i, 1); rebuildStopUI();
+        });
+      }
       if (!isFirst && !isLast) {
         document.getElementById('sp-' + stop.id).addEventListener('input', e => {
           stop.pos = parseFloat(e.target.value);
-          const sl  = e.target;
-          const pct = ((stop.pos - parseFloat(sl.min)) / (parseFloat(sl.max) - parseFloat(sl.min)) * 100).toFixed(1);
+          const sl = e.target, pct = ((stop.pos - parseFloat(sl.min)) / (parseFloat(sl.max) - parseFloat(sl.min)) * 100).toFixed(1);
           sl.style.setProperty('--pct', pct + '%');
           document.getElementById('spv-' + stop.id).textContent = stop.pos.toFixed(2);
           refreshSliderBounds();
-          /* re-sort if this stop crossed a neighbor (shouldn't happen with proper min/max, but safety) */
           const sorted = [...stops].sort((a,b) => a.pos - b.pos);
           if (sorted.some((s,j) => s.id !== stops[j].id)) {
-            stops.sort((a,b) => a.pos - b.pos);
-            actualCols = stops.map(() => [0.5,0.5,0.5]);
-            rebuildStopUI();
+            stops.sort((a,b) => a.pos - b.pos); rebuildStopUI();
           }
         });
       }
     });
 
-    /* Update add-stop button */
-    document.getElementById('addStopBtn').disabled = stops.length >= MAX_STOPS;
-    /* Sync live dots */
     updateGradientUI();
   }
+
 
   /* Gradient bulk actions */
   document.getElementById('addStopBtn').addEventListener('click', () => {
@@ -773,29 +797,29 @@
     if (oscC.width !== w) oscC.width = w;
     const h = oscC.height;
     oscCtx.clearRect(0,0,w,h);
-    oscCtx.fillStyle = 'oklch(0.05 0.01 150 / 0.94)'; oscCtx.fillRect(0,0,w,h);
+    oscCtx.fillStyle = 'rgba(2,6,3,0.94)'; oscCtx.fillRect(0,0,w,h);
     if (audioReady && dataArray) {
       analyser.getByteFrequencyData(dataArray);
       const bins = Math.floor(dataArray.length * 0.65), bw = w / bins;
       for (let i=0;i<bins;i++) {
         const t = dataArray[i]/255;
         oscCtx.fillStyle = audioEnabled
-          ? `oklch(0.72 0.19 155 / ${0.35+t*0.65})`
-          : `oklch(0.49 0.05 149 / ${0.15+t*0.2})`;
+          ? `rgba(26,191,114,${0.35+t*0.65})`
+          : `rgba(90,120,90,${0.15+t*0.2})`;
         oscCtx.fillRect(i*bw, h-t*h, Math.max(1,bw-0.5), t*h);
       }
       const ly = h*(1-Math.min(smoothAmp,1)*0.92);
-      oscCtx.strokeStyle = audioEnabled ? 'oklch(0.64 0.15 73 / 0.55)' : 'oklch(0.38 0.03 149 / 0.3)';
+      oscCtx.strokeStyle = audioEnabled ? 'rgba(192,136,24,0.55)' : 'rgba(90,100,90,0.3)';
       oscCtx.lineWidth=1; oscCtx.beginPath(); oscCtx.moveTo(0,ly); oscCtx.lineTo(w,ly); oscCtx.stroke();
       if (!audioEnabled) {
-        oscCtx.fillStyle='oklch(0.52 0.18 35 / 0.45)'; oscCtx.font='8px Share Tech Mono,monospace';
+        oscCtx.fillStyle='rgba(198,60,24,0.45)'; oscCtx.font='8px Share Tech Mono,monospace';
         oscCtx.textAlign='center'; oscCtx.fillText('REACTIVE OFF',w/2,10);
       }
     } else {
-      oscCtx.strokeStyle='oklch(0.38 0.055 149 / 0.35)'; oscCtx.lineWidth=1; oscCtx.setLineDash([3,5]);
+      oscCtx.strokeStyle='rgba(58,90,64,0.35)'; oscCtx.lineWidth=1; oscCtx.setLineDash([3,5]);
       oscCtx.beginPath(); oscCtx.moveTo(0,h/2); oscCtx.lineTo(w,h/2); oscCtx.stroke();
       oscCtx.setLineDash([]);
-      oscCtx.fillStyle='oklch(0.38 0.055 149 / 0.45)'; oscCtx.font='8px Share Tech Mono,monospace';
+      oscCtx.fillStyle='rgba(58,90,64,0.45)'; oscCtx.font='8px Share Tech Mono,monospace';
       oscCtx.textAlign='center'; oscCtx.fillText('NO SIGNAL',w/2,h/2-5);
     }
   }
@@ -918,6 +942,56 @@
     }
   });
 
+/* ── Color Space Math & Toggle ─────────────────────────────────────────── */
+  let useOklch = false;
+
+  function srgbToLin(c) { return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }
+  function linToSrgb(c) { return c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1/2.4) - 0.055; }
+
+  function rgb01ToOklch(r, g, b) {
+    let lr = srgbToLin(r), lg = srgbToLin(g), lb = srgbToLin(b);
+    let l = Math.cbrt(0.4122214708 * lr + 0.5363325363 * lg + 0.0514459929 * lb);
+    let m = Math.cbrt(0.2119034982 * lr + 0.6806995451 * lg + 0.1073969566 * lb);
+    let s = Math.cbrt(0.0883024619 * lr + 0.2817188376 * lg + 0.6302613616 * lb);
+    let L = 0.2104542553*l + 0.7936177850*m - 0.0040720468*s;
+    let a = 1.9779984951*l - 2.4285922050*m + 0.4505937099*s;
+    let b_ = 0.0259040371*l + 0.7827717662*m - 0.8086757660*s;
+    return [L, Math.sqrt(a*a + b_*b_), Math.atan2(b_, a)];
+  }
+
+  function oklchToRgb01(L, C, h_rad) {
+    let a = C * Math.cos(h_rad), b = C * Math.sin(h_rad);
+    let l_ = L + 0.3963377774 * a + 0.2158037573 * b;
+    let m_ = L - 0.1055613458 * a - 0.0638541728 * b;
+    let s_ = L - 0.0894841775 * a - 1.2914855480 * b;
+    l_ = l_*l_*l_; m_ = m_*m_*m_; s_ = s_*s_*s_;
+    let r =  4.0767416621 * l_ - 3.3077115913 * m_ + 0.2309699292 * s_;
+    let g = -1.2684380046 * l_ - 2.6097574011 * m_ - 0.3413193965 * s_;
+    let b_ = -0.0041960863 * l_ - 0.7034186147 * m_ + 1.7076147010 * s_;
+    return [Math.max(0,Math.min(1,linToSrgb(r))), Math.max(0,Math.min(1,linToSrgb(g))), Math.max(0,Math.min(1,linToSrgb(b_)))];
+  }
+
+  document.getElementById('colorSpaceBtn').addEventListener('click', (e) => {
+    useOklch = !useOklch;
+    e.target.textContent = useOklch ? 'SWITCH TO RGB' : 'SWITCH TO OKLCH';
+    document.getElementById('v-colorSpace').textContent = useOklch ? 'OKLCH' : 'RGB';
+    
+    /* Convert existing colors to preserve visual state when swapping */
+    if (useOklch) {
+      stops.forEach(s => {
+        let rgb = hexToRgb01(s.fixedColor);
+        let ok = rgb01ToOklch(rgb[0], rgb[1], rgb[2]);
+        let h_deg = ok[2] * 180 / Math.PI;
+        s.oklch = [ok[0], ok[1], h_deg < 0 ? h_deg + 360 : h_deg];
+      });
+    } else {
+      stops.forEach(s => {
+        let rgb = oklchToRgb01(s.oklch[0], s.oklch[1], s.oklch[2] * Math.PI / 180);
+        s.fixedColor = rgb01ToHex(rgb[0], rgb[1], rgb[2]);
+      });
+    }
+    rebuildStopUI();
+  });
   /* ── Render ────────────────────────────────────────────────────────────── */
   let lastTime=0, gTime=0, satProg=0, frameCount=0;
 
@@ -984,14 +1058,16 @@
     /* Saturation */
     const sat=P.satMin+(simplex.noise(satProg,0)+1)*0.5*(P.satMax-P.satMin);
 
-    /* Pack stop uniforms */
+/* Pack stop uniforms */
     stopColFlat.fill(0); stopPosFlat.fill(0);
     stops.forEach((stop,i)=>{
-      const c=actualCols[i];
+      let c = actualCols[i];
+      if (useOklch) c = rgb01ToOklch(c[0], c[1], c[2]); // Intercept and convert
+      
       stopColFlat[i*3]=c[0]; stopColFlat[i*3+1]=c[1]; stopColFlat[i*3+2]=c[2];
       stopPosFlat[i]=stop.pos;
     });
-
+	
     gl.uniform2f(uRes, canvas.width, canvas.height);
     gl.uniform2f(uScr, sx, sy);
     gl.uniform1f(uNSc, P.noiseScale);
@@ -1001,6 +1077,7 @@
     gl.uniform3fv(uStopCol, stopColFlat);
     gl.uniform1fv(uStopPos, stopPosFlat);
     gl.uniform1f(uStopCount, stops.length);
+	gl.uniform1i(uColSpc, useOklch ? 1 : 0);
 
     gl.drawArrays(gl.TRIANGLES, 0, 6);
 
