@@ -11,7 +11,7 @@
     <meta name="keywords" content="Xyh Tamura, Cy Tamura, Cye Tamura">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>xyh tamura — intermedia artist-researcher</title>
+<title>xyh tamura</title>
 <meta name="description" content="Xyh Tamura (also Cy / Cye Tamura) — Filipino-Japanese intermedia artist-researcher, singer-songwriter, and creative technologist based in Manila. Poems, songs, plays, papers, and instruments.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -178,17 +178,14 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2rem,6vw,3rem
 .blurb{font-family:var(--font-blurb);color:var(--blurb-color);font-size:1rem;line-height:1.45;max-width:54ch;margin:.6rem auto 0;}
 .blurb em{font-style:italic;color:var(--h4-color);}
 
-/* ── GALLERY (vibe mosaic, horizontal scroll, bleeds off-edge) ── */
+/* ── GALLERY ── */
 .gallery{
   width:100%;margin:1.8rem 0 1.4rem;
-  display:flex;gap:10px;overflow-x:auto;padding:.4rem .2rem 1rem;
-  scrollbar-width:thin;scroll-snap-type:x proximity;
-  -webkit-mask-image:linear-gradient(to right,transparent,#000 3%,#000 97%,transparent);
-  mask-image:linear-gradient(to right,transparent,#000 3%,#000 97%,transparent);
+  display:flex;flex-wrap:wrap;gap:10px;padding:.4rem 0;
 }
 .tile{
-  flex:0 0 auto;height:148px;border-radius:12px;scroll-snap-align:start;
-  padding: 0; overflow: hidden; position: relative;
+  flex:1 1 auto;height:148px;border-radius:12px;
+  overflow:hidden;position:relative;
   box-shadow:0 4px 14px var(--btn-glass-shadow);
   display:flex;align-items:flex-end;padding:.5rem;
   font-family:var(--font-special);font-size:.7rem;color:rgba(255,255,255,.6);letter-spacing:.08em;
@@ -197,16 +194,23 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2rem,6vw,3rem
 }
 .tile:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 8px 24px var(--btn-glass-shadow),0 0 0 1px var(--line-hover-color);}
 @keyframes drift{0%,100%{background-position:0% 50%;}50%{background-position:100% 50%;}}
-.t1{width:200px;background-image:linear-gradient(135deg,#7a52f3,#00509c,#1ad9c9);}
-.t2{width:148px;background-image:linear-gradient(135deg,#ff66d4,#e72e5c,#f0bb86);filter:url(#goo-md);}
-.t3{width:240px;background-image:linear-gradient(135deg,#0aaff0,#988fff,#cdfc12);}
-.t4{width:148px;background-image:linear-gradient(135deg,#ab00ff,#7a52f3,#e72e5c);}
-.t5{width:200px;background-image:linear-gradient(135deg,#1ad9c9,#b5ebe1,#cdfc12);filter:url(#goo-sm);}
-.t6{width:172px;background-image:linear-gradient(135deg,#ffb400,#f07167,#ff66d4);}
+.t1{min-width:180px;background-image:linear-gradient(135deg,#7a52f3,#00509c,#1ad9c9);}
+.t2{min-width:140px;background-image:linear-gradient(135deg,#ff66d4,#e72e5c,#f0bb86);filter:url(#goo-md);}
+.t3{min-width:220px;background-image:linear-gradient(135deg,#0aaff0,#988fff,#cdfc12);}
+.t4{min-width:140px;background-image:linear-gradient(135deg,#ab00ff,#7a52f3,#e72e5c);}
+.t5{min-width:180px;background-image:linear-gradient(135deg,#1ad9c9,#b5ebe1,#cdfc12);filter:url(#goo-sm);}
+.t6{min-width:155px;background-image:linear-gradient(135deg,#ffb400,#f07167,#ff66d4);}
 .goo-defs{position:absolute;width:0;height:0;}
 
-.tile img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: inherit; }
-.tile img, .tile video { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: inherit; }
+.tile img,.tile video{width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit;}
+
+@media(max-width:600px){
+  .tile{height:110px;}
+  .t1,.t5{min-width:130px;}
+  .t3{min-width:160px;}
+  .t2,.t4{min-width:100px;}
+  .t6{min-width:115px;}
+}
 
 /* ── SOCIALS (centered, scrollable on overflow, never left-clipped) ── */
 .socials{
@@ -283,6 +287,11 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2rem,6vw,3rem
 .chip.sci-comm{background:var(--category-sci-comm-color);}
 .chip.artistic-research{background:var(--category-artistic-research-color);}
 .chip.fashion{background:var(--category-fashion-color);}
+
+.chip{color:#f5f2ff;text-shadow:0 1px 2px rgba(0,0,0,.35);}
+.chip.score{color:#15131f;text-shadow:0 1px 1px rgba(255,255,255,.2);}
+.chip.writing{color:#15131f;text-shadow:0 1px 1px rgba(255,255,255,.2);}
+.chip.participatory{color:#15131f;text-shadow:0 1px 1px rgba(255,255,255,.2);}
 
 .body{padding:.2rem .4rem 1.4rem 5.5rem;max-width:64ch;}
 .body .media{
@@ -362,6 +371,17 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2rem,6vw,3rem
 </head>
 <body>
 
+<!-- Site design goals: 
+1. Showcase personality, character, vibe, and works. Immediacy without too much overload. Having to appear for humans of various sectors: music/art/writing/film/stage industries and professionals, academics, artists and curators, literati, academic music, tech and engineers, scientists, social workers, and the general public. 
+2. Text for llm crawlers and humans who like to read lots of text. 
+3. Simple, navigable where possible, without oversimplifying my practice or character. reduce features and try to stay lightweight, but not at the expense of immediacy and character (visual heavy can be feature heavy but is often needed for immediacy)
+4. display-flexible, mobile friendly
+5. Eschew professionalism aesthetics for all of the above 
+
+this site is for neurodivergents, punk academics, subculturists. navigable and usable enough for everyone else but not exactly for them. 
+-->
+
+
 <!-- goo filters from your live site -->
 <svg class="goo-defs" xmlns="http://www.w3.org/2000/svg"><defs>
   <filter id="goo-sm"><feTurbulence type="fractalNoise" baseFrequency="0.028 0.042" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.5" xChannelSelector="R" yChannelSelector="G"/></filter>
@@ -376,7 +396,7 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2rem,6vw,3rem
     <div class="othernames">Cy Tamura · Cye Tamura · 田村再</div>
     <div class="tagline">transdisciplinary artist-researcher · singer-songwriter · creative technologist</div>
     <div class="blurb">
-      Xyh is a Filipino-Japanese creator working through intermedia art, experimental pop, electronic literature, science and technology, research, and theory. Their work orbits issues of selfhood, media, posthuman relations, ecological-technological worlds, and the ways cultures metabolize systems.
+      xyh is a Filipino-Japanese or Ilonggo-Japanese creator working through intermedia art, experimental pop, electronic literature, science and technology, research, and theory. Their work orbits issues of selfhood, media, posthuman relations, ecological-technological worlds, and the ways cultures metabolize systems.
     </div>
   </header>
 
@@ -611,11 +631,11 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2rem,6vw,3rem
   </div>
 </details>
 
-<details class="entry" data-cats="artistic-research participatory visuals writing" id="tanim-kalye">
+<details class="entry" data-cats="artistic-research participatory intermedia" id="tanim-kalye">
   <summary>
     <span class="year">2025</span>
     <span class="title">Tanim-Kalye</span>
-    <span class="chips"><span class="chip artistic-research">research-art</span><span class="chip participatory">participatory</span><span class="chip visuals">visual</span><span class="chip writing">writing</span></span>
+    <span class="chips"><span class="chip artistic-research">research-art</span><span class="chip participatory">participatory</span><span class="chip intermedia">intermedia</span></span>
   </summary>
   <div class="body">
     <p class="ctx">Quezon City Biennial · with Krus na Ligas residents, the LGU &amp; UP Institute of Biology</p>
@@ -1047,11 +1067,11 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2rem,6vw,3rem
   </div>
 </details>
 
-<details class="entry" data-cats="intermedia visuals" id="plasticoid">
+<details class="entry" data-cats="intermedia" id="plasticoid">
   <summary>
     <span class="year">2024→</span>
     <span class="title">Plasticoid</span>
-    <span class="chips"><span class="chip intermedia">intermedia</span><span class="chip visuals">visual</span></span>
+    <span class="chips"><span class="chip intermedia">intermedia</span></span>
   </summary>
   <div class="body">
     <p>Interactive digital collage and visual poetry on the metamodern, constructed self.</p>
@@ -1108,7 +1128,7 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2rem,6vw,3rem
   <summary>
     <span class="year">2022→</span>
     <span class="title">Second Life — Worlds &amp; Worldbuilding</span>
-    <span class="chips"><span class="chip virtual">virtual</span><span class="chip music">music</span><span class="chip fashion">fashion</span></span>
+    <span class="chips"><span class="chip virtual">virtual</span><span class="chip music">music</span><span class="chip visuals">visual</span><span class="chip fashion">fashion</span></span>
   </summary>
   <div class="body">
     <p>Resident DJ, fashion designer, event coordinator, 3D mesh artist. Curated genre sets (vaporwave, exotica, electro swing, seapunk, EBM, noise) as temporary worlds — designing posters, building sets, changing skies. Plus avatar fashion impossible in physical space: dresses made from floating pearls, leaves, blobs, dandelion particles. <span class="role">Blender · Substance Painter</span></p>
