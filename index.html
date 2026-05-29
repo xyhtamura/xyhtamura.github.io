@@ -365,6 +365,13 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2rem,6vw,3rem
 [data-tooltip]:hover::after,
 [data-tooltip]:focus::after{opacity:1;}
 [data-tooltip]:focus{outline:none;}
+
+/* ── COLOPHON ── */
+.colophon{margin-top:4rem;padding-top:1.6rem;border-top:1px solid var(--line-color);font-family:var(--font-detail);font-size:.78rem;color:var(--alt-title-color);line-height:1.8;text-align:center;}
+.colophon a{color:var(--email-color);text-decoration:none;}
+.colophon a:hover{color:var(--link-hover-color);}
+.colophon .row{display:flex;flex-wrap:wrap;gap:.4rem 1.3rem;justify-content:center;}
+
 </style>
 </head>
 <body>
@@ -1519,6 +1526,19 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
 </main>
 </div>
 
+  <footer class="colophon">
+    <div class="row">
+      <a href="mailto:xyhtamura0@gmail.com">xyhtamura0@gmail.com</a>
+      <span>github / instagram / bandcamp @xyhtamura</span>
+    </div>
+    <div class="row" style="margin-top:.4rem;opacity:.7;">
+      <span>last touched 2026.05.28</span>
+      <span>quicksand · rubik · averia · lexend · dosis</span>
+      <span>no analytics, no cookies</span>
+    </div>
+  </footer>
+
+
 <script>
 const btns=document.querySelectorAll('.fbtn');
 const entries=document.querySelectorAll('.entry');
@@ -1539,5 +1559,7 @@ btns.forEach(b=>b.addEventListener('click',()=>{
   });
 }));
 </script>
+
+
 </body>
 </html>
