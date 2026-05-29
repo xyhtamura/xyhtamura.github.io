@@ -2,127 +2,420 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Astloch:wght@400;700&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
-    <title>ROIL Oscillator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;600;700&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+    <title>Roil — Eosforos Oscillator</title>
     <style>
         :root {
-            --bg-color: #1a1a1a;
-            --control-bg: #2a2a2a;
-            --section-bg: #222;
-            --text-color: #e0e0e0;
-            --accent-color: #ff4500;
-            --handle-color: #cccccc;
+            --bg:           #070605;
+            --section-bg:   #0e0b09;
+            --border:       #2a1c14;
+            --slider-track: #1c1410;
+
+            --accent:       #c84000;
+            --accent-hover: #f05010;
+            --accent-glow:  rgba(200, 64, 0, 0.28);
+
+            --handle:       #c08820;
+            --handle-hi:    #e8b840;
+            --handle-glow:  rgba(192, 136, 32, 0.38);
+
+            --value:        #94c890;
+            --value-dim:    rgba(148, 200, 144, 0.22);
+
+            --text:         #ddd0bc;
+            --text-dim:     #6a5040;
+            --title:        #de4206;
         }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            font-family: 'Astloch', serif;
-			letter-spacing: 0.1rem;
-			font-size: 1.2rem;
-			font-weight: bold;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            font-family: 'Chakra Petch', sans-serif;
+            font-weight: 400;
+            letter-spacing: 0.03em;
+            font-size: 1rem;
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(ellipse 90% 55% at 50% 0%, #200c04 0%, transparent 68%),
+                repeating-linear-gradient(0deg,
+                    transparent 0px, transparent 3px,
+                    rgba(0,0,0,0.045) 3px, rgba(0,0,0,0.045) 4px);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 1.5em 0 4em;
             display: flex;
             justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 2em 0;
+            align-items: flex-start;
         }
-        .main-container {
-            border: 1px solid #333;
-            background-color: var(--section-bg);
-            padding: 2em;
-            border-radius: 8px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-            text-align: center;
-            width: 90%;
-            max-width: 1200px;
-        }
-        h1 { color: var(--accent-color); margin-top: 0; letter-spacing: 2px; font-size: 3.5rem; font-weight: bold;  font-family:UnifrakturCook;}
-        h3 { border-bottom: 1px solid #444; padding-bottom: 0.5em; margin-top: 0; font-weight: bold; }
-        
-        .button-container { display: flex; gap: 1em; justify-content: center; margin-bottom: 2em; }
-        .button, .button-container button, select {
-            background-color: var(--accent-color);
-            color: var(--bg-color);
-            border: none;
-            padding: 15px 30px;
-            font-size: 1.2em;
-            font-family: inherit;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.2s;
-			font-weight: bold;
-        }
-        .button-container button:hover, .button:hover { background-color: #ff6a33; }
-        .button-container button:disabled { background-color: #555; color: #888; cursor: not-allowed; }
 
+        .main-container { width: 96%; max-width: 1200px; }
+
+        /* ─── HEADER ─── */
+        .header { text-align: center; margin-bottom: 1.25em; padding: 0.4em 0 0.9em; }
+        .header::after {
+            content: '';
+            display: block;
+            width: 55%; max-width: 380px; height: 1px;
+            background: linear-gradient(to right, transparent, var(--border), transparent);
+            margin: 0.75em auto 0;
+        }
+
+h1 {
+    font-family: 'UnifrakturCook', serif;
+    font-size: clamp(3rem, 12vw, 5.5rem);
+    letter-spacing: 6px;
+    line-height: 1;
+    margin-bottom: 0.15em;
+    display: inline-block;
+
+    /* adjust this to rescale the magma texture inside the letters */
+    --title-texture-scale: 300px;
+	    --title-texture-x: 0%;
+    --title-texture-y: 70%;
+
+    color: transparent;
+    background-image:
+        linear-gradient(rgba(255, 220, 200, 0.34), rgba(255, 95, 15, 0.18)),
+        url("magma.png");
+
+    background-size:
+        100% 100%,
+        var(--title-texture-scale) var(--title-texture-scale);
+
+
+    background-position:
+        center,
+        var(--title-texture-x) var(--title-texture-y);
+
+    background-repeat:
+        no-repeat,
+        repeat;
+
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    text-shadow:
+        1px 1px 0 rgba(60, 20, 0, 0.85),
+        0 0 14px rgba(255, 180, 60, 0.30),
+        0 0 34px rgba(255, 90, 0, 0.34),
+        0 3px 6px rgba(0,0,0,0.9);
+
+    animation: emberFlicker 5s ease-in-out infinite;
+}
+        @keyframes emberFlicker {
+            0%,100% { text-shadow: 0 0 40px rgba(200,64,0,.28), 0 3px 6px rgba(0,0,0,.9); }
+            20%     { text-shadow: 0 0 72px rgba(200,64,0,.52), 0 3px 6px rgba(0,0,0,.9); }
+            45%     { text-shadow: 0 0 22px rgba(200,64,0,.16), 0 3px 6px rgba(0,0,0,.9); }
+            72%     { text-shadow: 0 0 58px rgba(200,64,0,.42), 0 3px 6px rgba(0,0,0,.9); }
+        }
+
+        .subtitle { font-size: 0.58em; color: var(--text-dim); letter-spacing: 4px; text-transform: uppercase; font-weight: 300; }
+
+        /* ─── TRANSPORT ─── */
+        .transport {
+            display: flex; gap: 0.6em; justify-content: center;
+            align-items: center; flex-wrap: wrap; margin-bottom: 1em;
+        }
+        .transport button {
+            background: var(--accent); color: #fff6ee;
+            border: none; padding: 0.8em 1.8em;
+            font-size: 0.82em; font-family: inherit; font-weight: 700;
+            letter-spacing: 0.14em; text-transform: uppercase;
+            cursor: pointer; border-radius: 2px; min-height: 46px;
+            transition: background-color 0.13s, box-shadow 0.13s;
+        }
+        .transport button:hover:not(:disabled) {
+            background: var(--accent-hover);
+            box-shadow: 0 0 22px var(--accent-glow);
+        }
+        .transport button:disabled { background: #181210; color: var(--text-dim); cursor: not-allowed; }
+        #randomizeButton { background: #1e1814; color: var(--handle); border: 1px solid #2e2010; }
+        #randomizeButton:hover:not(:disabled) {
+            background: #281e10; color: var(--handle-hi); box-shadow: 0 0 16px var(--handle-glow);
+        }
+
+        /* ─── PRESETS ─── */
+        .preset-bar {
+            display: flex; align-items: center; gap: 0.75em;
+            justify-content: center; flex-wrap: wrap; margin-bottom: 1.4em;
+        }
+        .preset-bar-label {
+            font-size: 0.56em; letter-spacing: 3px; text-transform: uppercase;
+            color: var(--text-dim); font-weight: 600;
+        }
+        .preset-slots { display: flex; gap: 0.45em; flex-wrap: wrap; justify-content: center; }
+        .preset-slot {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 0.2em;
+        }
+        .ps-load {
+            background: #141010; color: var(--text-dim);
+            border: 1px solid var(--border); font-family: 'UnifrakturCook', serif;
+            font-size: 1.0em; width: 38px; height: 38px; cursor: pointer;
+            border-radius: 2px; transition: all 0.12s;
+        }
+        .ps-load.filled {
+            border-color: #3a2818; color: var(--handle); background: #1e1410;
+        }
+        .ps-load.filled:hover { background: #2a1c10; box-shadow: 0 0 12px var(--handle-glow); }
+        .ps-save {
+            background: none; border: none; font-family: inherit;
+            font-size: 0.46em; letter-spacing: 1.5px; text-transform: uppercase;
+            color: #3a2818; cursor: pointer; padding: 0.1em 0.3em;
+            transition: color 0.12s;
+        }
+        .ps-save:hover { color: var(--accent); }
+
+        /* ─── GRID ─── */
         .sections-wrapper {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5em;
-            margin-bottom: 1.5em;
+            grid-template-columns: repeat(auto-fill, minmax(268px, 1fr));
+            gap: 0.85em; margin-bottom: 0.85em;
         }
         .section {
-            background: var(--control-bg);
-            padding: 1.5em;
-            border-radius: 6px;
+            background: var(--section-bg);
+            border: 1px solid var(--border);
+            padding: 1em 0.9em 1.2em;
+            border-radius: 3px;
         }
-        .control-group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 1.5em;
+        .section-waveform { grid-column: 1 / -1; }
+
+        h3 {
+            font-size: 0.58em; letter-spacing: 3px; text-transform: uppercase;
+            color: var(--text-dim); border-bottom: 1px solid var(--border);
+            padding-bottom: 0.55em; margin-bottom: 1em; font-weight: 700;
+            display: flex; align-items: center; gap: 0.55em;
         }
-        label { margin-bottom: 1em; font-size: 0.9em; }
+        h3::before {
+            content: '';
+            display: inline-block; width: 5px; height: 5px;
+            background: var(--accent); border-radius: 50%; flex-shrink: 0;
+            box-shadow: 0 0 6px var(--accent-glow);
+        }
+
+        /* ─── CONTROL GROUP ─── */
+        .control-group { margin-bottom: 1.25em; }
+        .control-group:last-child { margin-bottom: 0; }
+
+        .control-label {
+            display: block; font-size: 0.62em; color: var(--text-dim);
+            letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 0.4em; font-weight: 600;
+        }
+
+        /* ─── HIDDEN RANGE INPUTS (audio compat) ─── */
+        .hidden-slider { display: none; }
+
+        /* ─── STANDARD RANGE SLIDERS ─── */
         input[type="range"] {
             -webkit-appearance: none; appearance: none;
-            width: 100%; height: 5px; background: #444; outline: none; border-radius: 5px; cursor: pointer;
+            width: 100%; height: 5px;
+            background: linear-gradient(to right,
+                var(--handle) 0%, var(--handle) var(--fill, 0%),
+                var(--slider-track) var(--fill, 0%), var(--slider-track) 100%);
+            outline: none; border-radius: 3px; cursor: pointer;
+            touch-action: none; display: block; margin: 0.3em 0 0.2em;
         }
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none; appearance: none;
-            width: 20px; height: 20px; background: var(--handle-color); border-radius: 50%;
+            width: 24px; height: 24px;
+            background: radial-gradient(circle at 38% 35%, var(--handle-hi), var(--handle));
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--handle-glow), 0 0 0 2px var(--bg);
+            transition: box-shadow 0.12s;
+        }
+        input[type="range"]:active::-webkit-slider-thumb,
+        input[type="range"]:focus::-webkit-slider-thumb {
+            box-shadow: 0 0 20px var(--handle-glow), 0 0 0 2px var(--bg);
         }
         input[type="range"]::-moz-range-thumb {
-            width: 20px; height: 20px; background: var(--handle-color); border-radius: 50%;
+            width: 24px; height: 24px;
+            background: radial-gradient(circle at 38% 35%, var(--handle-hi), var(--handle));
+            border-radius: 50%; border: 2px solid var(--bg);
+            box-shadow: 0 0 8px var(--handle-glow);
         }
-        .value-display { margin-top: 1em; font-size: 0.8em; color: var(--accent-color); min-height: 1em; }
-        
-        #waveCanvas {
-            background-color: #111;
-            border: 1px solid #444;
+
+        /* ─── DUAL RANGE SLIDER ─── */
+        .dual-range-wrap { padding: 12px 0 6px; }
+        .dual-track {
+            position: relative; height: 5px;
+            background: var(--slider-track); border-radius: 3px;
             cursor: pointer;
         }
-        select {
-            padding: 10px;
-            font-size: 1em;
-            width: 100%;
+        .dual-fill {
+            position: absolute; height: 100%;
+            background: linear-gradient(to right, #8a6010, var(--handle));
+            border-radius: 3px; pointer-events: none;
         }
+        .dual-thumb {
+            position: absolute; width: 24px; height: 24px; top: 50%;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle at 38% 35%, var(--handle-hi), var(--handle));
+            border-radius: 50%; cursor: grab; touch-action: none;
+            box-shadow: 0 0 8px var(--handle-glow), 0 0 0 2px var(--bg);
+            transition: box-shadow 0.12s; z-index: 2;
+            user-select: none; -webkit-user-select: none;
+        }
+        .dual-thumb:active { cursor: grabbing; box-shadow: 0 0 20px var(--handle-glow), 0 0 0 2px var(--bg); }
+
+        /* ─── META INPUTS ─── */
+        .range-meta {
+            display: grid; grid-template-columns: 1fr 1.15fr 1fr;
+            gap: 0.32em; margin-top: 0.42em;
+        }
+        .range-meta.four-col { grid-template-columns: 1fr 1fr 1fr 1fr; }
+        @media (max-width: 360px) {
+            .range-meta.four-col { grid-template-columns: 1fr 1fr; row-gap: 0.28em; }
+        }
+
+        .meta-field { display: flex; flex-direction: column; align-items: center; gap: 0.08em; }
+        .meta-label {
+            font-size: 0.48em; letter-spacing: 1px; text-transform: uppercase;
+            color: var(--text-dim); font-weight: 600;
+        }
+        .meta-label.val { color: var(--value); }
+
+        .meta-input {
+            width: 100%; min-width: 0;
+            background: var(--bg); border: none;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-dim);
+            font-family: 'Courier New', monospace;
+            font-size: 0.66em; text-align: center;
+            padding: 0.28em 0.1em 0.18em;
+            outline: none; border-radius: 0;
+            -moz-appearance: textfield; appearance: textfield;
+        }
+        .meta-input::-webkit-outer-spin-button,
+        .meta-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .meta-input:focus { border-bottom-color: var(--accent); color: var(--text); }
+        .meta-input.val-input { color: var(--value); border-bottom-color: var(--value-dim); }
+        .meta-input.val-input:focus { border-bottom-color: var(--value); }
+
+        /* ─── SELECT ─── */
+        select {
+            width: 100%; background: var(--bg); color: var(--text);
+            border: 1px solid var(--border);
+            padding: 0.6em 2em 0.6em 0.65em;
+            font-size: 0.84em; font-family: inherit; font-weight: 600;
+            letter-spacing: 0.04em; cursor: pointer; border-radius: 2px;
+            outline: none; -webkit-appearance: none; appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23c84000'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 0.65em center;
+        }
+        select:focus { border-color: var(--accent); }
+
+        /* ─── CANVAS ─── */
+        #waveCanvas {
+            display: block; width: 100%; height: 150px;
+            background: #060404; border: 1px solid var(--border);
+            border-radius: 2px; cursor: pointer;
+        }
+        .waveform-hint {
+            font-size: 0.55em; color: var(--text-dim); letter-spacing: 2px;
+            text-transform: uppercase; text-align: center; margin-top: 0.55em;
+        }
+
+        /* ─── KEYBIND LEGEND ─── */
+        .keybinds {
+            display: flex; gap: 1.5em; justify-content: center;
+            flex-wrap: wrap; margin-top: 1.2em; padding-top: 0.8em;
+            border-top: 1px solid var(--border);
+        }
+        .kb-item { display: flex; align-items: center; gap: 0.4em; }
+        .kb-key {
+            font-family: 'Courier New', monospace; font-size: 0.6em;
+            background: #161210; border: 1px solid var(--border);
+            color: var(--handle); padding: 0.15em 0.4em; border-radius: 2px;
+        }
+        .kb-desc { font-size: 0.55em; color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase; }
+
+        /* ─── COMPAT SPANS ─── */
+        .value-display { display: none; }
     </style>
 </head>
 <body>
-
 <div class="main-container">
-    <h1>Roil</h1>
-    <div class="button-container">
+
+    <div class="header">
+        <h1>Roil</h1>
+        <p class="subtitle">Eosforos Aperiodic Oscillator</p>
+    </div>
+
+    <div class="transport">
         <button id="activateButton">Activate</button>
         <button id="stopButton" disabled>Stop</button>
+        <button id="randomizeButton">Randomize</button>
+    </div>
+
+    <div class="preset-bar">
+        <span class="preset-bar-label">Presets</span>
+        <div class="preset-slots">
+            <div class="preset-slot">
+                <button class="ps-load" id="preset-0" onclick="loadPreset(0)">I</button>
+                <button class="ps-save" onclick="savePreset(0)">save</button>
+            </div>
+            <div class="preset-slot">
+                <button class="ps-load" id="preset-1" onclick="loadPreset(1)">II</button>
+                <button class="ps-save" onclick="savePreset(1)">save</button>
+            </div>
+            <div class="preset-slot">
+                <button class="ps-load" id="preset-2" onclick="loadPreset(2)">III</button>
+                <button class="ps-save" onclick="savePreset(2)">save</button>
+            </div>
+            <div class="preset-slot">
+                <button class="ps-load" id="preset-3" onclick="loadPreset(3)">IV</button>
+                <button class="ps-save" onclick="savePreset(3)">save</button>
+            </div>
+        </div>
     </div>
 
     <div id="controlsContainer">
         <div class="sections-wrapper">
+
+            <!-- ── OSCILLATOR ── -->
             <div class="section">
                 <h3>Oscillator</h3>
+
+                <!-- Hidden sliders for audio compat -->
+                <input type="range" id="minFreq" class="hidden-slider" min="20" max="2000" value="20" step="1">
+                <input type="range" id="maxFreq" class="hidden-slider" min="20" max="2000" value="93"  step="1">
+
                 <div class="control-group">
-                    <label>Pitch Drift Range</label>
-                    <input type="range" id="minFreq" min="20" max="2000" value="20" step="1">
-                    <input type="range" id="maxFreq" min="20" max="2000" value="93" step="1">
+                    <span class="control-label">Pitch Drift Range</span>
+                    <div class="dual-range-wrap">
+                        <div class="dual-track" id="dualTrack">
+                            <div class="dual-fill" id="dualFill"></div>
+                            <div class="dual-thumb" id="thumbLow"></div>
+                            <div class="dual-thumb" id="thumbHigh"></div>
+                        </div>
+                    </div>
+                    <div class="range-meta four-col">
+                        <div class="meta-field">
+                            <span class="meta-label">bound min</span>
+                            <input type="number" class="meta-input" id="freqBoundMin" value="20" step="1">
+                        </div>
+                        <div class="meta-field">
+                            <span class="meta-label val">cur low</span>
+                            <input type="number" class="meta-input val-input" id="freqValMin" value="20" step="1">
+                        </div>
+                        <div class="meta-field">
+                            <span class="meta-label val">cur high</span>
+                            <input type="number" class="meta-input val-input" id="freqValMax" value="93" step="1">
+                        </div>
+                        <div class="meta-field">
+                            <span class="meta-label">bound max</span>
+                            <input type="number" class="meta-input" id="freqBoundMax" value="2000" step="1">
+                        </div>
+                    </div>
                     <span class="value-display" id="freqRangeValue">20 - 93 Hz</span>
                 </div>
-                 <div class="control-group">
-                    <label for="waveform">Waveform</label>
+
+                <div class="control-group">
+                    <span class="control-label">Waveform</span>
                     <select id="waveform">
                         <option value="sawtooth" selected>Sawtooth</option>
                         <option value="square">Square</option>
@@ -131,122 +424,488 @@
                         <option value="custom">Custom</option>
                     </select>
                 </div>
+
                 <div class="control-group">
-                    <label for="pitchDriftRate">Pitch Drift Rate</label>
+                    <span class="control-label">Pitch Drift Rate</span>
                     <input type="range" id="pitchDriftRate" min="0" max="2.0" value="1.8016" step="0.0001">
+                    <div class="range-meta">
+                        <div class="meta-field"><span class="meta-label">min</span>
+                            <input type="number" class="meta-input" data-for="pitchDriftRate" data-bound="min" value="0" step="0.001"></div>
+                        <div class="meta-field"><span class="meta-label val">val</span>
+                            <input type="number" class="meta-input val-input" data-for="pitchDriftRate" data-bound="val" value="1.8016" step="0.0001"></div>
+                        <div class="meta-field"><span class="meta-label">max</span>
+                            <input type="number" class="meta-input" data-for="pitchDriftRate" data-bound="max" value="2.0" step="0.001"></div>
+                    </div>
                     <span class="value-display" id="pitchDriftRateValue">1.8016</span>
                 </div>
             </div>
 
+            <!-- ── FILTER ── -->
             <div class="section">
                 <h3>Filter</h3>
+
                 <div class="control-group">
-                    <label for="filterCutoff">Base Cutoff</label>
+                    <span class="control-label">Filter Type</span>
+                    <select id="filterType">
+                        <option value="lowpass" selected>Lowpass</option>
+                        <option value="highpass">Highpass</option>
+                        <option value="bandpass">Bandpass</option>
+                        <option value="notch">Notch</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <span class="control-label">Base Cutoff</span>
                     <input type="range" id="filterCutoff" min="20" max="15000" value="1279" step="1">
+                    <div class="range-meta">
+                        <div class="meta-field"><span class="meta-label">min</span>
+                            <input type="number" class="meta-input" data-for="filterCutoff" data-bound="min" value="20" step="1"></div>
+                        <div class="meta-field"><span class="meta-label val">val</span>
+                            <input type="number" class="meta-input val-input" data-for="filterCutoff" data-bound="val" value="1279" step="1"></div>
+                        <div class="meta-field"><span class="meta-label">max</span>
+                            <input type="number" class="meta-input" data-for="filterCutoff" data-bound="max" value="15000" step="1"></div>
+                    </div>
                     <span class="value-display" id="filterCutoffValue">1279 Hz</span>
                 </div>
+
                 <div class="control-group">
-                    <label for="filterNoiseDepth">Cutoff Noise Depth</label>
+                    <span class="control-label">Cutoff Noise Depth</span>
                     <input type="range" id="filterNoiseDepth" min="0" max="15000" value="10000" step="10">
+                    <div class="range-meta">
+                        <div class="meta-field"><span class="meta-label">min</span>
+                            <input type="number" class="meta-input" data-for="filterNoiseDepth" data-bound="min" value="0" step="10"></div>
+                        <div class="meta-field"><span class="meta-label val">val</span>
+                            <input type="number" class="meta-input val-input" data-for="filterNoiseDepth" data-bound="val" value="10000" step="10"></div>
+                        <div class="meta-field"><span class="meta-label">max</span>
+                            <input type="number" class="meta-input" data-for="filterNoiseDepth" data-bound="max" value="15000" step="10"></div>
+                    </div>
                     <span class="value-display" id="filterNoiseDepthValue">10000</span>
                 </div>
+
                 <div class="control-group">
-                    <label for="filterNoiseRate">Cutoff Noise Rate</label>
+                    <span class="control-label">Cutoff Noise Rate</span>
                     <input type="range" id="filterNoiseRate" min="0" max="50.0" value="50.000" step="0.001">
+                    <div class="range-meta">
+                        <div class="meta-field"><span class="meta-label">min</span>
+                            <input type="number" class="meta-input" data-for="filterNoiseRate" data-bound="min" value="0" step="0.001"></div>
+                        <div class="meta-field"><span class="meta-label val">val</span>
+                            <input type="number" class="meta-input val-input" data-for="filterNoiseRate" data-bound="val" value="50.000" step="0.001"></div>
+                        <div class="meta-field"><span class="meta-label">max</span>
+                            <input type="number" class="meta-input" data-for="filterNoiseRate" data-bound="max" value="50.0" step="0.001"></div>
+                    </div>
                     <span class="value-display" id="filterNoiseRateValue">50.000</span>
                 </div>
+
                 <div class="control-group">
-                    <label for="filterQ">Base Resonance (Q)</label>
+                    <span class="control-label">Base Resonance (Q)</span>
                     <input type="range" id="filterQ" min="0.1" max="30" value="7.3" step="0.1">
+                    <div class="range-meta">
+                        <div class="meta-field"><span class="meta-label">min</span>
+                            <input type="number" class="meta-input" data-for="filterQ" data-bound="min" value="0.1" step="0.1"></div>
+                        <div class="meta-field"><span class="meta-label val">val</span>
+                            <input type="number" class="meta-input val-input" data-for="filterQ" data-bound="val" value="7.3" step="0.1"></div>
+                        <div class="meta-field"><span class="meta-label">max</span>
+                            <input type="number" class="meta-input" data-for="filterQ" data-bound="max" value="30" step="0.1"></div>
+                    </div>
                     <span class="value-display" id="filterQValue">7.3</span>
                 </div>
-                 <div class="control-group">
-                    <label for="qNoiseDepth">Q Noise Depth</label>
+
+                <div class="control-group">
+                    <span class="control-label">Q Noise Depth</span>
                     <input type="range" id="qNoiseDepth" min="0" max="30" value="2.9" step="0.1">
+                    <div class="range-meta">
+                        <div class="meta-field"><span class="meta-label">min</span>
+                            <input type="number" class="meta-input" data-for="qNoiseDepth" data-bound="min" value="0" step="0.1"></div>
+                        <div class="meta-field"><span class="meta-label val">val</span>
+                            <input type="number" class="meta-input val-input" data-for="qNoiseDepth" data-bound="val" value="2.9" step="0.1"></div>
+                        <div class="meta-field"><span class="meta-label">max</span>
+                            <input type="number" class="meta-input" data-for="qNoiseDepth" data-bound="max" value="30" step="0.1"></div>
+                    </div>
                     <span class="value-display" id="qNoiseDepthValue">2.9</span>
                 </div>
+
                 <div class="control-group">
-                    <label for="qNoiseRate">Q Noise Rate</label>
+                    <span class="control-label">Q Noise Rate</span>
                     <input type="range" id="qNoiseRate" min="0" max="50.0" value="9.551" step="0.001">
+                    <div class="range-meta">
+                        <div class="meta-field"><span class="meta-label">min</span>
+                            <input type="number" class="meta-input" data-for="qNoiseRate" data-bound="min" value="0" step="0.001"></div>
+                        <div class="meta-field"><span class="meta-label val">val</span>
+                            <input type="number" class="meta-input val-input" data-for="qNoiseRate" data-bound="val" value="9.551" step="0.001"></div>
+                        <div class="meta-field"><span class="meta-label">max</span>
+                            <input type="number" class="meta-input" data-for="qNoiseRate" data-bound="max" value="50.0" step="0.001"></div>
+                    </div>
                     <span class="value-display" id="qNoiseRateValue">9.551</span>
                 </div>
             </div>
 
+            <!-- ── AMPLITUDE ── -->
             <div class="section">
                 <h3>Amplitude</h3>
+
                 <div class="control-group">
-                    <label for="masterGain">Base Gain</label>
+                    <span class="control-label">Base Gain</span>
                     <input type="range" id="masterGain" min="0" max="0.5" value="0.19" step="0.01">
+                    <div class="range-meta">
+                        <div class="meta-field"><span class="meta-label">min</span>
+                            <input type="number" class="meta-input" data-for="masterGain" data-bound="min" value="0" step="0.01"></div>
+                        <div class="meta-field"><span class="meta-label val">val</span>
+                            <input type="number" class="meta-input val-input" data-for="masterGain" data-bound="val" value="0.19" step="0.01"></div>
+                        <div class="meta-field"><span class="meta-label">max</span>
+                            <input type="number" class="meta-input" data-for="masterGain" data-bound="max" value="0.5" step="0.01"></div>
+                    </div>
                     <span class="value-display" id="masterGainValue">0.19</span>
                 </div>
+
                 <div class="control-group">
-                    <label for="ampNoiseDepth">Noise Depth</label>
+                    <span class="control-label">Noise Depth</span>
                     <input type="range" id="ampNoiseDepth" min="0" max="1" value="0.87" step="0.01">
+                    <div class="range-meta">
+                        <div class="meta-field"><span class="meta-label">min</span>
+                            <input type="number" class="meta-input" data-for="ampNoiseDepth" data-bound="min" value="0" step="0.01"></div>
+                        <div class="meta-field"><span class="meta-label val">val</span>
+                            <input type="number" class="meta-input val-input" data-for="ampNoiseDepth" data-bound="val" value="0.87" step="0.01"></div>
+                        <div class="meta-field"><span class="meta-label">max</span>
+                            <input type="number" class="meta-input" data-for="ampNoiseDepth" data-bound="max" value="1" step="0.01"></div>
+                    </div>
                     <span class="value-display" id="ampNoiseDepthValue">0.87</span>
                 </div>
+
                 <div class="control-group">
-                    <label for="ampNoiseRate">Amp Noise Rate</label>
+                    <span class="control-label">Amp Noise Rate</span>
                     <input type="range" id="ampNoiseRate" min="0" max="50.0" value="34.833" step="0.001">
+                    <div class="range-meta">
+                        <div class="meta-field"><span class="meta-label">min</span>
+                            <input type="number" class="meta-input" data-for="ampNoiseRate" data-bound="min" value="0" step="0.001"></div>
+                        <div class="meta-field"><span class="meta-label val">val</span>
+                            <input type="number" class="meta-input val-input" data-for="ampNoiseRate" data-bound="val" value="34.833" step="0.001"></div>
+                        <div class="meta-field"><span class="meta-label">max</span>
+                            <input type="number" class="meta-input" data-for="ampNoiseRate" data-bound="max" value="50.0" step="0.001"></div>
+                    </div>
                     <span class="value-display" id="ampNoiseRateValue">34.833</span>
                 </div>
             </div>
+
+            <!-- ── ECHO ── -->
+            <div class="section">
+                <h3>Echo</h3>
+
+                <div class="control-group">
+                    <span class="control-label">Delay Time</span>
+                    <input type="range" id="delayTime" min="0.01" max="2.0" value="0.18" step="0.001">
+                    <div class="range-meta">
+                        <div class="meta-field"><span class="meta-label">min</span>
+                            <input type="number" class="meta-input" data-for="delayTime" data-bound="min" value="0.01" step="0.001"></div>
+                        <div class="meta-field"><span class="meta-label val">val</span>
+                            <input type="number" class="meta-input val-input" data-for="delayTime" data-bound="val" value="0.18" step="0.001"></div>
+                        <div class="meta-field"><span class="meta-label">max</span>
+                            <input type="number" class="meta-input" data-for="delayTime" data-bound="max" value="2.0" step="0.001"></div>
+                    </div>
+                    <span class="value-display" id="delayTimeValue">0.180</span>
+                </div>
+
+                <div class="control-group">
+                    <span class="control-label">Feedback</span>
+                    <input type="range" id="delayFeedback" min="0" max="0.95" value="0.35" step="0.01">
+                    <div class="range-meta">
+                        <div class="meta-field"><span class="meta-label">min</span>
+                            <input type="number" class="meta-input" data-for="delayFeedback" data-bound="min" value="0" step="0.01"></div>
+                        <div class="meta-field"><span class="meta-label val">val</span>
+                            <input type="number" class="meta-input val-input" data-for="delayFeedback" data-bound="val" value="0.35" step="0.01"></div>
+                        <div class="meta-field"><span class="meta-label">max</span>
+                            <input type="number" class="meta-input" data-for="delayFeedback" data-bound="max" value="0.95" step="0.01"></div>
+                    </div>
+                    <span class="value-display" id="delayFeedbackValue">0.35</span>
+                </div>
+
+                <div class="control-group">
+                    <span class="control-label">Wet Level</span>
+                    <input type="range" id="delayWet" min="0" max="0.85" value="0.0" step="0.01">
+                    <div class="range-meta">
+                        <div class="meta-field"><span class="meta-label">min</span>
+                            <input type="number" class="meta-input" data-for="delayWet" data-bound="min" value="0" step="0.01"></div>
+                        <div class="meta-field"><span class="meta-label val">val</span>
+                            <input type="number" class="meta-input val-input" data-for="delayWet" data-bound="val" value="0.0" step="0.01"></div>
+                        <div class="meta-field"><span class="meta-label">max</span>
+                            <input type="number" class="meta-input" data-for="delayWet" data-bound="max" value="0.85" step="0.01"></div>
+                    </div>
+                    <span class="value-display" id="delayWetValue">0.00</span>
+                </div>
+            </div>
+
         </div>
 
-        <div class="section">
+        <!-- ── WAVEFORM LOADER ── -->
+        <div class="section section-waveform">
             <h3>Waveform Loader</h3>
-            <canvas id="waveCanvas" width="512" height="256"></canvas>
+            <canvas id="waveCanvas"></canvas>
+            <p class="waveform-hint">drop a .wav file to load as custom waveform</p>
         </div>
+
     </div>
-</div>
+
+    <div class="keybinds">
+        <div class="kb-item"><span class="kb-key">spc</span><span class="kb-desc">activate / stop</span></div>
+        <div class="kb-item"><span class="kb-key">r</span><span class="kb-desc">randomize</span></div>
+        <div class="kb-item"><span class="kb-key">1 – 4</span><span class="kb-desc">load preset</span></div>
+        <div class="kb-item"><span class="kb-key">⇧ 1 – 4</span><span class="kb-desc">save preset</span></div>
+    </div>
+
+</div><!-- /main-container -->
 
 <script>
-// --- PERLIN NOISE GENERATOR (self-contained) ---
-const Perlin = { p: new Uint8Array(512), init: function() { const p = new Uint8Array(256); for (let i = 0; i < 256; i++) p[i] = i; for (let i = 255; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[p[i], p[j]] = [p[j], p[i]]; } this.p = new Uint8Array(512); for (let i = 0; i < 256; i++) this.p[i] = this.p[i + 256] = p[i]; }, fade: function(t) { return t * t * t * (t * (t * 6 - 15) + 10); }, lerp: function(t, a, b) { return a + t * (b - a); }, grad: function(hash, x, y, z) { const h = hash & 15; const u = h < 8 ? x : y; const v = h < 4 ? y : h === 12 || h === 14 ? x : z; return ((h & 1) === 0 ? u : -u) + ((h & 2) === 0 ? v : -v); }, noise: function(x, y = 0, z = 0) { const p = this.p; const X = Math.floor(x) & 255; const Y = Math.floor(y) & 255; const Z = Math.floor(z) & 255; x -= Math.floor(x); y -= Math.floor(y); z -= Math.floor(z); const u = this.fade(x); const v = this.fade(y); const w = this.fade(z); const A = p[X] + Y, AA = p[A] + Z, AB = p[A + 1] + Z; const B = p[X + 1] + Y, BA = p[B] + Z, BB = p[B + 1] + Z; return this.lerp(w, this.lerp(v, this.lerp(u, this.grad(p[AA], x, y, z), this.grad(p[BA], x - 1, y, z)), this.lerp(u, this.grad(p[AB], x, y - 1, z), this.grad(p[BB], x - 1, y - 1, z))), this.lerp(v, this.lerp(u, this.grad(p[AA + 1], x, y, z - 1), this.grad(p[BA + 1], x - 1, y, z - 1)), this.lerp(u, this.grad(p[AB + 1], x, y - 1, z - 1), this.grad(p[BB + 1], x - 1, y - 1, z - 1)))); } };
+// ─── PERLIN NOISE ─────────────────────────────────────────────────────────
+const Perlin = {
+    p: new Uint8Array(512),
+    init() {
+        const p = new Uint8Array(256);
+        for (let i = 0; i < 256; i++) p[i] = i;
+        for (let i = 255; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [p[i],p[j]]=[p[j],p[i]]; }
+        this.p = new Uint8Array(512);
+        for (let i = 0; i < 256; i++) this.p[i] = this.p[i+256] = p[i];
+    },
+    fade(t) { return t*t*t*(t*(t*6-15)+10); },
+    lerp(t,a,b) { return a+t*(b-a); },
+    grad(hash,x,y,z) {
+        const h=hash&15, u=h<8?x:y, v=h<4?y:(h===12||h===14?x:z);
+        return ((h&1)===0?u:-u)+((h&2)===0?v:-v);
+    },
+    noise(x,y=0,z=0) {
+        const p=this.p;
+        const X=Math.floor(x)&255, Y=Math.floor(y)&255, Z=Math.floor(z)&255;
+        x-=Math.floor(x); y-=Math.floor(y); z-=Math.floor(z);
+        const u=this.fade(x), v=this.fade(y), w=this.fade(z);
+        const A=p[X]+Y, AA=p[A]+Z, AB=p[A+1]+Z, B=p[X+1]+Y, BA=p[B]+Z, BB=p[B+1]+Z;
+        return this.lerp(w,
+            this.lerp(v, this.lerp(u,this.grad(p[AA],x,y,z),this.grad(p[BA],x-1,y,z)),
+                         this.lerp(u,this.grad(p[AB],x,y-1,z),this.grad(p[BB],x-1,y-1,z))),
+            this.lerp(v, this.lerp(u,this.grad(p[AA+1],x,y,z-1),this.grad(p[BA+1],x-1,y,z-1)),
+                         this.lerp(u,this.grad(p[AB+1],x,y-1,z-1),this.grad(p[BB+1],x-1,y-1,z-1))));
+    }
+};
 Perlin.init();
 
-// --- WEB AUDIO SETUP ---
-let audioCtx, vco, vcf, masterGain;
+// ─── AUDIO STATE ─────────────────────────────────────────────────────────
+let audioCtx, vco, vcf, masterGainNode, delayNode, delayFeedbackNode, delayWetNode;
 let isInitialized = false;
 let animationFrameId;
 let customPeriodicWave = null;
-let wavePoints = new Float32Array(512).fill(0); // Store final wave data
+let wavePoints = new Float32Array(512).fill(0);
+let t_pitch=Math.random()*100, t_filter=Math.random()*100, t_amp=Math.random()*100, t_q=Math.random()*100;
 
-let t_pitch = Math.random() * 100;
-let t_filter = Math.random() * 100;
-let t_amp = Math.random() * 100;
-let t_q = Math.random() * 100;
+// ─── DOM REFS ─────────────────────────────────────────────────────────────
+const activateButton  = document.getElementById('activateButton');
+const stopButton      = document.getElementById('stopButton');
+const waveformSelect  = document.getElementById('waveform');
+const filterTypeSelect = document.getElementById('filterType');
 
-// --- DOM ELEMENT REFERENCES ---
-const activateButton = document.getElementById('activateButton');
-const stopButton = document.getElementById('stopButton');
-const controlsContainer = document.getElementById('controlsContainer');
-const waveformSelect = document.getElementById('waveform');
 const sliders = {};
-document.querySelectorAll('input[type="range"]').forEach(slider => { sliders[slider.id] = slider; });
+document.querySelectorAll('input[type="range"]:not(.hidden-slider)').forEach(s => { sliders[s.id] = s; });
+// Also include the hidden freq sliders for audio
+sliders.minFreq = document.getElementById('minFreq');
+sliders.maxFreq = document.getElementById('maxFreq');
+
 const displays = {};
-document.querySelectorAll('.value-display').forEach(display => {
-    const id = display.id.replace('Value', '');
-    displays[id] = display;
+document.querySelectorAll('.value-display').forEach(d => {
+    displays[d.id.replace('Value','')] = d;
 });
 
-// --- AUDIO INITIALIZATION ---
+// ─── SLIDER FILL ─────────────────────────────────────────────────────────
+function updateSliderFill(slider) {
+    if (slider.classList.contains('hidden-slider')) return;
+    const lo=parseFloat(slider.min)||0, hi=parseFloat(slider.max)||1, v=parseFloat(slider.value);
+    const pct = Math.max(0, Math.min(100, ((v-lo)/(hi-lo))*100));
+    slider.style.setProperty('--fill', `${pct.toFixed(2)}%`);
+}
+
+// ─── DUAL RANGE ───────────────────────────────────────────────────────────
+const dualTrack = document.getElementById('dualTrack');
+const dualFill  = document.getElementById('dualFill');
+const thumbLow  = document.getElementById('thumbLow');
+const thumbHigh = document.getElementById('thumbHigh');
+
+function dualPct(slider) {
+    const lo=parseFloat(slider.min), hi=parseFloat(slider.max), v=parseFloat(slider.value);
+    return Math.max(0,Math.min(100,((v-lo)/(hi-lo))*100));
+}
+
+function updateDualRange() {
+    const pLo = dualPct(sliders.minFreq);
+    const pHi = dualPct(sliders.maxFreq);
+    thumbLow.style.left  = `${pLo}%`;
+    thumbHigh.style.left = `${pHi}%`;
+    const L=Math.min(pLo,pHi), W=Math.abs(pHi-pLo);
+    dualFill.style.left  = `${L}%`;
+    dualFill.style.width = `${W}%`;
+}
+
+function makeDraggable(thumb, mySlider, otherSlider, isLow) {
+    thumb.addEventListener('pointerdown', e => {
+        e.preventDefault();
+        thumb.setPointerCapture(e.pointerId);
+        const onMove = e => {
+            const rect = dualTrack.getBoundingClientRect();
+            const pct  = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+            const lo=parseFloat(mySlider.min), hi=parseFloat(mySlider.max);
+            const raw = lo + pct*(hi-lo);
+            mySlider.value = isLow
+                ? Math.min(raw, parseFloat(otherSlider.value))
+                : Math.max(raw, parseFloat(otherSlider.value));
+            updateDualRange();
+            updateAllDisplays();
+        };
+        const onUp = () => {
+            thumb.removeEventListener('pointermove', onMove);
+            thumb.removeEventListener('pointerup', onUp);
+        };
+        thumb.addEventListener('pointermove', onMove);
+        thumb.addEventListener('pointerup', onUp);
+    });
+}
+makeDraggable(thumbLow,  sliders.minFreq, sliders.maxFreq, true);
+makeDraggable(thumbHigh, sliders.maxFreq, sliders.minFreq, false);
+
+// Click on track to snap nearest thumb
+dualTrack.addEventListener('pointerdown', e => {
+    if (e.target === thumbLow || e.target === thumbHigh) return;
+    const rect = dualTrack.getBoundingClientRect();
+    const pct  = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    const pLo  = dualPct(sliders.minFreq)/100;
+    const pHi  = dualPct(sliders.maxFreq)/100;
+    const useMin = Math.abs(pct - pLo) <= Math.abs(pct - pHi);
+    const target = useMin ? sliders.minFreq : sliders.maxFreq;
+    const other  = useMin ? sliders.maxFreq : sliders.minFreq;
+    const lo=parseFloat(target.min), hi=parseFloat(target.max), ov=parseFloat(other.value);
+    const raw = lo + pct*(hi-lo);
+    target.value = useMin ? Math.min(raw, ov) : Math.max(raw, ov);
+    updateDualRange();
+    updateAllDisplays();
+});
+
+// ─── VAL INPUT SYNC ───────────────────────────────────────────────────────
+function syncAllValInputs() {
+    document.querySelectorAll('.meta-input.val-input[data-for]').forEach(input => {
+        const slider = sliders[input.dataset.for];
+        if (!slider || document.activeElement === input) return;
+        const step = parseFloat(slider.step);
+        const prec = step < 0.0005 ? 4 : step < 0.005 ? 3 : step < 0.05 ? 2 : step < 0.5 ? 1 : 0;
+        input.value = parseFloat(slider.value).toFixed(prec);
+    });
+    const fvMin = document.getElementById('freqValMin');
+    const fvMax = document.getElementById('freqValMax');
+    if (fvMin && document.activeElement !== fvMin) fvMin.value = parseFloat(sliders.minFreq.value).toFixed(0);
+    if (fvMax && document.activeElement !== fvMax) fvMax.value = parseFloat(sliders.maxFreq.value).toFixed(0);
+    Object.values(sliders).forEach(updateSliderFill);
+}
+
+// ─── UPDATE ALL DISPLAYS ─────────────────────────────────────────────────
+function updateAllDisplays() {
+    const minF=parseFloat(sliders.minFreq.value), maxF=parseFloat(sliders.maxFreq.value);
+    displays.freqRange.textContent        = `${minF.toFixed(0)} - ${maxF.toFixed(0)} Hz`;
+    displays.pitchDriftRate.textContent   = parseFloat(sliders.pitchDriftRate.value).toFixed(4);
+    displays.filterCutoff.textContent     = `${parseFloat(sliders.filterCutoff.value).toFixed(0)} Hz`;
+    displays.filterNoiseDepth.textContent = parseFloat(sliders.filterNoiseDepth.value).toFixed(0);
+    displays.filterNoiseRate.textContent  = parseFloat(sliders.filterNoiseRate.value).toFixed(3);
+    displays.filterQ.textContent          = parseFloat(sliders.filterQ.value).toFixed(1);
+    displays.qNoiseDepth.textContent      = parseFloat(sliders.qNoiseDepth.value).toFixed(1);
+    displays.qNoiseRate.textContent       = parseFloat(sliders.qNoiseRate.value).toFixed(3);
+    displays.masterGain.textContent       = parseFloat(sliders.masterGain.value).toFixed(2);
+    displays.ampNoiseDepth.textContent    = parseFloat(sliders.ampNoiseDepth.value).toFixed(2);
+    displays.ampNoiseRate.textContent     = parseFloat(sliders.ampNoiseRate.value).toFixed(3);
+    displays.delayTime.textContent        = parseFloat(sliders.delayTime.value).toFixed(3);
+    displays.delayFeedback.textContent    = parseFloat(sliders.delayFeedback.value).toFixed(2);
+    displays.delayWet.textContent         = parseFloat(sliders.delayWet.value).toFixed(2);
+    syncAllValInputs();
+    updateDualRange();
+}
+
+// ─── META INPUT WIRING ────────────────────────────────────────────────────
+function wireMetaInputs() {
+    document.querySelectorAll('.meta-input[data-for][data-bound="min"]').forEach(input => {
+        input.addEventListener('change', () => {
+            const s = sliders[input.dataset.for]; if (!s) return;
+            const v = parseFloat(input.value);
+            s.min = v;
+            if (parseFloat(s.value) < v) s.value = v;
+            updateAllDisplays();
+        });
+    });
+    document.querySelectorAll('.meta-input[data-for][data-bound="max"]').forEach(input => {
+        input.addEventListener('change', () => {
+            const s = sliders[input.dataset.for]; if (!s) return;
+            const v = parseFloat(input.value);
+            s.max = v;
+            if (parseFloat(s.value) > v) s.value = v;
+            updateAllDisplays();
+        });
+    });
+    document.querySelectorAll('.meta-input.val-input[data-for][data-bound="val"]').forEach(input => {
+        input.addEventListener('change', () => {
+            const s = sliders[input.dataset.for]; if (!s) return;
+            const lo=parseFloat(s.min), hi=parseFloat(s.max);
+            const v = Math.min(hi, Math.max(lo, parseFloat(input.value)||lo));
+            s.value = v; input.value = v;
+            updateAllDisplays();
+        });
+    });
+
+    // Freq range 4-input wiring
+    document.getElementById('freqBoundMin').addEventListener('change', function() {
+        const v=parseFloat(this.value);
+        sliders.minFreq.min=v; sliders.maxFreq.min=v;
+        if(parseFloat(sliders.minFreq.value)<v) sliders.minFreq.value=v;
+        if(parseFloat(sliders.maxFreq.value)<v) sliders.maxFreq.value=v;
+        updateAllDisplays();
+    });
+    document.getElementById('freqBoundMax').addEventListener('change', function() {
+        const v=parseFloat(this.value);
+        sliders.minFreq.max=v; sliders.maxFreq.max=v;
+        if(parseFloat(sliders.minFreq.value)>v) sliders.minFreq.value=v;
+        if(parseFloat(sliders.maxFreq.value)>v) sliders.maxFreq.value=v;
+        updateAllDisplays();
+    });
+    document.getElementById('freqValMin').addEventListener('change', function() {
+        const lo=parseFloat(sliders.minFreq.min), hi=parseFloat(sliders.minFreq.max);
+        const v=Math.min(hi,Math.max(lo,parseFloat(this.value)||lo));
+        sliders.minFreq.value=v; this.value=v; updateAllDisplays();
+    });
+    document.getElementById('freqValMax').addEventListener('change', function() {
+        const lo=parseFloat(sliders.maxFreq.min), hi=parseFloat(sliders.maxFreq.max);
+        const v=Math.min(hi,Math.max(lo,parseFloat(this.value)||lo));
+        sliders.maxFreq.value=v; this.value=v; updateAllDisplays();
+    });
+}
+
+// ─── AUDIO INIT ───────────────────────────────────────────────────────────
 function initAudio() {
     if (isInitialized) return;
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    
-    vco = audioCtx.createOscillator();
-    vcf = audioCtx.createBiquadFilter();
-    masterGain = audioCtx.createGain();
+    audioCtx       = new (window.AudioContext || window.webkitAudioContext)();
+    vco            = audioCtx.createOscillator();
+    vcf            = audioCtx.createBiquadFilter();
+    masterGainNode = audioCtx.createGain();
+    delayNode      = audioCtx.createDelay(4.0);
+    delayFeedbackNode = audioCtx.createGain();
+    delayWetNode   = audioCtx.createGain();
 
-    updateOscillatorType(); // Set initial waveform
-    vcf.type = 'lowpass';
-    
+    updateOscillatorType();
+    vcf.type = filterTypeSelect.value;
+
+    // Routing: vco → vcf → masterGain → [dry: dest] [wet: delay loop → dest]
     vco.connect(vcf);
-    vcf.connect(masterGain);
-    masterGain.connect(audioCtx.destination);
+    vcf.connect(masterGainNode);
+    masterGainNode.connect(audioCtx.destination);         // dry
+    masterGainNode.connect(delayNode);                     // send to delay
+    delayNode.connect(delayFeedbackNode);
+    delayFeedbackNode.connect(delayNode);                  // feedback loop
+    delayNode.connect(delayWetNode);
+    delayWetNode.connect(audioCtx.destination);            // wet out
+
+    // Initial delay param values
+    delayNode.delayTime.value     = parseFloat(sliders.delayTime.value);
+    delayFeedbackNode.gain.value  = parseFloat(sliders.delayFeedback.value);
+    delayWetNode.gain.value       = parseFloat(sliders.delayWet.value);
 
     vco.start();
-
     isInitialized = true;
     updateUIState();
     update();
@@ -263,200 +922,260 @@ function stopAudio() {
 
 function updateUIState() {
     activateButton.disabled = isInitialized;
-    stopButton.disabled = !isInitialized;
+    stopButton.disabled     = !isInitialized;
 }
 
 activateButton.addEventListener('click', initAudio);
 stopButton.addEventListener('click', stopAudio);
 
+// ─── OSCILLATOR TYPE ──────────────────────────────────────────────────────
 function updateOscillatorType() {
     if (!vco) return;
-    const waveformType = waveformSelect.value;
-    
-    if (waveformType === 'custom') {
-        // If a wave object doesn't exist yet but we have points, create it.
+    const t = waveformSelect.value;
+    if (t === 'custom') {
         if (!customPeriodicWave && wavePoints.some(p => p !== 0)) {
             const real = new Float32Array(wavePoints);
             const imag = new Float32Array(wavePoints.length).fill(0);
             customPeriodicWave = audioCtx.createPeriodicWave(real, imag, { disableNormalization: false });
         }
-
-        if (customPeriodicWave) {
-            vco.setPeriodicWave(customPeriodicWave);
-        } else {
-            vco.type = 'sawtooth'; // Fallback if no custom wave is loaded
-        }
+        if (customPeriodicWave) vco.setPeriodicWave(customPeriodicWave);
+        else vco.type = 'sawtooth';
     } else {
-        customPeriodicWave = null; // Clear the custom wave when switching away
-        vco.type = waveformType;
+        customPeriodicWave = null;
+        vco.type = t;
     }
 }
 
-// --- EVENT LISTENERS ---
-Object.keys(sliders).forEach(key => sliders[key].addEventListener('input', updateAllDisplays));
+filterTypeSelect.addEventListener('change', () => { if (vcf) vcf.type = filterTypeSelect.value; });
 waveformSelect.addEventListener('change', updateOscillatorType);
+Object.keys(sliders).forEach(k => {
+    if (!sliders[k].classList.contains('hidden-slider'))
+        sliders[k].addEventListener('input', updateAllDisplays);
+});
 
-// --- DISPLAY UPDATES ---
-function updateAllDisplays() {
-    const minFreq = parseFloat(sliders.minFreq.value);
-    const maxFreq = parseFloat(sliders.maxFreq.value);
-    displays.freqRange.textContent = `${minFreq.toFixed(0)} - ${maxFreq.toFixed(0)} Hz`;
-    
-    displays.pitchDriftRate.textContent = parseFloat(sliders.pitchDriftRate.value).toFixed(4);
-    
-    displays.filterCutoff.textContent = `${parseFloat(sliders.filterCutoff.value).toFixed(0)} Hz`;
-    displays.filterNoiseDepth.textContent = parseFloat(sliders.filterNoiseDepth.value).toFixed(0);
-    displays.filterNoiseRate.textContent = parseFloat(sliders.filterNoiseRate.value).toFixed(3);
-    displays.filterQ.textContent = parseFloat(sliders.filterQ.value).toFixed(1);
-    displays.qNoiseDepth.textContent = parseFloat(sliders.qNoiseDepth.value).toFixed(1);
-    displays.qNoiseRate.textContent = parseFloat(sliders.qNoiseRate.value).toFixed(3);
+// ─── MAP UTILITY ─────────────────────────────────────────────────────────
+function map(v,a,b,c,d) { return (v-a)*(d-c)/(b-a)+c; }
 
-    displays.masterGain.textContent = parseFloat(sliders.masterGain.value).toFixed(2);
-    displays.ampNoiseDepth.textContent = parseFloat(sliders.ampNoiseDepth.value).toFixed(2);
-    displays.ampNoiseRate.textContent = parseFloat(sliders.ampNoiseRate.value).toFixed(3);
-}
-
-// --- MAP UTILITY FUNCTION ---
-function map(value, inMin, inMax, outMin, outMax) {
-    return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
-}
-
-// --- MAIN UPDATE LOOP ---
+// ─── MAIN AUDIO LOOP ─────────────────────────────────────────────────────
 function update() {
     if (!isInitialized) return;
-    const pitchDriftRate = parseFloat(sliders.pitchDriftRate.value);
-    const filterNoiseRate = parseFloat(sliders.filterNoiseRate.value);
-    const ampNoiseRate = parseFloat(sliders.ampNoiseRate.value);
-    const qNoiseRate = parseFloat(sliders.qNoiseRate.value);
-    t_pitch += pitchDriftRate;
-    t_filter += filterNoiseRate;
-    t_amp += ampNoiseRate;
-    t_q += qNoiseRate;
-    let pitchNoise = (Perlin.noise(t_pitch, 0, 0) + 1) / 2;
+    t_pitch  += parseFloat(sliders.pitchDriftRate.value);
+    t_filter += parseFloat(sliders.filterNoiseRate.value);
+    t_amp    += parseFloat(sliders.ampNoiseRate.value);
+    t_q      += parseFloat(sliders.qNoiseRate.value);
+
+    let pitchNoise = (Perlin.noise(t_pitch,0,0)+1)/2;
     pitchNoise = Perlin.fade(pitchNoise);
-    const filterNoise = Perlin.noise(t_filter, 10, 0);
-    const ampNoise = Perlin.noise(t_amp, 20, 0);
-    const qNoise = Perlin.noise(t_q, 30, 0);
-    const minFreq = parseFloat(sliders.minFreq.value);
-    const maxFreq = parseFloat(sliders.maxFreq.value);
-    const currentPitch = map(pitchNoise, 0, 1, Math.min(minFreq, maxFreq), Math.max(minFreq, maxFreq));
-    vco.frequency.setTargetAtTime(currentPitch, audioCtx.currentTime, 0.01);
-    const filterCutoff = parseFloat(sliders.filterCutoff.value);
-    const filterNoiseDepth = parseFloat(sliders.filterNoiseDepth.value);
-    const finalCutoff = filterCutoff + (filterNoise * filterNoiseDepth);
-    vcf.frequency.setTargetAtTime(Math.max(20, finalCutoff), audioCtx.currentTime, 0.01);
-    const baseQ = parseFloat(sliders.filterQ.value);
-    const qNoiseDepth = parseFloat(sliders.qNoiseDepth.value);
-    const finalQ = baseQ + (qNoise * qNoiseDepth);
-    vcf.Q.setTargetAtTime(Math.max(0.0001, finalQ), audioCtx.currentTime, 0.01);
-    const masterGainValue = parseFloat(sliders.masterGain.value);
-    const ampNoiseDepth = parseFloat(sliders.ampNoiseDepth.value);
-    const finalGain = masterGainValue + (ampNoise * (masterGainValue * ampNoiseDepth));
-    masterGain.gain.setTargetAtTime(Math.max(0, finalGain), audioCtx.currentTime, 0.01);
+    const filterNoise=Perlin.noise(t_filter,10,0), ampNoise=Perlin.noise(t_amp,20,0), qNoise=Perlin.noise(t_q,30,0);
+
+    const minF=parseFloat(sliders.minFreq.value), maxF=parseFloat(sliders.maxFreq.value);
+    vco.frequency.setTargetAtTime(map(pitchNoise,0,1,Math.min(minF,maxF),Math.max(minF,maxF)), audioCtx.currentTime, 0.01);
+
+    const fc=parseFloat(sliders.filterCutoff.value), fnd=parseFloat(sliders.filterNoiseDepth.value);
+    vcf.frequency.setTargetAtTime(Math.max(20, fc + filterNoise*fnd), audioCtx.currentTime, 0.01);
+
+    const bq=parseFloat(sliders.filterQ.value), qd=parseFloat(sliders.qNoiseDepth.value);
+    vcf.Q.setTargetAtTime(Math.max(0.0001, bq + qNoise*qd), audioCtx.currentTime, 0.01);
+
+    const mg=parseFloat(sliders.masterGain.value), ad=parseFloat(sliders.ampNoiseDepth.value);
+    masterGainNode.gain.setTargetAtTime(Math.max(0, mg + ampNoise*(mg*ad)), audioCtx.currentTime, 0.01);
+
+    delayNode.delayTime.setTargetAtTime(parseFloat(sliders.delayTime.value), audioCtx.currentTime, 0.05);
+    delayFeedbackNode.gain.setTargetAtTime(parseFloat(sliders.delayFeedback.value), audioCtx.currentTime, 0.05);
+    delayWetNode.gain.setTargetAtTime(parseFloat(sliders.delayWet.value), audioCtx.currentTime, 0.05);
+
     animationFrameId = requestAnimationFrame(update);
 }
 
-// --- CUSTOM WAVEFORM LOADER ---
-const canvas = document.getElementById('waveCanvas');
-const ctx = canvas.getContext('2d');
+// ─── RANDOMIZE ────────────────────────────────────────────────────────────
+function randomizeAll() {
+    const SKIP = new Set(['minFreq','maxFreq']); // handle separately
+    Object.keys(sliders).forEach(k => {
+        if (SKIP.has(k)) return;
+        const s=sliders[k];
+        const lo=parseFloat(s.min), hi=parseFloat(s.max), step=parseFloat(s.step)||0;
+        let v=lo+Math.random()*(hi-lo);
+        if (step>0) v=Math.round(v/step)*step;
+        s.value=v;
+    });
+    // freq: low < high
+    const lo=parseFloat(sliders.minFreq.min), hi=parseFloat(sliders.maxFreq.max);
+    const a=lo+Math.random()*(hi-lo), b=lo+Math.random()*(hi-lo);
+    sliders.minFreq.value=Math.min(a,b);
+    sliders.maxFreq.value=Math.max(a,b);
+    updateAllDisplays();
+}
+document.getElementById('randomizeButton').addEventListener('click', randomizeAll);
 
-function drawWaveform(points) {
-    ctx.fillStyle = '#111';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    for (let i = 0; i < points.length; i++) {
-        const x = i;
-        const y = map(points[i], -1, 1, canvas.height, 0);
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
+// ─── PRESETS ─────────────────────────────────────────────────────────────
+const PRESET_KEYS = [0,1,2,3].map(i=>`roil_preset_${i}`);
+
+function gatherSettings() {
+    const out = { sliders: {}, waveform: waveformSelect.value, filterType: filterTypeSelect.value };
+    Object.keys(sliders).forEach(k => {
+        out.sliders[k] = { value: sliders[k].value, min: sliders[k].min, max: sliders[k].max };
+    });
+    out.freqBoundMin = document.getElementById('freqBoundMin').value;
+    out.freqBoundMax = document.getElementById('freqBoundMax').value;
+    return out;
+}
+
+function applySettings(s) {
+    Object.keys(sliders).forEach(k => {
+        if (s.sliders[k]) {
+            sliders[k].min   = s.sliders[k].min;
+            sliders[k].max   = s.sliders[k].max;
+            sliders[k].value = s.sliders[k].value;
+        }
+    });
+    if (s.waveform) { waveformSelect.value = s.waveform; }
+    if (s.filterType) { filterTypeSelect.value = s.filterType; if (vcf) vcf.type = s.filterType; }
+    if (s.freqBoundMin) document.getElementById('freqBoundMin').value = s.freqBoundMin;
+    if (s.freqBoundMax) document.getElementById('freqBoundMax').value = s.freqBoundMax;
+
+    // Sync bound meta inputs
+    document.querySelectorAll('.meta-input[data-for][data-bound="min"]').forEach(inp => {
+        const sl=sliders[inp.dataset.for]; if(sl) inp.value=sl.min;
+    });
+    document.querySelectorAll('.meta-input[data-for][data-bound="max"]').forEach(inp => {
+        const sl=sliders[inp.dataset.for]; if(sl) inp.value=sl.max;
+    });
+    updateAllDisplays();
+    if (isInitialized) updateOscillatorType();
+}
+
+function savePreset(idx) {
+    try { localStorage.setItem(PRESET_KEYS[idx], JSON.stringify(gatherSettings())); }
+    catch(e) { console.warn('localStorage unavailable', e); }
+    updatePresetUI();
+}
+function loadPreset(idx) {
+    try {
+        const raw = localStorage.getItem(PRESET_KEYS[idx]);
+        if (!raw) return;
+        applySettings(JSON.parse(raw));
+    } catch(e) { console.error('Failed to load preset', e); }
+}
+function updatePresetUI() {
+    PRESET_KEYS.forEach((key,i) => {
+        const btn = document.getElementById(`preset-${i}`);
+        if (!btn) return;
+        let filled = false;
+        try { filled = localStorage.getItem(key) !== null; } catch(e) {}
+        btn.classList.toggle('filled', filled);
+    });
+}
+
+// ─── KEYBOARD SHORTCUTS ───────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+    const tag = document.activeElement.tagName;
+    if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
+    if (e.code === 'Space') {
+        e.preventDefault();
+        isInitialized ? stopAudio() : initAudio();
+    } else if (e.key === 'r' || e.key === 'R') {
+        randomizeAll();
+    } else if (['1','2','3','4'].includes(e.key)) {
+        const idx = parseInt(e.key) - 1;
+        if (e.shiftKey) savePreset(idx); else loadPreset(idx);
+    }
+});
+
+// ─── CANVAS / WAVEFORM LOADER ─────────────────────────────────────────────
+const canvas = document.getElementById('waveCanvas');
+const ctx    = canvas.getContext('2d');
+
+function resizeCanvas() {
+    const w = canvas.offsetWidth || 512, h = canvas.offsetHeight || 150;
+    if (canvas.width===w && canvas.height===h) return;
+    canvas.width=w; canvas.height=h;
+    wavePoints.some(p=>p!==0) ? drawWaveform(wavePoints) : drawPlaceholder();
+}
+
+function drawWaveform(pts) {
+    ctx.fillStyle='#060404'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.strokeStyle='rgba(192,136,32,0.1)'; ctx.lineWidth=1; ctx.beginPath();
+    ctx.moveTo(0,canvas.height/2); ctx.lineTo(canvas.width,canvas.height/2); ctx.stroke();
+    ctx.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+    ctx.lineWidth=1.5; ctx.beginPath();
+    const step = canvas.width/pts.length;
+    for (let i=0;i<pts.length;i++) {
+        const x=i*step, y=map(pts[i],-1,1,canvas.height-2,2);
+        i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
     }
     ctx.stroke();
 }
 
 function drawPlaceholder() {
-    ctx.fillStyle = '#111';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#555';
-    ctx.font = '16px "Courier New", Courier, monospace';
-    ctx.textAlign = 'center';
-    ctx.fillText('Drop a .wav file here', canvas.width / 2, canvas.height / 2);
+    ctx.fillStyle='#060404'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.strokeStyle='rgba(42,28,20,0.7)'; ctx.lineWidth=1;
+    ctx.setLineDash([3,7]); ctx.beginPath();
+    ctx.moveTo(0,canvas.height/2); ctx.lineTo(canvas.width,canvas.height/2); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle='#4a3828'; ctx.font='11px "Courier New",monospace';
+    ctx.textAlign='center'; ctx.letterSpacing='2px';
+    ctx.fillText('DROP .WAV', canvas.width/2, canvas.height/2-5);
+    ctx.fillStyle='#2e1e12'; ctx.fillText('custom waveform', canvas.width/2, canvas.height/2+12);
 }
 
-// --- FILE DROP LOGIC ---
-canvas.addEventListener('dragover', (e) => e.preventDefault());
-canvas.addEventListener('drop', (e) => {
+canvas.addEventListener('dragover', e => e.preventDefault());
+canvas.addEventListener('drop', e => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
     if (file && file.type === 'audio/wav') {
         const reader = new FileReader();
-        reader.onload = (event) => {
-            const arrayBuffer = event.target.result;
-            parseWav(arrayBuffer).then(audioData => {
-                // Resample to fit canvas width
-                const resampled = new Float32Array(canvas.width);
-                for (let i = 0; i < canvas.width; i++) {
-                    const index = Math.floor(map(i, 0, canvas.width, 0, audioData.length));
-                    resampled[i] = audioData[index] || 0;
-                }
-                wavePoints = resampled;
-                drawWaveform(wavePoints);
-                waveformSelect.value = 'custom'; // Switch dropdown to custom
-                if (isInitialized) {
-                   updateOscillatorType(); // Apply the change if audio is already active
-                }
-            }).catch(err => {
-                console.error("Failed to parse WAV file:", err);
-                alert("Failed to parse WAV file. See console for details.");
-            });
+        reader.onload = ev => {
+            parseWav(ev.target.result).then(data => {
+                const w=canvas.width, resampled=new Float32Array(w);
+                for (let i=0;i<w;i++) resampled[i]=data[Math.floor(map(i,0,w,0,data.length))]||0;
+                wavePoints=resampled; drawWaveform(wavePoints);
+                waveformSelect.value='custom';
+                if (isInitialized) updateOscillatorType();
+            }).catch(err => { console.error(err); alert('Failed to parse WAV.'); });
         };
         reader.readAsArrayBuffer(file);
-    } else {
-        alert("Please drop a valid .wav file.");
-    }
+    } else { alert('Please drop a valid .wav file.'); }
 });
 
-// --- WAV PARSER ---
-async function parseWav(arrayBuffer) {
+// ─── WAV PARSER ───────────────────────────────────────────────────────────
+async function parseWav(buf) {
     return new Promise((resolve, reject) => {
-        const view = new DataView(arrayBuffer);
-        if (view.getString(4, 0) !== 'RIFF' || view.getString(4, 8) !== 'WAVE') return reject('Not a valid WAV file');
-        let fmtChunkOffset = 12;
-        let dataChunkOffset = -1;
-        let offset = 12;
-        while(offset < view.byteLength) {
-            const chunkId = view.getString(4, offset);
-            const chunkSize = view.getUint32(offset + 4, true);
-            if (chunkId === 'fmt ') { fmtChunkOffset = offset; }
-            if (chunkId === 'data') { dataChunkOffset = offset + 8; break; }
-            offset += 8 + chunkSize;
+        const v=new DataView(buf);
+        if (v.getString(4,0)!=='RIFF'||v.getString(4,8)!=='WAVE') return reject('Not a valid WAV file');
+        let fmtOff=12, dataOff=-1, off=12;
+        while(off<v.byteLength){
+            const id=v.getString(4,off), sz=v.getUint32(off+4,true);
+            if(id==='fmt ') fmtOff=off;
+            if(id==='data'){dataOff=off+8;break;}
+            off+=8+sz;
         }
-        if (dataChunkOffset === -1) return reject('Could not find data chunk in WAV file.');
-        const bitDepth = view.getUint16(fmtChunkOffset + 22, true);
-        const dataSize = view.getUint32(dataChunkOffset - 4, true);
-        const numSamples = dataSize / (bitDepth / 8);
-        const samples = new Float32Array(numSamples);
-        let pos = dataChunkOffset;
-        for (let i = 0; i < numSamples; i++) {
-            if (pos >= view.byteLength) break;
-            if (bitDepth === 16) { samples[i] = view.getInt16(pos, true) / 32768; pos += 2; } 
-            else if (bitDepth === 8) { samples[i] = (view.getUint8(pos) - 128) / 128; pos += 1; }
-            else { return reject(`Unsupported bit depth: ${bitDepth}`); }
+        if(dataOff===-1) return reject('No data chunk');
+        const bits=v.getUint16(fmtOff+22,true), dsz=v.getUint32(dataOff-4,true), n=dsz/(bits/8);
+        const samples=new Float32Array(n); let pos=dataOff;
+        for(let i=0;i<n;i++){
+            if(pos>=v.byteLength)break;
+            if(bits===16){samples[i]=v.getInt16(pos,true)/32768;pos+=2;}
+            else if(bits===8){samples[i]=(v.getUint8(pos)-128)/128;pos+=1;}
+            else return reject(`Unsupported bit depth: ${bits}`);
         }
         resolve(samples);
     });
 }
-DataView.prototype.getString = function(length, offset) {
-    let str = '';
-    for (let i = 0; i < length; i++) str += String.fromCharCode(this.getUint8(offset + i));
-    return str;
+DataView.prototype.getString=function(len,off){
+    let s=''; for(let i=0;i<len;i++) s+=String.fromCharCode(this.getUint8(off+i)); return s;
 };
 
-// Initial UI setup
+// ─── INIT ─────────────────────────────────────────────────────────────────
+wireMetaInputs();
 updateUIState();
 updateAllDisplays();
-drawPlaceholder();
+updatePresetUI();
+
+requestAnimationFrame(() => {
+    resizeCanvas();
+    drawPlaceholder();
+});
+window.addEventListener('resize', () => { resizeCanvas(); updateDualRange(); });
 </script>
 </body>
 </html>
