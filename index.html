@@ -367,11 +367,74 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2rem,6vw,3rem
 [data-tooltip]:focus{outline:none;}
 
 /* ── COLOPHON ── */
-.colophon{margin-top:4rem;padding-top:1.6rem;border-top:1px solid var(--line-color);font-family:var(--font-detail);font-size:.78rem;color:var(--alt-title-color);line-height:1.8;text-align:center;}
-.colophon a{color:var(--email-color);text-decoration:none;}
-.colophon a:hover{color:var(--link-hover-color);}
-.colophon .row{display:flex;flex-wrap:wrap;gap:.4rem 1.3rem;justify-content:center;}
+.colophon{
+  width:100%;
+  max-width:700px;
+  margin:4.5rem auto 0;
+  padding:1.25rem 1rem 0;
+  border-top:1px dashed var(--line-color);
+  font-family:var(--font-detail);
+  font-size:.73rem;
+  line-height:1.32;
+  text-align:center;
+}
 
+.colophon .row{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:.18rem .95rem;
+  margin:.22rem auto;
+}
+
+/* default item treatment */
+.colophon .row span{
+  opacity:.78;
+}
+
+/* small glyph separators */
+.colophon .row span::before{
+  content:"✦ ";
+  opacity:.45;
+}
+
+/* education / location */
+.colophon .row:nth-child(1){
+  color:var(--year-color);
+  font-size:.72rem;
+  opacity:.82;
+}
+
+/* scoring / audio */
+.colophon .row:nth-child(2){
+  color:var(--category-score-color);
+  opacity:.92;
+}
+
+/* research / code */
+.colophon .row:nth-child(3){
+  color:var(--category-artistic-research-color);
+  opacity:.84;
+}
+
+/* online creator / public theory */
+.colophon .row:nth-child(4){
+  color:var(--category-music-color);
+  opacity:.88;
+  font-style:italic;
+}
+
+/* methods / adjacent practices */
+.colophon .row:nth-child(5){
+  color:var(--alt-title-color);
+  opacity:.68;
+  font-size:.7rem;
+}
+
+/* let row opacity control the line instead of flattening every span */
+.colophon .row:nth-child(n) span{
+  opacity:inherit;
+}
 </style>
 </head>
 <body>
@@ -412,6 +475,7 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
     <a class="glass" href="https://soundcloud.com/xyh-tamura" target="_blank" rel="noopener">soundcloud</a>
 	<a class="glass" href="https://www.researchgate.net/profile/Xyh-Tamura" target="_blank" rel="noopener">researchgate</a>
 	<a class="glass" href="https://scholar.google.com/citations?user=-KKjd50AAAAJ" target="_blank" rel="noopener">google scholar</a>
+	<a class="glass" href="https://www.imdb.com/name/nm9964342/" target="_blank" rel="noopener">imdb</a>
   </nav>
 
   <!-- vibe mosaic: swap tiles for <img>/<video>; goo applied to t2 & t5 -->
@@ -1526,17 +1590,43 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
 </main>
 </div>
 
-  <footer class="colophon">
-    <div class="row">
-      <a href="mailto:xyhtamura0@gmail.com">xyhtamura0@gmail.com</a>
-      <span>github / instagram / bandcamp @xyhtamura</span>
-    </div>
-    <div class="row" style="margin-top:.4rem;opacity:.7;">
-      <span>last touched 2026.05.28</span>
-      <span>quicksand · rubik · averia · lexend · dosis</span>
-      <span>no analytics, no cookies</span>
-    </div>
-  </footer>
+<footer class="colophon" aria-label="colophon">
+  <div class="row">
+    <span>based in Metro Manila</span>
+    <span>BS Physics (Theoretical), University of the Philippines Diliman</span>
+    <span>MA Creative Writing (Poetry), UP Diliman</span>
+  </div>
+
+  <div class="row">
+    <span>film / stage / web scoring</span>
+    <span>sound design</span>
+    <span>recording, editing, mixing, mastering</span>
+    <span>audio engineering and post-production</span>
+  </div>
+
+  <div class="row">
+    <span>policy research</span>
+    <span>participatory research</span>
+    <span>science-facing poetics</span>
+	<span>philosophy</span>
+  </div>
+
+  <div class="row">
+    <span>video essays</span>
+    <span>online creation</span>
+	<span>open source, copyleft, commons</span>
+  </div>
+
+  <div class="row">
+    <span>GIS / affect mapping</span>
+    <span>participatory workshops</span>
+    <span>ethnobotanical research</span>
+    <span>graphic design</span>
+    <span>fashion &amp; make-up</span>
+    <span>virtual worldbuilding</span>
+  </div>
+</footer>
+
 
 
 <script>

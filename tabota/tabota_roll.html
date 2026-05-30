@@ -39,7 +39,7 @@ body{
   background:
     radial-gradient(120% 80% at 0% 0%, #eef4ef 0%, var(--paper) 55%),
     var(--paper);
-  display:flex; flex-direction:column; height:100vh; overflow:hidden;
+  display:flex; flex-direction:column; height:100vh; height:100dvh; overflow:hidden;
   -webkit-font-smoothing:antialiased;
 }
 header{
@@ -114,6 +114,19 @@ footer code{font-family:var(--mono); color:var(--ink)}
 .transport button{font-size:13px; padding:6px 12px}
 .transport .play.on{background:var(--algae); border-color:var(--algae); color:#13260a}
 
+/* mobile / narrow screens: let the whole page scroll and give the canvas a fixed, usable height
+   so toolbars and the footer are always reachable (they were being clipped by overflow:hidden). */
+@media (max-width: 860px){
+  body{ height:auto; min-height:100dvh; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+  .stage{ flex:0 0 auto; height:58vh; height:58dvh; min-height:340px; }
+  .toolbar{ padding:6px 10px; gap:5px 8px; }
+  .group{ padding:1px 6px 1px 0; }
+  .group + .group{ padding-left:8px; }
+  header{ padding:8px 12px 7px; }
+  header .sub{ display:none; }
+  footer{ padding:8px 12px 14px; }
+}
+
 /* drawer (report / io detail) */
 .drawer{
   position:absolute; right:0; top:0; bottom:0; width:360px; max-width:86vw;
@@ -158,15 +171,30 @@ footer code{font-family:var(--mono); color:var(--ink)}
     <button data-tool="erase" title="Erase (E)">⌫ erase</button>
     <button data-tool="pan" title="Pan (space-drag)">✋ pan</button>
   </div>
+  <div class="group">
+    <label>select</label>
+    <div class="seg" id="selModeSeg">
+      <button data-m="replace" class="on" title="Replace — a click or marquee starts a fresh selection">replace</button>
+      <button data-m="include" title="Include — clicks &amp; marquees add to the selection (or hold Shift)">＋ incl</button>
+      <button data-m="exclude" title="Exclude — clicks &amp; marquees remove from the selection (or hold Alt)">− excl</button>
+    </div>
+  </div>
 
   <div class="group">
     <label>curve</label>
-    <select id="curveSel" title="glide curve shape — applies to new glides and any selected glide notes">
+    <select id="curveSel" title="glide curve shape — applies to new glides and any selected glide segment/note">
       <option value="linear">╱ linear</option>
       <option value="exp">⌒ exp (ease-in)</option>
       <option value="log">⌐ log (ease-out)</option>
       <option value="smooth">∫ smooth (S)</option>
     </select>
+  </div>
+
+  <div class="group" id="pointGroup">
+    <label>point</label>
+    <input type="number" id="ptHz" class="w48" step="0.01" min="1" title="exact frequency of the selected point (Hz)" disabled style="width:78px">
+    <span style="color:var(--ink-dim)">Hz</span>
+    <input type="text" id="ptNote" title="note name of the selected point, e.g. A4, C#5, Bb3, A4+12 (cents)" placeholder="–" disabled style="width:72px">
   </div>
 
   <div class="group">
@@ -212,6 +240,7 @@ footer code{font-family:var(--mono); color:var(--ink)}
     <button class="tool" id="copyBtn" title="copy selection (⌘/Ctrl+C)">⧉</button>
     <button class="tool" id="pasteBtn" title="paste at cursor (⌘/Ctrl+V)">⎘</button>
     <button class="tool" id="joinBtn" title="join selected notes into one glide (J)">⌒ join</button>
+    <button class="tool" id="splitBtn" title="split note(s) at selected interior point(s); a whole multi-point note explodes into segments (K)">⌣ split</button>
   </div>
 
   <div class="group" id="voiceGroup">
@@ -267,6 +296,10 @@ footer code{font-family:var(--mono); color:var(--ink)}
       <option value="sawtooth">saw</option><option value="square">square</option>
     </select>
     <label class="chk"><input type="checkbox" id="loop"> loop</label>
+  </div>
+  <div class="group" style="gap:6px">
+    <button class="btn" id="undoBtn" title="Undo (⌘/Ctrl+Z)" disabled>↶ undo</button>
+    <button class="btn" id="redoBtn" title="Redo (⌘/Ctrl+Shift+Z)" disabled>↷ redo</button>
   </div>
   <div class="group" style="gap:6px">
     <button class="btn" id="impMidi">⬇ import MIDI</button>
@@ -531,6 +564,63 @@ let defaultCurve='linear';          // curve applied to new glide/pen notes
 let penNote=null;                   // glide note being built by the pen tool
 let penRaw=null;                    // absolute [{beat,hz}] points during pen drawing
 let segSel=null;                    // {note, seg} — a single selected curve segment within a note
+let pointSel=null;                  // {note, idx} — a single selected breakpoint (drives the Hz/Note editor)
+let ptSel=new Map();                // Map<note, Set<ptIdx>> — granular partial selection from the marquee
+function ptSelHas(note,idx){ const s=ptSel.get(note); return !!s && s.has(idx); }
+function granCount(){ let c=0; for(const s of ptSel.values()) c+=s.size; for(const id of selection){ const n=notes.find(x=>x.id===id); if(n) c+=n.pts.length; } return c; }
+function clearGran(){ selection.clear(); ptSel=new Map(); segSel=null; pointSel=null; }
+let selMode='replace';              // 'replace' | 'include' | 'exclude' — how clicks & marquees combine
+// merge a per-note set of point indices into selection/ptSel
+function mergeSel(note, idxSet, op){ // op: 'add' | 'sub'
+  let cur = selection.has(note.id) ? new Set(note.pts.map((_,i)=>i)) : (ptSel.get(note)? new Set(ptSel.get(note)) : new Set());
+  if(op==='sub'){ for(const i of idxSet) cur.delete(i); } else { for(const i of idxSet) cur.add(i); }
+  selection.delete(note.id); ptSel.delete(note);
+  if(cur.size===0) return;
+  if(cur.size===note.pts.length || note.type==='hold') selection.add(note.id);
+  else ptSel.set(note,cur);
+}
+function entityIndices(h){           // the point indices a hit entity represents
+  if(h.kind==='point') return [h.note.type==='hold'?0:h.idx];
+  if(h.kind==='segment') return [h.seg, h.seg+1];
+  return h.note.pts.map((_,i)=>i);   // whole note (aura)
+}
+
+/* ---- undo / redo history ---- */
+const HMAX=120; let undoStack=[], redoStack=[], dragHist=null;
+function histSnapshot(){ return JSON.stringify(notes); }
+function pushUndo(snap){ undoStack.push(snap); if(undoStack.length>HMAX) undoStack.shift(); }
+function pushHistory(){ pushUndo(histSnapshot()); redoStack=[]; refreshHistBtns(); }   // call BEFORE a mutation
+function commitDragHist(){ if(dragHist!=null){ if(dragHist!==histSnapshot()){ pushUndo(dragHist); redoStack=[]; } dragHist=null; refreshHistBtns(); } }
+function restoreHist(json){
+  notes=JSON.parse(json);
+  selection.clear(); ptSel=new Map(); segSel=null; pointSel=null;
+  NID=Math.max(0, ...notes.map(n=>n.id))+1;
+  clampScroll(); changed();
+}
+function undo(){ if(!undoStack.length){ flash('nothing to undo'); return; } redoStack.push(histSnapshot()); restoreHist(undoStack.pop()); refreshHistBtns(); flash('undo'); }
+function redo(){ if(!redoStack.length){ flash('nothing to redo'); return; } pushUndo(histSnapshot()); restoreHist(redoStack.pop()); refreshHistBtns(); flash('redo'); }
+function refreshHistBtns(){ const u=document.getElementById('undoBtn'), r=document.getElementById('redoBtn'); if(u)u.disabled=!undoStack.length; if(r)r.disabled=!redoStack.length; }
+function cross2(ux,uy,vx,vy){ return ux*vy-uy*vx; }
+function segSeg(ax,ay,bx,by,cx,cy,dx,dy){
+  const d1=cross2(dx-cx,dy-cy,ax-cx,ay-cy), d2=cross2(dx-cx,dy-cy,bx-cx,by-cy);
+  const d3=cross2(bx-ax,by-ay,cx-ax,cy-ay), d4=cross2(bx-ax,by-ay,dx-ax,dy-ay);
+  return ((d1>0)!==(d2>0)) && ((d3>0)!==(d4>0));
+}
+function ptInRect(px,py,x,y,w,h){ return px>=x&&px<=x+w&&py>=y&&py<=y+h; }
+function lineVsRect(ax,ay,bx,by,x,y,w,h){
+  if(ptInRect(ax,ay,x,y,w,h)||ptInRect(bx,by,x,y,w,h)) return true;
+  const X=x+w,Y=y+h;
+  return segSeg(ax,ay,bx,by,x,y,X,y)||segSeg(ax,ay,bx,by,X,y,X,Y)||segSeg(ax,ay,bx,by,X,Y,x,Y)||segSeg(ax,ay,bx,by,x,Y,x,y);
+}
+// does curve segment i of note n intersect the marquee rect?
+function segHitsRect(n,i,x,y,w,h){
+  const a=n.pts[i].t, b=n.pts[i+1].t;
+  const steps=Math.max(2,Math.ceil((b-a)*n.dur*view.pxPerBeat/3));
+  let px=beatToX(n.start+a*n.dur), py=hzToY(n.pts[i].hz);
+  for(let s=1;s<=steps;s++){ const f=a+(b-a)*(s/steps); const x2=beatToX(n.start+f*n.dur), y2=hzToY(pitchAt(n,f));
+    if(lineVsRect(px,py,x2,y2,x,y,w,h)) return true; px=x2; py=y2; }
+  return false;
+}
 
 /* ---- scales (define the pitch ruler + snap only; never the stored Hz or MIDI export) ----
    A scale = degree cents within one period + the period (repeat interval) in cents.
@@ -735,6 +825,8 @@ function drawNotes(W,H){
     if(x1<GUT_L||x0>W) continue;
     const sel=selection.has(n.id);
     const segOf=(segSel && segSel.note===n)? segSel.seg : -1;
+    const part=ptSel.get(n);                              // Set<idx> of partially-selected points, or undefined
+    const psel=(i)=> sel || (part&&part.has(i));
     const c=voiceColor(n.voice);
     // selection underlay (ember glow, reads regardless of voice hue)
     if(sel){ ctx.strokeStyle=col('--ember'); ctx.globalAlpha=.30; ctx.lineWidth=10; strokeContour(n,x0,x1); ctx.globalAlpha=1; }
@@ -742,19 +834,21 @@ function drawNotes(W,H){
     ctx.strokeStyle=c; ctx.globalAlpha=.20; ctx.lineWidth=9; strokeContour(n,x0,x1); ctx.globalAlpha=1;
     // main (thin) line — grabbing it selects a single segment
     ctx.strokeStyle=c; ctx.lineWidth=2.6; strokeContour(n,x0,x1);
-    // selected segment overlay
+    // selected segment overlay (clicked segment, or partial segments whose both ends are selected)
     if(segOf>=0){ ctx.strokeStyle=col('--ember'); ctx.lineWidth=3.6; strokeSegment(n,segOf); }
+    if(part){ ctx.strokeStyle=col('--ember'); ctx.lineWidth=3.6;
+      for(let i=0;i<n.pts.length-1;i++){ if(part.has(i)&&part.has(i+1)) strokeSegment(n,i); } }
     // endpoints + interior points + voice badge
     const yS=hzToY(pitchAt(n,0)), yE=hzToY(pitchAt(n,1)), lastSeg=n.pts.length-2;
-    const startSel=sel||segOf===0, endSel=sel||segOf===lastSeg;
-    const showBadge = (sel||segOf>=0) || (n.dur*view.pxPerBeat>26 && view.pxPerSemi>8);
+    const startSel=sel||segOf===0||psel(0), endSel=sel||segOf===lastSeg||psel(n.pts.length-1);
+    const showBadge = (sel||segOf>=0||part) || (n.dur*view.pxPerBeat>26 && view.pxPerSemi>8);
     if(showBadge) voiceBadge(x0,yS,n.voice,c,startSel); else handle(x0,yS,startSel);
     handle(x1,yE,endSel);
     if(n.pts.length>2){
-      const showPts = sel || segOf>=0;
+      const showPts = sel || segOf>=0 || !!part;
       for(let i=1;i<n.pts.length-1;i++){
         const px=beatToX(n.start+n.pts[i].t*n.dur), py=hzToY(n.pts[i].hz);
-        const hi = sel || segOf===i-1 || segOf===i;
+        const hi = sel || segOf===i-1 || segOf===i || psel(i);
         if(showPts) handle(px,py,hi); else dot(px,py,c);
       }
     }
@@ -923,7 +1017,7 @@ let drag=null;
 function evtPos(e){ const r=cv.getBoundingClientRect(); return {x:e.clientX-r.left, y:e.clientY-r.top}; }
 
 cv.addEventListener('pointerdown',e=>{
-  cv.setPointerCapture(e.pointerId);
+  cv.setPointerCapture(e.pointerId); dragHist=null;
   const p=evtPos(e); if(p.x<GUT_L||p.y<GUT_T){ // ruler drag = scroll
     drag={mode:'scrollGutter', sx:p.x, sy:p.y, ox:view.scrollX, oy:view.scrollY, axis:p.y<GUT_T?'x':'y'}; return;
   }
@@ -935,6 +1029,7 @@ cv.addEventListener('pointerdown',e=>{
     const hz=snapPitchHz(yToHz(p.y));
     let beat=clampBeatToContent(snapBeat(xToBeat(p.x)));
     if(!penNote){
+      pushHistory();
       penRaw=[{beat,hz}];
       penNote={id:NID++, start:beat, dur:0.0001, type:'glide', curve:defaultCurve, vel:+vel.value||96, voice:1, pts:[{t:0,hz}]};
       notes.push(penNote); penNote.voice=autoVoice(penNote);
@@ -952,31 +1047,54 @@ cv.addEventListener('pointerdown',e=>{
   }
 
   const hit=noteAt(p.x,p.y);
-  if(t==='erase'){ if(hit){ notes=notes.filter(n=>n!==hit); selection.delete(hit.id); changed(); } return; }
+  if(t==='erase'){ if(hit){ pushHistory(); notes=notes.filter(n=>n!==hit); selection.delete(hit.id); changed(); } return; }
 
   if(t==='select'){
+    dragHist=histSnapshot();                              // capture pre-state; committed on pointerup if notes change
     const h=selectHit(p.x,p.y);
+    const mode = e.shiftKey ? 'include' : (e.altKey ? 'exclude' : selMode);
+    if(h && (mode==='include'||mode==='exclude')){
+      segSel=null; pointSel=null;
+      mergeSel(h.note, new Set(entityIndices(h)), mode==='exclude'?'sub':'add');
+      drag = (mode==='include' && (ptSel.size>0||selection.size>0)) ? startGroupMove(p) : null;
+      changed(); return;
+    }
     if(h){
-      if(h.kind==='point'){
-        segSel=null;
-        if(!e.shiftKey && !selection.has(h.note.id)) selection.clear();
-        selection.add(h.note.id);
-        drag={mode:'resize', note:h.note, ptIdx:h.idx, ep:(h.note.type==='hold'?(h.edge||holdEdge(h.note,p.x)):null), sx:p.x, sy:p.y, o:snapshot(h.note)};
-      } else if(h.kind==='segment'){
-        selection.clear(); segSel={note:h.note, seg:h.seg};
-        drag={mode:'segMove', note:h.note, seg:h.seg, sx:p.x, sy:p.y,
-              absPts:h.note.pts.map(q=>({beat:h.note.start+q.t*h.note.dur, hz:q.hz, curve:q.curve}))};
-      } else { // whole note
-        segSel=null;
-        if(!e.shiftKey && !selection.has(h.note.id)) selection.clear();
-        selection.add(h.note.id);
-        drag={mode:'move', note:h.note, sx:p.x, sy:p.y, o:snapshot(h.note)};
+      const multi = ptSel.size>0 || selection.size>1;
+      const hitInSel = (h.kind==='point') ? (ptSelHas(h.note,h.idx)||selection.has(h.note.id))
+                                          : (selection.has(h.note.id)||ptSel.has(h.note));
+      if(multi && hitInSel){                              // grab and move the whole granular selection
+        segSel=null; pointSel=null; drag=startGroupMove(p);
+      } else {
+        ptSel=new Map();                                  // single interaction resets partial selection
+        if(h.kind==='point'){
+          segSel=null;
+          if(!selection.has(h.note.id)) selection.clear();
+          selection.add(h.note.id);
+          pointSel={note:h.note, idx:(h.note.type==='hold'?0:h.idx)};
+          drag={mode:'resize', note:h.note, ptIdx:h.idx, ep:(h.note.type==='hold'?(h.edge||holdEdge(h.note,p.x)):null), sx:p.x, sy:p.y, o:snapshot(h.note)};
+        } else if(h.kind==='segment'){
+          selection.clear(); pointSel=null; segSel={note:h.note, seg:h.seg};
+          drag={mode:'segMove', note:h.note, seg:h.seg, sx:p.x, sy:p.y,
+                absPts:h.note.pts.map(q=>({beat:h.note.start+q.t*h.note.dur, hz:q.hz, curve:q.curve}))};
+        } else { // whole note (aura)
+          segSel=null;
+          if(!selection.has(h.note.id)) selection.clear();
+          selection.add(h.note.id);
+          pointSel = (h.note.type==='hold') ? {note:h.note, idx:0} : null;
+          drag={mode:'move', note:h.note, sx:p.x, sy:p.y, o:snapshot(h.note)};
+        }
       }
-    } else { selection.clear(); segSel=null; drag={mode:'marquee',sx:p.x,sy:p.y,x2:p.x,y2:p.y}; }
+    } else {
+      const marqMode = (mode==='exclude') ? 'subtract' : (mode==='include' ? 'add' : 'replace');
+      if(marqMode==='replace') clearGran();
+      drag={mode:'marquee',sx:p.x,sy:p.y,x2:p.x,y2:p.y,marqMode};
+    }
     changed(); return;
   }
 
   // creation tools
+  dragHist=histSnapshot();
   const beat=clampBeatToContent(snapBeat(xToBeat(p.x)));
   const hz=snapPitchHz(yToHz(p.y));
   if(t==='hold'){
@@ -1011,6 +1129,32 @@ function finalizePen(){
 
 function holdEdge(n,px){ const x1=beatToX(n.start+n.dur); if(Math.abs(px-x1)<7) return 'end'; const x0=beatToX(n.start); if(Math.abs(px-x0)<7) return 'start'; return null; }
 function snapshot(n){ return JSON.parse(JSON.stringify(n)); }
+function startGroupMove(p){
+  const targets=new Map();
+  for(const id of selection){ const n=notes.find(x=>x.id===id); if(n) targets.set(n, new Set(n.pts.map((_,i)=>i))); }
+  for(const [n,set] of ptSel){ const ex=targets.get(n)||new Set(); for(const i of set) ex.add(i); targets.set(n,ex); }
+  const snap=new Map();
+  for(const [n,set] of targets){ snap.set(n,{sel:set, abs:n.pts.map(q=>({beat:n.start+q.t*n.dur, hz:q.hz, curve:q.curve}))}); }
+  return {mode:'ptMove', sx:p.x, sy:p.y, targets:snap};
+}
+function removePoints(note,idxSet){     // returns false if the note should be removed entirely
+  const abs=note.pts.map(q=>({beat:note.start+q.t*note.dur, hz:q.hz, curve:q.curve}));
+  const kept=abs.filter((_,i)=>!idxSet.has(i));
+  if(kept.length<1) return false;
+  if(kept.length===1){ note.type='hold'; note.start=kept[0].beat; if(!(note.dur>0)) note.dur=settings.defLen; note.pts=[{t:0,hz:kept[0].hz}]; return true; }
+  const start=Math.min(...kept.map(q=>q.beat)), end=Math.max(...kept.map(q=>q.beat)), dur=Math.max(1e-4,end-start);
+  note.start=start; note.dur=dur;
+  note.pts=kept.map(q=>{ const o={t:(q.beat-start)/dur, hz:q.hz}; if(q.curve) o.curve=q.curve; return o; });
+  if(note.type==='hold') note.type='glide';
+  return true;
+}
+function deleteSelection(){
+  if(!selection.size && !ptSel.size) return;
+  pushHistory();
+  if(selection.size) notes=notes.filter(n=>!selection.has(n.id));
+  for(const [n,set] of ptSel){ if(!notes.includes(n)) continue; if(!removePoints(n,set)) notes=notes.filter(x=>x!==n); }
+  clearGran();
+}
 function clampBeatToContent(b){ return Math.max(0,Math.min(totalBeats(),b)); }
 // voice = lowest positive integer whose notes don't overlap this one's time-span ("y-axis intersection")
 function overlap(aS,aE,bS,bE){ return aS < bE-1e-9 && bS < aE-1e-9; }
@@ -1044,6 +1188,28 @@ cv.addEventListener('pointermove',e=>{
   if(d.mode==='newFree'){
     const b=clampBeatToContent(xToBeat(p.x)); const hz=snapPitchHz(yToHz(p.y));
     if(b>d.baseStart){ d.raw.push({beat:b,hz}); rebuildFree(d.note,d.raw); d.note.voice=autoVoice(d.note); }
+    draw(); updateStatus(); return;
+  }
+  if(d.mode==='ptMove'){
+    const rawDb=(p.x-d.sx)/view.pxPerBeat, rawDm=-(p.y-d.sy)/view.pxPerSemi;
+    let dB = settings.snapTime ? Math.round(rawDb*settings.grid)/settings.grid : rawDb;   // delta-snapped time keeps the group rigid
+    const minStep=1/Math.max(settings.grid,8); let loB=-Infinity, hiB=Infinity;
+    for(const t of d.targets.values()){ const abs=t.abs, sel=t.sel, last=abs.length-1;
+      for(let i=0;i<abs.length;i++){ if(!sel.has(i)) continue;
+        hiB=Math.min(hiB, totalBeats()-abs[i].beat); loB=Math.max(loB, -abs[i].beat);
+        if(i<last && !sel.has(i+1)) hiB=Math.min(hiB,(abs[i+1].beat-abs[i].beat)-minStep);
+        if(i>0   && !sel.has(i-1)) loB=Math.max(loB,-((abs[i].beat-abs[i-1].beat)-minStep));
+      }
+    }
+    dB=Math.max(loB,Math.min(hiB,dB));
+    for(const [n,t] of d.targets){ const abs=t.abs, sel=t.sel;
+      const na=abs.map((a,i)=> sel.has(i)
+        ? {beat:a.beat+dB, hz:settings.snapPitch?snapPitchHz(midiToFreq(freqToMidi(a.hz,settings.a4)+rawDm,settings.a4)):midiToFreq(freqToMidi(a.hz,settings.a4)+rawDm,settings.a4), curve:a.curve}
+        : {beat:a.beat, hz:a.hz, curve:a.curve});
+      const start=Math.min(...na.map(q=>q.beat)), end=Math.max(...na.map(q=>q.beat)), dur=Math.max(1e-4,end-start);
+      n.start=start; n.dur=dur;
+      n.pts=na.map(q=>{ const o={t:(q.beat-start)/dur, hz:q.hz}; if(q.curve) o.curve=q.curve; return o; });
+    }
     draw(); updateStatus(); return;
   }
   if(d.mode==='move'){
@@ -1133,10 +1299,10 @@ cv.addEventListener('pointerup',e=>{
       if(drag.note.type==='free' && drag.note.pts.length<2){ notes=notes.filter(n=>n!==drag.note); }
     }
     stage.classList.remove('tool-pan');
-    drag=null; changed();
-  }
+    drag=null; commitDragHist(); changed();
+  } else commitDragHist();
 });
-cv.addEventListener('pointercancel',()=>{drag=null;});
+cv.addEventListener('pointercancel',()=>{drag=null; commitDragHist();});
 cv.addEventListener('pointerleave',()=>{ lastMouse.inside=false; });
 
 // double-click: finish the pen, or insert/delete a breakpoint on a glide/free note
@@ -1147,10 +1313,12 @@ cv.addEventListener('dblclick',e=>{
   const hit=noteAt(p.x,p.y); if(!hit || hit.type==='hold') return;
   const idx=pointHitIndex(hit,p.x,p.y);
   if(idx>0 && idx<hit.pts.length-1){          // delete interior point
+    pushHistory();
     hit.pts.splice(idx,1); if(hit.type==='free' && hit.pts.length===2) hit.type='glide';
     changed(); return;
   }
   // insert a point on the body at the cursor
+  pushHistory();
   const t=Math.max(0.0001,Math.min(0.9999,(xToBeat(p.x)-hit.start)/Math.max(1e-6,hit.dur)));
   const hz=snapPitchHz(yToHz(p.y));
   let i=0; while(i<hit.pts.length && hit.pts[i].t<t) i++;
@@ -1167,10 +1335,19 @@ function drawMarquee(d){
 function commitMarquee(d){
   const x=Math.min(d.sx,d.x2), y=Math.min(d.sy,d.y2), w=Math.abs(d.x2-d.sx), h=Math.abs(d.y2-d.sy);
   if(w<3&&h<3) return;
-  selection.clear();
-  for(const n of notes){ const nx0=beatToX(n.start), nx1=beatToX(n.start+n.dur);
-    const [lo,hi]=noteMinMaxHz(n); const ny0=hzToY(hi), ny1=hzToY(lo);
-    if(nx1>=x&&nx0<=x+w&&ny1>=y&&ny0<=y+h) selection.add(n.id);
+  const mode=d.marqMode||'replace';
+  if(mode==='replace'){ selection.clear(); ptSel=new Map(); }
+  segSel=null; pointSel=null;
+  const op = (mode==='subtract') ? 'sub' : 'add';          // replace + add both union (replace pre-cleared)
+  // collect point indices hit by an intersected segment (curve), then merge
+  for(const n of notes){
+    const nx0=beatToX(n.start), nx1=beatToX(n.start+Math.max(n.dur,1e-4));
+    if(nx1<x-2||nx0>x+w+2) continue;
+    let hit=new Set();
+    if(n.type==='hold'){ const yy=hzToY(pitchAt(n,0)); if(lineVsRect(nx0,yy,nx1,yy,x,y,w,h)) hit.add(0); }
+    else { for(let i=0;i<n.pts.length-1;i++) if(segHitsRect(n,i,x,y,w,h)){ hit.add(i); hit.add(i+1); } }
+    if(!hit.size) continue;
+    mergeSel(n, hit, op);
   }
 }
 
@@ -1200,8 +1377,9 @@ document.querySelectorAll('#tools button').forEach(b=>b.addEventListener('click'
   setTool(t);
 }));
 function setTool(t){ if(penNote && t!=='pen') finalizePen(); view.tool=t;
+  if(t!=='select'){ ptSel=new Map(); pointSel=null; segSel=null; }
   document.querySelectorAll('#tools button').forEach(x=>x.classList.toggle('on',x.dataset.tool===t));
-  stage.className='stage tool-'+t; cv.style.cursor='';
+  stage.className='stage tool-'+t; cv.style.cursor=''; changed();
 }
 document.querySelectorAll('#timeRegime button').forEach(b=>b.addEventListener('click',()=>{
   view.timeRegime=b.dataset.r; document.querySelectorAll('#timeRegime button').forEach(x=>x.classList.toggle('on',x===b)); regimePill(); draw();
@@ -1292,12 +1470,12 @@ function deepNote(n){ return {type:n.type, vel:n.vel, voice:n.voice||1, curve:n.
 function doCopy(){ const sel=selectedNotes(); if(!sel.length) return; clipboard={notes:sel.map(deepNote)};
   try{ navigator.clipboard && navigator.clipboard.writeText(JSON.stringify({tabotaRollClip:true, notes:clipboard.notes})); }catch(e){}
   flash(`copied ${sel.length} note${sel.length!==1?'s':''}`); }
-function doCut(){ const sel=selectedNotes(); if(!sel.length) return; doCopy(); notes=notes.filter(n=>!selection.has(n.id)); selection.clear(); changed(); }
+function doCut(){ const sel=selectedNotes(); if(!sel.length) return; doCopy(); pushHistory(); notes=notes.filter(n=>!selection.has(n.id)); selection.clear(); changed(); }
 function pasteNotes(list){
   if(!list||!list.length) return;
   const targetBeat = lastMouse.inside ? clampBeatToContent(snapBeat(xToBeat(lastMouse.x))) : (playhead!=null?playhead:0);
   const minStart=Math.min(...list.map(n=>n.start)); const delta=targetBeat-minStart;
-  selection.clear();
+  pushHistory(); selection.clear(); ptSel=new Map();
   for(const cn of list){ const n=deepNote(cn); n.id=NID++; n.start=clampBeatToContent(cn.start+delta); notes.push(n); selection.add(n.id); }
   changed();
 }
@@ -1307,7 +1485,7 @@ async function doPaste(){
 }
 function doDuplicate(){ const sel=selectedNotes(); if(!sel.length) return;
   const span=Math.max(...sel.map(n=>n.start+n.dur))-Math.min(...sel.map(n=>n.start));
-  const off=Math.max(span, 1/settings.grid); selection.clear();
+  const off=Math.max(span, 1/settings.grid); pushHistory(); selection.clear(); ptSel=new Map();
   for(const s of sel){ const n=deepNote(s); n.id=NID++; n.start=clampBeatToContent(s.start+off); notes.push(n); selection.add(n.id); }
   changed(); flash('duplicated');
 }
@@ -1338,10 +1516,11 @@ bendRange.addEventListener('input',()=>{document.getElementById('pillRange').tex
 function selectedNotes(){ return notes.filter(n=>selection.has(n.id)); }
 function changeVoice(delta){
   const sel=selectedNotes(); if(!sel.length) return;
+  pushHistory();
   for(const n of sel) n.voice=Math.max(1,(n.voice||1)+delta);
   changed();
 }
-function setVoice(v){ const sel=selectedNotes(); if(!sel.length) return; for(const n of sel) n.voice=Math.max(1,v); changed(); }
+function setVoice(v){ const sel=selectedNotes(); if(!sel.length) return; pushHistory(); for(const n of sel) n.voice=Math.max(1,v); changed(); }
 document.getElementById('voiceDn').onclick=()=>changeVoice(-1);
 document.getElementById('voiceUp').onclick=()=>changeVoice(1);
 
@@ -1350,10 +1529,11 @@ const curveSel=document.getElementById('curveSel');
 curveSel.addEventListener('change',()=>{
   const v=curveSel.value;
   if(segSel && segSel.note.type==='glide'){            // set just this segment
-    segSel.note.pts[segSel.seg].curve=v;
+    pushHistory(); segSel.note.pts[segSel.seg].curve=v;
   } else {
     defaultCurve=v;
     const sel=selectedNotes().filter(n=>n.type==='glide');
+    if(sel.length) pushHistory();
     for(const n of sel){ n.curve=v; n.pts.forEach(p=>{ delete p.curve; }); }  // make the whole note uniform
   }
   changed();
@@ -1372,10 +1552,84 @@ function joinSelection(){
   const joined={id:NID++, type:'glide', curve:sel[0].curve||defaultCurve, vel:sel[0].vel, voice:sel[0].voice||1, start, dur,
     pts: raw.map(q=>({t:(q.beat-start)/dur, hz:q.hz}))};
   if(joined.pts.length<2){ flash('cannot join'); return; }
+  pushHistory();
   notes=notes.filter(n=>!selection.has(n.id)); notes.push(joined);
   selection.clear(); selection.add(joined.id); changed(); flash(`joined ${sel.length} into one glide`);
 }
 document.getElementById('joinBtn').onclick=joinSelection;
+
+/* split — inverse of join: break a note at selected interior point(s);
+   a wholly-selected multi-point note explodes into one note per segment. */
+function splitNoteAt(note, idxs){
+  const cut=[0, ...idxs, note.pts.length-1];
+  const abs=note.pts.map(q=>({beat:note.start+q.t*note.dur, hz:q.hz, curve:q.curve}));
+  const pieces=[];
+  for(let k=0;k<cut.length-1;k++){
+    const a=cut[k], b=cut[k+1], slice=abs.slice(a,b+1);
+    if(slice.length<2) continue;
+    const start=slice[0].beat, end=slice[slice.length-1].beat, dur=Math.max(1e-4,end-start);
+    const pts=slice.map((q,j)=>{ const o={t:(q.beat-start)/dur, hz:q.hz}; if(q.curve && j<slice.length-1) o.curve=q.curve; return o; });
+    pieces.push({id:NID++, start, dur, type:(note.type==='free'?'free':'glide'), curve:note.curve, vel:note.vel, voice:note.voice||1, pts});
+  }
+  return pieces;
+}
+function splitSelection(){
+  const map=new Map();   // note -> Set(interior split idx)
+  for(const id of selection){ const n=notes.find(x=>x.id===id); if(n && n.pts.length>2){ const s=new Set(); for(let i=1;i<n.pts.length-1;i++) s.add(i); map.set(n,s); } }
+  for(const [n,set] of ptSel){ const s=map.get(n)||new Set(); for(const i of set) if(i>0 && i<n.pts.length-1) s.add(i); if(s.size) map.set(n,s); }
+  if(pointSel && pointSel.idx>0 && pointSel.idx<pointSel.note.pts.length-1){ const n=pointSel.note; const s=map.get(n)||new Set(); s.add(pointSel.idx); map.set(n,s); }
+  if(!map.size){ flash('select an interior point (or a whole multi-point note) to split'); return; }
+  const newNotes=[]; const remove=new Set();
+  for(const [n,set] of map){ const pieces=splitNoteAt(n,[...set].sort((a,b)=>a-b)); if(pieces.length>1){ remove.add(n); newNotes.push(...pieces); } }
+  if(!newNotes.length){ flash('nothing to split'); return; }
+  pushHistory();
+  notes=notes.filter(n=>!remove.has(n)).concat(newNotes);
+  clearGran(); selection=new Set(newNotes.map(n=>n.id));
+  changed(); flash(`split into ${newNotes.length} notes`);
+}
+document.getElementById('splitBtn').onclick=splitSelection;
+
+/* select-mode control (replace / include / exclude) */
+document.querySelectorAll('#selModeSeg button').forEach(b=>b.addEventListener('click',()=>{
+  selMode=b.dataset.m;
+  document.querySelectorAll('#selModeSeg button').forEach(x=>x.classList.toggle('on',x===b));
+}));
+document.getElementById('undoBtn').onclick=undo;
+document.getElementById('redoBtn').onclick=redo;
+
+/* ---- point Hz / Note editor ---- */
+const ptHzIn=document.getElementById('ptHz'), ptNoteIn=document.getElementById('ptNote');
+function formatNoteCents(hz,a4){
+  const mf=freqToMidi(hz,a4), base=Math.round(mf), cents=Math.round((mf-base)*100);
+  return midiToName(base) + (cents? (cents>0?'+':'')+cents : '');
+}
+function parseNoteCents(str,a4){
+  const m=String(str).trim().match(/^([A-Ga-g][#b]?-?\d+)\s*([+-]\d+(?:\.\d+)?)?$/);
+  if(!m) return null;
+  const midi=noteNameToMidi(m[1]);
+  if(midi==null) return null;
+  const cents=m[2]? parseFloat(m[2]) : 0;
+  return midiToFreq(midi+cents/100, a4);
+}
+function applyPointHz(hz){
+  if(!pointSel || !(hz>0)) return;
+  const n=pointSel.note;
+  pushHistory();
+  if(n.type==='hold') n.pts[0]={...n.pts[0],hz};
+  else n.pts[pointSel.idx]={...n.pts[pointSel.idx],hz};
+  changed();
+}
+ptHzIn.addEventListener('change',()=>{ const v=parseFloat(ptHzIn.value); if(v>0) applyPointHz(v); });
+ptNoteIn.addEventListener('change',()=>{ const hz=parseNoteCents(ptNoteIn.value,settings.a4); if(hz>0) applyPointHz(hz); else syncPointEditor(); });
+function syncPointEditor(){
+  const on=!!pointSel && notes.includes(pointSel.note);
+  if(!on){ pointSel=null; ptHzIn.value=''; ptHzIn.disabled=true; ptNoteIn.value=''; ptNoteIn.placeholder='–'; ptNoteIn.disabled=true; return; }
+  const n=pointSel.note, i=n.type==='hold'?0:pointSel.idx;
+  const hz=n.pts[i] ? n.pts[i].hz : pitchAt(n,0);
+  ptHzIn.disabled=false; ptNoteIn.disabled=false;
+  if(document.activeElement!==ptHzIn) ptHzIn.value=(+hz.toFixed(3));
+  if(document.activeElement!==ptNoteIn) ptNoteIn.value=formatNoteCents(hz,settings.a4);
+}
 
 function renderVoiceUI(){
   const sel=selectedNotes();
@@ -1385,6 +1639,7 @@ function renderVoiceUI(){
   // reflect curve: a selected segment, else a single selected glide
   if(segSel && segSel.note.type==='glide') curveSel.value=segCurve(segSel.note,segSel.seg);
   else { const gl=sel.filter(n=>n.type==='glide'); curveSel.value=(gl.length===1 && gl[0].curve)?gl[0].curve:defaultCurve; }
+  syncPointEditor();
   // legend: voices in use
   const used=[...new Set(notes.map(n=>n.voice||1))].sort((a,b)=>a-b);
   document.getElementById('voiceLegend').innerHTML = used.map(v=>
@@ -1394,7 +1649,12 @@ function renderVoiceUI(){
 /* ============================================================
    STATUS + LIFECYCLE
    ============================================================ */
-function changed(){ if(segSel && !notes.includes(segSel.note)) segSel=null; updateStatus(); renderVoiceUI(); draw(); }
+function changed(){
+  if(segSel && !notes.includes(segSel.note)) segSel=null;
+  if(pointSel && !notes.includes(pointSel.note)) pointSel=null;
+  if(ptSel.size){ for(const n of [...ptSel.keys()]) if(!notes.includes(n)) ptSel.delete(n); }
+  updateStatus(); renderVoiceUI(); draw();
+}
 function updateStatus(){
   const n=notes.length;
   const nv=new Set(notes.map(x=>x.voice||1)).size;
@@ -1416,13 +1676,16 @@ window.addEventListener('keydown',e=>{
   if(e.code==='Space'){ e.preventDefault(); togglePlay(); return; }
   const map={KeyV:'select',KeyH:'hold',KeyG:'glide',KeyP:'pen',KeyF:'free',KeyE:'erase'};
   if(map[e.code] && !e.ctrlKey && !e.metaKey && !e.altKey) setTool(map[e.code]);
-  if(e.code==='Delete'||e.code==='Backspace'){ if(penNote) finalizePen(); else if(selection.size){ notes=notes.filter(n=>!selection.has(n.id)); selection.clear(); segSel=null; changed(); } }
-  if((e.ctrlKey||e.metaKey)&&e.code==='KeyA'){ e.preventDefault(); segSel=null; selection=new Set(notes.map(n=>n.id)); changed(); }
+  if((e.ctrlKey||e.metaKey)&&e.code==='KeyZ'){ e.preventDefault(); if(e.shiftKey) redo(); else undo(); return; }
+  if((e.ctrlKey||e.metaKey)&&e.code==='KeyY'){ e.preventDefault(); redo(); return; }
+  if(e.code==='Delete'||e.code==='Backspace'){ if(penNote) finalizePen(); else if(selection.size||ptSel.size){ deleteSelection(); changed(); } }
+  if((e.ctrlKey||e.metaKey)&&e.code==='KeyA'){ e.preventDefault(); segSel=null; pointSel=null; ptSel=new Map(); selection=new Set(notes.map(n=>n.id)); changed(); }
   if((e.ctrlKey||e.metaKey)&&e.code==='KeyC'){ e.preventDefault(); doCopy(); }
   if((e.ctrlKey||e.metaKey)&&e.code==='KeyX'){ e.preventDefault(); doCut(); }
   if((e.ctrlKey||e.metaKey)&&e.code==='KeyV'){ e.preventDefault(); doPaste(); }
   if((e.ctrlKey||e.metaKey)&&e.code==='KeyD'){ e.preventDefault(); doDuplicate(); }
   if(e.code==='KeyJ' && !e.ctrlKey && !e.metaKey) joinSelection();
+  if(e.code==='KeyK' && !e.ctrlKey && !e.metaKey) splitSelection();
   if(e.code==='BracketLeft') changeVoice(-1);
   if(e.code==='BracketRight') changeVoice(1);
   if(/^Digit[1-9]$/.test(e.code) && selection.size) setVoice(+e.code.slice(5));
@@ -1497,7 +1760,8 @@ impFile.onchange=async()=>{
   let imp;
   try{ imp=notesFromMidi(buf, settings.range, settings.a4); }
   catch(err){ alert('Could not parse MIDI: '+err.message); return; }
-  notes=imp.notes; selection.clear();
+  pushHistory();
+  notes=imp.notes; clearGran();
   if(imp.bpm) bpm.value=Math.round(imp.bpm);
   NID=Math.max(NID,0,...notes.map(n=>n.id))+1;
   // expand bars to fit
@@ -1630,7 +1894,8 @@ impJsonFile.onchange=async()=>{
   let doc; try{ doc=JSON.parse(await f.text()); }catch(err){ alert('Not valid JSON: '+err.message); impJsonFile.value=''; return; }
   let res; try{ res=notesFromTabota(doc); }catch(err){ alert('Could not read Tabota JSON: '+err.message); impJsonFile.value=''; return; }
   if(!res.notes.length){ flash('no pitched events found in that JSON'); impJsonFile.value=''; return; }
-  notes=res.notes; selection.clear(); segSel=null;
+  pushHistory();
+  notes=res.notes; clearGran();
   bpm.value=Math.round(res.bpm);
   if(res.sig){ sigNum.value=res.sig[0]||4; sigDen.value=res.sig[1]||4; }
   a4.value=res.a4; if(res.bend){ bendRange.value=res.bend; document.getElementById('pillRange').textContent='±'+res.bend; }
@@ -1642,7 +1907,7 @@ impJsonFile.onchange=async()=>{
   impJsonFile.value='';
 };
 
-document.getElementById('clearAll').onclick=()=>{ if(notes.length && confirm('Clear all notes?')){ notes=[]; selection.clear(); changed(); } };
+document.getElementById('clearAll').onclick=()=>{ if(notes.length && confirm('Clear all notes?')){ pushHistory(); notes=[]; clearGran(); changed(); } };
 
 function download(blob,name){ const u=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=u; a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(u),1500); }
 let flashTimer=null;
