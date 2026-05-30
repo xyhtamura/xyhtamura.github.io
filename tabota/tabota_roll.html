@@ -367,7 +367,7 @@ function pitchAt(note,frac){            // hz at normalized position 0..1
     if(frac>=p[i].t && frac<=p[i+1].t){
       const span=(p[i+1].t-p[i].t)||1e-9;
       let k=(frac-p[i].t)/span;
-      if(note.type==='glide') k=shapeK(k, note.curve||'linear');   // free/hold stay linear
+      if(note.type==='glide') k=shapeK(k, p[i].curve || note.curve || 'linear');   // per-segment curve
       // interpolate in log-frequency (linear in cents) for musical glides
       const m0=Math.log2(p[i].hz), m1=Math.log2(p[i+1].hz);
       return Math.pow(2, m0+(m1-m0)*k);
@@ -528,6 +528,7 @@ const lastMouse={x:0,y:0,inside:false};
 let defaultCurve='linear';          // curve applied to new glide/pen notes
 let penNote=null;                   // glide note being built by the pen tool
 let penRaw=null;                    // absolute [{beat,hz}] points during pen drawing
+let segSel=null;                    // {note, seg} — a single selected curve segment within a note
 
 /* ---- scales (define the pitch ruler + snap only; never the stored Hz or MIDI export) ----
    A scale = degree cents within one period + the period (repeat interval) in cents.
@@ -731,23 +732,28 @@ function drawNotes(W,H){
     const x0=beatToX(n.start), x1=beatToX(n.start+Math.max(n.dur,0.0001));
     if(x1<GUT_L||x0>W) continue;
     const sel=selection.has(n.id);
+    const segOf=(segSel && segSel.note===n)? segSel.seg : -1;
     const c=voiceColor(n.voice);
     // selection underlay (ember glow, reads regardless of voice hue)
     if(sel){ ctx.strokeStyle=col('--ember'); ctx.globalAlpha=.30; ctx.lineWidth=10; strokeContour(n,x0,x1); ctx.globalAlpha=1; }
-    // soft halo in the voice hue
-    ctx.strokeStyle=c; ctx.globalAlpha=.20; ctx.lineWidth=7; strokeContour(n,x0,x1); ctx.globalAlpha=1;
-    // main line
+    // soft halo (the "aura" — grabbing it moves the whole note)
+    ctx.strokeStyle=c; ctx.globalAlpha=.20; ctx.lineWidth=9; strokeContour(n,x0,x1); ctx.globalAlpha=1;
+    // main (thin) line — grabbing it selects a single segment
     ctx.strokeStyle=c; ctx.lineWidth=2.6; strokeContour(n,x0,x1);
+    // selected segment overlay
+    if(segOf>=0){ ctx.strokeStyle=col('--ember'); ctx.lineWidth=3.6; strokeSegment(n,segOf); }
     // endpoints + interior points + voice badge
-    const yS=hzToY(pitchAt(n,0)), yE=hzToY(pitchAt(n,1));
-    const showBadge = sel || (n.dur*view.pxPerBeat>26 && view.pxPerSemi>8);
-    if(showBadge) voiceBadge(x0,yS,n.voice,c,sel); else handle(x0,yS,sel);
-    handle(x1,yE,sel);
-    // interior breakpoints (draggable) — show for selected glide/free, or for free always (small)
+    const yS=hzToY(pitchAt(n,0)), yE=hzToY(pitchAt(n,1)), lastSeg=n.pts.length-2;
+    const startSel=sel||segOf===0, endSel=sel||segOf===lastSeg;
+    const showBadge = (sel||segOf>=0) || (n.dur*view.pxPerBeat>26 && view.pxPerSemi>8);
+    if(showBadge) voiceBadge(x0,yS,n.voice,c,startSel); else handle(x0,yS,startSel);
+    handle(x1,yE,endSel);
     if(n.pts.length>2){
+      const showPts = sel || segOf>=0;
       for(let i=1;i<n.pts.length-1;i++){
         const px=beatToX(n.start+n.pts[i].t*n.dur), py=hzToY(n.pts[i].hz);
-        if(sel) handle(px,py,true); else dot(px,py,c);
+        const hi = sel || segOf===i-1 || segOf===i;
+        if(showPts) handle(px,py,hi); else dot(px,py,c);
       }
     }
   }
@@ -756,12 +762,16 @@ function drawNotes(W,H){
 function strokeContour(n,x0,x1){
   ctx.beginPath();
   if(n.pts.length<=1){ const y=hzToY(pitchAt(n,0)); ctx.moveTo(x0,y); ctx.lineTo(x1,y); return ctx.stroke(); }  // hold = flat line
-  if(n.type==='glide' && n.pts.length===2 && (n.curve||'linear')==='linear'){
-    ctx.moveTo(x0,hzToY(pitchAt(n,0))); ctx.lineTo(x1,hzToY(pitchAt(n,1))); return ctx.stroke();
-  }
-  // sample the contour (handles curves + multi-point + freehand)
-  const samples=Math.max(4,Math.ceil((x1-x0)/3));
+  const samples=Math.max(4,Math.ceil((x1-x0)/3));   // sample (handles curves, per-segment, multi-point, freehand)
   for(let s=0;s<=samples;s++){ const f=s/samples; const x=x0+(x1-x0)*f; const y=hzToY(pitchAt(n,f)); s?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+  ctx.stroke();
+}
+function strokeSegment(n,i){
+  if(n.pts.length<2) return;
+  const a=n.pts[i].t, b=n.pts[i+1].t;
+  const steps=Math.max(2,Math.ceil((b-a)*n.dur*view.pxPerBeat/3));
+  ctx.beginPath();
+  for(let s=0;s<=steps;s++){ const f=a+(b-a)*(s/steps); const x=beatToX(n.start+f*n.dur); const y=hzToY(pitchAt(n,f)); s?ctx.lineTo(x,y):ctx.moveTo(x,y); }
   ctx.stroke();
 }
 function voiceBadge(x,y,v,c,sel){
@@ -863,6 +873,46 @@ function pointHitIndex(n,px,py){      // index of the breakpoint under cursor, o
   }
   return -1;
 }
+function distToSeg(px,py,ax,ay,bx,by){
+  const dx=bx-ax, dy=by-ay; const L2=dx*dx+dy*dy||1e-9;
+  let t=((px-ax)*dx+(py-ay)*dy)/L2; t=Math.max(0,Math.min(1,t));
+  const cx=ax+t*dx, cy=ay+t*dy;
+  return {dist:Math.hypot(px-cx,py-cy), t};
+}
+// nearest point on a note's rendered contour: {dist, seg, frac}
+function curveHit(n,px,py){
+  const x0=beatToX(n.start), x1=beatToX(n.start+Math.max(n.dur,1e-4));
+  if(n.pts.length<=1){ const y=hzToY(pitchAt(n,0)); const cx=Math.max(x0,Math.min(x1,px));
+    return {dist:Math.hypot(px-cx,py-y), seg:0, frac:0}; }
+  const samples=Math.max(8,Math.ceil((x1-x0)/2));
+  let best={dist:Infinity,frac:0}, prevx=null,prevy=null,prevf=0;
+  for(let s=0;s<=samples;s++){ const f=s/samples; const x=x0+(x1-x0)*f; const y=hzToY(pitchAt(n,f));
+    if(prevx!=null){ const dd=distToSeg(px,py,prevx,prevy,x,y); if(dd.dist<best.dist){ best.dist=dd.dist; best.frac=prevf+(f-prevf)*dd.t; } }
+    prevx=x;prevy=y;prevf=f;
+  }
+  let seg=0; for(let i=0;i<n.pts.length-1;i++){ if(best.frac>=n.pts[i].t-1e-9 && best.frac<=n.pts[i+1].t+1e-9){ seg=i; break; } }
+  return {dist:best.dist, seg:Math.max(0,Math.min(n.pts.length-2,seg)), frac:best.frac};
+}
+const HIT_THIN=3.5, HIT_AURA=11;   // crisp center line = segment · soft aura = whole note
+function selectHit(px,py){
+  for(let i=notes.length-1;i>=0;i--){ const n=notes[i];
+    const x0=beatToX(n.start), x1=beatToX(n.start+Math.max(n.dur,1e-4));
+    if(px<x0-HIT_AURA||px>x1+HIT_AURA) continue;
+    if(n.type==='hold'){
+      const y=hzToY(pitchAt(n,0));
+      if(py<y-HIT_AURA||py>y+HIT_AURA) continue;
+      const he=holdEdge(n,px);                       // x near start or end handle
+      if(he) return {note:n,kind:'point',idx:(he==='start'?0:1),edge:he};
+      const ch=curveHit(n,px,py); if(ch.dist<=HIT_AURA) return {note:n,kind:'note'};
+      continue;
+    }
+    const pi=pointHitIndex(n,px,py); if(pi>=0) return {note:n,kind:'point',idx:pi};
+    const ch=curveHit(n,px,py);
+    if(ch.dist<=HIT_THIN) return {note:n,kind:'segment',seg:ch.seg};
+    if(ch.dist<=HIT_AURA) return {note:n,kind:'note'};
+  }
+  return null;
+}
 
 /* ============================================================
    POINTER INTERACTION
@@ -903,14 +953,24 @@ cv.addEventListener('pointerdown',e=>{
   if(t==='erase'){ if(hit){ notes=notes.filter(n=>n!==hit); selection.delete(hit.id); changed(); } return; }
 
   if(t==='select'){
-    if(hit){
-      const ptIdx = (hit.type!=='hold') ? pointHitIndex(hit,p.x,p.y) : -1;
-      const ep = (hit.type==='hold') ? holdEdge(hit,p.x) : null;
-      if(!e.shiftKey && !selection.has(hit.id)){ selection.clear(); }
-      selection.add(hit.id);
-      const resizing = (ptIdx>=0) || (ep!=null);
-      drag={mode: resizing?'resize':'move', note:hit, ep, ptIdx, sx:p.x, sy:p.y, o:snapshot(hit)};
-    } else { selection.clear(); drag={mode:'marquee',sx:p.x,sy:p.y,x2:p.x,y2:p.y}; }
+    const h=selectHit(p.x,p.y);
+    if(h){
+      if(h.kind==='point'){
+        segSel=null;
+        if(!e.shiftKey && !selection.has(h.note.id)) selection.clear();
+        selection.add(h.note.id);
+        drag={mode:'resize', note:h.note, ptIdx:h.idx, ep:(h.note.type==='hold'?(h.edge||holdEdge(h.note,p.x)):null), sx:p.x, sy:p.y, o:snapshot(h.note)};
+      } else if(h.kind==='segment'){
+        selection.clear(); segSel={note:h.note, seg:h.seg};
+        drag={mode:'segMove', note:h.note, seg:h.seg, sx:p.x, sy:p.y,
+              absPts:h.note.pts.map(q=>({beat:h.note.start+q.t*h.note.dur, hz:q.hz, curve:q.curve}))};
+      } else { // whole note
+        segSel=null;
+        if(!e.shiftKey && !selection.has(h.note.id)) selection.clear();
+        selection.add(h.note.id);
+        drag={mode:'move', note:h.note, sx:p.x, sy:p.y, o:snapshot(h.note)};
+      }
+    } else { selection.clear(); segSel=null; drag={mode:'marquee',sx:p.x,sy:p.y,x2:p.x,y2:p.y}; }
     changed(); return;
   }
 
@@ -989,7 +1049,27 @@ cv.addEventListener('pointermove',e=>{
     let ns=d.o.start+db; if(settings.snapTime) ns=snapBeat(ns);
     d.note.start=clampBeatToContent(ns);
     const shift=settings.snapPitch?Math.round(dm):dm;
-    d.note.pts=d.o.pts.map(q=>({t:q.t, hz:midiToFreq(freqToMidi(q.hz,settings.a4)+shift,settings.a4)}));
+    d.note.pts=d.o.pts.map(q=>{ const o={t:q.t, hz:midiToFreq(freqToMidi(q.hz,settings.a4)+shift,settings.a4)}; if(q.curve) o.curve=q.curve; return o; });
+    draw(); updateStatus(); return;
+  }
+  if(d.mode==='segMove'){
+    const n=d.note, seg=d.seg, last=d.absPts.length-1;
+    const rawDb=(p.x-d.sx)/view.pxPerBeat, rawDm=-(p.y-d.sy)/view.pxPerSemi;
+    // proposed new absolute positions for the two endpoints
+    const mk=(i)=>{
+      let beat=clampBeatToContent(snapBeat(d.absPts[i].beat+rawDb));
+      let hz=snapPitchHz(midiToFreq(freqToMidi(d.absPts[i].hz,settings.a4)+rawDm,settings.a4));
+      return {beat,hz,curve:d.absPts[i].curve};
+    };
+    const a=d.absPts.map(q=>({beat:q.beat,hz:q.hz,curve:q.curve}));
+    a[seg]=mk(seg); a[seg+1]=mk(seg+1);
+    const minStep=1/Math.max(settings.grid,8);
+    if(seg>0) a[seg].beat=Math.max(a[seg].beat, a[seg-1].beat+minStep);
+    if(seg+1<last) a[seg+1].beat=Math.min(a[seg+1].beat, a[seg+2].beat-minStep);
+    if(a[seg+1].beat<=a[seg].beat) a[seg+1].beat=a[seg].beat+minStep;   // keep time increasing
+    const start=Math.min(...a.map(q=>q.beat)), end=Math.max(...a.map(q=>q.beat)), dur=Math.max(1e-4,end-start);
+    n.start=start; n.dur=dur;
+    n.pts=a.map(q=>{ const o={t:(q.beat-start)/dur, hz:q.hz}; if(q.curve) o.curve=q.curve; return o; });
     draw(); updateStatus(); return;
   }
   if(d.mode==='resize'){
@@ -1006,7 +1086,7 @@ cv.addEventListener('pointermove',e=>{
       else { // interior point — move in (t,hz) between its neighbors, note extent unchanged
         let nt=(b-n.start)/Math.max(1e-6,n.dur);
         nt=Math.max(n.pts[idx-1].t+1e-4, Math.min(n.pts[idx+1].t-1e-4, nt));
-        n.pts[idx]={t:nt,hz};
+        n.pts[idx]={...n.pts[idx], t:nt, hz};
       }
     }
     draw(); updateStatus(); return;
@@ -1039,10 +1119,8 @@ function rebuildFree(note,raw){
 
 function hoverFeedback(p){
   if(view.tool!=='select'){ return; }
-  let cur='default';
-  const hit=noteAt(p.x,p.y);
-  if(hit){ const onPt = hit.type==='hold'?holdEdge(hit,p.x):(pointHitIndex(hit,p.x,p.y)>=0); cur=onPt?'pointer':'move'; }
-  cv.style.cursor=cur;
+  const h=selectHit(p.x,p.y);
+  cv.style.cursor = !h ? 'default' : (h.kind==='note' ? 'move' : 'pointer');
 }
 
 cv.addEventListener('pointerup',e=>{
@@ -1114,7 +1192,11 @@ function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
 /* ============================================================
    TOOLBAR WIRING
    ============================================================ */
-document.querySelectorAll('#tools button').forEach(b=>b.addEventListener('click',()=>setTool(b.dataset.tool)));
+document.querySelectorAll('#tools button').forEach(b=>b.addEventListener('click',()=>{
+  const t=b.dataset.tool;
+  if(t==='pen' && view.tool==='pen' && penNote){ finalizePen(); return; }  // tap pen again to finish the path
+  setTool(t);
+}));
 function setTool(t){ if(penNote && t!=='pen') finalizePen(); view.tool=t;
   document.querySelectorAll('#tools button').forEach(x=>x.classList.toggle('on',x.dataset.tool===t));
   stage.className='stage tool-'+t; cv.style.cursor='';
@@ -1204,7 +1286,7 @@ async function loadManifest(){
 }
 
 /* ---- clipboard: cut / copy / paste ---- */
-function deepNote(n){ return {type:n.type, vel:n.vel, voice:n.voice||1, start:n.start, dur:n.dur, pts:n.pts.map(p=>({t:p.t,hz:p.hz}))}; }
+function deepNote(n){ return {type:n.type, vel:n.vel, voice:n.voice||1, curve:n.curve, start:n.start, dur:n.dur, pts:n.pts.map(p=>{ const o={t:p.t,hz:p.hz}; if(p.curve) o.curve=p.curve; return o; })}; }
 function doCopy(){ const sel=selectedNotes(); if(!sel.length) return; clipboard={notes:sel.map(deepNote)};
   try{ navigator.clipboard && navigator.clipboard.writeText(JSON.stringify({tabotaRollClip:true, notes:clipboard.notes})); }catch(e){}
   flash(`copied ${sel.length} note${sel.length!==1?'s':''}`); }
@@ -1264,11 +1346,17 @@ document.getElementById('voiceUp').onclick=()=>changeVoice(1);
 /* glide curve control */
 const curveSel=document.getElementById('curveSel');
 curveSel.addEventListener('change',()=>{
-  defaultCurve=curveSel.value;
-  const sel=selectedNotes().filter(n=>n.type==='glide');
-  if(sel.length){ for(const n of sel) n.curve=defaultCurve; }
+  const v=curveSel.value;
+  if(segSel && segSel.note.type==='glide'){            // set just this segment
+    segSel.note.pts[segSel.seg].curve=v;
+  } else {
+    defaultCurve=v;
+    const sel=selectedNotes().filter(n=>n.type==='glide');
+    for(const n of sel){ n.curve=v; n.pts.forEach(p=>{ delete p.curve; }); }  // make the whole note uniform
+  }
   changed();
 });
+function segCurve(note,seg){ return note.pts[seg] && note.pts[seg].curve || note.curve || 'linear'; }
 
 /* join selected notes into one glide (connect events end-to-start in time order) */
 function joinSelection(){
@@ -1292,9 +1380,9 @@ function renderVoiceUI(){
   const vv=document.getElementById('voiceVal');
   if(!sel.length) vv.textContent='–';
   else { const set=new Set(sel.map(n=>n.voice||1)); vv.textContent = set.size===1?[...set][0]:'⁓'; vv.style.color = set.size===1?voiceColor([...set][0]):'var(--ink-dim)'; }
-  // reflect a single selected glide's curve
-  const gl=sel.filter(n=>n.type==='glide');
-  if(gl.length===1 && gl[0].curve) curveSel.value=gl[0].curve; else curveSel.value=defaultCurve;
+  // reflect curve: a selected segment, else a single selected glide
+  if(segSel && segSel.note.type==='glide') curveSel.value=segCurve(segSel.note,segSel.seg);
+  else { const gl=sel.filter(n=>n.type==='glide'); curveSel.value=(gl.length===1 && gl[0].curve)?gl[0].curve:defaultCurve; }
   // legend: voices in use
   const used=[...new Set(notes.map(n=>n.voice||1))].sort((a,b)=>a-b);
   document.getElementById('voiceLegend').innerHTML = used.map(v=>
@@ -1304,12 +1392,14 @@ function renderVoiceUI(){
 /* ============================================================
    STATUS + LIFECYCLE
    ============================================================ */
-function changed(){ updateStatus(); renderVoiceUI(); draw(); }
+function changed(){ if(segSel && !notes.includes(segSel.note)) segSel=null; updateStatus(); renderVoiceUI(); draw(); }
 function updateStatus(){
   const n=notes.length;
   const nv=new Set(notes.map(x=>x.voice||1)).size;
   let extra='';
-  if(selection.size===1){ const s=[...selection][0]; const note=notes.find(x=>x.id===s);
+  if(segSel){ const sc=segCurve(segSel.note,segSel.seg);
+    extra=` · segment ${segSel.seg+1}/${segSel.note.pts.length-1} of v${segSel.note.voice||1} · ${sc}`; }
+  else if(selection.size===1){ const s=[...selection][0]; const note=notes.find(x=>x.id===s);
     if(note){ const hz=pitchAt(note,0); const mf=freqToMidi(hz,settings.a4); const base=Math.round(mf);
       extra=` · sel v${note.voice||1} ${note.type} @ beat ${note.start.toFixed(2)} · ${hz.toFixed(2)}Hz (${midiToName(base)} ${((mf-base)*100>=0?'+':'')}${((mf-base)*100).toFixed(0)}¢)`; } }
   else if(selection.size>1) extra=` · ${selection.size} selected`;
@@ -1324,8 +1414,8 @@ window.addEventListener('keydown',e=>{
   if(e.code==='Space'){ e.preventDefault(); togglePlay(); return; }
   const map={KeyV:'select',KeyH:'hold',KeyG:'glide',KeyP:'pen',KeyF:'free',KeyE:'erase'};
   if(map[e.code] && !e.ctrlKey && !e.metaKey && !e.altKey) setTool(map[e.code]);
-  if(e.code==='Delete'||e.code==='Backspace'){ if(penNote) finalizePen(); else if(selection.size){ notes=notes.filter(n=>!selection.has(n.id)); selection.clear(); changed(); } }
-  if((e.ctrlKey||e.metaKey)&&e.code==='KeyA'){ e.preventDefault(); selection=new Set(notes.map(n=>n.id)); changed(); }
+  if(e.code==='Delete'||e.code==='Backspace'){ if(penNote) finalizePen(); else if(selection.size){ notes=notes.filter(n=>!selection.has(n.id)); selection.clear(); segSel=null; changed(); } }
+  if((e.ctrlKey||e.metaKey)&&e.code==='KeyA'){ e.preventDefault(); segSel=null; selection=new Set(notes.map(n=>n.id)); changed(); }
   if((e.ctrlKey||e.metaKey)&&e.code==='KeyC'){ e.preventDefault(); doCopy(); }
   if((e.ctrlKey||e.metaKey)&&e.code==='KeyX'){ e.preventDefault(); doCut(); }
   if((e.ctrlKey||e.metaKey)&&e.code==='KeyV'){ e.preventDefault(); doPaste(); }
@@ -1460,10 +1550,12 @@ document.getElementById('expJson').onclick=()=>{
   const ns=notes.slice().sort((a,b)=>(a.voice||1)-(b.voice||1)||a.start-b.start);
   const events=ns.map(n=>{
     const base={ type:'line', voice:n.voice||1, startTime:+n.start.toFixed(4), duration:+n.dur.toFixed(4) };
-    if(n.type==='glide') base.curve=n.curve||'linear';
     if(n.type==='hold'){ base.startYValue=+pitchAt(n,0).toFixed(3); base.endYValue=base.startYValue; }
-    else if(n.type==='glide' && n.pts.length===2){ base.startYValue=+pitchAt(n,0).toFixed(3); base.endYValue=+pitchAt(n,1).toFixed(3); }
-    else { base.contour = n.pts.map(p=>({pos:+p.t.toFixed(4), hz:+p.hz.toFixed(3)})); base.startYValue=+pitchAt(n,0).toFixed(3); base.endYValue=+pitchAt(n,1).toFixed(3); }
+    else if(n.type==='glide' && n.pts.length===2){ base.curve=segCurve(n,0); base.startYValue=+pitchAt(n,0).toFixed(3); base.endYValue=+pitchAt(n,1).toFixed(3); }
+    else { // multi-point / freehand: contour points carry the outgoing-segment curve
+      base.contour = n.pts.map((p,i)=>{ const o={pos:+p.t.toFixed(4), hz:+p.hz.toFixed(3)}; if(n.type==='glide' && i<n.pts.length-1) o.curve=segCurve(n,i); return o; });
+      base.startYValue=+pitchAt(n,0).toFixed(3); base.endYValue=+pitchAt(n,1).toFixed(3);
+    }
     base.velocity=n.vel; return base;
   });
   const voices=[...new Set(ns.map(n=>n.voice||1))].sort((a,b)=>a-b);
@@ -1495,8 +1587,8 @@ function seed(){
     {id:NID++, start:0, dur:1, type:'hold',  vel:100,voice:2, pts:[{t:0,hz:a}]},                            // A4 exact
     {id:NID++, start:1, dur:1, type:'hold',  vel:100,voice:2, pts:[{t:0,hz:a*Math.pow(2,3.5/12)}]},         // +350¢ neutral third
     {id:NID++, start:2, dur:2, type:'glide', curve:'smooth', vel:100,voice:2, pts:[{t:0,hz:a},{t:1,hz:a*Math.pow(2,7/12)}]}, // eased glide A4->E5
-    {id:NID++, start:4, dur:2, type:'glide', curve:'linear', vel:100,voice:2, pts:[                          // multi-point glide up & down
-       {t:0,hz:a},{t:.25,hz:a*Math.pow(2,4/12)},{t:.5,hz:a*Math.pow(2,-2/12)},{t:.75,hz:a*Math.pow(2,5/12)},{t:1,hz:a}]},
+    {id:NID++, start:4, dur:2, type:'glide', vel:100,voice:2, pts:[                          // multi-point glide, per-segment curves
+       {t:0,hz:a,curve:'exp'},{t:.25,hz:a*Math.pow(2,4/12),curve:'log'},{t:.5,hz:a*Math.pow(2,-2/12),curve:'smooth'},{t:.75,hz:a*Math.pow(2,5/12),curve:'linear'},{t:1,hz:a}]},
   ];
 }
 populateRoot(); populateScaleSelect(); loadManifest();
