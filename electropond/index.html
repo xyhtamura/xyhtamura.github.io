@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Electropond — FM Microtonal Plankton Instrument</title>
+  <meta name="description" content="Electropond is a browser-based visual-physics instrument where FM plankton sing according to movement, color, collision, and non-keyboard microtonal tuning fields." />
+  <style>
+    :root {
+      --pond-ink: #071b24;
+      --pond-deep: #0b2d3b;
+      --pond-moss: #284d36;
+      --pond-cream: #f4ffe7;
+      --panel: rgba(15, 42, 49, 0.68);
+      --panel-border: rgba(209, 255, 151, 0.33);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(121, 255, 176, 0.22), transparent 28%),
+        radial-gradient(circle at 82% 15%, rgba(226, 137, 255, 0.20), transparent 30%),
+        radial-gradient(circle at 50% 90%, rgba(255, 153, 91, 0.16), transparent 36%),
+        linear-gradient(135deg, var(--pond-ink), var(--pond-deep) 52%, #10291f);
+      color: var(--pond-cream);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    }
+
+    canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+      cursor: crosshair;
+    }
+
+    .hud {
+      position: fixed;
+      left: 16px;
+      top: 16px;
+      width: min(460px, calc(100vw - 32px));
+      padding: 14px;
+      border: 1px solid var(--panel-border);
+      border-radius: 18px;
+      background: var(--panel);
+      backdrop-filter: blur(14px) saturate(145%);
+      box-shadow: 0 16px 50px rgba(3, 22, 25, 0.42);
+      user-select: none;
+    }
+
+    .title {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 16px;
+      letter-spacing: 0.04em;
+      color: #e8ffd0;
+      text-shadow: 0 0 14px rgba(224, 255, 111, 0.45);
+    }
+
+    .status {
+      font-size: 11px;
+      color: #c6f6ff;
+      opacity: 0.85;
+      white-space: nowrap;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      border: 1px solid rgba(223, 255, 126, 0.38);
+      border-radius: 999px;
+      color: #f2ffd6;
+      background: linear-gradient(180deg, rgba(80, 118, 65, 0.65), rgba(27, 74, 84, 0.72));
+      padding: 8px 12px;
+      font: inherit;
+      font-size: 12px;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      box-shadow: inset 0 0 18px rgba(189, 255, 69, 0.08), 0 5px 16px rgba(4, 17, 19, 0.22);
+    }
+
+    button:hover {
+      border-color: rgba(255, 174, 215, 0.62);
+      color: #fff0f8;
+    }
+
+    .volumeRow {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 9px;
+      margin-bottom: 10px;
+      border-radius: 14px;
+      background: rgba(14, 57, 54, 0.48);
+      border: 1px solid rgba(160, 255, 214, 0.16);
+      font-size: 11px;
+      color: #d9ffd5;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: #d7ff63;
+    }
+
+    .readout {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      font-size: 11px;
+      color: #d9ffd5;
+    }
+
+    .cell {
+      padding: 8px;
+      border-radius: 12px;
+      background: rgba(14, 57, 54, 0.48);
+      border: 1px solid rgba(160, 255, 214, 0.16);
+      min-height: 44px;
+    }
+
+    .cell strong {
+      display: block;
+      color: #ffd1f0;
+      font-size: 10px;
+      font-weight: 500;
+      margin-bottom: 2px;
+      opacity: 0.9;
+    }
+
+    .note {
+      margin-top: 9px;
+      color: #d0eebf;
+      font-size: 11px;
+      line-height: 1.35;
+      opacity: 0.88;
+    }
+
+    .aboutPanel {
+      display: none;
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 209, 240, 0.22);
+      background: rgba(9, 30, 39, 0.56);
+      color: #e8ffd0;
+      font-size: 11px;
+      line-height: 1.42;
+    }
+
+    .aboutPanel.open { display: block; }
+
+    .aboutPanel p {
+      margin: 0 0 8px;
+    }
+
+    .aboutPanel p:last-child {
+      margin-bottom: 0;
+    }
+
+    .bottom-note {
+      position: fixed;
+      right: 16px;
+      bottom: 14px;
+      max-width: min(620px, calc(100vw - 32px));
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(12, 38, 46, 0.55);
+      border: 1px solid rgba(170, 255, 205, 0.18);
+      color: #d9f7d4;
+      font-size: 11px;
+      line-height: 1.35;
+      backdrop-filter: blur(10px);
+      pointer-events: none;
+    }
+
+    @media (max-width: 720px) {
+      .hud { left: 10px; top: 10px; padding: 11px; }
+      .bottom-note { left: 10px; right: 10px; bottom: 10px; }
+      .readout { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="pond"></canvas>
+
+  <section class="hud" aria-label="Pond controls">
+    <div class="title">
+      <h1>Electropond</h1>
+      <div class="status" id="status">audio sleeping</div>
+    </div>
+
+    <div class="controls">
+      <button id="startBtn">start audio</button>
+      <button id="addBtn">add plankton</button>
+      <button id="stirBtn">stir pond</button>
+      <button id="thinBtn">thin swarm</button>
+      <button id="aboutBtn">about</button>
+    </div>
+
+    <label class="volumeRow">
+      <span>volume</span>
+      <input id="volumeSlider" type="range" min="0" max="100" value="72" />
+      <span id="volumeReadout">72%</span>
+    </label>
+
+    <div class="readout">
+      <div class="cell"><strong>synthesis</strong><span id="synthReadout">FM: carrier + living modulator</span></div>
+      <div class="cell"><strong>swarm</strong><span id="countReadout">0 organisms</span></div>
+      <div class="cell"><strong>gesture</strong><span id="gestureReadout">drag pond to bend it</span></div>
+    </div>
+
+    <div class="note">
+      <em>Electropond</em> is a browser-based visual-physics instrument: a pond of FM plankton that sing through motion, color, collision, and non-keyboard tuning fields.
+    </div>
+
+    <div class="aboutPanel" id="aboutPanel">
+      <p>
+        <strong>Statement.</strong> Electropond reverses the usual audio-visualizer relation. Sound is not composed first and visualized afterward; instead, a visible ecology produces sound as a consequence of movement. Each plankton is an FM voice whose carrier pitch, modulation ratio, modulation index, filter brightness, panning, and amplitude are derived from its body, color, velocity, location, and contact with ripples or other organisms.
+      </p>
+      <p>
+        Rather than using a piano keyboard, sequencer grid, or twelve-tone scale, Electropond uses an uneven ratio field inside a continuous tritave-like space. The instrument is played by disturbing an ecology: dragging water, making ripples, stirring currents, thinning or seeding the swarm, and listening to the pond retune itself.
+      </p>
+    </div>
+  </section>
+
+  <div class="bottom-note">
+    Electropond, prototype version. Click “start audio” once. Drag to disturb currents. Click/tap to make ripples. Double-click to seed organisms. Louder motion means louder plankton; calm water recedes into near-silence.
+  </div>
+
+  <script>
+    const canvas = document.getElementById('pond');
+    const ctx = canvas.getContext('2d', { alpha: true });
+
+    const startBtn = document.getElementById('startBtn');
+    const addBtn = document.getElementById('addBtn');
+    const stirBtn = document.getElementById('stirBtn');
+    const thinBtn = document.getElementById('thinBtn');
+    const aboutBtn = document.getElementById('aboutBtn');
+    const aboutPanel = document.getElementById('aboutPanel');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const volumeReadout = document.getElementById('volumeReadout');
+    const statusEl = document.getElementById('status');
+    const countReadout = document.getElementById('countReadout');
+    const gestureReadout = document.getElementById('gestureReadout');
+
+    let W = 0;
+    let H = 0;
+    let DPR = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+    let t = 0;
+    let last = performance.now();
+    let pointer = { x: 0, y: 0, down: false, moved: false, lastX: 0, lastY: 0 };
+
+    let audioCtx = null;
+    let master = null;
+    let preComp = null;
+    let compressor = null;
+    let postComp = null;
+    let delay = null;
+    let feedback = null;
+    let wet = null;
+    let audioRunning = false;
+    let masterVolume = Number(volumeSlider.value) / 100;
+
+    const organisms = [];
+    const ripples = [];
+    const motes = [];
+
+    // Uneven ratio-attractors, inside a continuous tritave-ish field.
+    // The organism can smear between them; they are not a piano scale.
+    const ratioField = [
+      1/1, 21/20, 15/14, 8/7, 7/6, 6/5, 11/9, 5/4,
+      9/7, 4/3, 11/8, 7/5, 10/7, 16/11, 3/2, 14/9,
+      8/5, 5/3, 12/7, 7/4, 11/6, 13/7, 27/14, 2/1,
+      9/4, 7/3, 5/2, 8/3, 11/4, 3/1
+    ];
+
+    const fmRatios = [0.5, 2/3, 3/4, 1, 7/6, 4/3, 3/2, 7/4, 2, 9/4, 11/5, 8/3, 3, 10/3, 4, 13/3];
+
+    function rand(min, max) {
+      return min + Math.random() * (max - min);
+    }
+
+    function clamp(v, lo, hi) {
+      return Math.max(lo, Math.min(hi, v));
+    }
+
+    function wrap(v, max) {
+      if (v < 0) return v + max;
+      if (v > max) return v - max;
+      return v;
+    }
+
+    function resize() {
+      W = Math.floor(window.innerWidth);
+      H = Math.floor(window.innerHeight);
+      DPR = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+      canvas.width = Math.floor(W * DPR);
+      canvas.height = Math.floor(H * DPR);
+      canvas.style.width = W + 'px';
+      canvas.style.height = H + 'px';
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+
+    function addRipple(x, y, strength = 1, hue = 135) {
+      ripples.push({ x, y, r: 6, life: 1, strength, hue });
+      if (ripples.length > 52) ripples.shift();
+    }
+
+    function addMote(x, y, hue, amount = 5) {
+      for (let i = 0; i < amount; i++) {
+        motes.push({
+          x, y,
+          vx: rand(-0.6, 0.6),
+          vy: rand(-0.6, 0.6),
+          life: rand(0.35, 0.95),
+          hue: hue + rand(-28, 28),
+          s: rand(1.2, 3.8)
+        });
+      }
+      if (motes.length > 260) motes.splice(0, motes.length - 260);
+    }
+
+    class Organism {
+      constructor(x = rand(80, W - 80), y = rand(90, H - 90)) {
+        this.x = x;
+        this.y = y;
+        this.vx = rand(-0.55, 0.55);
+        this.vy = rand(-0.55, 0.55);
+        this.ax = 0;
+        this.ay = 0;
+        this.size = rand(7, 19);
+        this.hue = rand(72, 325);
+        this.phase = rand(0, Math.PI * 2);
+        this.wiggle = rand(0.7, 2.8);
+        this.sense = rand(46, 120);
+        this.excite = 0;
+        this.freq = 120;
+        this.modFreq = 180;
+        this.fmIndex = 35;
+        this.lastIndex = 0;
+        this.tail = [];
+
+        this.carrier = null;
+        this.modulator = null;
+        this.modGain = null;
+        this.amp = null;
+        this.filter = null;
+        this.pan = null;
+        this.started = false;
+
+        if (audioCtx && audioRunning) this.makeVoice();
+      }
+
+      makeVoice() {
+        if (!audioCtx || this.started) return;
+
+        const carrier = audioCtx.createOscillator();
+        const modulator = audioCtx.createOscillator();
+        const modGain = audioCtx.createGain();
+        const amp = audioCtx.createGain();
+        const filter = audioCtx.createBiquadFilter();
+        const pan = audioCtx.createStereoPanner();
+
+        carrier.type = this.size > 14 ? 'triangle' : 'sine';
+        modulator.type = this.hue > 210 ? 'triangle' : 'sine';
+        carrier.frequency.value = this.freq;
+        modulator.frequency.value = this.modFreq;
+        modGain.gain.value = this.fmIndex;
+
+        filter.type = 'lowpass';
+        filter.frequency.value = 1800;
+        filter.Q.value = 0.7;
+        amp.gain.value = 0.0001;
+
+        modulator.connect(modGain);
+        modGain.connect(carrier.frequency);
+        carrier.connect(filter);
+        filter.connect(amp);
+        amp.connect(pan);
+        pan.connect(preComp);
+        pan.connect(wet);
+
+        carrier.start();
+        modulator.start();
+
+        this.carrier = carrier;
+        this.modulator = modulator;
+        this.modGain = modGain;
+        this.amp = amp;
+        this.filter = filter;
+        this.pan = pan;
+        this.started = true;
+      }
+
+      stopVoice() {
+        if (!this.started || !audioCtx) return;
+        const now = audioCtx.currentTime;
+        this.amp.gain.cancelScheduledValues(now);
+        this.amp.gain.setTargetAtTime(0.00001, now, 0.035);
+        setTimeout(() => {
+          try { this.carrier.stop(); } catch (e) {}
+          try { this.modulator.stop(); } catch (e) {}
+          try { this.carrier.disconnect(); } catch (e) {}
+          try { this.modulator.disconnect(); } catch (e) {}
+        }, 140);
+        this.started = false;
+      }
+
+      update(dt) {
+        const field = spatialField(this.x, this.y, this.hue);
+        const curlA = spatialField(this.x + 13, this.y, this.hue + 30) - spatialField(this.x - 13, this.y, this.hue - 30);
+        const curlB = spatialField(this.x, this.y + 13, this.hue - 70) - spatialField(this.x, this.y - 13, this.hue + 70);
+
+        this.ax += curlB * 0.018;
+        this.ay -= curlA * 0.018;
+
+        this.phase += dt * this.wiggle;
+        this.ax += Math.cos(this.phase + this.hue) * 0.012;
+        this.ay += Math.sin(this.phase * 1.13) * 0.012;
+
+        for (const r of ripples) {
+          const dx = this.x - r.x;
+          const dy = this.y - r.y;
+          const d = Math.hypot(dx, dy) || 1;
+          const ring = Math.exp(-Math.pow((d - r.r) / 42, 2)) * r.life * r.strength;
+          this.ax += (dx / d) * ring * 0.32;
+          this.ay += (dy / d) * ring * 0.32;
+          this.excite = Math.max(this.excite, ring * 0.5);
+        }
+
+        if (pointer.down) {
+          const dx = this.x - pointer.x;
+          const dy = this.y - pointer.y;
+          const d = Math.hypot(dx, dy) || 1;
+          const reach = 165;
+          if (d < reach) {
+            const pull = (1 - d / reach) * 0.11;
+            const tangent = pointer.moved ? 0.28 : 0.08;
+            this.ax += (-dy / d) * pull * tangent;
+            this.ay += (dx / d) * pull * tangent;
+            this.ax += (dx / d) * pull * 0.10;
+            this.ay += (dy / d) * pull * 0.10;
+            this.excite = Math.max(this.excite, pull);
+          }
+        }
+
+        this.vx += this.ax;
+        this.vy += this.ay;
+        this.ax = 0;
+        this.ay = 0;
+
+        const speed = Math.hypot(this.vx, this.vy);
+        const maxSpeed = 2.1 + this.size * 0.04;
+        if (speed > maxSpeed) {
+          this.vx = (this.vx / speed) * maxSpeed;
+          this.vy = (this.vy / speed) * maxSpeed;
+        }
+
+        this.vx *= 0.987;
+        this.vy *= 0.987;
+        this.x = wrap(this.x + this.vx * dt * 60, W);
+        this.y = wrap(this.y + this.vy * dt * 60, H);
+        this.excite *= Math.pow(0.055, dt);
+
+        this.tail.push({ x: this.x, y: this.y, hue: this.hue, life: 1 });
+        if (this.tail.length > 28) this.tail.shift();
+        for (const p of this.tail) p.life *= Math.pow(0.18, dt);
+
+        this.updateVoice(field, speed);
+      }
+
+      updateVoice(field, speed) {
+        const nx = this.x / Math.max(1, W);
+        const ny = this.y / Math.max(1, H);
+        const hueTurn = this.hue / 360;
+
+        // Non-octave spatial pitch world: horizontal space sweeps through tritaves.
+        const tritaveSweep = Math.pow(3, nx * 2.05 + 0.10 * Math.sin(t * 0.17 + ny * 8));
+
+        const ratioIndex = Math.floor(
+          Math.abs((ny * ratioField.length * 1.35) + (hueTurn * 9.0) + (field * 5.5))
+        ) % ratioField.length;
+        const ratio = ratioField[ratioIndex];
+
+        const colorBend = Math.pow(2, 0.095 * Math.sin(hueTurn * Math.PI * 2 + field * 2.5));
+        const motionBend = Math.pow(2, clamp(speed / 34, 0, 0.06));
+        const rippleBend = Math.pow(2, this.excite * 0.10);
+        const root = 42 + 22 * Math.sin(t * 0.05) + 8 * Math.sin(hueTurn * Math.PI * 2);
+
+        const carrierFreq = clamp(root * tritaveSweep * ratio * colorBend * motionBend * rippleBend, 38, 1600);
+
+        const fmRatioIndex = Math.floor(Math.abs(hueTurn * fmRatios.length + field * 4 + speed * 0.6)) % fmRatios.length;
+        const fmRatio = fmRatios[fmRatioIndex] * Math.pow(2, 0.055 * Math.sin(t * 0.3 + ny * 9));
+        const modFreq = clamp(carrierFreq * fmRatio, 12, 5200);
+
+        // FM index: color/material + motion + contact. More index = more sidebands/noise-like brightness.
+        const baseIndex = 10 + this.size * 1.8 + Math.abs(field) * 44;
+        const motionIndex = speed * 30;
+        const collisionIndex = this.excite * 260;
+        const fmIndex = clamp(baseIndex + motionIndex + collisionIndex, 4, 520);
+
+        this.freq = carrierFreq;
+        this.modFreq = modFreq;
+        this.fmIndex = fmIndex;
+        this.lastIndex = ratioIndex;
+
+        if (!audioCtx || !audioRunning || !this.started) return;
+        const now = audioCtx.currentTime;
+        const voiceCountTrim = 1 / Math.sqrt(Math.max(1, organisms.length));
+
+        // Motion-gated amplitude: a still pond becomes nearly silent.
+        // Velocity opens the voice; collisions/ripples add brief blooms.
+        const velocityAmp = Math.pow(clamp(speed / 2.45, 0, 1), 1.85);
+        const bodyAmp = velocityAmp * (0.055 + this.size * 0.0032);
+        const collisionAmp = this.excite * 0.078;
+        const idleBreath = 0.0015;
+        const amp = clamp(idleBreath + bodyAmp + collisionAmp, 0.0008, 0.17) * voiceCountTrim;
+        const cutoff = clamp(420 + this.size * 90 + Math.abs(field) * 2400 + this.excite * 3600, 220, 9800);
+        const q = clamp(0.4 + (this.hue % 90) / 95 + this.excite * 4.2, 0.4, 8);
+
+        this.carrier.frequency.setTargetAtTime(carrierFreq, now, 0.045);
+        this.modulator.frequency.setTargetAtTime(modFreq, now, 0.045);
+        this.modGain.gain.setTargetAtTime(fmIndex, now, 0.035);
+        this.amp.gain.setTargetAtTime(amp, now, 0.055);
+        this.filter.frequency.setTargetAtTime(cutoff, now, 0.05);
+        this.filter.Q.setTargetAtTime(q, now, 0.05);
+        this.pan.pan.setTargetAtTime(nx * 2 - 1, now, 0.08);
+      }
+
+      draw() {
+        const pulse = 1 + Math.sin(this.phase * 2.0) * 0.06 + this.excite * 0.5;
+        const r = this.size * pulse;
+        const speed = Math.hypot(this.vx, this.vy);
+        const angle = Math.atan2(this.vy, this.vx);
+
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+
+        for (let i = 1; i < this.tail.length; i++) {
+          const a = this.tail[i - 1];
+          const b = this.tail[i];
+          ctx.strokeStyle = `hsla(${this.hue + i * 3}, 95%, ${56 + this.excite * 20}%, ${0.025 + b.life * 0.18})`;
+          ctx.lineWidth = Math.max(1, (i / this.tail.length) * this.size * 0.7);
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
+        }
+
+        const glow = ctx.createRadialGradient(this.x, this.y, 1, this.x, this.y, r * 4.8);
+        glow.addColorStop(0, `hsla(${this.hue}, 100%, 70%, ${0.30 + this.excite * 0.20})`);
+        glow.addColorStop(0.42, `hsla(${this.hue + 55}, 100%, 58%, ${0.075 + this.excite * 0.12})`);
+        glow.addColorStop(1, `hsla(${this.hue + 140}, 100%, 42%, 0)`);
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, r * 5, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.translate(this.x, this.y);
+        ctx.rotate(angle);
+
+        for (let k = -2; k <= 2; k++) {
+          const finA = k * 0.55 + Math.sin(this.phase + k) * 0.18;
+          ctx.strokeStyle = `hsla(${this.hue + k * 28}, 100%, 76%, ${0.16 + this.excite * 0.16})`;
+          ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          ctx.moveTo(-r * 0.25, 0);
+          ctx.quadraticCurveTo(-r * 1.25, Math.sin(finA) * r, -r * (1.7 + speed * 0.25), Math.sin(finA) * r * 1.7);
+          ctx.stroke();
+        }
+
+        ctx.fillStyle = `hsla(${this.hue}, 95%, ${62 + this.excite * 16}%, 0.78)`;
+        ctx.strokeStyle = `hsla(${this.hue + 85}, 100%, 82%, 0.72)`;
+        ctx.lineWidth = 1.1;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, r * 1.18, r * 0.78, Math.sin(this.phase) * 0.22, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        // Inner nucleus visibly reacts to FM index.
+        ctx.fillStyle = `hsla(${this.hue + 170}, 100%, ${70 + Math.min(16, this.fmIndex * 0.025)}%, 0.92)`;
+        ctx.beginPath();
+        ctx.arc(r * 0.42, -r * 0.18, Math.max(1.5, r * 0.15 + this.excite * 2.8), 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+      }
+    }
+
+    function spatialField(x, y, hue = 0) {
+      const nx = x / Math.max(1, W);
+      const ny = y / Math.max(1, H);
+      let v = 0;
+      v += Math.sin(nx * 9.7 + t * 0.23 + Math.sin(ny * 5.1 + hue * 0.01));
+      v += 0.7 * Math.sin(ny * 12.4 - t * 0.19 + Math.cos(nx * 6.2));
+      v += 0.45 * Math.sin((nx + ny) * 17.3 + t * 0.31 + hue * 0.03);
+      for (const r of ripples) {
+        const d = Math.hypot(x - r.x, y - r.y);
+        v += Math.sin(d * 0.036 - r.r * 0.065) * r.life * r.strength * 0.8;
+      }
+      return v / 2.6;
+    }
+
+    function seed(count = 14) {
+      for (let i = 0; i < count; i++) organisms.push(new Organism());
+      refreshReadout();
+    }
+
+    function refreshReadout() {
+      countReadout.textContent = `${organisms.length} organisms`;
+    }
+
+    function applyVolume() {
+      masterVolume = Number(volumeSlider.value) / 100;
+      volumeReadout.textContent = `${Math.round(masterVolume * 100)}%`;
+      if (postComp && audioCtx) {
+        // Nonlinear taper gives useful low-volume control and prevents sudden blasts.
+        const scaled = Math.pow(masterVolume, 1.65) * 0.92;
+        postComp.gain.setTargetAtTime(scaled, audioCtx.currentTime, 0.035);
+      }
+    }
+
+    function ensureAudio() {
+      if (audioCtx) return;
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+      preComp = audioCtx.createGain();
+      compressor = audioCtx.createDynamicsCompressor();
+      postComp = audioCtx.createGain();
+      master = audioCtx.createGain();
+      wet = audioCtx.createGain();
+      delay = audioCtx.createDelay(1.2);
+      feedback = audioCtx.createGain();
+
+      // Pre-compressor trim, compressor, and final master volume.
+      preComp.gain.value = 0.72;
+      compressor.threshold.value = -18;
+      compressor.knee.value = 16;
+      compressor.ratio.value = 8;
+      compressor.attack.value = 0.004;
+      compressor.release.value = 0.18;
+      postComp.gain.value = Math.pow(masterVolume, 1.65) * 0.92;
+      master.gain.value = 0.98;
+
+      wet.gain.value = 0.13;
+      delay.delayTime.value = 0.23;
+      feedback.gain.value = 0.26;
+
+      wet.connect(delay);
+      delay.connect(feedback);
+      feedback.connect(delay);
+      delay.connect(preComp);
+
+      preComp.connect(compressor);
+      compressor.connect(postComp);
+      postComp.connect(master);
+      master.connect(audioCtx.destination);
+    }
+
+    async function toggleAudio() {
+      ensureAudio();
+      if (audioCtx.state === 'suspended') await audioCtx.resume();
+
+      audioRunning = !audioRunning;
+      if (audioRunning) {
+        for (const o of organisms) o.makeVoice();
+        applyVolume();
+        startBtn.textContent = 'pause audio';
+        statusEl.textContent = 'audio awake';
+        gestureReadout.textContent = 'FM swarm active';
+        addRipple(W * 0.5, H * 0.5, 1.35, 210);
+      } else {
+        for (const o of organisms) {
+          if (o.amp) o.amp.gain.setTargetAtTime(0.00001, audioCtx.currentTime, 0.04);
+        }
+        startBtn.textContent = 'start audio';
+        statusEl.textContent = 'audio sleeping';
+      }
+    }
+
+    function collisions() {
+      for (let i = 0; i < organisms.length; i++) {
+        for (let j = i + 1; j < organisms.length; j++) {
+          const a = organisms[i];
+          const b = organisms[j];
+          const dx = b.x - a.x;
+          const dy = b.y - a.y;
+          const d = Math.hypot(dx, dy) || 1;
+          const minD = (a.size + b.size) * 0.78;
+          const senseD = Math.min(a.sense, b.sense);
+
+          if (d < senseD) {
+            const relation = 1 - d / senseD;
+            const sideways = 0.0035 * relation;
+            a.vx += (-dy / d) * sideways;
+            a.vy += (dx / d) * sideways;
+            b.vx -= (-dy / d) * sideways;
+            b.vy -= (dx / d) * sideways;
+          }
+
+          if (d < minD) {
+            const overlap = (minD - d) / minD;
+            const nx = dx / d;
+            const ny = dy / d;
+            a.vx -= nx * overlap * 0.045;
+            a.vy -= ny * overlap * 0.045;
+            b.vx += nx * overlap * 0.045;
+            b.vy += ny * overlap * 0.045;
+            a.excite = Math.max(a.excite, overlap * 1.1);
+            b.excite = Math.max(b.excite, overlap * 1.1);
+
+            if (Math.random() < 0.08) {
+              const mx = (a.x + b.x) * 0.5;
+              const my = (a.y + b.y) * 0.5;
+              addRipple(mx, my, overlap * 0.75, (a.hue + b.hue) * 0.5);
+              addMote(mx, my, (a.hue + b.hue) * 0.5, 3);
+            }
+          }
+        }
+      }
+    }
+
+    function update(dt) {
+      t += dt;
+
+      for (const r of ripples) {
+        r.r += dt * 250 * (0.65 + r.strength * 0.2);
+        r.life *= Math.pow(0.085, dt);
+      }
+      while (ripples.length && ripples[0].life < 0.015) ripples.shift();
+
+      for (const m of motes) {
+        m.x += m.vx * dt * 60;
+        m.y += m.vy * dt * 60;
+        m.vx += spatialField(m.x, m.y, m.hue) * 0.007;
+        m.vy += spatialField(m.y, m.x, m.hue + 80) * 0.007;
+        m.life *= Math.pow(0.12, dt);
+      }
+      while (motes.length && motes[0].life < 0.02) motes.shift();
+
+      for (const o of organisms) o.update(dt);
+      collisions();
+    }
+
+    function drawBackground() {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = 'rgba(7, 27, 36, 0.31)';
+      ctx.fillRect(0, 0, W, H);
+
+      const grad = ctx.createRadialGradient(W * 0.35, H * 0.25, 30, W * 0.5, H * 0.5, Math.max(W, H) * 0.82);
+      grad.addColorStop(0, 'rgba(54, 100, 67, 0.070)');
+      grad.addColorStop(0.48, 'rgba(31, 81, 104, 0.045)');
+      grad.addColorStop(1, 'rgba(87, 45, 77, 0.060)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, H);
+
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.lineWidth = 1;
+      for (let y = 0; y < H; y += 42) {
+        ctx.strokeStyle = `hsla(${145 + Math.sin(t * 0.1 + y * 0.01) * 90}, 70%, 55%, 0.018)`;
+        ctx.beginPath();
+        for (let x = 0; x <= W; x += 24) {
+          const yy = y + Math.sin(x * 0.011 + t * 0.6 + y * 0.018) * 8 + Math.sin(x * 0.026 - t * 0.33) * 3;
+          if (x === 0) ctx.moveTo(x, yy);
+          else ctx.lineTo(x, yy);
+        }
+        ctx.stroke();
+      }
+    }
+
+    function drawRipples() {
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      for (const r of ripples) {
+        ctx.strokeStyle = `hsla(${r.hue}, 100%, 72%, ${r.life * 0.26})`;
+        ctx.lineWidth = 1 + r.life * 3.5;
+        ctx.beginPath();
+        ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.strokeStyle = `hsla(${r.hue + 80}, 100%, 68%, ${r.life * 0.12})`;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(r.x, r.y, r.r * 0.62, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function drawMotes() {
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      for (const m of motes) {
+        ctx.fillStyle = `hsla(${m.hue}, 100%, 76%, ${m.life * 0.32})`;
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, m.s, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    function draw() {
+      drawBackground();
+      drawRipples();
+      drawMotes();
+      for (const o of organisms) o.draw();
+    }
+
+    function loop(now) {
+      const dt = clamp((now - last) / 1000, 0.001, 0.033);
+      last = now;
+      update(dt);
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    canvas.addEventListener('pointerdown', (e) => {
+      pointer.down = true;
+      pointer.moved = false;
+      pointer.x = e.clientX;
+      pointer.y = e.clientY;
+      pointer.lastX = pointer.x;
+      pointer.lastY = pointer.y;
+      addRipple(pointer.x, pointer.y, 1.15, rand(80, 310));
+      addMote(pointer.x, pointer.y, rand(90, 300), 8);
+      gestureReadout.textContent = 'rippling / retuning FM index';
+    });
+
+    canvas.addEventListener('pointermove', (e) => {
+      pointer.x = e.clientX;
+      pointer.y = e.clientY;
+      if (!pointer.down) return;
+      const dx = pointer.x - pointer.lastX;
+      const dy = pointer.y - pointer.lastY;
+      const d = Math.hypot(dx, dy);
+      pointer.moved = d > 1;
+      if (d > 10) {
+        addRipple(pointer.x, pointer.y, clamp(d / 42, 0.35, 1.6), 140 + d * 2);
+        addMote(pointer.x, pointer.y, 150 + d * 2, 2);
+        pointer.lastX = pointer.x;
+        pointer.lastY = pointer.y;
+      }
+    });
+
+    window.addEventListener('pointerup', () => {
+      pointer.down = false;
+      pointer.moved = false;
+      gestureReadout.textContent = audioRunning ? 'FM swarm active' : 'drag pond to bend it';
+    });
+
+    canvas.addEventListener('dblclick', (e) => {
+      organisms.push(new Organism(e.clientX, e.clientY));
+      addRipple(e.clientX, e.clientY, 1.5, rand(70, 325));
+      refreshReadout();
+    });
+
+    startBtn.addEventListener('click', toggleAudio);
+
+    volumeSlider.addEventListener('input', applyVolume);
+
+    addBtn.addEventListener('click', () => {
+      for (let i = 0; i < 4; i++) organisms.push(new Organism(rand(W * 0.2, W * 0.8), rand(H * 0.2, H * 0.8)));
+      refreshReadout();
+    });
+
+    stirBtn.addEventListener('click', () => {
+      const cx = rand(W * 0.2, W * 0.8);
+      const cy = rand(H * 0.2, H * 0.8);
+      for (let k = 0; k < 5; k++) addRipple(cx + rand(-120, 120), cy + rand(-90, 90), rand(0.7, 1.9), rand(60, 330));
+      for (const o of organisms) {
+        const dx = o.x - cx;
+        const dy = o.y - cy;
+        const d = Math.hypot(dx, dy) || 1;
+        o.vx += (-dy / d) * rand(0.2, 1.3);
+        o.vy += (dx / d) * rand(0.2, 1.3);
+        o.excite = Math.max(o.excite, rand(0.15, 0.55));
+      }
+    });
+
+    thinBtn.addEventListener('click', () => {
+      const remove = Math.min(4, Math.max(0, organisms.length - 3));
+      for (let i = 0; i < remove; i++) {
+        const o = organisms.pop();
+        if (o) o.stopVoice();
+      }
+      refreshReadout();
+    });
+
+    aboutBtn.addEventListener('click', () => {
+      aboutPanel.classList.toggle('open');
+      aboutBtn.textContent = aboutPanel.classList.contains('open') ? 'hide statement' : 'about';
+    });
+
+    seed(16);
+    addRipple(W * 0.5, H * 0.5, 1.2, 210);
+    applyVolume();
+    requestAnimationFrame(loop);
+  </script>
+</body>
+</html>
