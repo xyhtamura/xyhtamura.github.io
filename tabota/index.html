@@ -1,478 +1,958 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tabota</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tabota</title>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/theme/lucario.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/mode/javascript/javascript.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/addon/edit/matchbrackets.min.js"></script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<!-- editor -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/mode/javascript/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/addon/edit/matchbrackets.min.js"></script>
+<!-- markdown + midi import -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://unpkg.com/@tonejs/midi"></script>
+<!-- type -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,400;1,9..144,600&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 
-    <style>
-        :root {
-            --bg-color: #1e1e1e;
-            --text-color: #d4d4d4;
-            --primary-color: #007acc;
-            --border-color: #333333;
-            --section-bg: #252526;
-            --grid-line-color: #404040;
-            --point-color: #9cdcfe;
-            --line-color: #4ec9b0;
-            --group-color: #dcdcaa;
-            /* Syntax Highlighting Colors */
-            --json-key-color: #9cdcfe;
-            --json-string-color: #ce9178;
-            --json-number-color: #b5cea8;
-            --json-boolean-color: #569cd6;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-        }
-        h1, h2, h3, h4 {
-            font-weight: 400;
-            letter-spacing: 0.5px;
-        }
-        .main-container {
-            width: 98%;
-            max-width: 1600px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        
-        /* Layout Sections */
-        .visualizer-row, .editor, .about {
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            background-color: var(--section-bg);
-            padding: 20px;
-        }
-        .header-controls { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-        .zoom-controls { display: flex; gap: 10px; align-items: center; }
-        .zoom-controls span { font-size: 14px; color: #aaa; }
-        .zoom-btn, .action-btn { background-color: #3c3c3c; border: 1px solid var(--border-color); color: var(--text-color); padding: 5px 10px; font-size: 14px; cursor: pointer; border-radius: 4px; }
+<style>
+:root{
+  /* Light palette — fully hued, no achromatic axis. Pale tide-pool in daylight.
+     Matches tabota_roll.html. Variable names kept; values flipped to light:
+     ground = pale green-cyan, panels = pale plum (different hue),
+     text = dark teal (not black), accents deepened for legibility on light. */
+  --abyss:        #eaf1ec;  /* app ground, high-L green-cyan */
+  --abyss-2:      #e3ebe6;  /* inset / input wells / score field */
+  --membrane:     #f1ecf4;  /* panel, low-chroma plum (different hue) */
+  --membrane-2:   #e7dfee;  /* raised panel */
+  --silt:         #cdbcd6;  /* borders, hued violet */
+  --silt-2:       #ddd2e6;  /* subtle inner dividers (lighter than border) */
+  --bone:         #18302b;  /* text, dark teal (not black) */
+  --bone-dim:     #5a6f68;  /* dim text, hued */
+  --bone-faint:   #8a9b93;
+  --algae:        #5d8c00;  /* chartreuse, deepened — points */
+  --algae-deep:   #496e00;
+  --membrane-pink:#d1336b;  /* magenta — lines / slides */
+  --tide:         #11897e;  /* teal-cyan — structure / links / primary action */
+  --tide-deep:    #0c6c63;
+  --ember:        #dd6b12;  /* amber — warnings / overflow */
+  --bruise:       #6a47d8;  /* violet — secondary structural */
 
-        #score-container {
-            margin-top: 15px;
-            overflow: auto;
-            position: relative;
-        }
-        .timeline-wrapper {
-            position: relative;
-            display: grid;
-            grid-template-columns: 70px 1fr;
-            grid-template-rows: 1fr 40px;
-            gap: 5px;
-        }
-        .timeline-view { grid-column: 2; grid-row: 1; position: relative; }
-        .y-axis { grid-column: 1; grid-row: 1; position: relative; }
-        .x-axis { grid-column: 2; grid-row: 2; position: relative; }
-        .axis-label { position: absolute; font-size: 10px; color: #aaa; }
-        .section-background { position: absolute; height: 100%; top: 0; opacity: 0.2; }
-        .section-divider { position: absolute; width: 1px; height: 100%; top: 0; border-left: 1px dashed #cccccc80; }
-        .section-divider-label { position: absolute; top: -18px; color: #ccc; font-size: 12px; background: #333; padding: 2px 5px; border-radius: 3px; transform: translateX(-50%); }
+  --mono: "IBM Plex Mono", "SFMono-Regular", Menlo, monospace;
+  --display: "Fraunces", Georgia, serif;
+}
 
-        .editor { display: flex; flex-direction: column; }
-        .editor-header { display: flex; justify-content: space-between; align-items: center; }
-        .editor-actions { display: flex; gap: 10px; }
-        
-        /* CodeMirror styles */
-        .CodeMirror {
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            height: 350px;
-            font-size: 14px;
-        }
+*{ box-sizing:border-box; }
+html{ scrollbar-color: var(--silt) var(--abyss); }
+body{
+  font-family: var(--mono);
+  background:
+    radial-gradient(1200px 620px at 82% -6%, #f1ecf488 0%, transparent 55%),
+    radial-gradient(1000px 560px at -8% 108%, #e6efe988 0%, transparent 55%),
+    radial-gradient(120% 80% at 0% 0%, #eef4ef 0%, var(--abyss) 60%),
+    var(--abyss);
+  background-attachment: fixed;
+  color: var(--bone);
+  margin:0; padding:28px 22px 64px;
+  font-size:14px; line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{ width:97%; max-width:1480px; margin:0 auto; display:flex; flex-direction:column; gap:20px; }
 
-        #render-btn { margin-top: 10px; padding: 10px 20px; background-color: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
-        .copy-btn { background: none; border: 1px solid var(--border-color); color: var(--text-color); padding: 5px 8px; cursor: pointer; border-radius: 4px; display: flex; align-items: center; gap: 5px; }
-        .copy-btn:hover { background-color: #ffffff1a; }
+/* --- masthead --------------------------------------------------------- */
+.masthead{ display:flex; align-items:flex-end; justify-content:space-between; gap:20px;
+  border-bottom:1px solid var(--silt); padding-bottom:14px; flex-wrap:wrap; }
+.logo{ display:flex; align-items:baseline; gap:14px; }
+.logo h1{ font-family:var(--display); font-style:italic; font-weight:400;
+  font-size:46px; letter-spacing:-1px; margin:0; line-height:.9;
+  color:var(--bone); }
+.logo .kanji{ color:var(--algae); font-style:normal; }
+.logo .tag{ font-size:11px; color:var(--bone-dim); letter-spacing:.18em; text-transform:uppercase; }
+.meta-strip{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.chip{ font-size:10.5px; letter-spacing:.12em; text-transform:uppercase;
+  border:1px solid var(--silt); border-radius:2px; padding:4px 8px; color:var(--bone-dim);
+  background:var(--abyss-2); }
+.chip b{ color:var(--tide); font-weight:500; }
+.chip.live b{ color:var(--algae); }
 
-        /* ABOUT SECTION STYLES */
-        .about h2, .about h3, .about h4 { margin-top: 0; }
-        .about p { line-height: 1.6; color: #ccc; }
-        .about code { background-color: var(--bg-color); color: var(--json-string-color); padding: 2px 5px; border-radius: 3px; font-family: "Courier New", Courier, monospace; }
-        .sample-container { margin-top: 20px; }
-        .sample-container .editor-header { margin-bottom: 10px; }
-        .sample-container pre { background-color: #1a1a1a; border: 1px solid var(--border-color); border-radius: 4px; padding: 15px; white-space: pre-wrap; word-wrap: break-word; font-size: 13px; max-height: 300px; overflow-y: auto; }
-        .json-key { color: var(--json-key-color); }
-        .json-string { color: var(--json-string-color); }
-        .json-number { color: var(--json-number-color); }
-        .json-boolean { color: var(--json-boolean-color); }
+/* link to the piano-roll editor */
+.rolllink{ display:inline-flex; align-items:center; gap:10px; text-decoration:none;
+  border:1px solid var(--tide); border-radius:3px; padding:6px 12px 6px 11px;
+  background:linear-gradient(180deg,#ffffffaa,#e9f3f1); color:var(--bone);
+  transition:.14s; position:relative; }
+.rolllink:hover{ background:var(--tide); border-color:var(--tide); }
+.rolllink:hover .rl-ico,.rolllink:hover .rl-arr{ color:#fff; }
+.rolllink:hover .rl-tx b,.rolllink:hover .rl-tx em{ color:#fff; }
+.rolllink .rl-ico{ font-size:16px; color:var(--tide); line-height:1; }
+.rolllink .rl-tx{ display:flex; flex-direction:column; line-height:1.15; }
+.rolllink .rl-tx b{ font-size:12.5px; letter-spacing:.02em; color:var(--bone); }
+.rolllink .rl-tx em{ font-style:normal; font-size:9.5px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--bone-dim); }
+.rolllink .rl-arr{ font-size:14px; color:var(--tide); margin-left:2px; }
 
-        /* Event & Grid Styles */
-        .event-point, .event-group { position: absolute; width: 12px; height: 12px; border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 5px rgba(0,0,0,0.5); z-index: 10; }
-        .event-point { background-color: var(--point-color); }
-        .event-group { background-color: var(--group-color); border: 2px solid var(--json-string-color); }
-        .event-line { position: absolute; height: 2px; background-color: var(--line-color); transform-origin: 0 50%; z-index: 9; }
-        .event-payload { position: absolute; transform: translate(15px, -50%); font-size: 12px; color: var(--json-string-color); white-space: nowrap; z-index: 11; }
-        .grid-line-vertical { position: absolute; width: 1px; height: 100%; top: 0; background-color: var(--grid-line-color); }
-		
-		/* REFERENCE SECTION STYLES */
-        .tabota-reference {
-            width: 100%;
-            margin-top: 20px;
-            padding: 20px;
-            background-color: var(--section-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        .tabota-reference a {
-            color: var(--primary-color);
-            text-decoration: none;
-        }
-        .tabota-reference a:hover {
-            text-decoration: underline;
-        }
-        .tabota-reference h1, .tabota-reference h2 {
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
-            margin-top: 0;
-        }
-        .tabota-reference h3 {
-            color: var(--primary-color);
-            margin-top: 30px;
-            border-bottom: 1px solid #ffffff1a;
-            padding-bottom: 5px;
-        }
-        .tabota-reference h4 {
-            color: var(--point-color);
-            margin-top: 20px;
-            margin-bottom: 5px;
-        }
-        .tabota-reference p, .tabota-reference li {
-            color: #ccc;
-            line-height: 1.6;
-            margin-top: 5px;
-        }
-        .tabota-reference table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-        .tabota-reference th, .tabota-reference td {
-            border: 1px solid var(--border-color);
-            padding: 8px 12px;
-            text-align: left;
-        }
-        .tabota-reference th {
-            background-color: #333;
-        }
-        .tabota-reference ul {
-            list-style: disc;
-            padding-left: 25px;
-        }
-        .tabota-reference li {
-            margin-bottom: 10px;
-        }
-        .tabota-reference code {
-            background-color: var(--bg-color);
-            color: var(--json-string-color);
-            padding: 2px 5px;
-            border-radius: 3px;
-            font-family: "Courier New", Courier, monospace;
-            font-size: 0.9em;
-        }
-        .tabota-reference pre > code {
-            display: block;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-        .tabota-reference pre {
-            background-color: #1a1a1a;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            padding: 15px;
-            font-size: 13px;
-        }
-        
-    </style>
+.lede{ font-size:13px; line-height:1.6; color:var(--bone-dim); max-width:none;
+  margin:-4px 0 0; padding:0 2px; }
+.lede b{ color:var(--bone); font-weight:600; }
+.lede a{ color:var(--tide); text-decoration:none; border-bottom:1px solid var(--tide); }
+.lede a:hover{ color:var(--tide-deep); border-color:var(--tide-deep); }
+
+/* --- panels ----------------------------------------------------------- */
+.panel{ border:1px solid var(--silt); border-radius:3px; background:var(--membrane);
+  position:relative; }
+.panel::before{ /* exposed corner specimen ticks — construction left visible */
+  content:""; position:absolute; top:7px; left:7px; width:9px; height:9px;
+  border-top:1px solid var(--silt); border-left:1px solid var(--silt); pointer-events:none; }
+.panel::after{ content:""; position:absolute; bottom:7px; right:7px; width:9px; height:9px;
+  border-bottom:1px solid var(--silt); border-right:1px solid var(--silt); pointer-events:none; }
+.panel-head{ display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:13px 18px; border-bottom:1px solid var(--silt-2); flex-wrap:wrap; }
+.panel-head h2{ font-family:var(--display); font-weight:400; font-size:18px; margin:0;
+  letter-spacing:.2px; }
+.panel-head .idx{ font-size:10.5px; color:var(--bone-faint); letter-spacing:.2em;
+  text-transform:uppercase; }
+.panel-body{ padding:18px; }
+
+/* --- buttons / inputs ------------------------------------------------- */
+button, .btn{ font-family:var(--mono); font-size:12.5px; cursor:pointer;
+  background:var(--membrane-2); border:1px solid var(--silt); color:var(--bone);
+  padding:7px 13px; border-radius:2px; letter-spacing:.02em; transition:.12s; }
+button:hover, .btn:hover{ border-color:var(--tide); color:var(--tide); }
+button.primary{ background:var(--tide); color:#fff; border-color:var(--tide);
+  font-weight:600; letter-spacing:.05em; }
+button.primary:hover{ background:var(--tide-deep); color:#fff; border-color:var(--tide-deep); }
+button.ghost{ background:transparent; }
+.icon-btn{ display:inline-flex; align-items:center; gap:6px; }
+
+label.field{ display:flex; flex-direction:column; gap:5px; font-size:10.5px;
+  letter-spacing:.13em; text-transform:uppercase; color:var(--bone-dim); }
+input[type=number], input[type=text], select, textarea.tn{
+  font-family:var(--mono); font-size:13px; background:var(--abyss-2);
+  border:1px solid var(--silt); color:var(--bone); padding:7px 9px; border-radius:2px; }
+input:focus, select:focus, textarea:focus{ outline:none; border-color:var(--tide); }
+select{ cursor:pointer; }
+input[type=file]{ font-family:var(--mono); font-size:12px; color:var(--bone-dim);
+  background:var(--abyss-2); border:1px dashed var(--silt); padding:10px; border-radius:2px; width:100%; }
+input[type=file]::file-selector-button{ font-family:var(--mono); background:var(--membrane-2);
+  color:var(--bone); border:1px solid var(--silt); border-radius:2px; padding:5px 10px; margin-right:10px; cursor:pointer; }
+
+/* --- visualizer ------------------------------------------------------- */
+.zoom{ display:flex; gap:6px; align-items:center; }
+.zoom span{ font-size:10px; color:var(--bone-faint); letter-spacing:.12em; text-transform:uppercase; }
+.zoom-btn{ width:26px; padding:4px 0; text-align:center; }
+#score-container{ overflow:auto; position:relative; padding:6px 0 2px; }
+.timeline-wrapper{ position:relative; display:grid; grid-template-columns:78px 1fr;
+  grid-template-rows:1fr 38px; gap:6px; min-width:400px; }
+.timeline-view{ grid-column:2; grid-row:1; position:relative;
+  background:repeating-linear-gradient(transparent,transparent 23px,rgba(24,48,43,0.06) 23px,rgba(24,48,43,0.06) 24px); }
+.y-axis{ grid-column:1; grid-row:1; position:relative; }
+.x-axis{ grid-column:2; grid-row:2; position:relative; }
+.axis-label{ position:absolute; font-size:10px; color:var(--bone-faint); letter-spacing:.04em; }
+.section-background{ position:absolute; height:100%; top:0; opacity:.5; }
+.section-divider{ position:absolute; width:1px; height:100%; top:0; border-left:1px dashed rgba(24,48,43,0.20); }
+.section-divider-label{ position:absolute; top:-20px; color:var(--bone-dim); font-size:10.5px;
+  background:var(--abyss-2); border:1px solid var(--silt); padding:2px 7px; border-radius:2px;
+  transform:translateX(-50%); letter-spacing:.06em; white-space:nowrap; }
+.event-point{ position:absolute; width:11px; height:11px; border-radius:50%;
+  transform:translate(-50%,-50%); z-index:10; background:var(--algae);
+  box-shadow:0 0 0 1.5px #fff, 0 0 0 2.5px var(--algae); }
+.event-group{ position:absolute; width:13px; height:13px; transform:translate(-50%,-50%);
+  z-index:10; background:var(--bruise); border:2px solid var(--tide); border-radius:2px; }
+.event-line{ position:absolute; height:2.5px; background:var(--membrane-pink);
+  transform-origin:0 50%; z-index:9; border-radius:2px; }
+.event-payload{ position:absolute; transform:translate(14px,-50%); font-size:11px;
+  color:var(--bone-dim); white-space:nowrap; z-index:11; }
+.grid-line-vertical{ position:absolute; width:1px; height:100%; top:0; background:rgba(24,48,43,0.07); }
+
+/* --- editor ----------------------------------------------------------- */
+.editor-actions{ display:flex; gap:9px; flex-wrap:wrap; align-items:center; }
+.CodeMirror{ border:1px solid var(--silt); border-radius:2px; height:340px; font-size:13px;
+  font-family:var(--mono); background:var(--abyss-2)!important; color:var(--bone)!important; }
+.CodeMirror-gutters{ background:var(--abyss)!important; border-right:1px solid var(--silt)!important; }
+.CodeMirror-linenumber{ color:var(--bone-faint)!important; }
+.CodeMirror-cursor{ border-left:1px solid var(--algae)!important; }
+.CodeMirror-selected{ background:#11897e2e!important; }
+.cm-s-default .cm-string{ color:var(--membrane-pink)!important; }
+.cm-s-default .cm-property{ color:var(--tide)!important; }
+.cm-s-default .cm-number{ color:var(--algae)!important; }
+.cm-s-default .cm-atom{ color:var(--bruise)!important; }
+.cm-s-default .cm-keyword{ color:var(--bruise)!important; }
+#render-btn{ margin-top:11px; align-self:flex-start; }
+
+/* --- workbench tabs --------------------------------------------------- */
+.tabs{ display:flex; gap:0; border-bottom:1px solid var(--silt); }
+.tab{ background:transparent; border:none; border-bottom:2px solid transparent;
+  color:var(--bone-dim); padding:11px 18px; font-size:12px; letter-spacing:.08em;
+  text-transform:uppercase; border-radius:0; }
+.tab:hover{ color:var(--bone); border-bottom-color:var(--silt); }
+.tab.active{ color:var(--algae); border-bottom-color:var(--algae); }
+.tab .num{ color:var(--bone-faint); margin-right:7px; }
+.tab.active .num{ color:var(--algae-deep); }
+.tabpane{ display:none; padding:20px 18px; }
+.tabpane.active{ display:block; }
+
+.controls-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:14px; margin-bottom:16px; }
+.note{ font-size:11.5px; color:var(--bone-dim); line-height:1.55; }
+.note code{ color:var(--algae); }
+.divider{ height:1px; background:var(--silt-2); margin:16px 0; }
+.row-actions{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:4px; }
+
+/* --- report table ----------------------------------------------------- */
+.report-wrap{ overflow:auto; max-height:420px; border:1px solid var(--silt); border-radius:2px; margin-top:14px; }
+table.report{ width:100%; border-collapse:collapse; font-size:12px; }
+table.report th, table.report td{ padding:7px 11px; text-align:right; white-space:nowrap;
+  border-bottom:1px solid var(--silt-2); }
+table.report th{ position:sticky; top:0; background:var(--membrane-2); color:var(--bone-dim);
+  font-weight:500; letter-spacing:.06em; text-transform:uppercase; font-size:10px; z-index:1; }
+table.report td:first-child, table.report th:first-child{ text-align:left; color:var(--bone-faint); }
+table.report td.note-cell{ text-align:left; color:var(--bone); }
+table.report tr:hover td{ background:rgba(24,48,43,0.04); }
+.cents-pos{ color:var(--algae); } .cents-neg{ color:var(--membrane-pink); } .cents-zero{ color:var(--bone-faint); }
+.pb-val{ color:var(--tide); }
+.flag-slide{ color:var(--bruise); } .flag-clip{ color:var(--ember); }
+.summary{ display:flex; gap:18px; flex-wrap:wrap; margin-top:14px; font-size:12px; }
+.summary .stat b{ color:var(--tide); font-weight:600; }
+.warnings{ margin-top:12px; }
+.warn{ font-size:11.5px; color:var(--ember); border-left:2px solid var(--ember);
+  padding:4px 0 4px 11px; margin:5px 0; }
+.bend-bar{ display:inline-block; width:54px; height:6px; background:var(--abyss-2);
+  border:1px solid var(--silt); position:relative; vertical-align:middle; }
+.bend-bar i{ position:absolute; top:0; bottom:0; width:1px; background:var(--bone-faint); left:50%; }
+.bend-bar u{ position:absolute; top:0; bottom:0; background:var(--tide); }
+
+/* --- reference -------------------------------------------------------- */
+.ref a{ color:var(--tide); text-decoration:none; } .ref a:hover{ text-decoration:underline; }
+.ref h1,.ref h2{ font-family:var(--display); font-weight:400; border-bottom:1px solid var(--silt);
+  padding-bottom:9px; margin-top:30px; }
+.ref h3{ color:var(--algae); margin-top:26px; font-family:var(--display); font-weight:400; }
+.ref h4{ color:var(--tide); margin:18px 0 5px; }
+.ref p,.ref li{ color:var(--bone-dim); line-height:1.65; }
+.ref table{ width:100%; border-collapse:collapse; margin:14px 0; }
+.ref th,.ref td{ border:1px solid var(--silt); padding:8px 11px; text-align:left; }
+.ref th{ background:var(--membrane-2); color:var(--bone); }
+.ref ul{ padding-left:22px; } .ref li{ margin-bottom:7px; }
+.ref code{ background:var(--abyss-2); color:var(--membrane-pink); padding:2px 5px; border-radius:2px; font-size:.9em; }
+.ref pre{ background:var(--abyss-2); border:1px solid var(--silt); border-radius:2px; padding:14px; overflow:auto; }
+.ref pre code{ color:var(--bone); display:block; white-space:pre; }
+.sample pre{ background:var(--abyss-2); border:1px solid var(--silt); border-radius:2px; padding:13px;
+  white-space:pre-wrap; word-break:break-word; font-size:12px; max-height:200px; overflow:auto; }
+.sample .panel-head{ border-bottom:none; padding:0 0 8px; }
+.json-key{ color:var(--tide); } .json-string{ color:var(--membrane-pink); }
+.json-number{ color:var(--algae); } .json-boolean{ color:var(--bruise); }
+.hidden{ display:none!important; }
+::selection{ background:#bfe7e1; color:var(--bone); }
+</style>
 </head>
 <body>
-    <div class="main-container">
-        <h1>Tabota (Tabo田)</h1>
-        
-        <div class="visualizer-row">
-            <div class="header-controls">
-                <h2>Graphical Output</h2>
-                <div class="zoom-controls">
-                    <span>X-Axis Zoom:</span>
-                    <button class="zoom-btn" id="zoom-x-out">-</button>
-                    <button class="zoom-btn" id="zoom-x-in">+</button>
-                </div>
-                 <div class="zoom-controls">
-                    <span>Y-Axis Zoom:</span>
-                    <button class="zoom-btn" id="zoom-y-out">-</button>
-                    <button class="zoom-btn" id="zoom-y-in">+</button>
-                </div>
-            </div>
-            <div id="score-container"></div>
-        </div>
-        
-        <div class="editor">
-            <div class="editor-header">
-                <h2>JSON Input</h2>
-                <div class="editor-actions">
-                    <button class="action-btn" id="beautify-btn">Beautify</button>
-                    <button class="copy-btn" id="copy-main-json">
-                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                        Copy
-                    </button>
-                </div>
-            </div>
-            <textarea id="json-input"></textarea>
-            <button id="render-btn">Render Score</button>
-        </div>
-        
-<div class="about">
-             <h3>How It Works: The Core Concepts</h3>
-             <p>A Tabota score is structured as a series of <strong>Sections</strong>. Each section has its own rules for how time (the X-axis) and values (the Y-axis) are interpreted.</p>
-             <p style="color: #4ec9b0;"><strong>v1.5 Update:</strong> In <code>metered</code> regimes, you can now position events using <code>startMeter</code> and <code>endMeter</code> objects (e.g., <code>{"measure": 2, "beat": 1.5}</code>). You can also use <code>defaultEventType</code> on Tracks/Sections to inherit event types automatically.</p>             <h3>Try Other Samples</h3>
-             <div class="sample-container"><div class="editor-header"><h4>Sample 1: Microtonal Scale</h4><button class="copy-btn" data-target="sample1">Copy & Render</button></div><pre><code id="sample1"></code></pre></div>
-             <div class="sample-container"><div class="editor-header"><h4>Sample 2: Theatrical Cue Sequence</h4><button class="copy-btn" data-target="sample2">Copy & Render</button></div><pre><code id="sample2"></code></pre></div>
-        </div>
-        
-        <div class="tabota-reference">
-            <h2>Tabota Language Reference</h2>
-            <p>
-                This guide is dynamically loaded from <code>tabota_reference_guide.md</code>.
-                For validation, you can also view the <a href="tabota.schema.json" target="_blank" rel="noopener noreferrer">full JSON Schema file</a>.
-            </p>
-            <hr style="border-color: var(--border-color); margin: 20px 0;">
-            <div id="markdown-content">
-                <p>Loading reference guide...</p>
-            </div>
-        </div>
+<div class="wrap">
 
+  <div class="masthead">
+    <div class="logo">
+      <h1>Tabota<span class="kanji">田</span></h1>
+      <span class="tag">microtonal score · transfer language</span>
+    </div>
+    <div class="meta-strip">
+      <a class="rolllink" href="tabota_roll.html" title="Open the visual piano-roll editor">
+        <span class="rl-ico">▦</span>
+        <span class="rl-tx"><b>Piano Roll</b><em>draw notes · polyphonic</em></span>
+        <span class="rl-arr">→</span>
+      </a>
+      <span class="chip">lang <b>v1.5</b></span>
+      <span class="chip" id="chip-bend">bend <b>±24 st</b></span>
+    </div>
+  </div>
+
+  <p class="lede">A workspace for the Tabota notation language: <b>write or paste</b> a score and see it plotted, then <b>compile it to a single-voice microtonal MIDI</b> (or read MIDI back into Tabota) — pitch bends carry any frequency into a normal DAW track, no Scala required. For drawing directly instead of typing JSON, open the <a href="tabota_roll.html">piano-roll editor</a> — a lighter, polyphonic canvas with its own voice-aware MIDI export.</p>
+
+
+  <!-- VISUALIZER ------------------------------------------------------- -->
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Graphical Output</h2>
+      <div style="display:flex;gap:16px;align-items:center;">
+        <div class="zoom"><span>X</span><button class="zoom-btn" id="zoom-x-out">–</button><button class="zoom-btn" id="zoom-x-in">+</button></div>
+        <div class="zoom"><span>Y</span><button class="zoom-btn" id="zoom-y-out">–</button><button class="zoom-btn" id="zoom-y-in">+</button></div>
+      </div>
+    </div>
+    <div class="panel-body"><div id="score-container"></div></div>
+  </div>
+
+  <!-- EDITOR ----------------------------------------------------------- -->
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Score Source</h2>
+      <div class="editor-actions">
+        <select id="sample-select" title="Load a sample">
+          <option value="">load sample…</option>
+          <option value="main">Language showcase</option>
+          <option value="micro">Microtonal scale (Hz)</option>
+          <option value="symbolic">Symbolic melody + slide</option>
+          <option value="theatre">Theatrical cues</option>
+        </select>
+        <button class="action-btn" id="beautify-btn">Beautify</button>
+        <button class="copy-btn icon-btn" id="copy-main-json">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy
+        </button>
+      </div>
+    </div>
+    <div class="panel-body">
+      <textarea id="json-input"></textarea>
+      <button id="render-btn" class="primary">Render Score</button>
+    </div>
+  </div>
+
+  <!-- WORKBENCH -------------------------------------------------------- -->
+  <div class="panel">
+    <div class="tabs">
+      <button class="tab active" data-tab="export"><span class="num">01</span>Tabota → MIDI</button>
+      <button class="tab" data-tab="import"><span class="num">02</span>MIDI → Tabota</button>
     </div>
 
-    <script>
-        // --- STATE & CONFIG ---
-        let zoom = { x: 1, y: 1 };
-        const BASE_TIMELINE_HEIGHT = 300; // px
-        let codeEditor;
+    <!-- EXPORT ........................................................ -->
+    <div class="tabpane active" id="pane-export">
+      <p class="note">Compiles <b>one monophonic voice</b> to a Standard MIDI File. Each note is placed on the nearest 12-TET key and retuned with a single per-channel pitch bend, so any microtonal frequency transfers exactly. The file writes an <code>RPN&nbsp;0,0</code> message that tells the receiving synth what bend range to expect — set it to match your instrument.</p>
 
-        const samples = {
-            main: `{ "projectName": "Tabota Language Showcase", "score": [ { "sectionId": "A1_Melody", "temporalRegime": "metered", "regimeSettings": { "beats": 4 }, "axisMode": "frequency", "modeSettings": { "minHz": 100, "maxHz": 2000 }, "events": [ { "type": "line", "startTime": 0, "endTime": 2, "startYValue": 440.0, "endYValue": 523.25, "payload": { "comment": "A4 to C5" } }, { "type": "point", "time": 2.5, "yValue": 587.33, "payload": { "comment": "D5" } }, { "type": "line", "startTime": 3, "endTime": 4, "startYValue": 659.25, "endYValue": 675.50, "payload": { "comment": "E5 bend" } } ] }, { "sectionId": "B1_Rhythm", "temporalRegime": "chronological", "regimeSettings": { "duration": 2 }, "axisMode": "categorical", "modeSettings": { "categories": ["Kick", "Snare", "Hi-Hat"] }, "events": [ { "type": "point", "time": 0.0, "yValue": "Kick" }, { "type": "point", "time": 0.5, "yValue": "Snare" }, { "type": "point", "time": 1.0, "yValue": "Kick" }, { "type": "point", "time": 1.5, "yValue": "Snare" } ] }, { "sectionId": "C1_Performance", "temporalRegime": "achronous", "regimeSettings": { "indices": 4 }, "axisMode": "instructional", "events": [ { "type": "point", "index": 0, "yValue": 20, "payload": { "text": "Lights fade up" } }, { "type": "line", "startIndex": 1, "endIndex": 3, "startYValue": 50, "endYValue": 50, "payload": { "text": "Hold drone sound" } } ] } ] }`,
-            sample1: `{ "projectName": "Microtonal Scale", "score": [ { "sectionId": "Scale", "temporalRegime": "metered", "regimeSettings": { "beats": 8 }, "axisMode": "frequency", "modeSettings": { "minHz": 200, "maxHz": 600 }, "events": [ { "type": "point", "time": 0, "yValue": 261.63 }, { "type": "point", "time": 1, "yValue": 293.66 }, { "type": "point", "time": 2, "yValue": 329.63 }, { "type": "point", "time": 3, "yValue": 349.23 }, { "type": "point", "time": 4, "yValue": 392.00 }, { "type": "point", "time": 5, "yValue": 440.00 }, { "type": "point", "time": 6, "yValue": 493.88 }, { "type": "point", "time": 7, "yValue": 530.15 } ] } ] }`,
-            sample2: `{ "projectName": "Simple Stage Play", "score": [ { "sectionId": "Act 1, Scene 1", "temporalRegime": "achronous", "regimeSettings": { "indices": 4 }, "axisMode": "instructional", "events": [ { "type": "point", "index": 0, "yValue": 25, "payload": { "text": "House lights down." } }, { "type": "point", "index": 1, "yValue": 50, "payload": { "text": "Spotlight on center stage." } }, { "type": "line", "startIndex": 2, "endIndex": 3, "startYValue": 75, "endYValue": 75, "payload": { "text": "Actor walks (1 index duration)." } }, { "type": "point", "index": 4, "yValue": 75, "payload": { "text": "Actor speaks: 'Am I late?'" } } ] } ] }`
-        };
-        
-        // --- INITIALIZATION ---
-        document.addEventListener('DOMContentLoaded', () => {
-            codeEditor = CodeMirror.fromTextArea(document.getElementById('json-input'), {
-                mode: { name: "javascript", json: true },
-                theme: "lucario",
-                lineNumbers: true,
-                matchBrackets: true
-            });
-            codeEditor.setValue(JSON.stringify(JSON.parse(samples.main), null, 2));
+      <div class="controls-grid" style="margin-top:16px;">
+        <label class="field">Voice
+          <select id="exp-voice"></select>
+        </label>
+        <label class="field">Bend range ± (semitones)
+          <input type="number" id="exp-range" value="24" min="1" max="96" step="1">
+        </label>
+        <label class="field">Tuning
+          <select id="exp-tuning">
+            <option value="12-TET">12-TET (equal)</option>
+            <option value="pythagorean">Pythagorean</option>
+            <option value="just">Just intonation</option>
+            <option value="score">Use score's tuning</option>
+            <option value="custom">Custom map (paste below)</option>
+          </select>
+        </label>
+        <label class="field">Tonic (for temperaments)
+          <select id="exp-tonic">
+            <option>C</option><option>C#</option><option>D</option><option>D#</option><option>E</option><option>F</option><option>F#</option><option>G</option><option>G#</option><option>A</option><option>A#</option><option>B</option>
+          </select>
+        </label>
+        <label class="field">A4 reference (Hz)
+          <input type="number" id="exp-a4" value="440" min="380" max="500" step="0.01">
+        </label>
+        <label class="field">Tempo (BPM)
+          <input type="number" id="exp-bpm" value="120" min="20" max="400" step="1">
+        </label>
+        <label class="field">PPQ resolution
+          <input type="number" id="exp-ppq" value="480" min="24" max="3840" step="24">
+        </label>
+        <label class="field">Channel (0–15)
+          <input type="number" id="exp-channel" value="0" min="0" max="15" step="1">
+        </label>
+        <label class="field">Program (0–127)
+          <input type="number" id="exp-program" value="0" min="0" max="127" step="1">
+        </label>
+        <label class="field">Velocity
+          <input type="number" id="exp-velocity" value="100" min="1" max="127" step="1">
+        </label>
+        <label class="field">Point note length (beats)
+          <input type="number" id="exp-pointlen" value="1" min="0.0625" max="16" step="0.0625">
+        </label>
+        <label class="field">Slide bends / beat
+          <input type="number" id="exp-slidres" value="16" min="1" max="96" step="1">
+        </label>
+      </div>
 
-            document.getElementById('sample1').innerHTML = syntaxHighlight(samples.sample1);
-            document.getElementById('sample2').innerHTML = syntaxHighlight(samples.sample2);
-            
-            // Event Listeners
-            document.querySelectorAll('.copy-btn').forEach(btn => btn.addEventListener('click', handleCopyClick));
-            document.getElementById('render-btn').addEventListener('click', renderScore);
-            document.getElementById('beautify-btn').addEventListener('click', beautifyJson);
-            document.getElementById('zoom-x-in').addEventListener('click', () => { zoom.x *= 1.25; renderScore(); });
-            document.getElementById('zoom-x-out').addEventListener('click', () => { zoom.x = Math.max(0.25, zoom.x / 1.25); renderScore(); });
-            document.getElementById('zoom-y-in').addEventListener('click', () => { zoom.y *= 1.25; renderScore(); });
-            document.getElementById('zoom-y-out').addEventListener('click', () => { zoom.y = Math.max(0.25, zoom.y / 1.25); renderScore(); });
+      <label class="field" id="custom-tuning-wrap" style="display:none;">Custom tuning map — JSON of note→Hz, or <code>{"notes":{...}}</code>
+        <textarea class="tn" id="exp-custommap" rows="4" placeholder='{ "C4": 261.0, "D4": 293.0, ... }'></textarea>
+      </label>
 
-            renderScore();
-            loadReferenceGuide(); // ADDED: Load the markdown file on page load
+      <div class="row-actions" style="margin-top:16px;">
+        <button class="primary" id="compile-btn">Compile to MIDI</button>
+        <a class="btn hidden" id="midi-download" download="voice.mid">↓ Download .mid</a>
+        <span class="note" id="compile-hint">Reads the score above. Frequency lanes use Hz directly; symbolic lanes use note names resolved through the chosen tuning.</span>
+      </div>
+
+      <div id="export-output"></div>
+    </div>
+
+    <!-- IMPORT ........................................................ -->
+    <div class="tabpane" id="pane-import">
+      <p class="note">Convert a <code>.mid</code> file into a Tabota v1.5 score. Tracks become symbolic lanes (12-TET note names). The result is loaded straight into the editor above.</p>
+      <div style="margin:16px 0;"><input type="file" id="midi-input" accept=".mid,.midi"></div>
+      <div class="controls-grid">
+        <label class="field" style="text-transform:none;letter-spacing:0;">
+          <span style="text-transform:uppercase;letter-spacing:.13em;">Positioning format</span>
+          <select id="import-format">
+            <option value="meter-duration">Meter + duration — readable</option>
+            <option value="meter-full">Full meter (start/end) — symmetric</option>
+            <option value="beats">Flat beats — raw grid</option>
+          </select>
+        </label>
+      </div>
+      <div class="row-actions">
+        <button class="primary" id="import-btn">Convert &amp; Load</button>
+        <a class="btn hidden" id="json-download" download="score.json">↓ Download .json</a>
+        <span class="note" id="import-hint"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- REFERENCE -------------------------------------------------------- -->
+  <div class="panel">
+    <div class="panel-head"><h2>Samples</h2><span class="idx">copy &amp; render</span></div>
+    <div class="panel-body">
+      <div class="sample"><div class="panel-head"><h4 style="margin:0;color:var(--tide);">Microtonal scale (frequency)</h4><button class="copy-btn" data-target="micro">Copy &amp; Render</button></div><pre><code id="s-micro"></code></pre></div>
+      <div class="sample" style="margin-top:14px;"><div class="panel-head"><h4 style="margin:0;color:var(--tide);">Symbolic melody + slide</h4><button class="copy-btn" data-target="symbolic">Copy &amp; Render</button></div><pre><code id="s-symbolic"></code></pre></div>
+    </div>
+  </div>
+
+  <div class="panel ref">
+    <div class="panel-head"><h2>Language Reference</h2><span class="idx">tabota_reference_guide.md</span></div>
+    <div class="panel-body">
+      <div id="markdown-content"><p class="note">Loading reference guide…</p></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ============================================================
+   TABOTA MICROTONAL ENGINE  (validated against @tonejs/midi)
+   pure functions — note/freq math, tuning, pitch bend, SMF writer
+   ============================================================ */
+const PITCH_CLASS={'C':0,'C#':1,'DB':1,'D':2,'D#':3,'EB':3,'E':4,'F':5,'F#':6,'GB':6,'G':7,'G#':8,'AB':8,'A':9,'A#':10,'BB':10,'B':11};
+const NOTE_NAMES=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+
+function noteNameToMidi(name){
+  const m=String(name).trim().match(/^([A-Ga-g])([#b]?)(-?\d+)$/);
+  if(!m) return null;
+  const pc=PITCH_CLASS[m[1].toUpperCase()+(m[2]==='b'?'B':m[2])];
+  if(pc===undefined) return null;
+  return (parseInt(m[3],10)+1)*12+pc;
+}
+function midiToName(midi){ return NOTE_NAMES[((midi%12)+12)%12]+(Math.floor(midi/12)-1); }
+function midiToFreq(midi,a4=440){ return a4*Math.pow(2,(midi-69)/12); }
+function freqToMidi(freq,a4=440){ return 69+12*Math.log2(freq/a4); }
+
+const PYTHAGOREAN_RATIOS=[1,256/243,9/8,32/27,81/64,4/3,729/512,3/2,128/81,27/16,16/9,243/128];
+const JUST_RATIOS=[1,16/15,9/8,6/5,5/4,4/3,45/32,3/2,8/5,5/3,9/5,15/8];
+function buildTemperament(ratios,tonicPc,a4){
+  const tonicFreq4=midiToFreq((4+1)*12+tonicPc,a4);
+  const map={};
+  for(let oct=0;oct<=9;oct++){ for(let pc=0;pc<12;pc++){
+    const steps=((pc-tonicPc)+12)%12;
+    map[NOTE_NAMES[pc]+oct]=tonicFreq4*ratios[steps]*Math.pow(2,oct-4);
+  }}
+  return map;
+}
+function resolveNoteFreq(name,tuning){
+  const a4=tuning.a4||440;
+  if(tuning.system==='custom'&&tuning.map&&tuning.map[name]!=null) return tuning.map[name];
+  if(tuning.system==='pythagorean'||tuning.system==='just'){
+    if(!tuning._map){
+      const tonicPc=PITCH_CLASS[(tuning.tonic||'C').toUpperCase()]||0;
+      tuning._map=buildTemperament(tuning.system==='pythagorean'?PYTHAGOREAN_RATIOS:JUST_RATIOS,tonicPc,a4);
+    }
+    if(tuning._map[name]!=null) return tuning._map[name];
+  }
+  const midi=noteNameToMidi(name);
+  return midi==null?null:midiToFreq(midi,a4);
+}
+function freqToBend(freq,range,a4=440){
+  const mFloat=freqToMidi(freq,a4);
+  const baseNote=Math.round(mFloat);
+  const deltaSemis=mFloat-baseNote;
+  let pb=Math.round(8192+(deltaSemis/range)*8192);
+  pb=Math.max(0,Math.min(16383,pb));
+  return {baseNote,deltaSemis,deltaCents:deltaSemis*100,pb14:pb};
+}
+function bendForTargetMidi(targetMidi,baseNote,range){
+  const deltaSemis=targetMidi-baseNote;
+  let pb=Math.round(8192+(deltaSemis/range)*8192);
+  const clamped=Math.max(0,Math.min(16383,pb));
+  return {pb14:clamped,deltaSemis,overflow:pb!==clamped};
+}
+
+class MidiWriter{
+  constructor(ppq=480){ this.ppq=ppq; this.events=[]; this._seq=0; }
+  _push(tick,bytes,order=0){ this.events.push({tick:Math.round(tick),order,seq:this._seq++,bytes}); }
+  tempo(tick,bpm){ const m=Math.round(60000000/bpm); this._push(tick,[0xFF,0x51,0x03,(m>>16)&255,(m>>8)&255,m&255],-100); }
+  timeSignature(tick,num,den){ this._push(tick,[0xFF,0x58,0x04,num,Math.round(Math.log2(den)),24,8],-99); }
+  trackName(tick,name){ const b=[].slice.call(new TextEncoder().encode(name)); this._push(tick,[0xFF,0x03,b.length,...b],-98); }
+  programChange(tick,ch,p){ this._push(tick,[0xC0|(ch&15),p&127],-50); }
+  cc(tick,ch,c,v,order=-40){ this._push(tick,[0xB0|(ch&15),c&127,v&127],order); }
+  setBendRange(tick,ch,semis,cents=0){
+    this.cc(tick,ch,101,0,-60); this.cc(tick,ch,100,0,-59);
+    this.cc(tick,ch,6,semis&127,-58); this.cc(tick,ch,38,cents&127,-57);
+    this.cc(tick,ch,101,127,-56); this.cc(tick,ch,100,127,-55);
+  }
+  pitchBend(tick,ch,v14){ const v=Math.max(0,Math.min(16383,Math.round(v14))); this._push(tick,[0xE0|(ch&15),v&127,(v>>7)&127],-10); }
+  noteOn(tick,ch,note,vel=100){ this._push(tick,[0x90|(ch&15),note&127,vel&127],0); }
+  noteOff(tick,ch,note){ this._push(tick,[0x80|(ch&15),note&127,0],-5); }
+  _vlq(value){ let buf=value&127; const out=[]; while(value>>=7){ buf<<=8; buf|=((value&127)|128); } while(true){ out.push(buf&255); if(buf&128) buf>>=8; else break; } return out; }
+  build(){
+    this.events.sort((a,b)=>a.tick-b.tick||a.order-b.order||a.seq-b.seq);
+    const trk=[]; let last=0;
+    for(const e of this.events){ trk.push(...this._vlq(e.tick-last),...e.bytes); last=e.tick; }
+    trk.push(0x00,0xFF,0x2F,0x00);
+    const ppq=this.ppq;
+    const head=[0x4D,0x54,0x68,0x64,0,0,0,6,0,0,0,1,(ppq>>8)&255,ppq&255];
+    const len=trk.length;
+    const th=[0x4D,0x54,0x72,0x6B,(len>>24)&255,(len>>16)&255,(len>>8)&255,len&255];
+    return new Uint8Array([...head,...th,...trk]);
+  }
+}
+
+/* ============================================================
+   APP STATE + SAMPLES
+   ============================================================ */
+let zoom={x:1,y:1};
+const BASE_TIMELINE_HEIGHT=300;
+let codeEditor;
+
+const samples={
+  main:`{ "projectName": "Tabota Language Showcase", "languageVersion": "1.5", "score": [ { "sectionId": "A1_Melody", "temporalRegime": "metered", "regimeSettings": { "beats": 4, "bpm": 120 }, "axisMode": "frequency", "modeSettings": { "minHz": 100, "maxHz": 2000 }, "events": [ { "type": "line", "startTime": 0, "endTime": 2, "startYValue": 440.0, "endYValue": 523.25, "payload": { "comment": "A4 to C5" } }, { "type": "point", "time": 2.5, "yValue": 587.33, "payload": { "comment": "D5" } }, { "type": "line", "startTime": 3, "endTime": 4, "startYValue": 659.25, "endYValue": 675.50, "payload": { "comment": "E5 bend" } } ] }, { "sectionId": "B1_Rhythm", "temporalRegime": "chronological", "regimeSettings": { "duration": 2 }, "axisMode": "categorical", "modeSettings": { "categories": ["Kick", "Snare", "Hi-Hat"] }, "events": [ { "type": "point", "time": 0.0, "yValue": "Kick" }, { "type": "point", "time": 0.5, "yValue": "Snare" }, { "type": "point", "time": 1.0, "yValue": "Kick" }, { "type": "point", "time": 1.5, "yValue": "Snare" } ] } ] }`,
+  micro:`{ "projectName": "Microtonal Scale", "languageVersion": "1.5", "score": [ { "sectionId": "Scale", "temporalRegime": "metered", "regimeSettings": { "beats": 8, "bpm": 90 }, "axisMode": "frequency", "modeSettings": { "minHz": 200, "maxHz": 600 }, "events": [ { "type": "point", "time": 0, "yValue": 261.63 }, { "type": "point", "time": 1, "yValue": 285.00 }, { "type": "point", "time": 2, "yValue": 311.13 }, { "type": "point", "time": 3, "yValue": 340.00 }, { "type": "point", "time": 4, "yValue": 369.99 }, { "type": "point", "time": 5, "yValue": 405.00 }, { "type": "point", "time": 6, "yValue": 440.00 }, { "type": "point", "time": 7, "yValue": 480.00 } ] } ] }`,
+  symbolic:`{ "projectName": "Symbolic Melody", "languageVersion": "1.5", "score": [ { "sectionId": "Theme", "temporalRegime": "metered", "regimeSettings": { "beats": 8, "bpm": 100 }, "axisMode": "symbolic", "modeSettings": { "tuning": "12-TET", "a4": 440 }, "defaultEventType": "line", "events": [ { "startTime": 0, "duration": 1, "note": "C4" }, { "startTime": 1, "duration": 1, "note": "E4" }, { "startTime": 2, "duration": 1, "note": "G4" }, { "startTime": 3, "duration": 2, "note": "A4" }, { "type": "line", "startTime": 5, "duration": 3, "startYValue": 440.0, "endYValue": 587.33, "payload": { "comment": "gliss A4 -> D5" } } ] } ] }`,
+  theatre:`{ "projectName": "Simple Stage Play", "languageVersion": "1.5", "score": [ { "sectionId": "Act 1, Scene 1", "temporalRegime": "achronous", "regimeSettings": { "indices": 4 }, "axisMode": "instructional", "events": [ { "type": "point", "index": 0, "yValue": 25, "payload": { "text": "House lights down." } }, { "type": "point", "index": 1, "yValue": 50, "payload": { "text": "Spotlight center." } }, { "type": "line", "startIndex": 2, "endIndex": 3, "startYValue": 75, "endYValue": 75, "payload": { "text": "Actor crosses." } }, { "type": "point", "index": 4, "yValue": 75, "payload": { "text": "'Am I late?'" } } ] } ] }`
+};
+
+/* ============================================================
+   INIT
+   ============================================================ */
+document.addEventListener('DOMContentLoaded',()=>{
+  codeEditor=CodeMirror.fromTextArea(document.getElementById('json-input'),{
+    mode:{name:"javascript",json:true}, lineNumbers:true, matchBrackets:true
+  });
+  codeEditor.setValue(JSON.stringify(JSON.parse(samples.main),null,2));
+
+  document.getElementById('s-micro').innerHTML=syntaxHighlight(samples.micro);
+  document.getElementById('s-symbolic').innerHTML=syntaxHighlight(samples.symbolic);
+
+  document.querySelectorAll('.copy-btn').forEach(b=>b.addEventListener('click',handleCopyClick));
+  document.getElementById('render-btn').addEventListener('click',renderScore);
+  document.getElementById('beautify-btn').addEventListener('click',beautifyJson);
+  document.getElementById('sample-select').addEventListener('change',e=>{
+    if(e.target.value){ codeEditor.setValue(JSON.stringify(JSON.parse(samples[e.target.value]),null,2)); renderScore(); refreshVoices(); e.target.value=''; }
+  });
+  document.getElementById('zoom-x-in').addEventListener('click',()=>{zoom.x*=1.25;renderScore();});
+  document.getElementById('zoom-x-out').addEventListener('click',()=>{zoom.x=Math.max(0.25,zoom.x/1.25);renderScore();});
+  document.getElementById('zoom-y-in').addEventListener('click',()=>{zoom.y*=1.25;renderScore();});
+  document.getElementById('zoom-y-out').addEventListener('click',()=>{zoom.y=Math.max(0.25,zoom.y/1.25);renderScore();});
+
+  // tabs
+  document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.tabpane').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('pane-'+t.dataset.tab).classList.add('active');
+    if(t.dataset.tab==='export') refreshVoices();
+  }));
+
+  // export controls
+  document.getElementById('exp-tuning').addEventListener('change',e=>{
+    document.getElementById('custom-tuning-wrap').style.display = e.target.value==='custom'?'flex':'none';
+  });
+  document.getElementById('exp-range').addEventListener('input',e=>{
+    document.querySelector('#chip-bend b').textContent='±'+(e.target.value||'?')+' st';
+  });
+  document.getElementById('compile-btn').addEventListener('click',compileToMidi);
+
+  // import controls
+  document.getElementById('import-btn').addEventListener('click',convertMidiToTabota);
+
+  refreshVoices();
+  renderScore();
+  loadReferenceGuide();
+});
+
+/* ============================================================
+   VISUALIZER  (extended to render symbolic lanes)
+   ============================================================ */
+function meterToBeats(m,bpmsr){ return ((m.measure-1)*bpmsr)+m.beat; }
+
+function processScore(scoreData){
+  let globalTime=0; const processedSections=[]; const processedEvents=[]; let totalDuration=0;
+  (scoreData.score||[]).forEach(section=>{
+    const rs=section.regimeSettings||{};
+    const duration=rs.beats||rs.duration||rs.indices||1;
+    const sectionStartTime=globalTime;
+    const bpmsr=rs.timeSignature?parseInt(rs.timeSignature.split('/')[0]):4;
+    // symbolic vertical range
+    let midiMin=Infinity, midiMax=-Infinity;
+    const scan=ev=>{ const n=ev.note?noteNameToMidi(ev.note):null; if(n!=null){ midiMin=Math.min(midiMin,n); midiMax=Math.max(midiMax,n);} };
+    (section.events||[]).forEach(scan);
+    (section.tracks||[]).forEach(t=>(t.events||[]).forEach(scan));
+    if(midiMin===Infinity){ midiMin=48; midiMax=84; } else { midiMin-=3; midiMax+=3; }
+
+    processedSections.push({...section,startTime:sectionStartTime,duration,_midiMin:midiMin,_midiMax:midiMax});
+
+    const ctx=[];
+    (section.events||[]).forEach(e=>ctx.push({event:e,track:null}));
+    (section.tracks||[]).forEach(t=>(t.events||[]).forEach(e=>ctx.push({event:e,track:t})));
+
+    ctx.forEach(({event,track})=>{
+      const inherited=track?.defaultEventType||section.defaultEventType||"point";
+      const type=event.type||inherited;
+      let ls=event.time??event.startTime??event.startIndex;
+      let le=event.endTime??event.endIndex;
+      if(event.startMeter!==undefined&&ls===undefined) ls=meterToBeats(event.startMeter,bpmsr);
+      if(ls===undefined) ls=0;
+      if(event.endMeter!==undefined&&le===undefined) le=meterToBeats(event.endMeter,bpmsr);
+      else if(event.duration!==undefined&&le===undefined) le=ls+event.duration;
+      else if(le===undefined) le=ls;
+
+      const drawSection={...(track||section),_midiMin:midiMin,_midiMax:midiMax,axisMode:(track||section).axisMode||section.axisMode};
+      const ev={...event,type,section:drawSection,globalStartTime:sectionStartTime+ls,globalEndTime:sectionStartTime+le};
+      // symbolic: derive numeric y from note
+      if(drawSection.axisMode==='symbolic'&&event.note){ const n=noteNameToMidi(event.note); ev.yValue=n; ev.startYValue=n; ev.endYValue=n; }
+      processedEvents.push(ev);
+    });
+    globalTime+=duration;
+  });
+  totalDuration=globalTime;
+  return {processedSections,processedEvents,totalDuration};
+}
+
+function renderScore(){
+  const c=document.getElementById('score-container'); c.innerHTML='';
+  let data;
+  try{ data=JSON.parse(codeEditor.getValue()); }
+  catch(e){ c.innerHTML=`<p style="color:var(--membrane-pink);">JSON parse error: ${e.message}</p>`; return; }
+  const {processedSections,processedEvents,totalDuration}=processScore(data);
+  if(totalDuration===0) return;
+  const wrap=document.createElement('div'); wrap.className='timeline-wrapper';
+  const h=BASE_TIMELINE_HEIGHT*zoom.y; wrap.style.height=`${h}px`;
+  const view=document.createElement('div'); view.className='timeline-view'; view.style.width=`${100*zoom.x}%`;
+  const yAxis=document.createElement('div'); yAxis.className='y-axis';
+  const xAxis=document.createElement('div'); xAxis.className='x-axis'; xAxis.style.width=`${100*zoom.x}%`;
+  wrap.append(yAxis,view,xAxis);
+  drawBackground(processedSections,view,xAxis,yAxis,totalDuration);
+  drawEvents(processedEvents,view,totalDuration,h);
+  c.appendChild(wrap);
+}
+
+function drawBackground(sections,view,xAxis,yAxis,total){
+  const colors=['#11897e1c','#d1336b18','#5d8c0018','#6a47d818'];
+  sections.forEach((s,i)=>{
+    const x=(s.startTime/total)*100, w=(s.duration/total)*100;
+    const bg=document.createElement('div'); bg.className='section-background'; bg.style.left=`${x}%`; bg.style.width=`${w}%`; bg.style.background=colors[i%colors.length]; view.appendChild(bg);
+    const d=document.createElement('div'); d.className='section-divider'; d.style.left=`${x}%`;
+    const l=document.createElement('div'); l.className='section-divider-label'; l.textContent=s.sectionId||('section '+(i+1)); d.appendChild(l); view.appendChild(d);
+  });
+  for(let i=0;i<=total*zoom.x;i++){ const x=(i/total)*100; if(x>100) break;
+    const ln=document.createElement('div'); ln.className='grid-line-vertical'; ln.style.left=`${x}%`; view.appendChild(ln);
+    const lb=document.createElement('div'); lb.className='axis-label'; lb.textContent=i; lb.style.left=`${x}%`; lb.style.transform='translateX(-50%)'; xAxis.appendChild(lb);
+  }
+  if(sections.length){
+    const s=sections[0]; const mode=s.axisMode;
+    if(mode==='frequency'){ const{minHz=20,maxHz=20000}=s.modeSettings||{}; for(let i=0;i<10;i++){ const p=i/9; const hz=Math.exp(Math.log(minHz)+p*(Math.log(maxHz)-Math.log(minHz))); const y=(1-p)*100; const lb=document.createElement('div'); lb.className='axis-label'; lb.textContent=`${hz<1000?Math.round(hz):(hz/1000).toFixed(1)+'k'} Hz`; lb.style.top=`${y}%`; lb.style.right='6px'; lb.style.transform='translateY(-50%)'; yAxis.appendChild(lb);} }
+    else if(mode==='symbolic'){ const span=s._midiMax-s._midiMin; const step=Math.max(1,Math.round(span/8)); for(let m=Math.ceil(s._midiMin/step)*step;m<=s._midiMax;m+=step){ const y=(1-(m-s._midiMin)/span)*100; const lb=document.createElement('div'); lb.className='axis-label'; lb.textContent=midiToName(m); lb.style.top=`${y}%`; lb.style.right='6px'; lb.style.transform='translateY(-50%)'; yAxis.appendChild(lb);} }
+    else if(mode==='categorical'){ (s.modeSettings.categories||[]).forEach((cat,i)=>{ const y=(i+0.5)/s.modeSettings.categories.length*100; const lb=document.createElement('div'); lb.className='axis-label'; lb.textContent=cat; lb.style.top=`${y}%`; lb.style.right='6px'; lb.style.transform='translateY(-50%)'; yAxis.appendChild(lb);}); }
+  }
+}
+
+function getYPos(v,section){
+  if(section.axisMode==='frequency'){ const{minHz=20,maxHz=20000}=section.modeSettings||{}; if(v<=0) return 100; return (1-(Math.log(v)-Math.log(minHz))/(Math.log(maxHz)-Math.log(minHz)))*100; }
+  if(section.axisMode==='symbolic'){ const span=(section._midiMax-section._midiMin)||1; return (1-(v-section._midiMin)/span)*100; }
+  if(section.axisMode==='categorical'){ const idx=(section.modeSettings.categories||[]).indexOf(v); return (idx+0.5)/(section.modeSettings.categories||[v]).length*100; }
+  return v||50;
+}
+
+function drawEvents(events,container,total,h){
+  const vw=document.getElementById('score-container').clientWidth, fw=vw*zoom.x;
+  const xp=t=>(t/total)*100;
+  events.forEach(ev=>{
+    if(ev.type==='point'){ const el=document.createElement('div'); el.className='event-point'; el.style.left=`${xp(ev.globalStartTime)}%`; el.style.top=`${getYPos(ev.yValue,ev.section)}%`; container.appendChild(el); if(ev.payload?.text) addPayload(el,ev.payload.text); if(ev.payload?.comment) el.title=ev.payload.comment; }
+    else if(ev.type==='line'){
+      const sx=xp(ev.globalStartTime), sy=getYPos(ev.startYValue,ev.section), ex=xp(ev.globalEndTime), ey=getYPos(ev.endYValue,ev.section);
+      const el=document.createElement('div'); el.className='event-line';
+      const dx=(ex-sx)/100*fw, dy=(ey-sy)/100*h;
+      el.style.left=`${sx}%`; el.style.top=`${sy}%`; el.style.width=`${Math.sqrt(dx*dx+dy*dy)}px`; el.style.transform=`rotate(${Math.atan2(dy,dx)*180/Math.PI}deg)`;
+      container.appendChild(el); if(ev.payload?.text) addPayload(el,ev.payload.text); if(ev.payload?.comment) el.title=ev.payload.comment;
+    }
+    else if(ev.type==='group'){ const el=document.createElement('div'); el.className='event-group'; el.style.left=`${xp(ev.globalStartTime)}%`; el.style.top=`${getYPos(ev.yValue,ev.section)}%`; container.appendChild(el); if(ev.payload?.comment) el.title=ev.payload.comment; }
+  });
+}
+function addPayload(el,text){ const p=document.createElement('div'); p.className='event-payload'; p.textContent=text; el.appendChild(p); }
+
+/* ============================================================
+   VOICE ENUMERATION  (for single-voice export)
+   ============================================================ */
+function enumerateVoices(data){
+  const voices=[];
+  (data.score||[]).forEach((section,si)=>{
+    const rs=section.regimeSettings||{};
+    const bpmsr=rs.timeSignature?parseInt(rs.timeSignature.split('/')[0]):4;
+    const base={section,si,regime:section.temporalRegime,bpm:rs.bpm||null,beatsPerMeasure:bpmsr};
+    if(section.events&&section.events.length){
+      voices.push({...base,key:`s${si}`,label:`${section.sectionId||'section '+(si+1)} · ${section.axisMode||'—'}`,axisMode:section.axisMode,modeSettings:section.modeSettings,events:section.events,defaultEventType:section.defaultEventType});
+    }
+    (section.tracks||[]).forEach((track,ti)=>{
+      if(track.events&&track.events.length){
+        voices.push({...base,key:`s${si}t${ti}`,label:`${section.sectionId||'section '+(si+1)} ▸ ${track.trackId||'track '+(ti+1)} · ${track.axisMode||section.axisMode||'—'}`,axisMode:track.axisMode||section.axisMode,modeSettings:track.modeSettings||section.modeSettings,events:track.events,defaultEventType:track.defaultEventType||section.defaultEventType});
+      }
+    });
+  });
+  return voices;
+}
+
+function refreshVoices(){
+  const sel=document.getElementById('exp-voice'); if(!sel) return;
+  let data; try{ data=JSON.parse(codeEditor.getValue()); }catch(e){ sel.innerHTML='<option>— invalid JSON —</option>'; return; }
+  const voices=enumerateVoices(data);
+  const prev=sel.value;
+  sel.innerHTML='';
+  if(!voices.length){ sel.innerHTML='<option>— no voices —</option>'; return; }
+  voices.forEach(v=>{ const o=document.createElement('option'); o.value=v.key; o.textContent=v.label; sel.appendChild(o); });
+  // prefer first pitched voice
+  const pitched=voices.find(v=>v.axisMode==='frequency'||v.axisMode==='symbolic');
+  sel.value=voices.some(v=>v.key===prev)?prev:(pitched?pitched.key:voices[0].key);
+}
+
+/* ============================================================
+   TABOTA -> MIDI  (single voice, microtonal pitch bend)
+   ============================================================ */
+function getTuningSpec(){
+  const sys=document.getElementById('exp-tuning').value;
+  const a4=parseFloat(document.getElementById('exp-a4').value)||440;
+  const tonic=document.getElementById('exp-tonic').value;
+  if(sys==='custom'){
+    let map={};
+    try{ const raw=JSON.parse(document.getElementById('exp-custommap').value||'{}'); map=raw.notes?raw.notes:raw; }catch(e){}
+    return {system:'custom',a4,map};
+  }
+  if(sys==='score'){
+    // resolved later from the voice's modeSettings; placeholder
+    return {system:'score',a4,tonic};
+  }
+  return {system:sys,a4,tonic};
+}
+
+function resolveScoreTuning(voice,a4){
+  const ms=voice.modeSettings||{};
+  if(ms.tuning&&typeof ms.tuning==='object'&&ms.tuning.system==='custom'){
+    // inline map not available without file fetch — fall back, note in warnings
+    return {system:'12-TET',a4:ms.a4||a4,_fallback:'custom tuning file not embedded; using 12-TET'};
+  }
+  return {system:'12-TET',a4:ms.a4||a4};
+}
+
+// pull a frequency for an event endpoint
+function eventFreq(value,axisMode,tuning){
+  if(typeof value==='number') return value;            // Hz (frequency mode or numeric)
+  if(typeof value==='string'){ const f=resolveNoteFreq(value,tuning); if(f) return f; const n=noteNameToMidi(value); return n!=null?midiToFreq(n,tuning.a4):null; }
+  return null;
+}
+
+function compileToMidi(){
+  const out=document.getElementById('export-output'); out.innerHTML='';
+  let data; try{ data=JSON.parse(codeEditor.getValue()); }catch(e){ out.innerHTML=`<div class="warn">JSON parse error: ${e.message}</div>`; return; }
+  const voices=enumerateVoices(data);
+  const key=document.getElementById('exp-voice').value;
+  const voice=voices.find(v=>v.key===key)||voices[0];
+  if(!voice){ out.innerHTML='<div class="warn">No voice with events found.</div>'; return; }
+
+  const range=Math.max(1,parseInt(document.getElementById('exp-range').value)||24);
+  const ppq=parseInt(document.getElementById('exp-ppq').value)||480;
+  const ch=Math.min(15,Math.max(0,parseInt(document.getElementById('exp-channel').value)||0));
+  const program=Math.min(127,Math.max(0,parseInt(document.getElementById('exp-program').value)||0));
+  const vel=Math.min(127,Math.max(1,parseInt(document.getElementById('exp-velocity').value)||100));
+  const pointLen=parseFloat(document.getElementById('exp-pointlen').value)||1;
+  const slideRes=Math.max(1,parseInt(document.getElementById('exp-slidres').value)||16);
+  const bpm=parseFloat(document.getElementById('exp-bpm').value)||voice.bpm||120;
+  const a4=parseFloat(document.getElementById('exp-a4').value)||440;
+
+  let tuning=getTuningSpec();
+  const warnings=[];
+  if(tuning.system==='score'){ tuning=resolveScoreTuning(voice,a4); if(tuning._fallback) warnings.push(tuning._fallback); }
+
+  const axisMode=voice.axisMode||'frequency';
+  if(axisMode==='categorical'||axisMode==='instructional'){ out.innerHTML=`<div class="warn">Voice "${voice.label}" is <b>${axisMode}</b> — no pitch data to export. Choose a frequency or symbolic voice.</div>`; return; }
+
+  // time conversion: local field -> beats
+  const regime=voice.regime;
+  const toBeats = (v)=> regime==='chronological' ? v*bpm/60 : v; // achronous index ~ 1 beat; metered already beats
+  const bpmsr=voice.beatsPerMeasure;
+
+  // 1) build raw note list (sorted by start beat)
+  const defType=voice.defaultEventType||'point';
+  const raw=[];
+  voice.events.forEach((e,i)=>{
+    const type=e.type||defType;
+    // start beat
+    let sb=e.time??e.startTime??e.startIndex;
+    if(e.startMeter!==undefined&&sb===undefined) sb=meterToBeats(e.startMeter,bpmsr);
+    if(sb===undefined) sb=0;
+    sb=toBeats(sb);
+    // end beat
+    let eb=e.endTime??e.endIndex;
+    if(e.endMeter!==undefined&&eb===undefined) eb=meterToBeats(e.endMeter,bpmsr);
+    else if(e.duration!==undefined&&eb===undefined) eb=(e.time??e.startTime??e.startIndex??0)+e.duration, eb=toBeats(eb);
+    if(eb!==undefined&&e.endMeter!==undefined) eb=toBeats(eb);
+    if(eb===undefined) eb=null; // resolve later (point)
+
+    // pitch endpoints
+    let startVal,endVal,isSlide=false;
+    if(e.note!==undefined){ startVal=endVal=e.note; }
+    else if(e.startYValue!==undefined||e.endYValue!==undefined){ startVal=e.startYValue??e.endYValue; endVal=e.endYValue??e.startYValue; isSlide=(startVal!==endVal); }
+    else if(e.yValue!==undefined){ startVal=endVal=e.yValue; }
+    else { return; } // nothing pitched
+
+    const fStart=eventFreq(startVal,axisMode,tuning), fEnd=eventFreq(endVal,axisMode,tuning);
+    if(fStart==null){ warnings.push(`Event #${i} skipped — could not resolve pitch "${startVal}".`); return; }
+    raw.push({i,type,sb,eb,fStart,fEnd:fEnd??fStart,isSlide,label:(e.note!==undefined?e.note:(typeof startVal==='number'?startVal.toFixed(2)+' Hz':String(startVal)))});
+  });
+  raw.sort((a,b)=>a.sb-b.sb);
+
+  if(!raw.length){ out.innerHTML='<div class="warn">No pitched events to export in this voice.</div>'; return; }
+
+  // 2) resolve durations + enforce monophony (clip to next start)
+  for(let k=0;k<raw.length;k++){
+    const nextStart = k+1<raw.length ? raw[k+1].sb : null;
+    if(raw[k].eb==null) raw[k].eb = raw[k].sb + (nextStart!=null?Math.min(pointLen,nextStart-raw[k].sb):pointLen);
+    if(nextStart!=null && raw[k].eb>nextStart){ raw[k].clipped=true; raw[k].eb=nextStart; }
+    if(raw[k].eb<=raw[k].sb) raw[k].eb=raw[k].sb+Math.max(0.0625,pointLen*0.25);
+  }
+
+  // 3) write MIDI
+  const w=new MidiWriter(ppq);
+  w.tempo(0,bpm); w.timeSignature(0,bpmsr,4); w.trackName(0,(data.projectName||'voice')+' / '+(voice.section.sectionId||''));
+  w.programChange(0,ch,program);
+  w.setBendRange(0,ch,range);
+
+  const report=[]; let maxDevCents=0; let overflowCount=0;
+  raw.forEach(n=>{
+    const startTick=n.sb*ppq, endTick=n.eb*ppq;
+    if(!n.isSlide){
+      const b=freqToBend(n.fStart,range,a4);
+      w.pitchBend(startTick,ch,b.pb14);
+      w.noteOn(startTick,ch,b.baseNote,vel);
+      w.noteOff(endTick,ch,b.baseNote);
+      maxDevCents=Math.max(maxDevCents,Math.abs(b.deltaCents));
+      report.push({i:n.i,beat:n.sb,dur:n.eb-n.sb,label:n.label,hz:n.fStart,base:b.baseNote,cents:b.deltaCents,pb:b.pb14,slide:false,clip:n.clipped,overflow:false});
+    } else {
+      const mStart=freqToMidi(n.fStart,a4), mEnd=freqToMidi(n.fEnd,a4);
+      const base=Math.round(mStart);
+      const steps=Math.max(2,Math.ceil((n.eb-n.sb)*slideRes));
+      let ovf=false, maxc=0;
+      for(let s=0;s<=steps;s++){ const t=s/steps; const tm=mStart+(mEnd-mStart)*t; const bb=bendForTargetMidi(tm,base,range); if(bb.overflow) ovf=true; const tick=startTick+(endTick-startTick)*t; w.pitchBend(tick,ch,bb.pb14); maxc=Math.max(maxc,Math.abs(bb.deltaSemis*100)); }
+      w.noteOn(startTick,ch,base,vel);
+      w.noteOff(endTick,ch,base);
+      if(ovf){ overflowCount++; warnings.push(`Slide #${n.i} (${n.label}) spans more than ±${range} st from base ${midiToName(base)} — bend clamped. Increase bend range or split the slide.`); }
+      maxDevCents=Math.max(maxDevCents,maxc);
+      report.push({i:n.i,beat:n.sb,dur:n.eb-n.sb,label:n.label+' → '+n.fEnd.toFixed(2)+'Hz',hz:n.fStart,base,cents:(mStart-base)*100,pb:freqToBend(n.fStart,range,a4).pb14,slide:true,clip:n.clipped,overflow:ovf});
+    }
+  });
+
+  const bytes=w.build();
+  const blob=new Blob([bytes],{type:'audio/midi'});
+  const url=URL.createObjectURL(blob);
+  const dl=document.getElementById('midi-download');
+  dl.href=url; dl.download=((data.projectName||'voice').replace(/\s+/g,'_'))+'_voice.mid'; dl.classList.remove('hidden');
+
+  renderReport(out,report,{range,bpm,ppq,a4,tuning,voice,notes:raw.length,maxDevCents,overflowCount,warnings,bytes:bytes.length});
+}
+
+function centsClass(c){ const r=Math.round(c); return r>0?'cents-pos':(r<0?'cents-neg':'cents-zero'); }
+function bendBar(pb){ const center=8192; const frac=(pb-center)/8192; const half=27; const w=Math.abs(frac)*half; const left=frac>=0?50:(50-(w/54*100)); return `<span class="bend-bar"><i></i><u style="left:${frac>=0?50:(50-w/54*100)}%;width:${w/54*100}%"></u></span>`; }
+
+function renderReport(out,report,info){
+  let h=`<div class="summary">
+    <span class="stat">notes <b>${info.notes}</b></span>
+    <span class="stat">bend range <b>±${info.range} st</b></span>
+    <span class="stat">tuning <b>${info.tuning.system}</b></span>
+    <span class="stat">A4 <b>${info.a4} Hz</b></span>
+    <span class="stat">max deviation <b>${info.maxDevCents.toFixed(1)}¢</b></span>
+    <span class="stat">file <b>${info.bytes} bytes</b></span>
+  </div>`;
+  h+=`<div class="report-wrap"><table class="report"><thead><tr>
+    <th>#</th><th>beat</th><th>len</th><th class="note-cell" style="text-align:left">input</th><th>resolved Hz</th><th>12-TET key</th><th>cents</th><th>pitch&nbsp;bend (14-bit)</th><th>bend</th><th>flags</th>
+  </tr></thead><tbody>`;
+  report.forEach(r=>{
+    const flags=[]; if(r.slide) flags.push('<span class="flag-slide">slide</span>'); if(r.overflow) flags.push('<span class="flag-clip">clamp</span>'); if(r.clip) flags.push('<span class="flag-clip">clip</span>');
+    h+=`<tr>
+      <td>${r.i}</td>
+      <td>${r.beat.toFixed(3)}</td>
+      <td>${r.dur.toFixed(3)}</td>
+      <td class="note-cell">${r.label}</td>
+      <td>${r.hz.toFixed(3)}</td>
+      <td class="note-cell">${midiToName(r.base)} <span style="color:var(--bone-faint)">(${r.base})</span></td>
+      <td class="${centsClass(r.cents)}">${r.cents>0?'+':''}${r.cents.toFixed(1)}</td>
+      <td class="pb-val">${r.pb}${r.pb===8192?' <span style="color:var(--bone-faint)">·ctr</span>':''}</td>
+      <td>${bendBar(r.pb)}</td>
+      <td>${flags.join(' ')||'<span style="color:var(--bone-faint)">—</span>'}</td>
+    </tr>`;
+  });
+  h+='</tbody></table></div>';
+  if(info.warnings.length){ h+='<div class="warnings">'+info.warnings.map(w=>`<div class="warn">${w}</div>`).join('')+'</div>'; }
+  h+=`<p class="note" style="margin-top:12px;">Center value <code>8192</code> = no bend (note sits exactly on its 12-TET key). The receiving synth must be set to a ±${info.range}-semitone bend range — the file requests this automatically via RPN&nbsp;0,0, but not every device honors it.</p>`;
+  out.innerHTML=h;
+}
+
+/* ============================================================
+   MIDI -> TABOTA  (integrated importer)
+   ============================================================ */
+function ticksToMeter(ticks,ppq,bpmsr){ const tb=ticks/ppq; return {measure:Math.floor(tb/bpmsr)+1,beat:parseFloat((tb%bpmsr).toFixed(3))}; }
+
+function convertMidiToTabota(){
+  const input=document.getElementById('midi-input'); const hint=document.getElementById('import-hint');
+  const file=input.files[0];
+  if(!file){ hint.textContent='Select a .mid file first.'; hint.style.color='var(--ember)'; return; }
+  const fmt=document.getElementById('import-format').value;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const midi=new Midi(ev.target.result);
+      const ppq=midi.header.ppq;
+      const bpm=midi.header.tempos.length?Math.round(midi.header.tempos[0].bpm):120;
+      let num=4,den=4;
+      if(midi.header.timeSignatures.length){ num=midi.header.timeSignatures[0].timeSignature[0]; den=midi.header.timeSignatures[0].timeSignature[1]; }
+      let maxTicks=0; const tracks=[];
+      midi.tracks.forEach((tr,idx)=>{
+        if(!tr.notes.length) return;
+        const events=[];
+        tr.notes.forEach(note=>{
+          const endT=note.ticks+note.durationTicks; if(endT>maxTicks) maxTicks=endT;
+          const o={note:note.name};
+          const durBeats=parseFloat((note.durationTicks/ppq).toFixed(3));
+          if(fmt==='meter-duration'){ o.startMeter=ticksToMeter(note.ticks,ppq,num); o.duration=durBeats; }
+          else if(fmt==='meter-full'){ o.startMeter=ticksToMeter(note.ticks,ppq,num); o.endMeter=ticksToMeter(endT,ppq,num); }
+          else { o.startTime=parseFloat((note.ticks/ppq).toFixed(3)); o.duration=durBeats; }
+          events.push(o);
         });
+        tracks.push({trackId:tr.name?tr.name.replace(/\s+/g,'_'):`Track_${idx+1}`,axisMode:"symbolic",modeSettings:{tuning:"12-TET"},defaultEventType:"line",events});
+      });
+      const score={projectName:file.name.split('.')[0]||"Converted",languageVersion:"1.5",score:[{sectionId:"Main_Import",temporalRegime:"metered",regimeSettings:{bpm,beats:Math.ceil(maxTicks/ppq),timeSignature:`${num}/${den}`},tracks}]};
+      const json=JSON.stringify(score,null,2);
+      codeEditor.setValue(json); renderScore(); refreshVoices();
+      const blob=new Blob([json],{type:'application/json'}); const url=URL.createObjectURL(blob);
+      const dl=document.getElementById('json-download'); dl.href=url; dl.download=`${score.projectName}_tabota.json`; dl.classList.remove('hidden');
+      hint.textContent=`Imported ${tracks.length} track(s), ${bpm} BPM, ${num}/${den}. Loaded into editor.`; hint.style.color='var(--algae)';
+    }catch(err){ console.error(err); hint.textContent='Could not parse MIDI: '+err.message; hint.style.color='var(--ember)'; }
+  };
+  reader.readAsArrayBuffer(file);
+}
 
-        // --- DATA PROCESSING ---
-// --- DATA PROCESSING ---
-        function processScore(scoreData) {
-            let globalTime = 0;
-            const processedSections = [];
-            const processedEvents = [];
-            let totalDuration = 0;
-
-            // Helper for meter math
-            function meterToBeats(meterObj, beatsPerMeasure) {
-                return ((meterObj.measure - 1) * beatsPerMeasure) + meterObj.beat;
-            }
-
-            (scoreData.score || []).forEach(section => {
-                const duration = section.regimeSettings.beats || section.regimeSettings.duration || section.regimeSettings.indices || 1;
-                const sectionStartTime = globalTime;
-                
-                // Default to 4 beats per measure if no time signature is provided
-                const beatsPerMeasure = section.regimeSettings?.timeSignature ? 
-                    parseInt(section.regimeSettings.timeSignature.split('/')[0]) : 4;
-                
-                processedSections.push({ ...section, startTime: sectionStartTime, duration });
-
-                // Gather events from both Section and Track levels
-                const allEventsWithContext = [];
-                if (section.events) {
-                    section.events.forEach(e => allEventsWithContext.push({ event: e, trackContext: null }));
-                }
-                if (section.tracks) {
-                    section.tracks.forEach(track => {
-                        if (track.events) {
-                            track.events.forEach(e => allEventsWithContext.push({ event: e, trackContext: track }));
-                        }
-                    });
-                }
-
-                allEventsWithContext.forEach(({ event, trackContext }) => {
-                    // 1. Apply defaultEventType Inheritance
-                    const inheritedType = trackContext?.defaultEventType || section.defaultEventType || "point";
-                    const eventType = event.type || inheritedType;
-
-                    // 2. Handle startMeter / endMeter Math
-                    let localStartTime = event.time ?? event.startTime ?? event.startIndex;
-                    let localEndTime = event.endTime ?? event.endIndex;
-
-                    if (event.startMeter !== undefined && localStartTime === undefined) {
-                        localStartTime = meterToBeats(event.startMeter, beatsPerMeasure);
-                    }
-                    if (localStartTime === undefined) localStartTime = 0; // Safety fallback
-
-                    // Calculate End Time
-                    if (event.endMeter !== undefined && localEndTime === undefined) {
-                        localEndTime = meterToBeats(event.endMeter, beatsPerMeasure);
-                    } else if (event.duration !== undefined && localEndTime === undefined) {
-                        localEndTime = localStartTime + event.duration;
-                    } else if (localEndTime === undefined) {
-                        localEndTime = localStartTime; // Default to a point
-                    }
-
-                    // 3. Push to renderer
-                    processedEvents.push({
-                        ...event,
-                        type: eventType, // Ensure the visualizer sees the inherited type!
-                        section: trackContext || section, // Draw using track's axisMode if it exists
-                        globalStartTime: sectionStartTime + localStartTime,
-                        globalEndTime: sectionStartTime + localEndTime
-                    });
-                });
-                globalTime += duration;
-            });
-            totalDuration = globalTime;
-            return { processedSections, processedEvents, totalDuration };
-        }
-        // --- RENDER LOGIC ---
-        function renderScore() {
-            const scoreContainer = document.getElementById('score-container');
-            scoreContainer.innerHTML = '';
-            let scoreData;
-            try {
-                scoreData = JSON.parse(codeEditor.getValue());
-            } catch (e) {
-                scoreContainer.innerHTML = `<p style="color: #ff8888;">Error parsing JSON: ${e.message}</p>`;
-                return;
-            }
-
-            const { processedSections, processedEvents, totalDuration } = processScore(scoreData);
-            if (totalDuration === 0) return;
-
-            const wrapper = document.createElement('div');
-            wrapper.className = 'timeline-wrapper';
-            const timelineHeight = BASE_TIMELINE_HEIGHT * zoom.y;
-            wrapper.style.height = `${timelineHeight}px`;
-            
-            const timelineView = document.createElement('div');
-            timelineView.className = 'timeline-view';
-            timelineView.style.width = `${100 * zoom.x}%`;
-
-            const yAxis = document.createElement('div'); yAxis.className = 'y-axis';
-            const xAxis = document.createElement('div'); xAxis.className = 'x-axis';
-            xAxis.style.width = `${100 * zoom.x}%`;
-            
-            wrapper.append(yAxis, timelineView, xAxis);
-            
-            drawBackground(processedSections, timelineView, xAxis, yAxis, totalDuration);
-            drawEvents(processedEvents, timelineView, totalDuration, timelineHeight); 
-            scoreContainer.appendChild(wrapper);
-        }
-
-        function drawBackground(sections, view, xAxis, yAxis, totalDuration) {
-            const colors = ['#007acc30', '#4ec9b030', '#dcdcaa30'];
-            sections.forEach((section, i) => {
-                const xStart = (section.startTime / totalDuration) * 100;
-                const width = (section.duration / totalDuration) * 100;
-                const bg = document.createElement('div'); bg.className = 'section-background'; bg.style.left = `${xStart}%`; bg.style.width = `${width}%`; bg.style.backgroundColor = colors[i % colors.length]; view.appendChild(bg);
-                const divider = document.createElement('div'); divider.className = 'section-divider'; divider.style.left = `${xStart}%`; const label = document.createElement('div'); label.className = 'section-divider-label'; label.textContent = section.sectionId; divider.appendChild(label); view.appendChild(divider);
-            });
-
-            for (let i = 0; i <= totalDuration * zoom.x; i++) {
-                const xPos = (i / totalDuration) * 100;
-                if (xPos > 100) break;
-                const line = document.createElement('div'); line.className = 'grid-line-vertical'; line.style.left = `${xPos}%`; view.appendChild(line);
-                const label = document.createElement('div'); label.className = 'axis-label'; label.textContent = i; label.style.left = `${xPos}%`; label.style.transform = 'translateX(-50%)'; xAxis.appendChild(label);
-            }
-
-            if (sections.length > 0) {
-                 const firstSection = sections[0];
-                 if (firstSection.axisMode === 'frequency') { const {minHz = 20, maxHz = 20000} = firstSection.modeSettings; for (let i = 0; i < 10; i++) { const p = i / 9; const hz = Math.exp(Math.log(minHz) + p * (Math.log(maxHz) - Math.log(minHz))); const yPos = (1 - p) * 100; const label = document.createElement('div'); label.className = 'axis-label'; label.textContent = `${hz < 1000 ? Math.round(hz) : (hz/1000).toFixed(1)+'k'} Hz`; label.style.top = `${yPos}%`; label.style.right = '5px'; label.style.transform = 'translateY(-50%)'; yAxis.appendChild(label); } }
-                 else if (firstSection.axisMode === 'categorical') { firstSection.modeSettings.categories.forEach((cat, i) => { const yPos = (i + 0.5) / firstSection.modeSettings.categories.length * 100; const label = document.createElement('div'); label.className = 'axis-label'; label.textContent = cat; label.style.top = `${yPos}%`; label.style.right = '5px'; label.style.transform = 'translateY(-50%)'; yAxis.appendChild(label); }); }
-            }
-        }
-        
-        function drawEvents(events, container, totalDuration, timelineHeight) {
-            const timelineViewportWidth = document.getElementById('score-container').clientWidth;
-            const fullTimelineWidth = timelineViewportWidth * zoom.x;
-
-            function getXPos(timeValue) { return (timeValue / totalDuration) * 100; }
-            function getYPos(yValue, section) {
-                 if (section.axisMode === 'frequency') { const {minHz = 20, maxHz = 20000} = section.modeSettings; const logMin = Math.log(minHz); const logMax = Math.log(maxHz); if (yValue <= 0) return 100; const logY = Math.log(yValue); return (1 - (logY - logMin) / (logMax - logMin)) * 100; }
-                if (section.axisMode === 'categorical') { const index = section.modeSettings.categories.indexOf(yValue); return (index + 0.5) / section.modeSettings.categories.length * 100; }
-                return yValue || 50;
-            }
-            events.forEach(event => {
-                if (event.type === 'point') { const el = document.createElement('div'); el.className = 'event-point'; el.style.left = `${getXPos(event.globalStartTime)}%`; el.style.top = `${getYPos(event.yValue, event.section)}%`; container.appendChild(el); if(event.payload?.text) addPayload(el, event.payload.text); if(event.payload?.comment) el.title = event.payload.comment; }
-                else if (event.type === 'line') {
-                    const startX = getXPos(event.globalStartTime); const startY = getYPos(event.startYValue, event.section); const endX = getXPos(event.globalEndTime); const endY = getYPos(event.endYValue, event.section);
-                    const el = document.createElement('div'); el.className = 'event-line';
-                    const dx = (endX - startX) / 100 * fullTimelineWidth;
-                    const dy = (endY - startY) / 100 * timelineHeight;
-                    const length = Math.sqrt(dx * dx + dy * dy);
-                    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-                    el.style.left = `${startX}%`; el.style.top = `${startY}%`; el.style.width = `${length}px`; el.style.transform = `rotate(${angle}deg)`;
-                    container.appendChild(el); if(event.payload?.text) addPayload(el, event.payload.text); if(event.payload?.comment) el.title = event.payload.comment;
-                }
-                else if (event.type === 'group') { const el = document.createElement('div'); el.className = 'event-group'; el.style.left = `${getXPos(event.globalStartTime)}%`; el.style.top = `${getYPos(event.yValue, event.section)}%`; container.appendChild(el); if(event.payload?.comment) el.title = event.payload.comment; (event.events || []).forEach(subEvent => { const point = document.createElement('div'); point.className = 'event-point'; point.style.left = `50%`; point.style.top = `${50 + (subEvent.yValue || 0)}%`; el.appendChild(point); if(subEvent.payload?.text) addPayload(point, subEvent.payload.text, true); }); }
-            });
-        }
-        function addPayload(element, text, isSubEvent = false) { const payloadEl = document.createElement('div'); payloadEl.className = 'event-payload'; payloadEl.textContent = text; if(isSubEvent) payloadEl.style.transform = 'translate(15px, 0px)'; element.appendChild(payloadEl); }
-
-        // --- UTILITIES ---
-        function beautifyJson() { try { const ugly = codeEditor.getValue(); const obj = JSON.parse(ugly); const pretty = JSON.stringify(obj, undefined, 2); codeEditor.setValue(pretty); } catch (e) { console.error("Could not beautify invalid JSON."); } }
-        function handleCopyClick(e) { const targetId = e.currentTarget.dataset.target; const textToCopy = targetId ? samples[targetId] : codeEditor.getValue(); navigator.clipboard.writeText(textToCopy).then(() => { const originalText = e.currentTarget.innerHTML; e.currentTarget.innerHTML = 'Copied!'; if (targetId) { codeEditor.setValue(JSON.stringify(JSON.parse(textToCopy), null, 2)); renderScore(); } setTimeout(() => { e.currentTarget.innerHTML = originalText; }, 1500); }).catch(err => console.error('Failed to copy: ', err)); }
-        function syntaxHighlight(jsonString) { if (typeof jsonString != 'string') { jsonString = JSON.stringify(jsonString, undefined, 2); } jsonString = jsonString.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); return jsonString.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) { let cls = 'json-number'; if (/^"/.test(match)) { cls = /:$/.test(match) ? 'json-key' : 'json-string'; } else if (/true|false/.test(match)) { cls = 'json-boolean'; } return '<span class="' + cls + '">' + match + '</span>'; }); }
-        
-        // ADDED: Function to load and render the Markdown reference guide
-        async function loadReferenceGuide() {
-            const target = document.getElementById('markdown-content');
-            try {
-                const response = await fetch('tabota_reference_guide.md');
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const markdownText = await response.text();
-                target.innerHTML = marked.parse(markdownText);
-            } catch (error) {
-                console.error('Could not load or parse the reference guide:', error);
-                target.innerHTML = `<p style="color: #ff8888;">Error: Could not load the reference guide (tabota_reference_guide.md). Please make sure the file is in the same folder as this HTML file.</p>`;
-            }
-        }
-    </script>
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+function beautifyJson(){ try{ codeEditor.setValue(JSON.stringify(JSON.parse(codeEditor.getValue()),null,2)); }catch(e){} }
+function handleCopyClick(e){
+  const id=e.currentTarget.dataset.target;
+  const txt=id?samples[id]:codeEditor.getValue();
+  navigator.clipboard.writeText(txt).then(()=>{
+    const orig=e.currentTarget.innerHTML; e.currentTarget.innerHTML='Copied!';
+    if(id){ codeEditor.setValue(JSON.stringify(JSON.parse(txt),null,2)); renderScore(); refreshVoices(); }
+    setTimeout(()=>e.currentTarget.innerHTML=orig,1400);
+  });
+}
+function syntaxHighlight(s){ if(typeof s!='string') s=JSON.stringify(s,null,2); s=s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); return s.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,m=>{ let c='json-number'; if(/^"/.test(m)) c=/:$/.test(m)?'json-key':'json-string'; else if(/true|false/.test(m)) c='json-boolean'; return '<span class="'+c+'">'+m+'</span>'; }); }
+async function loadReferenceGuide(){
+  const t=document.getElementById('markdown-content');
+  try{ const r=await fetch('tabota_reference_guide.md'); if(!r.ok) throw new Error('status '+r.status); t.innerHTML=marked.parse(await r.text()); }
+  catch(e){ t.innerHTML='<p class="note">Reference guide loads from <code>tabota_reference_guide.md</code> when this file is hosted alongside it.</p>'; }
+}
+</script>
 </body>
 </html>
