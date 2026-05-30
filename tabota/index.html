@@ -249,23 +249,34 @@ table.report tr:hover td{ background:rgba(24,48,43,0.04); }
 <body>
 <div class="wrap">
 
-  <div class="masthead">
-    <div class="logo">
-      <h1>Tabota<span class="kanji">田</span></h1>
-      <span class="tag">microtonal score · transfer language</span>
-    </div>
-    <div class="meta-strip">
-      <a class="rolllink" href="tabota_roll.html" title="Open the visual piano-roll editor">
-        <span class="rl-ico">▦</span>
-        <span class="rl-tx"><b>Piano Roll</b><em>draw notes · polyphonic</em></span>
-        <span class="rl-arr">→</span>
-      </a>
-      <span class="chip">lang <b>v1.5</b></span>
-      <span class="chip" id="chip-bend">bend <b>±24 st</b></span>
-    </div>
+```html
+<div class="masthead">
+  <div class="logo">
+    <h1>Tabota<span class="kanji">田</span></h1>
+    <span class="tag">microtonal score · time grammar · transfer language</span>
   </div>
+  <div class="meta-strip">
+    <a class="rolllink" href="tabota_roll.html" title="Open the visual piano-roll editor">
+      <span class="rl-ico">▦</span>
+      <span class="rl-tx"><b>Piano Roll</b><em>draw notes · polyphonic</em></span>
+      <span class="rl-arr">→</span>
+    </a>
 
-  <p class="lede">A workspace for the Tabota notation language: <b>write or paste</b> a score and see it plotted, then <b>compile it to a single-voice microtonal MIDI</b> (or read MIDI back into Tabota) — pitch bends carry any frequency into a normal DAW track, no Scala required. For drawing directly instead of typing JSON, open the <a href="tabota_roll.html">piano-roll editor</a> — a lighter, polyphonic canvas with its own voice-aware MIDI export.</p>
+    <a class="rolllink" href="cycla_builder.html" title="Open the Cycla subdivision grammar builder">
+      <span class="rl-ico">⌬</span>
+      <span class="rl-tx"><b>Cycla</b><em>build meters · export .cyc</em></span>
+      <span class="rl-arr">→</span>
+    </a>
+
+    <span class="chip">lang <b>v1.5</b></span>
+    <span class="chip" id="chip-bend">bend <b>±24 st</b></span>
+  </div>
+</div>
+
+<p class="lede">
+  A workspace for the Tabota notation language: <b>write or paste</b> a score and see it plotted, then <b>compile it to microtonal MIDI</b> or read MIDI back into Tabota. Pitch may be written as raw frequency, symbolic notes, or tuned through Scala <code>.scl</code> files; playback retunes ordinary MIDI notes through pitch bend so the result can travel into a normal DAW. For drawing directly instead of typing JSON, open the <a href="tabota_roll.html">piano-roll editor</a> — a lighter, polyphonic canvas with voice-aware MIDI export. For rhythm, open <a href="cycla_builder.html">Cycla</a>: a companion builder for <code>.cyc</code> files, treating meter as a recursive subdivision grammar — a tuning system for time, parallel to how Scala describes tuning systems for pitch.
+</p>
+
 
 
   <!-- VISUALIZER ------------------------------------------------------- -->

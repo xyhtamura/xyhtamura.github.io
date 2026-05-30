@@ -203,6 +203,10 @@ footer code{font-family:var(--mono); color:var(--ink)}
       <button data-r="meter" class="on">meter</button>
       <button data-r="time">time</button>
     </div>
+    <select id="cycleSel" title="active cycle — a tuning of time; defines the metric grid &amp; snap (not the stored beats). One cycle = one bar — set the sig to the cycle's natural span."></select>
+    <input type="number" id="cycDepth" class="w48" value="3" min="1" max="7" title="subdivision depth — how deep grammar cycles generate their grid &amp; snap (ignored by flat cycles)">
+    <button class="tool" id="loadCyc" title="load .cyc / .txt meter file(s)">⤓ .cyc</button>
+    <input type="file" id="cycFile" accept=".cyc,.txt,text/plain" multiple style="display:none">
   </div>
   <div class="group">
     <label>pitch</label>
@@ -219,9 +223,13 @@ footer code{font-family:var(--mono); color:var(--ink)}
   <div class="group">
     <label class="chk"><input type="checkbox" id="snapTime" checked> snap&nbsp;time</label>
     <select id="grid" title="grid resolution">
-      <option value="1">1/1</option><option value="2">1/2</option>
-      <option value="4" selected>1/4</option><option value="8">1/8</option>
-      <option value="16">1/16</option><option value="3">1/3</option><option value="6">1/6</option>
+<option value="1">𝅝</option>
+  <option value="2">𝅗𝅥</option>
+  <option value="4" selected>♩</option>
+  <option value="8">♪</option>
+  <option value="16">𝅘𝅥𝅯</option>
+  <option value="3">𝅗𝅥³</option>
+  <option value="6">♩³</option>
     </select>
     <label class="chk"><input type="checkbox" id="snapPitch" checked> snap&nbsp;pitch</label>
   </div>
@@ -639,6 +647,36 @@ let activeScale=SCALES['12tet'];
 let scaleRootMidi=60;               // C4 anchors the scale's 1/1
 let libraryManifest=null;
 
+/* ---- cycles (a "tuning of time": define the metric grid + snap only; never the stored beats) ----
+   Two flavours, both mapping one cycle -> one BAR (beat = (barIndex + phase) * sigNum):
+   • FLAT    {phasesNorm:[0,...], period}  — a fixed onset list (a/b structural, 0.xx measured).
+   • GRAMMAR {kind:'grammar', src}         — a recursive subdivision grammar; generates the grid
+                                             and snap targets down to the chosen depth.
+   'even' defers to the numeric grid selector (the isochronous baseline). */
+const BUILTIN_CYCLES={
+  'even':     {name:'Even (isochronous)', isEven:true},
+  'tresillo': {name:'Tresillo 3+3+2', phasesNorm:[0, 3/8, 3/4], period:1},
+  'son32':    {name:'Son clave 3-2', phasesNorm:[0, 3/16, 3/8, 5/8, 3/4], period:1},
+  'rumba32':  {name:'Rumba clave 3-2', phasesNorm:[0, 3/16, 7/16, 5/8, 3/4], period:1},
+  'bembe':    {name:'Bembé bell 12/8', phasesNorm:[0,2/12,4/12,5/12,7/12,9/12,11/12], period:1},
+  'aksak223': {name:'Aksak 2+2+3', phasesNorm:[0, 2/7, 4/7], period:1},
+  'aksak322': {name:'Aksak 3+2+2', phasesNorm:[0, 3/7, 5/7], period:1},
+  'swing8':   {name:'Swing 8ths (triplet)', phasesNorm:[0, 1/6, 1/4, 5/12, 1/2, 2/3, 3/4, 11/12], period:1},
+  'samba16':  {name:'Samba 16ths (swung)', phasesNorm:[
+                 0, .0725, .125, .1975,  .25, .3225, .375, .4475,
+                 .5, .5725, .625, .6975,  .75, .8225, .875, .9475], period:1},
+  // grammar built-ins (recursive; respond to the depth control)
+  'g_common': {name:'⌗ Common (4 ▸ binary)', kind:'grammar', src:'@root: 4 > bin\n@bin: 2 > bin'},
+  'g_waltz':  {name:'⌗ Waltz (3 ▸ binary)', kind:'grammar', src:'@root: 3 > bin\n@bin: 2 > bin'},
+  'g_68':     {name:'⌗ Compound 6/8 (2 ▸ 3)', kind:'grammar', src:'@root: 2 > tri\n@tri: 3 > bin\n@bin: 2 > bin'},
+  'g_swing':  {name:'⌗ Swing (beat ▸ 3 ▸ binary)', kind:'grammar', src:'@root: 4 > sw\n@sw: 3 > bin\n@bin: 2 > bin'},
+  'g_717':    {name:'⌗ Special 0.717 / quarter', kind:'grammar', src:'@root: 4 > q\n@q: 0.717 0.283'},
+};
+let CYCLES=Object.assign({},BUILTIN_CYCLES);
+let activeCycleId='even';
+let activeCycle=CYCLES['even'];
+let cycleManifest=null;
+
 /* ---- element refs ---- */
 const bpm=document.getElementById('bpm'), sigNum=document.getElementById('sigNum'),
  sigDen=document.getElementById('sigDen'), a4=document.getElementById('a4'),
@@ -669,6 +707,14 @@ function clampScroll(){
 /* ---- snapping ---- */
 function snapBeat(b){
   if(!settings.snapTime) return b;
+  if(view.timeRegime==='meter' && activeCycle && !activeCycle.isEven){   // snap to cycle phases (per bar)
+    const bpb=settings.sigNum;
+    const bar=Math.floor(b/bpb), frac=(b/bpb)-bar;                       // phase within the bar/cycle
+    const cands=cycleBoundaries(activeCycle, cycDepthVal()).map(x=>x.phase).concat([1]);
+    let best=cands[0], bd=Math.abs(frac-cands[0]);
+    for(const c of cands){ const dd=Math.abs(frac-c); if(dd<bd){bd=dd; best=c;} }
+    return (bar+best)*bpb;
+  }
   const div=settings.grid; return Math.round(b*div)/div;
 }
 function scaleRootHz(){ return midiToFreq(scaleRootMidi,settings.a4); }
@@ -781,7 +827,25 @@ function drawPitchGrid(W,H){
 function drawTimeGrid(W,H){
   ctx.save(); ctx.beginPath(); ctx.rect(GUT_L,GUT_T,W-GUT_L,H-GUT_T); ctx.clip();
   const bpb=settings.sigNum; const tb=totalBeats();
-  if(view.timeRegime==='meter'){
+  if(view.timeRegime==='meter' && activeCycle && !activeCycle.isEven){
+    // cycle grid: boundaries repeated each bar, line weight by metric level (indispensability).
+    const bnd=cycleBoundaries(activeCycle, cycDepthVal());                // [{phase, level}], includes phase 0 @ L0
+    const firstBar=Math.max(0,Math.floor(xToBeat(GUT_L)/bpb)), lastBar=Math.min(settings.bars,Math.ceil(xToBeat(W)/bpb));
+    const dense = view.pxPerBeat*bpb/Math.max(1,bnd.length) < 5;          // hide deep onsets when cramped
+    for(let bar=firstBar; bar<settings.bars && bar<=lastBar; bar++){
+      for(const o of bnd){
+        if(o.phase<=0) continue;                                          // phase 0 drawn as a boundary below
+        if(dense && o.level>1) continue;
+        const x=beatToX((bar+o.phase)*bpb);
+        const a = o.level===1 ? 0.20 : Math.max(0.07, 0.20 - (o.level-1)*0.05);
+        ctx.strokeStyle=`rgba(40,82,76,${a})`; ctx.lineWidth=1;
+        ctx.beginPath(); ctx.moveTo(Math.round(x)+.5,GUT_T); ctx.lineTo(Math.round(x)+.5,H); ctx.stroke();
+      }
+    }
+    ctx.strokeStyle='rgba(17,137,126,0.40)'; ctx.lineWidth=1.4;           // L0 — cycle/bar boundaries
+    for(let bar=firstBar; bar<=lastBar; bar++){ const x=beatToX(bar*bpb);
+      ctx.beginPath(); ctx.moveTo(Math.round(x)+.5,GUT_T); ctx.lineTo(Math.round(x)+.5,H); ctx.stroke(); }
+  } else if(view.timeRegime==='meter'){
     const sub=settings.grid;
     const firstB=Math.floor(xToBeat(GUT_L)), lastB=Math.ceil(xToBeat(W));
     // subdivisions
@@ -1388,7 +1452,10 @@ document.querySelectorAll('#pitchRegime button').forEach(b=>b.addEventListener('
   view.pitchRegime=b.dataset.r; document.querySelectorAll('#pitchRegime button').forEach(x=>x.classList.toggle('on',x===b)); regimePill(); draw();
 }));
 function regimePill(){ document.getElementById('pillRegime').textContent =
-  (view.timeRegime==='meter'?'meter':'time')+' · '+(view.pitchRegime==='scale'?scaleShort():'freq'); }
+  (view.timeRegime==='meter'?timeShort():'time')+' · '+(view.pitchRegime==='scale'?scaleShort():'freq'); }
+function timeShort(){ if(!activeCycle || activeCycle.isEven) return 'meter';
+  const nm=activeCycle.name.replace(/^⌗\s*/,'').split(/[—(]/)[0].trim().slice(0,14);
+  return activeCycle.kind==='grammar' ? nm+' d'+cycDepthVal() : nm; }
 function scaleShort(){ return activeScale.is12?'12-TET':(activeScale.name.split(/[—(]/)[0].trim().slice(0,16)); }
 
 /* ---- scales: populate, select, .scl parsing, manifest ---- */
@@ -1463,6 +1530,131 @@ async function loadManifest(){
   try{ const r=await fetch('scala/index.json',{cache:'no-store'}); if(!r.ok) return;
     libraryManifest=await r.json(); populateScaleSelect();
   }catch(e){ /* no library available (file:// or absent) — upload still works */ }
+}
+
+/* ---- cycles: populate, select, .cyc parsing, manifest  (the time-domain mirror of scales) ---- */
+const cycleSel=document.getElementById('cycleSel'), cycFile=document.getElementById('cycFile');
+function prettyCyc(path){ return path.split('/').pop().replace(/\.(cyc|txt)$/i,'').replace(/[_-]+/g,' '); }
+function populateCycleSelect(){
+  cycleSel.innerHTML='';
+  const gb=optgroup('built-in');
+  for(const id of Object.keys(BUILTIN_CYCLES)){ const o=document.createElement('option'); o.value=id; o.textContent=BUILTIN_CYCLES[id].name; gb.appendChild(o); }
+  cycleSel.appendChild(gb);
+  if(cycleManifest && cycleManifest.categories){
+    for(const cat of cycleManifest.categories){
+      const g=optgroup('lib · '+cat.name);
+      for(const f of (cat.files||[])){ const path=typeof f==='string'?f:f.path; const nm=typeof f==='string'?prettyCyc(f):(f.name||prettyCyc(f.path));
+        const o=document.createElement('option'); o.value='lib:'+path; o.textContent=nm; g.appendChild(o); }
+      cycleSel.appendChild(g);
+    }
+  }
+  const ups=Object.keys(CYCLES).filter(id=>id.startsWith('up:'));
+  if(ups.length){ const g=optgroup('uploaded'); for(const id of ups){ const o=document.createElement('option'); o.value=id; o.textContent=CYCLES[id].name; g.appendChild(o); } cycleSel.appendChild(g); }
+  cycleSel.value=activeCycleId;
+}
+function setActiveCycle(id){ if(!CYCLES[id]) return;
+  const c=CYCLES[id];
+  if(c.kind==='grammar' && !c.grammar){ try{ c.grammar=parseCyc2(c.src); }catch(e){ flash('grammar error: '+e.message); return; } }
+  activeCycleId=id; activeCycle=c; cycleSel.value=id; regimePill(); changed();
+}
+cycleSel.addEventListener('change',async()=>{
+  const v=cycleSel.value;
+  if(v.startsWith('lib:')){
+    const path=v.slice(4);
+    if(!CYCLES[v]){
+      try{ const r=await fetch('cycla/'+path,{cache:'no-store'}); if(!r.ok) throw 0;
+        const cy=parseCyc(await r.text()); cy.name=cy.name||prettyCyc(path); CYCLES[v]=cy;
+      }catch(e){ flash('could not load '+path); cycleSel.value=activeCycleId; return; }
+    }
+    setActiveCycle(v);
+  } else setActiveCycle(v);
+});
+document.getElementById('loadCyc').onclick=()=>cycFile.click();
+cycFile.onchange=async()=>{
+  const files=[...cycFile.files]; if(!files.length) return; let lastId=null;
+  for(const f of files){ try{ const cy=parseCyc(await f.text()); cy.name=(cy.name||prettyCyc(f.name))+' · '+f.name.replace(/\.(cyc|txt)$/i,''); const id='up:'+f.name+':'+Math.random().toString(36).slice(2,6); CYCLES[id]=cy; lastId=id; }
+    catch(e){ flash('parse failed: '+f.name); } }
+  populateCycleSelect();
+  if(lastId) setActiveCycle(lastId);
+  cycFile.value='';
+  flash(`loaded ${files.length} .cyc file${files.length!==1?'s':''}`);
+};
+/* A .cyc is FLAT (description, count, onset list) or a GRAMMAR (any line starting with @).
+   parseCyc auto-detects and returns the matching cycle object. */
+function parseCyc(text){
+  const isGrammar = text.split(/\r?\n/).some(l=>{ const t=l.trim(); return t && !t.startsWith('!') && t[0]==='@'; });
+  if(isGrammar){ const g=parseCyc2(text); return { name:(g.description&&g.description.length?g.description:null), kind:'grammar', grammar:g, src:text }; }
+  const lines=text.split(/\r?\n/); let state='desc', desc=null, count=null; const data=[];
+  for(const raw of lines){ const line=raw.trim();
+    if(line.startsWith('!')) continue;
+    if(state==='desc'){ desc=raw.trim(); state='count'; continue; }
+    if(line==='') continue;
+    if(state==='count'){ count=parseInt(line,10); state='onset'; continue; }
+    const tok=line.split(/\s+/)[0]; let frac;
+    if(tok.includes('.')) frac=parseFloat(tok);                                  // measured / microtiming
+    else if(tok.includes('/')){ const [a,b]=tok.split('/').map(Number); frac=a/b; }  // structural / additive
+    else frac=parseFloat(tok);                                                   // bare int (e.g. 1 = the period)
+    if(isFinite(frac)) data.push(frac);
+  }
+  if(data.length<1) throw new Error('no onsets');
+  const period=data[data.length-1]||1;                 // last entry closes the cycle
+  const onsets=[0].concat(data.slice(0,-1));            // implicit downbeat + listed onsets
+  const phasesNorm=onsets.map(p=>p/period);             // normalize to [0,1)
+  return { name:(desc&&desc.length?desc:null), phasesNorm, period };
+}
+/* ---- recursive subdivision grammar (the time-domain analog of recursion in tunings) ----
+   Rule:  @name: SPEC > CONT   — SPEC = int N (even) | weights | measured points;
+   > CONT = one rule for all children | one per child (_=leaf) | omitted (leaves). A rule may self-refer. */
+function parseCyc2(text){
+  const lines=text.split(/\r?\n/); let desc=null, sawDesc=false; const rules={}; let start=null;
+  for(const raw of lines){ const line=raw.trim();
+    if(line.startsWith('!')||line==='') continue;
+    if(line[0]==='@'){
+      const m=line.match(/^@\s*([A-Za-z0-9_-]+)\s*:\s*(.*)$/); if(!m) throw new Error('malformed rule: '+line);
+      const name=m[1]; let rhs=m[2]; let cont=null; const gt=rhs.indexOf('>');
+      if(gt>=0){ cont=rhs.slice(gt+1).trim().split(/\s+/).filter(Boolean); rhs=rhs.slice(0,gt).trim(); }
+      const nums=rhs.split(/\s+/).filter(Boolean).map(Number);
+      if(!nums.length||nums.some(n=>!isFinite(n))) throw new Error('bad cut spec in @'+name);
+      let weights;
+      if(nums.length===1){ const N=nums[0]; if(!Number.isInteger(N)||N<2) throw new Error('@'+name+': single value must be integer ≥2'); weights=Array(N).fill(1/N); }
+      else { const s=nums.reduce((a,b)=>a+b,0); if(s<=0) throw new Error('@'+name+': weights sum to 0'); weights=nums.map(n=>n/s); }
+      let conts;
+      if(!cont) conts=weights.map(()=>null);
+      else if(cont.length===1){ const c=cont[0]; conts=weights.map(()=>(c==='_'||c==='.')?null:c); }
+      else if(cont.length===weights.length) conts=cont.map(c=>(c==='_'||c==='.')?null:c);
+      else throw new Error('@'+name+': '+cont.length+' continuations for '+weights.length+' children');
+      rules[name]={weights,conts}; if(start===null) start=name; continue;
+    }
+    if(!sawDesc){ desc=raw.trim(); sawDesc=true; }
+  }
+  if(!start) throw new Error('no @rules defined');
+  if(rules['root']) start='root';
+  for(const [n,r] of Object.entries(rules)) for(const c of r.conts) if(c!==null && !rules[c]) throw new Error('@'+n+' references unknown rule "'+c+'"');
+  return {description:desc, rules, start};
+}
+function cyc2Boundaries(g, maxDepth, cap=40000){
+  const acc=new Map(); const put=(p,l)=>{ p=+p.toFixed(9); if(!acc.has(p)||l<acc.get(p)) acc.set(p,l); };
+  put(0,0); let count=0;
+  (function rec(a,b,rn,depth){ if(rn==null||depth>maxDepth) return; const r=g.rules[rn]; if(!r) return; let x=a;
+    for(let i=0;i<r.weights.length;i++){ const w=(b-a)*r.weights[i], cA=x, cB=x+w;
+      if(i>0) put(cA,depth); if(++count>cap) return; rec(cA,cB,r.conts[i],depth+1); x=cB; } })(0,1,g.start,1);
+  return [...acc.entries()].map(([phase,level])=>({phase,level})).sort((u,v)=>u.phase-v.phase);
+}
+/* unified: boundaries (phase in [0,1), with metric level) for any active cycle */
+function cycleBoundaries(c, depth){
+  if(!c || c.isEven) return [{phase:0,level:0}];
+  if(c.kind==='grammar' && c.grammar) return cyc2Boundaries(c.grammar, depth);
+  const out=[{phase:0,level:0}];
+  for(const p of (c.phasesNorm||[])) if(p>0) out.push({phase:p, level:1});   // flat onsets are all level 1
+  return out;
+}
+const cycDepth=document.getElementById('cycDepth');
+function cycDepthVal(){ return Math.max(1,Math.min(7, parseInt(cycDepth.value,10)||3)); }
+cycDepth.addEventListener('input', ()=>{ if(activeCycle && activeCycle.kind==='grammar') changed(); });
+async function loadCycManifest(){
+  try{ const r=await fetch('cycla/index.json',{cache:'no-store'}); if(!r.ok) return;
+    cycleManifest=await r.json(); populateCycleSelect();
+  }catch(e){ /* no library available — upload still works */ }
 }
 
 /* ---- clipboard: cut / copy / paste ---- */
@@ -1929,6 +2121,7 @@ function seed(){
   ];
 }
 populateRoot(); populateScaleSelect(); loadManifest();
+populateCycleSelect(); loadCycManifest();
 window.addEventListener('load',()=>{ resize(); seed(); fitContent(); regimePill(); changed(); });
 resize(); // initial (in case load already fired)
 })();

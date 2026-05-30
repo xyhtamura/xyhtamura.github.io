@@ -152,27 +152,6 @@
       opacity: 0.88;
     }
 
-    .aboutPanel {
-      display: none;
-      margin-top: 10px;
-      padding: 10px;
-      border-radius: 14px;
-      border: 1px solid rgba(255, 209, 240, 0.22);
-      background: rgba(9, 30, 39, 0.56);
-      color: #e8ffd0;
-      font-size: 11px;
-      line-height: 1.42;
-    }
-
-    .aboutPanel.open { display: block; }
-
-    .aboutPanel p {
-      margin: 0 0 8px;
-    }
-
-    .aboutPanel p:last-child {
-      margin-bottom: 0;
-    }
 
     .bottom-note {
       position: fixed;
@@ -211,13 +190,12 @@
       <button id="addBtn">add plankton</button>
       <button id="stirBtn">stir pond</button>
       <button id="thinBtn">thin swarm</button>
-      <button id="aboutBtn">about</button>
     </div>
 
     <label class="volumeRow">
       <span>volume</span>
-      <input id="volumeSlider" type="range" min="0" max="100" value="72" />
-      <span id="volumeReadout">72%</span>
+      <input id="volumeSlider" type="range" min="0" max="100" value="90" />
+      <span id="volumeReadout">90%</span>
     </label>
 
     <div class="readout">
@@ -230,14 +208,6 @@
       <em>Electropond</em> is a browser-based visual-physics instrument: a pond of FM plankton that sing through motion, color, collision, and non-keyboard tuning fields.
     </div>
 
-    <div class="aboutPanel" id="aboutPanel">
-      <p>
-        <strong>Statement.</strong> Electropond reverses the usual audio-visualizer relation. Sound is not composed first and visualized afterward; instead, a visible ecology produces sound as a consequence of movement. Each plankton is an FM voice whose carrier pitch, modulation ratio, modulation index, filter brightness, panning, and amplitude are derived from its body, color, velocity, location, and contact with ripples or other organisms.
-      </p>
-      <p>
-        Rather than using a piano keyboard, sequencer grid, or twelve-tone scale, Electropond uses an uneven ratio field inside a continuous tritave-like space. The instrument is played by disturbing an ecology: dragging water, making ripples, stirring currents, thinning or seeding the swarm, and listening to the pond retune itself.
-      </p>
-    </div>
   </section>
 
   <div class="bottom-note">
@@ -252,8 +222,6 @@
     const addBtn = document.getElementById('addBtn');
     const stirBtn = document.getElementById('stirBtn');
     const thinBtn = document.getElementById('thinBtn');
-    const aboutBtn = document.getElementById('aboutBtn');
-    const aboutPanel = document.getElementById('aboutPanel');
     const volumeSlider = document.getElementById('volumeSlider');
     const volumeReadout = document.getElementById('volumeReadout');
     const statusEl = document.getElementById('status');
@@ -530,11 +498,11 @@
 
         // Motion-gated amplitude: a still pond becomes nearly silent.
         // Velocity opens the voice; collisions/ripples add brief blooms.
-        const velocityAmp = Math.pow(clamp(speed / 2.45, 0, 1), 1.85);
-        const bodyAmp = velocityAmp * (0.055 + this.size * 0.0032);
-        const collisionAmp = this.excite * 0.078;
-        const idleBreath = 0.0015;
-        const amp = clamp(idleBreath + bodyAmp + collisionAmp, 0.0008, 0.17) * voiceCountTrim;
+        const velocityAmp = Math.pow(clamp(speed / 1.85, 0, 1), 1.45);
+        const bodyAmp = velocityAmp * (0.13 + this.size * 0.006);
+        const collisionAmp = this.excite * 0.10;
+        const idleBreath = 0.003;
+        const amp = clamp(idleBreath + bodyAmp + collisionAmp, 0.001, 0.28) * voiceCountTrim;
         const cutoff = clamp(420 + this.size * 90 + Math.abs(field) * 2400 + this.excite * 3600, 220, 9800);
         const q = clamp(0.4 + (this.hue % 90) / 95 + this.excite * 4.2, 0.4, 8);
 
@@ -635,7 +603,7 @@
       volumeReadout.textContent = `${Math.round(masterVolume * 100)}%`;
       if (postComp && audioCtx) {
         // Nonlinear taper gives useful low-volume control and prevents sudden blasts.
-        const scaled = Math.pow(masterVolume, 1.65) * 0.92;
+        const scaled = Math.pow(masterVolume, 1.35) * 1.25;
         postComp.gain.setTargetAtTime(scaled, audioCtx.currentTime, 0.035);
       }
     }
@@ -653,16 +621,16 @@
       feedback = audioCtx.createGain();
 
       // Pre-compressor trim, compressor, and final master volume.
-      preComp.gain.value = 0.72;
+      preComp.gain.value = 1.15;
       compressor.threshold.value = -18;
       compressor.knee.value = 16;
       compressor.ratio.value = 8;
       compressor.attack.value = 0.004;
       compressor.release.value = 0.18;
-      postComp.gain.value = Math.pow(masterVolume, 1.65) * 0.92;
+      postComp.gain.value = Math.pow(masterVolume, 1.35) * 1.25;
       master.gain.value = 0.98;
 
-      wet.gain.value = 0.13;
+      wet.gain.value = 0.18;
       delay.delayTime.value = 0.23;
       feedback.gain.value = 0.26;
 
@@ -904,11 +872,6 @@
         if (o) o.stopVoice();
       }
       refreshReadout();
-    });
-
-    aboutBtn.addEventListener('click', () => {
-      aboutPanel.classList.toggle('open');
-      aboutBtn.textContent = aboutPanel.classList.contains('open') ? 'hide statement' : 'about';
     });
 
     seed(16);
