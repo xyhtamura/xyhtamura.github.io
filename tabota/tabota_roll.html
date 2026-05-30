@@ -273,7 +273,9 @@ footer code{font-family:var(--mono); color:var(--ink)}
     <input type="file" id="impFile" accept=".mid,.midi" style="display:none">
     <button class="btn" id="expMidi">⬆ export MIDI</button>
     <button class="btn" id="report">bend report</button>
-    <button class="btn" id="expJson">Tabota JSON</button>
+    <button class="btn" id="impJson">⬇ import Tabota</button>
+    <input type="file" id="impJsonFile" accept=".json,application/json" style="display:none">
+    <button class="btn" id="expJson">⬆ export Tabota</button>
     <button class="btn" id="clearAll">clear</button>
   </div>
   <div class="spacer"></div>
@@ -1568,6 +1570,76 @@ document.getElementById('expJson').onclick=()=>{
   };
   download(new Blob([JSON.stringify(doc,null,2)],{type:'application/json'}),'tabota-roll.json');
   flash('exported Tabota JSON ('+voices.length+' voice'+(voices.length!==1?'s':'')+')');
+};
+
+/* Tabota JSON import — reconstruct notes/voices/curves; round-trips the export above,
+   and reads general Tabota (point/line events, frequency or symbolic axis, metered/chronological). */
+function tabotaToHz(v, axis, a4){
+  if(v==null) return null;
+  if(typeof v==='number') return axis==='symbolic' ? midiToFreq(v,a4) : v;   // symbolic number = MIDI; else Hz
+  const m=noteNameToMidi(String(v).trim());
+  return m!=null ? midiToFreq(m,a4) : null;
+}
+function notesFromTabota(doc){
+  const a4=(doc.modeSettings && +doc.modeSettings.a4) || settings.a4;
+  const rs=doc.regimeSettings||{};
+  const bpm=(+rs.bpm)||settings.bpm;
+  const tr=doc.temporalRegime||'metered';
+  const axis=doc.axisMode||'frequency';
+  const sig=rs.timeSignature||[settings.sigNum,settings.sigDen];
+  const toBeats=(t)=> tr==='chronological' ? (t*bpm/60) : (+t||0);   // metered: already beats
+  const evs=doc.events||[]; const out=[]; let seqBeat=0, skipped=0;
+  for(const e of evs){
+    if(!e || (e.type && e.type!=='line' && e.type!=='point')){ skipped++; continue; }
+    let start, dur;
+    if(tr==='achronous'){ start=seqBeat; dur=(e.duration!=null?toBeats(e.duration):settings.defLen); if(dur<=0)dur=settings.defLen; seqBeat+=dur; }
+    else {
+      const st=e.startTime!=null?e.startTime:(e.time!=null?e.time:0); start=toBeats(st);
+      if(e.duration!=null) dur=toBeats(e.duration);
+      else if(e.endTime!=null) dur=toBeats(e.endTime)-start;
+      else dur=settings.defLen;
+      if(dur<=0) dur=settings.defLen;
+    }
+    const voice=Math.max(1, e.voice||1);
+    const velo=e.velocity!=null?e.velocity:(+vel.value||96);
+    let type, pts, ncurve;
+    if(Array.isArray(e.contour) && e.contour.length){
+      const cs=e.contour.map(c=>({t:(c.pos!=null?c.pos:c.t)||0, hz:tabotaToHz(c.hz!=null?c.hz:(c.yValue!=null?c.yValue:c.note),axis,a4), curve:c.curve}))
+                        .filter(c=>c.hz!=null).sort((x,y)=>x.t-y.t);
+      if(cs.length<2){ skipped++; continue; }
+      type = cs.some(c=>c.curve) ? 'glide' : 'free';
+      pts = cs.map(c=>{ const o={t:Math.max(0,Math.min(1,c.t)), hz:c.hz}; if(c.curve) o.curve=c.curve; return o; });
+    } else {
+      const sy=tabotaToHz(e.startYValue!=null?e.startYValue:(e.yValue!=null?e.yValue:e.note),axis,a4);
+      let ey=tabotaToHz(e.endYValue,axis,a4); if(ey==null) ey=sy;
+      if(sy==null){ skipped++; continue; }
+      if(Math.abs(1200*Math.log2(ey/sy))<0.5){ type='hold'; pts=[{t:0,hz:sy}]; }
+      else { type='glide'; pts=[{t:0,hz:sy},{t:1,hz:ey}]; ncurve=e.curve||'linear'; }
+    }
+    const n={id:NID++, start, dur, type, vel:velo, voice, pts};
+    if(type==='glide' && ncurve) n.curve=ncurve;
+    out.push(n);
+  }
+  const bend=(doc.midiExport && +doc.midiExport.bendRange)||null;
+  return {notes:out, bpm, sig, a4, skipped, bend};
+}
+const impJsonBtn=document.getElementById('impJson'), impJsonFile=document.getElementById('impJsonFile');
+impJsonBtn.onclick=()=>impJsonFile.click();
+impJsonFile.onchange=async()=>{
+  const f=impJsonFile.files[0]; if(!f) return;
+  let doc; try{ doc=JSON.parse(await f.text()); }catch(err){ alert('Not valid JSON: '+err.message); impJsonFile.value=''; return; }
+  let res; try{ res=notesFromTabota(doc); }catch(err){ alert('Could not read Tabota JSON: '+err.message); impJsonFile.value=''; return; }
+  if(!res.notes.length){ flash('no pitched events found in that JSON'); impJsonFile.value=''; return; }
+  notes=res.notes; selection.clear(); segSel=null;
+  bpm.value=Math.round(res.bpm);
+  if(res.sig){ sigNum.value=res.sig[0]||4; sigDen.value=res.sig[1]||4; }
+  a4.value=res.a4; if(res.bend){ bendRange.value=res.bend; document.getElementById('pillRange').textContent='±'+res.bend; }
+  NID=Math.max(NID,0,...notes.map(n=>n.id))+1;
+  const maxB=Math.max(0,...notes.map(n=>n.start+n.dur));
+  bars.value=Math.max(1, Math.ceil((maxB+0.5)/Math.max(1,settings.sigNum)));
+  fitContent(); changed();
+  flash(`imported ${notes.length} events`+(res.skipped?` · ${res.skipped} skipped`:''));
+  impJsonFile.value='';
 };
 
 document.getElementById('clearAll').onclick=()=>{ if(notes.length && confirm('Clear all notes?')){ notes=[]; selection.clear(); changed(); } };
