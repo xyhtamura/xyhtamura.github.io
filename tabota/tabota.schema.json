@@ -1,8 +1,9 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://tabota.org/schema/v1.5",
+  "$id": "https://tabota.org/schema/v1.6",
   "title": "Tabota Score Format",
-  "description": "A universal notation language for time-based events with nested timelines, external references, and type inheritance",
+  "description": "A universal notation language for time-based events. v1.6 treats each event endpoint as an independently regime-anchored coordinate, so a single contiguous note can be authored in one regime and resolve its ends in another. The native encoding is the high-fidelity master; conversion to meter/seconds is a downstream projection.",
+  "$comment": "THE CANVAS DOCTRINE — Tabota treats the digital canvas as the primary composition environment, not a transcription of performance instructions. A note is defined as points in coordinate space and extended backward or forward by duration. Its start and end may be authored within a regime, but a duration-bearing note may extend OUT of the regime that authored it: a regime is only the authoring field, not a container that governs everything inside it. Conventional notation is a set of instructions for live performers; digital composition is under no such obligation, and nothing here happens live. The canvas is a graphic space — closer to drawing than to dictation — where time need not be metered; yet these remain events that will eventually be realized, and that realization is resolved only in the down-translation. The native Tabota encoding is the master (vector / .svg); every later translation — above all MIDI — is permitted to be a lower-fidelity shadow (raster / .jpeg). The aim is absolute freedom of graphical representation, so that temporal expression is not limited by conventions about itself, while still allowing time and pitch to be rigorously defined wherever the composer wants them to be.",
   "type": "object",
   "required": ["projectName", "languageVersion", "score"],
   "properties": {
@@ -13,7 +14,7 @@
     "languageVersion": {
       "type": "string",
       "pattern": "^\\d+\\.\\d+(-[a-z]+)?$",
-      "description": "Tabota specification version (e.g., '1.5')"
+      "description": "Tabota specification version (e.g., '1.6')"
     },
     "author": {
       "type": "string",
@@ -48,12 +49,12 @@
     },
     "score": {
       "type": "array",
-      "description": "Array of sections that make up the composition",
+      "description": "Array of sections that make up the composition. Each section also names a regime that other sections' events may anchor to.",
       "minItems": 1,
       "items": {"$ref": "#/definitions/Section"}
     }
   },
-  
+
   "definitions": {
     "Import": {
       "type": "object",
@@ -88,13 +89,14 @@
         }
       }
     },
-    
+
     "Section": {
       "type": "object",
+      "description": "A named regime placed on the timeline spine, plus an optional default authoring frame and a grouping of events. Demoted from 'law that governs its events' to 'default provider + addressable clock': events inside it inherit its regime only when their anchors do not name another regime.",
       "properties": {
         "sectionId": {
           "type": "string",
-          "description": "Unique identifier for this section"
+          "description": "Unique identifier for this section. Doubles as the name other events reference in an Anchor's 'regime' field."
         },
         "externalRef": {
           "type": "string",
@@ -111,8 +113,8 @@
         },
         "temporalRegime": {
           "type": "string",
-          "enum": ["metered", "chronological", "achronous"],
-          "description": "How time flows in this section"
+          "enum": ["metered", "chronological", "achronous", "free"],
+          "description": "How time flows in this section. 'free' supplies NO ambient regime, forcing every anchor inside it to name its own clock — an explicitly ungoverned authoring layer."
         },
         "regimeSettings": {
           "type": "object",
@@ -120,7 +122,8 @@
           "oneOf": [
             {"$ref": "#/definitions/MeteredSettings"},
             {"$ref": "#/definitions/ChronologicalSettings"},
-            {"$ref": "#/definitions/AchronousSettings"}
+            {"$ref": "#/definitions/AchronousSettings"},
+            {"$ref": "#/definitions/FreeSettings"}
           ]
         },
         "parallelTo": {
@@ -158,8 +161,8 @@
         },
         "modeSettings": {
           "type": "object",
-          "description": "Configuration specific to the axis mode",
-          "oneOf": [
+          "description": "Configuration specific to the axis mode. The discriminant is the sibling 'axisMode' field; these shapes overlap (several have only optional fields), so this is anyOf rather than oneOf.",
+          "anyOf": [
             {"$ref": "#/definitions/FrequencySettings"},
             {"$ref": "#/definitions/CategoricalSettings"},
             {"$ref": "#/definitions/InstructionalSettings"},
@@ -197,7 +200,7 @@
         }
       ]
     },
-    
+
     "Track": {
       "type": "object",
       "properties": {
@@ -215,7 +218,7 @@
         },
         "temporalRegime": {
           "type": "string",
-          "enum": ["metered", "chronological", "achronous"],
+          "enum": ["metered", "chronological", "achronous", "free"],
           "description": "Override parent section's temporal regime"
         },
         "regimeSettings": {
@@ -232,7 +235,7 @@
         },
         "modeSettings": {
           "type": "object",
-          "oneOf": [
+          "anyOf": [
             {"$ref": "#/definitions/FrequencySettings"},
             {"$ref": "#/definitions/CategoricalSettings"},
             {"$ref": "#/definitions/InstructionalSettings"},
@@ -255,7 +258,7 @@
         {"required": ["trackId", "axisMode"]}
       ]
     },
-    
+
     "ChildSection": {
       "type": "object",
       "properties": {
@@ -270,14 +273,15 @@
         },
         "temporalRegime": {
           "type": "string",
-          "enum": ["metered", "chronological", "achronous"]
+          "enum": ["metered", "chronological", "achronous", "free"]
         },
         "regimeSettings": {
           "type": "object",
           "oneOf": [
             {"$ref": "#/definitions/MeteredSettings"},
             {"$ref": "#/definitions/ChronologicalSettings"},
-            {"$ref": "#/definitions/AchronousSettings"}
+            {"$ref": "#/definitions/AchronousSettings"},
+            {"$ref": "#/definitions/FreeSettings"}
           ]
         },
         "startTrigger": {
@@ -348,18 +352,29 @@
         }
       ]
     },
-    
+
     "MeteredSettings": {
       "type": "object",
       "required": ["beats"],
       "properties": {
         "beats": {"type": "number", "minimum": 0},
-        "bpm": {"type": "number", "minimum": 1},
+        "bpm": {
+          "description": "Tempo. A scalar holds the regime at a constant rate; a TempoCurve lets the regime accelerate or decelerate across its span and is what binds/dissociates against time at mixdown.",
+          "oneOf": [
+            {"type": "number", "minimum": 1},
+            {"$ref": "#/definitions/TempoCurve"}
+          ],
+          "default": 120
+        },
         "timeSignature": {"type": "string", "pattern": "^\\d+/\\d+$"},
-        "subdivision": {"type": "integer", "minimum": 1}
+        "subdivision": {"type": "integer", "minimum": 1},
+        "cyc": {
+          "type": "string",
+          "description": "Optional path/id of a .cyc grammar or onset list. A lens over this regime's grid and snap targets only; it does not rewrite stored positions until baked."
+        }
       }
     },
-    
+
     "ChronologicalSettings": {
       "type": "object",
       "required": ["duration"],
@@ -369,10 +384,18 @@
           "type": "string",
           "enum": ["seconds", "milliseconds", "minutes"],
           "default": "seconds"
+        },
+        "renderMeter": {
+          "type": "object",
+          "description": "The fictional meter stamped on this time-native span only so MIDI has something to count. Default is 120 BPM, 4/4. Never affects the master; it is consumed only at mixdown.",
+          "properties": {
+            "bpm": {"type": "number", "minimum": 1, "default": 120},
+            "timeSignature": {"type": "string", "pattern": "^\\d+/\\d+$", "default": "4/4"}
+          }
         }
       }
     },
-    
+
     "AchronousSettings": {
       "type": "object",
       "required": ["indices"],
@@ -380,7 +403,41 @@
         "indices": {"type": "integer", "minimum": 1}
       }
     },
-    
+
+    "FreeSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "An explicitly ungoverned authoring layer. Supplies no ambient regime; every anchor inside a 'free' section MUST name its own regime. Has no intrinsic duration of its own. Carries no clock fields (that absence is what distinguishes it from the other regimes in the regimeSettings oneOf).",
+      "properties": {
+        "spans": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Optional hint for how much of the spine this layer visually covers; purely cosmetic."
+        }
+      }
+    },
+
+    "TempoCurve": {
+      "type": "object",
+      "description": "A tempo automation. Modelled like a pitch contour: breakpoints with an interpolation shape. 'axis' fixes the independent variable, because a curve linear in beats is NOT linear in time (it integrates logarithmically).",
+      "required": ["from", "to"],
+      "properties": {
+        "from": {"type": "number", "minimum": 1, "description": "BPM at the start of the span"},
+        "to": {"type": "number", "minimum": 1, "description": "BPM at the end of the span"},
+        "interp": {
+          "type": "string",
+          "enum": ["linear", "ease-in", "ease-out", "ease-in-out", "exponential"],
+          "default": "linear"
+        },
+        "axis": {
+          "type": "string",
+          "enum": ["beats", "time"],
+          "default": "beats",
+          "description": "Whether 'from'->'to' is interpolated against beats or against seconds."
+        }
+      }
+    },
+
     "FrequencySettings": {
       "type": "object",
       "properties": {
@@ -390,7 +447,7 @@
         "a4": {"type": "number", "default": 440}
       }
     },
-    
+
     "CategoricalSettings": {
       "type": "object",
       "required": ["categories"],
@@ -402,7 +459,7 @@
         }
       }
     },
-    
+
     "InstructionalSettings": {
       "type": "object"
     },
@@ -433,6 +490,49 @@
       }
     },
 
+    "Curve": {
+      "description": "An EASING: a function s(k) on the unit interval — s:[0,1]->[0,1] with s(0)=0 and s(1)=1 — applied to a segment's normalized position BEFORE values are interpolated. Tabota does NOT enumerate named curves; it defines only this contract, so a composer may write any shape (including a sine ease). Omit for linear (s(k)=k), the sole zero-parameter case and the default. Otherwise give EITHER an expression string in the single variable k, OR a sample table. The expression is the high-fidelity master (exact); a table is its lossy bake. A client that cannot evaluate an expression should sample it into a table. Results are clamped to [0,1] on read.",
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "Expression in k only, over the grammar: k, numeric literals, parentheses, the operators + - * / ^, the functions exp ln log2 sin cos abs min max, and the constants pi and e. Examples — exponential, curvature 3: '(exp(3*k)-1)/(exp(3)-1)'; sine ease-in-out: '(1-cos(pi*k))/2'; ease-out: '1-(1-k)^2'."
+        },
+        {
+          "type": "array",
+          "description": "Sample table: ascending [k, s] pairs across [0,1], interpolated linearly. Include k=0 and k=1. A hand-drawn or sampled easing.",
+          "minItems": 2,
+          "items": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {"type": "number", "minimum": 0, "maximum": 1}
+          }
+        }
+      ]
+    },
+
+    "Breakpoint": {
+      "type": "object",
+      "description": "An interior node of a value CONTOUR on a line event. Position is normalized within the event's span (0 = start, 1 = end); precise placement is achieved simply by adding more breakpoints. Two breakpoints with linear curves and many breakpoints with one expressive curve are both valid routes to the same shape — value points say WHERE the pitch goes, the curve says HOW a segment is traversed.",
+      "required": ["at", "value"],
+      "properties": {
+        "at": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Normalized position within the event's span."
+        },
+        "value": {
+          "oneOf": [{"type": "number"}, {"type": "string"}],
+          "description": "Pitch/value at this node: Hz, a note name, or a numeric axis value."
+        },
+        "curve": {
+          "$ref": "#/definitions/Curve",
+          "description": "Easing of the segment LEAVING this node toward the next. Omit for linear."
+        }
+      }
+    },
+
     "MeterPosition": {
       "type": "object",
       "required": ["measure", "beat"],
@@ -449,7 +549,53 @@
         }
       }
     },
-    
+
+    "Anchor": {
+      "type": "object",
+      "description": "A regime-anchored located point. Each endpoint of an event carries its own Anchor, so start and end can live in different regimes (a contiguous hybrid note). The coordinate is interpreted in the units of the named regime; omit 'regime' to inherit the section's ambient regime. A 'free' section has no ambient regime, so 'regime' is mandatory there. The shared time spine is the interchange currency used to place and compare anchors; it is a projection, not where the anchor is stored.",
+      "properties": {
+        "regime": {
+          "type": "string",
+          "description": "sectionId of the clock this coordinate is measured against. Omit to inherit the ambient regime."
+        },
+        "measure": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Measure number, for a metered regime (pairs with 'beat')."
+        },
+        "beat": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Beat within the measure for a metered regime, or a flat beat offset."
+        },
+        "time": {
+          "type": "number",
+          "description": "Position in the regime's chronological units (seconds by default)."
+        },
+        "index": {
+          "type": "integer",
+          "description": "Ordinal position in an achronous regime."
+        },
+        "relativeTo": {
+          "type": "object",
+          "description": "Position relative to another event.",
+          "required": ["event"],
+          "properties": {
+            "event": {"type": "string", "description": "id of the referenced event"},
+            "edge": {"type": "string", "enum": ["start", "end"], "default": "end"},
+            "offset": {"type": "number", "default": 0}
+          }
+        }
+      },
+      "anyOf": [
+        {"required": ["measure"]},
+        {"required": ["beat"]},
+        {"required": ["time"]},
+        {"required": ["index"]},
+        {"required": ["relativeTo"]}
+      ]
+    },
+
     "Event": {
       "type": "object",
       "properties": {
@@ -459,6 +605,10 @@
           "description": "Optional if defaultEventType is set on the parent track/section."
         },
         "id": {"type": "string"},
+        "continuesFrom": {
+          "type": "string",
+          "description": "OPTIONAL. id of an event this one continues (an articulated tie or a deliberately split fragment). Note: crossing a regime boundary needs NO continuation — a single contiguous note with regime-tagged start/end ends does that directly. Use this only for genuine ties or when you intend the fragments to live in separate sections' local views."
+        },
         "payload": {"$ref": "#/definitions/Payload"}
       },
       "oneOf": [
@@ -469,7 +619,7 @@
         {"$ref": "#/definitions/ExternalEvent"}
       ]
     },
-    
+
     "ExternalEvent": {
       "type": "object",
       "required": ["externalRef"],
@@ -477,6 +627,7 @@
         "type": {"const": "external"},
         "externalRef": {"type": "string"},
         "externalFile": {"type": "string"},
+        "at": {"$ref": "#/definitions/Anchor"},
         "time": {"type": "number"},
         "index": {"type": "integer"},
         "startMeter": {"$ref": "#/definitions/MeterPosition"},
@@ -490,7 +641,7 @@
         }
       }
     },
-    
+
     "PointEvent": {
       "type": "object",
       "allOf": [
@@ -498,12 +649,15 @@
           "properties": {
             "type": {"const": "point"},
             "yValue": {"oneOf": [{"type": "number"}, {"type": "string"}]},
+            "at": {"$ref": "#/definitions/Anchor"},
             "startMeter": {"$ref": "#/definitions/MeterPosition"}
           },
           "required": ["yValue"]
         },
         {
-          "oneOf": [
+          "description": "Position by one Anchor ('at'), or any legacy coordinate.",
+          "anyOf": [
+            {"required": ["at"]},
             {"required": ["time"], "properties": {"time": {"type": "number"}}},
             {"required": ["index"], "properties": {"index": {"type": "integer"}}},
             {"required": ["relativeTime"], "properties": {"relativeTime": {"type": "object"}}},
@@ -512,9 +666,10 @@
         }
       ]
     },
-    
+
     "LineEvent": {
       "type": "object",
+      "description": "A duration-bearing event. v1.6: position is a start Anchor plus an end Anchor or a duration; the two anchors may name different regimes (a contiguous hybrid note). The value glides from start to end, interpolated in 'valueSpace' and traversed through an optional 'curve' (easing). Add interior 'points' to make it an arbitrary contour. The old combinatorial start*/end* fields are retained for backward compatibility.",
       "allOf": [
         {
           "properties": {
@@ -526,51 +681,67 @@
             },
             "startYValue": {"oneOf": [{"type": "number"}, {"type": "string"}]},
             "endYValue": {"oneOf": [{"type": "number"}, {"type": "string"}]},
+            "valueSpace": {
+              "type": "string",
+              "enum": ["log-frequency", "linear"],
+              "default": "log-frequency",
+              "description": "How values interpolate within a segment. 'log-frequency' interpolates linearly in log2(Hz), i.e. in cents — equal musical distance; the tabota default. A straight-SOUNDING glide is this with linear easing (it is already exponential in raw Hz). 'linear' interpolates the raw numeric value. On non-frequency axes, clients interpolate the raw value regardless."
+            },
+            "curve": {
+              "$ref": "#/definitions/Curve",
+              "description": "Easing for the START->END segment (or the first segment when 'points' are present). Omit for linear. Named editor presets (exp/log/smooth) are NOT part of the format; a client compiles them down to a Curve."
+            },
+            "points": {
+              "type": "array",
+              "description": "Optional interior breakpoints turning this glide into an arbitrary contour. The full path is [start, ...points, end]; each node's own 'curve' governs its outgoing segment. Precise placement needs no special syntax — just add more breakpoints.",
+              "items": {"$ref": "#/definitions/Breakpoint"}
+            },
             "interpolation": {
               "type": "string",
               "enum": ["linear", "ease-in", "ease-out", "ease-in-out", "step", "exponential"],
-              "default": "linear"
+              "default": "linear",
+              "description": "LEGACY preset alias, retained for backward compatibility. Prefer 'curve'. A client treats each preset as a Curve; 'curve' wins when both are present."
+            },
+            "start": {"$ref": "#/definitions/Anchor"},
+            "end": {"$ref": "#/definitions/Anchor"},
+            "duration": {
+              "type": "number",
+              "description": "Length measured in the units of the START anchor's regime. Use instead of 'end' when the note's tail rides one clock."
             },
             "startMeter": {"$ref": "#/definitions/MeterPosition"},
             "endMeter": {"$ref": "#/definitions/MeterPosition"}
           }
         },
         {
-          "description": "Defines the event's duration positioning",
-          "oneOf": [
-            // 1. Metered Combinations
+          "description": "Positioning: a start Anchor with an end Anchor or duration (v1.6), or any legacy combination.",
+          "anyOf": [
+            {"required": ["start", "end"]},
+            {"required": ["start", "duration"]},
+            {"required": ["end", "duration"]},
             {"required": ["startMeter", "endMeter"]},
             {"required": ["startMeter", "duration"]},
             {"required": ["endMeter", "duration"]},
-            
-            // 2. Flat Beats / Time Combinations
             {"required": ["startTime", "endTime"]},
             {"required": ["startTime", "duration"]},
             {"required": ["endTime", "duration"]},
-            
-            // 3. Achronous (Index) Combinations
             {"required": ["startIndex", "endIndex"]},
             {"required": ["startIndex", "duration"]},
             {"required": ["endIndex", "duration"]},
-            
-            // 4. Anchor Combinations
             {"required": ["anchor", "duration"]},
-            
-            // 5. Hybrid (Meter + Flat Time)
             {"required": ["startMeter", "endTime"]},
             {"required": ["startTime", "endMeter"]}
           ]
         },
         {
           "description": "Defines the event's value (either pitch-based or symbolic)",
-          "oneOf": [
+          "anyOf": [
             {"required": ["startYValue", "endYValue"]},
             {"required": ["note"]}
           ]
         }
       ]
     },
-    
+
     "GroupEvent": {
       "type": "object",
       "allOf": [
@@ -579,12 +750,14 @@
             "type": {"const": "group"},
             "yValue": {"type": "number"},
             "events": {"type": "array"},
+            "at": {"$ref": "#/definitions/Anchor"},
             "startMeter": {"$ref": "#/definitions/MeterPosition"}
           },
           "required": ["yValue", "events"]
         },
         {
-          "oneOf": [
+          "anyOf": [
+            {"required": ["at"]},
             {"required": ["time"]},
             {"required": ["index"]},
             {"required": ["startMeter"]}
@@ -592,7 +765,7 @@
         }
       ]
     },
-    
+
     "ReferenceEvent": {
       "type": "object",
       "allOf": [
@@ -602,12 +775,14 @@
             "ref": {"type": "string"},
             "transpose": {"type": "number"},
             "offset": {"type": "number"},
+            "at": {"$ref": "#/definitions/Anchor"},
             "startMeter": {"$ref": "#/definitions/MeterPosition"}
           },
           "required": ["ref"]
         },
         {
-          "oneOf": [
+          "anyOf": [
+            {"required": ["at"]},
             {"required": ["time"]},
             {"required": ["index"]},
             {"required": ["startMeter"]}
@@ -615,7 +790,7 @@
         }
       ]
     },
-    
+
     "Payload": {
       "type": "object",
       "properties": {

@@ -1,13 +1,15 @@
 <html>
-# Tabota Language Reference v1.4
+# Tabota Language Reference v1.6
 
 ## Table of Contents
 1. [Core Concepts](#core-concepts)
 2. [The Symbolic Axis Mode](#the-symbolic-axis-mode)
 3. [Positioning Systems](#positioning-systems)
-4. [Nested Timelines](#nested-timelines)
-5. [External References](#external-references)
-6. [Complete Examples](#complete-examples)
+4. [Anchors & Regimes (v1.6)](#anchors--regimes-v16)
+5. [Glides, Easing & Contours](#glides-easing--contours)
+6. [Nested Timelines](#nested-timelines)
+7. [External References](#external-references)
+8. [Complete Examples](#complete-examples)
 
 ---
 
@@ -183,6 +185,70 @@ Position an event where you know ONE point within its span:
 }
 // Positions 2 beats/seconds AFTER the referenced event ends
 ```
+
+---
+
+## Anchors & Regimes (v1.6)
+
+As of v1.6, every event endpoint is an **anchor**: a coordinate plus an optional `regime` naming the clock it is measured against. A regime is only the *authoring field* — not a container that governs everything inside it — so a single contiguous note can begin in one regime and end in another. The legacy `startTime` / `startMeter` / `startIndex` (and their `end…` partners) still work and are read as anchors that inherit the section's regime.
+
+```json
+{
+  "type": "line",
+  "start": { "measure": 2, "beat": 0 },
+  "end":   { "regime": "Chrono_B", "time": 1.0 },
+  "note":  "G4"
+}
+```
+
+This note starts on the downbeat of measure 2 in its own (metered) section and ends 1.0 second into the section named `Chrono_B`. A `temporalRegime` of `"free"` supplies no ambient regime at all, forcing every anchor inside it to name its own clock — an explicitly ungoverned layer. The shared time spine onto which anchors are *projected* for comparison is a lens, never a store: a metered anchor is never silently converted to seconds.
+
+---
+
+## Glides, Easing & Contours
+
+A line event glides its value from start to end. Two independent things shape that glide, and keeping them separate is the whole idea:
+
+* **Value space** — *how the in-between values are computed.* Pitch defaults to `"log-frequency"`: interpolation is linear in `log2(Hz)`, i.e. in cents, so equal musical distance is equal travel. A glide that *sounds* like a straight line is log-frequency with linear easing (and is already exponential in raw Hz). Set `"valueSpace": "linear"` to interpolate the raw number instead.
+* **Easing** — *how fast you traverse, independent of the endpoints.* This is a function `s(k)` on the unit interval with `s(0)=0`, `s(1)=1`, applied to the normalized position before values are interpolated. Default (omitted) is linear, `s(k)=k`.
+
+Tabota does **not** define a vocabulary of named curves. It defines only the easing *contract*, and lets you express a curve two ways:
+
+**1. An expression string** in the single variable `k`, over the grammar `k`, numbers, `( )`, `+ - * / ^`, the functions `exp ln log2 sin cos abs min max`, and constants `pi`, `e`. This is the high-fidelity master — exact.
+
+```json
+{ "type": "line", "note": "C4",
+  "start": { "beat": 0 }, "end": { "beat": 4 },
+  "endYValue": 660.0, "startYValue": 440.0,
+  "curve": "(exp(3*k)-1)/(exp(3)-1)" }
+```
+
+The normalized exponential `(exp(c*k)-1)/(exp(c)-1)` is the usual single-knob ease: `c→0` is linear, `c>0` slow-then-fast, `c<0` fast-then-slow, `+c`/`-c` mirror images. A sine ease-in-out is `(1-cos(pi*k))/2`.
+
+**2. A sample table** of ascending `[k, s]` pairs, interpolated linearly — a hand-drawn or sampled shape that any client can render with no math library. It is the lossy bake of an expression.
+
+```json
+{ "curve": [[0,0],[0.25,0.05],[0.5,0.5],[0.75,0.95],[1,1]] }
+```
+
+For an arbitrary path that isn't a single A→B move, add interior **breakpoints** via `points`. Each breakpoint has a normalized position `at` (0 = start, 1 = end), a `value`, and its own optional `curve` governing the segment leaving it. The full contour is `[start, …points, end]`.
+
+```json
+{
+  "type": "line", "note": "A4",
+  "start": { "beat": 0 }, "end": { "beat": 8 },
+  "startYValue": 440.0, "endYValue": 440.0,
+  "points": [
+    { "at": 0.25, "value": 466.16, "curve": "(1-cos(pi*k))/2" },
+    { "at": 0.50, "value": 440.0 },
+    { "at": 0.75, "value": 415.30 }
+  ]
+}
+```
+
+There are therefore two routes to any shape: many value points with linear easing, or few value points with an expressive curve. Both are first-class. Value points say *where* the pitch goes; the curve says *how* a segment is traversed.
+
+> Editor presets such as "exp", "log", or "smooth" (e.g. in Tabota Roll) are **not** part of the language. A client compiles its presets down to a `curve`. When both `curve` and the legacy `interpolation` are present, `curve` wins.
 
 ---
 

@@ -99,6 +99,20 @@ body{
 .lede a{ color:var(--tide); text-decoration:none; border-bottom:1px solid var(--tide); }
 .lede a:hover{ color:var(--tide-deep); border-color:var(--tide-deep); }
 
+/* --- canvas doctrine -------------------------------------------------- */
+.doctrine{ border:1px solid var(--silt); border-left:3px solid var(--algae);
+  border-radius:3px; background:linear-gradient(180deg,#ffffffae,var(--abyss-2));
+  padding:16px 20px 14px; position:relative; }
+.doctrine-mark{ font-family:var(--display); font-style:italic; font-size:16px;
+  color:var(--bone); margin-bottom:8px; }
+.doctrine p{ font-size:12.5px; line-height:1.62; color:var(--bone-dim); margin:0 0 9px; max-width:96ch; }
+.doctrine p:last-child{ margin-bottom:0; }
+.doctrine b{ color:var(--bone); font-weight:600; }
+.doctrine em{ color:var(--membrane-pink); font-style:italic; }
+.doctrine code{ background:var(--abyss-2); color:var(--membrane-pink);
+  padding:1px 5px; border-radius:2px; font-size:.92em; }
+.doctrine-coda{ color:var(--tide-deep)!important; font-style:italic; border-top:1px solid var(--silt-2); padding-top:9px; }
+
 /* --- panels ----------------------------------------------------------- */
 .panel{ border:1px solid var(--silt); border-radius:3px; background:var(--membrane);
   position:relative; }
@@ -162,6 +176,9 @@ input[type=file]::file-selector-button{ font-family:var(--mono); background:var(
   z-index:10; background:var(--bruise); border:2px solid var(--tide); border-radius:2px; }
 .event-line{ position:absolute; height:2.5px; background:var(--membrane-pink);
   transform-origin:0 50%; z-index:9; border-radius:2px; }
+.event-line.cross-regime{ height:0; border-top:2.5px dashed var(--bruise); background:transparent; }
+.event-line.cross-regime::after{ content:""; position:absolute; right:-3px; top:-3px;
+  width:6px; height:6px; border-radius:50%; background:var(--bruise); }
 .event-payload{ position:absolute; transform:translate(14px,-50%); font-size:11px;
   color:var(--bone-dim); white-space:nowrap; z-index:11; }
 .grid-line-vertical{ position:absolute; width:1px; height:100%; top:0; background:rgba(24,48,43,0.07); }
@@ -267,13 +284,24 @@ table.report tr:hover td{ background:rgba(24,48,43,0.04); }
       <span class="rl-arr">→</span>
     </a>
 
-    <span class="chip">lang <b>v1.5</b></span>
+    <span class="chip">lang <b>v1.6</b></span>
     <span class="chip" id="chip-bend">bend <b>±24 st</b></span>
   </div>
 </div>
 
 <p class="lede">
   A workspace for the Tabota notation language: <b>write or paste</b> a score and see it plotted, then <b>compile it to microtonal MIDI</b> or read MIDI back into Tabota. Pitch may be written as raw frequency, symbolic notes, or tuned through Scala <code>.scl</code> files; playback retunes ordinary MIDI notes through pitch bend so the result can travel into a normal DAW. For drawing directly instead of typing JSON, open the <a href="tabota_roll.html">piano-roll editor</a> — a lighter, polyphonic canvas with voice-aware MIDI export. For rhythm, open <a href="cycla_builder.html">Cycla</a>: a companion builder for <code>.cyc</code> files, treating meter as a recursive subdivision grammar — a tuning system for time, parallel to how Scala describes tuning systems for pitch.
+</p>
+
+<aside class="doctrine">
+  <div class="doctrine-mark">The Canvas Doctrine</div>
+  <p>Tabota treats the <b>digital canvas as the primary composition environment</b>, not a transcription of performance instructions. A note is defined as points in coordinate space and extended backward or forward by duration. Its start and end may be authored within a regime, but a duration-bearing note may extend <em>out</em> of the regime that authored it — <b>a regime is only the authoring field, not a container</b> that governs everything inside it.</p>
+  <p>Conventional notation is a set of instructions for live performers; digital composition is under no such obligation, and nothing here happens live. The canvas is a graphic space — closer to drawing than to dictation, where time need not be metered — yet these remain events that will eventually be realized, and that realization is resolved only in the <b>down-translation</b>. The native Tabota encoding is the high-fidelity master (the vector, the <code>.svg</code>); every later translation, above all MIDI, is permitted to be a <b>lower-fidelity shadow</b> (the raster, the <code>.jpeg</code>). A start authored in one regime and an end resolved in another are stored exactly as written; conversion to meter happens only for the tempo track at MIDI mixdown, and it is allowed to be approximate.</p>
+  <p class="doctrine-coda">The aim is absolute freedom of graphical representation, so temporal expression isn't limited by conventions about itself — while still allowing time and pitch to be rigorously defined wherever the composer wants them.</p>
+</aside>
+
+<p class="note" style="margin:-6px 2px 0;">
+  <b>On glides (v1.6):</b> a line event interpolates its value across two independent axes. <em>Value space</em> — pitch defaults to <code>log-frequency</code> (linear in cents), so a straight-<i>sounding</i> glide is log-frequency with linear easing. <em>Easing</em> — an optional <code>curve</code>, the function <code>s(k)</code> on the unit interval, given as a math expression in <code>k</code> (the exact master) or a <code>[[k,s],…]</code> sample table (a hand-drawn shape). Tabota names no curves; <code>linear</code> is the only default. Arbitrary contours come from interior <code>points</code>. Editor presets like "exp" or "smooth" live in the client and compile down to a <code>curve</code>.
 </p>
 
 
@@ -301,6 +329,8 @@ table.report tr:hover td{ background:rgba(24,48,43,0.04); }
           <option value="micro">Microtonal scale (Hz)</option>
           <option value="symbolic">Symbolic melody + slide</option>
           <option value="theatre">Theatrical cues</option>
+          <option value="handover">Regime handover (hybrid note)</option>
+          <option value="glide">Glide &amp; easing (curves)</option>
         </select>
         <button class="action-btn" id="beautify-btn">Beautify</button>
         <button class="copy-btn icon-btn" id="copy-main-json">
@@ -387,7 +417,7 @@ table.report tr:hover td{ background:rgba(24,48,43,0.04); }
 
     <!-- IMPORT ........................................................ -->
     <div class="tabpane" id="pane-import">
-      <p class="note">Convert a <code>.mid</code> file into a Tabota v1.5 score. Tracks become symbolic lanes (12-TET note names). The result is loaded straight into the editor above.</p>
+      <p class="note">Convert a <code>.mid</code> file into a Tabota v1.6 score. Tracks become symbolic lanes (12-TET note names). The result is loaded straight into the editor above.</p>
       <div style="margin:16px 0;"><input type="file" id="midi-input" accept=".mid,.midi"></div>
       <div class="controls-grid">
         <label class="field" style="text-transform:none;letter-spacing:0;">
@@ -521,10 +551,12 @@ const BASE_TIMELINE_HEIGHT=300;
 let codeEditor;
 
 const samples={
-  main:`{ "projectName": "Tabota Language Showcase", "languageVersion": "1.5", "score": [ { "sectionId": "A1_Melody", "temporalRegime": "metered", "regimeSettings": { "beats": 4, "bpm": 120 }, "axisMode": "frequency", "modeSettings": { "minHz": 100, "maxHz": 2000 }, "events": [ { "type": "line", "startTime": 0, "endTime": 2, "startYValue": 440.0, "endYValue": 523.25, "payload": { "comment": "A4 to C5" } }, { "type": "point", "time": 2.5, "yValue": 587.33, "payload": { "comment": "D5" } }, { "type": "line", "startTime": 3, "endTime": 4, "startYValue": 659.25, "endYValue": 675.50, "payload": { "comment": "E5 bend" } } ] }, { "sectionId": "B1_Rhythm", "temporalRegime": "chronological", "regimeSettings": { "duration": 2 }, "axisMode": "categorical", "modeSettings": { "categories": ["Kick", "Snare", "Hi-Hat"] }, "events": [ { "type": "point", "time": 0.0, "yValue": "Kick" }, { "type": "point", "time": 0.5, "yValue": "Snare" }, { "type": "point", "time": 1.0, "yValue": "Kick" }, { "type": "point", "time": 1.5, "yValue": "Snare" } ] } ] }`,
-  micro:`{ "projectName": "Microtonal Scale", "languageVersion": "1.5", "score": [ { "sectionId": "Scale", "temporalRegime": "metered", "regimeSettings": { "beats": 8, "bpm": 90 }, "axisMode": "frequency", "modeSettings": { "minHz": 200, "maxHz": 600 }, "events": [ { "type": "point", "time": 0, "yValue": 261.63 }, { "type": "point", "time": 1, "yValue": 285.00 }, { "type": "point", "time": 2, "yValue": 311.13 }, { "type": "point", "time": 3, "yValue": 340.00 }, { "type": "point", "time": 4, "yValue": 369.99 }, { "type": "point", "time": 5, "yValue": 405.00 }, { "type": "point", "time": 6, "yValue": 440.00 }, { "type": "point", "time": 7, "yValue": 480.00 } ] } ] }`,
-  symbolic:`{ "projectName": "Symbolic Melody", "languageVersion": "1.5", "score": [ { "sectionId": "Theme", "temporalRegime": "metered", "regimeSettings": { "beats": 8, "bpm": 100 }, "axisMode": "symbolic", "modeSettings": { "tuning": "12-TET", "a4": 440 }, "defaultEventType": "line", "events": [ { "startTime": 0, "duration": 1, "note": "C4" }, { "startTime": 1, "duration": 1, "note": "E4" }, { "startTime": 2, "duration": 1, "note": "G4" }, { "startTime": 3, "duration": 2, "note": "A4" }, { "type": "line", "startTime": 5, "duration": 3, "startYValue": 440.0, "endYValue": 587.33, "payload": { "comment": "gliss A4 -> D5" } } ] } ] }`,
-  theatre:`{ "projectName": "Simple Stage Play", "languageVersion": "1.5", "score": [ { "sectionId": "Act 1, Scene 1", "temporalRegime": "achronous", "regimeSettings": { "indices": 4 }, "axisMode": "instructional", "events": [ { "type": "point", "index": 0, "yValue": 25, "payload": { "text": "House lights down." } }, { "type": "point", "index": 1, "yValue": 50, "payload": { "text": "Spotlight center." } }, { "type": "line", "startIndex": 2, "endIndex": 3, "startYValue": 75, "endYValue": 75, "payload": { "text": "Actor crosses." } }, { "type": "point", "index": 4, "yValue": 75, "payload": { "text": "'Am I late?'" } } ] } ] }`
+  main:`{ "projectName": "Tabota Language Showcase", "languageVersion": "1.6", "score": [ { "sectionId": "A1_Melody", "temporalRegime": "metered", "regimeSettings": { "beats": 4, "bpm": 120 }, "axisMode": "frequency", "modeSettings": { "minHz": 100, "maxHz": 2000 }, "events": [ { "type": "line", "startTime": 0, "endTime": 2, "startYValue": 440.0, "endYValue": 523.25, "payload": { "comment": "A4 to C5" } }, { "type": "point", "time": 2.5, "yValue": 587.33, "payload": { "comment": "D5" } }, { "type": "line", "startTime": 3, "endTime": 4, "startYValue": 659.25, "endYValue": 675.50, "payload": { "comment": "E5 bend" } } ] }, { "sectionId": "B1_Rhythm", "temporalRegime": "chronological", "regimeSettings": { "duration": 2 }, "axisMode": "categorical", "modeSettings": { "categories": ["Kick", "Snare", "Hi-Hat"] }, "events": [ { "type": "point", "time": 0.0, "yValue": "Kick" }, { "type": "point", "time": 0.5, "yValue": "Snare" }, { "type": "point", "time": 1.0, "yValue": "Kick" }, { "type": "point", "time": 1.5, "yValue": "Snare" } ] } ] }`,
+  micro:`{ "projectName": "Microtonal Scale", "languageVersion": "1.6", "score": [ { "sectionId": "Scale", "temporalRegime": "metered", "regimeSettings": { "beats": 8, "bpm": 90 }, "axisMode": "frequency", "modeSettings": { "minHz": 200, "maxHz": 600 }, "events": [ { "type": "point", "time": 0, "yValue": 261.63 }, { "type": "point", "time": 1, "yValue": 285.00 }, { "type": "point", "time": 2, "yValue": 311.13 }, { "type": "point", "time": 3, "yValue": 340.00 }, { "type": "point", "time": 4, "yValue": 369.99 }, { "type": "point", "time": 5, "yValue": 405.00 }, { "type": "point", "time": 6, "yValue": 440.00 }, { "type": "point", "time": 7, "yValue": 480.00 } ] } ] }`,
+  symbolic:`{ "projectName": "Symbolic Melody", "languageVersion": "1.6", "score": [ { "sectionId": "Theme", "temporalRegime": "metered", "regimeSettings": { "beats": 8, "bpm": 100 }, "axisMode": "symbolic", "modeSettings": { "tuning": "12-TET", "a4": 440 }, "defaultEventType": "line", "events": [ { "startTime": 0, "duration": 1, "note": "C4" }, { "startTime": 1, "duration": 1, "note": "E4" }, { "startTime": 2, "duration": 1, "note": "G4" }, { "startTime": 3, "duration": 2, "note": "A4" }, { "type": "line", "startTime": 5, "duration": 3, "startYValue": 440.0, "endYValue": 587.33, "payload": { "comment": "gliss A4 -> D5" } } ] } ] }`,
+  theatre:`{ "projectName": "Simple Stage Play", "languageVersion": "1.6", "score": [ { "sectionId": "Act 1, Scene 1", "temporalRegime": "achronous", "regimeSettings": { "indices": 4 }, "axisMode": "instructional", "events": [ { "type": "point", "index": 0, "yValue": 25, "payload": { "text": "House lights down." } }, { "type": "point", "index": 1, "yValue": 50, "payload": { "text": "Spotlight center." } }, { "type": "line", "startIndex": 2, "endIndex": 3, "startYValue": 75, "endYValue": 75, "payload": { "text": "Actor crosses." } }, { "type": "point", "index": 4, "yValue": 75, "payload": { "text": "'Am I late?'" } } ] } ] }`,
+  handover:`{ "projectName": "Regime Handover", "languageVersion": "1.6", "score": [ { "sectionId": "Metered_A", "temporalRegime": "metered", "regimeSettings": { "beats": 8, "bpm": 120, "timeSignature": "4/4" }, "axisMode": "symbolic", "modeSettings": { "tuning": "12-TET", "a4": 440 }, "defaultEventType": "line", "events": [ { "start": { "measure": 1, "beat": 0 }, "duration": 1, "note": "C4" }, { "start": { "measure": 1, "beat": 1 }, "duration": 1, "note": "E4" }, { "id": "carry", "start": { "measure": 2, "beat": 0 }, "end": { "regime": "Chrono_B", "time": 1.0 }, "note": "G4", "payload": { "comment": "one contiguous note: starts on beat 1 of bar 2 in A, ends 1.0s into B" } } ] }, { "sectionId": "Chrono_B", "temporalRegime": "chronological", "regimeSettings": { "duration": 3, "units": "seconds", "renderMeter": { "bpm": 120, "timeSignature": "4/4" } }, "axisMode": "frequency", "modeSettings": { "minHz": 200, "maxHz": 800 }, "defaultEventType": "point", "events": [ { "at": { "time": 1.5 }, "yValue": 440.0, "payload": { "comment": "A4 at 1.5s" } }, { "at": { "time": 2.5 }, "yValue": 493.88, "payload": { "comment": "B4 at 2.5s" } } ] }, { "sectionId": "Free_Overlay", "temporalRegime": "free", "regimeSettings": {}, "axisMode": "frequency", "modeSettings": { "minHz": 200, "maxHz": 800 }, "events": [ { "type": "line", "start": { "regime": "Metered_A", "measure": 1, "beat": 2 }, "end": { "regime": "Chrono_B", "time": 2.0 }, "startYValue": 300.0, "endYValue": 600.0, "payload": { "comment": "ungoverned layer: every anchor names its own clock" } } ] } ] }`,
+  glide:`{ "projectName": "Glide & Easing", "languageVersion": "1.6", "score": [ { "sectionId": "Glides", "temporalRegime": "metered", "regimeSettings": { "beats": 12, "bpm": 90, "timeSignature": "4/4" }, "axisMode": "frequency", "modeSettings": { "minHz": 320, "maxHz": 760 }, "events": [ { "type": "line", "start": { "beat": 0 }, "end": { "beat": 3 }, "startYValue": 440.0, "endYValue": 660.0, "payload": { "comment": "linear easing in log-frequency — a straight-sounding rise" } }, { "type": "line", "start": { "beat": 4 }, "end": { "beat": 7 }, "startYValue": 440.0, "endYValue": 660.0, "curve": "(exp(3*k)-1)/(exp(3)-1)", "payload": { "comment": "exponential easing, curvature 3 (slow then fast)" } }, { "type": "line", "start": { "beat": 8 }, "end": { "beat": 12 }, "startYValue": 440.0, "endYValue": 440.0, "points": [ { "at": 0.25, "value": 587.33, "curve": "(1-cos(pi*k))/2" }, { "at": 0.5, "value": 440.0 }, { "at": 0.75, "value": 369.99 } ], "payload": { "comment": "contour: up / back / down / back, sine ease on the first leg" } } ] } ] }`
 };
 
 /* ============================================================
@@ -581,13 +613,72 @@ document.addEventListener('DOMContentLoaded',()=>{
    ============================================================ */
 function meterToBeats(m,bpmsr){ return ((m.measure-1)*bpmsr)+m.beat; }
 
-function processScore(scoreData){
-  let globalTime=0; const processedSections=[]; const processedEvents=[]; let totalDuration=0;
-  (scoreData.score||[]).forEach(section=>{
+/* ============================================================
+   SHARED ANCHOR MODEL  (v1.6)
+   Every endpoint is a regime-anchored coordinate. The same resolver
+   feeds the visualizer and the MIDI compiler so they agree on where a
+   note lives — including a contiguous hybrid note whose start and end
+   name different regimes. The spine (sectionId -> placement) is the
+   interchange currency; it is a projection, not where the anchor lives.
+   ============================================================ */
+function startAnchorOf(e){
+  if(e.start) return e.start;
+  if(e.at) return e.at;
+  if(e.startMeter) return {measure:e.startMeter.measure, beat:e.startMeter.beat};
+  if(e.startTime!==undefined) return {time:e.startTime};
+  if(e.startIndex!==undefined) return {index:e.startIndex};
+  if(e.time!==undefined) return {time:e.time};
+  if(e.index!==undefined) return {index:e.index};
+  return null;
+}
+function endAnchorOf(e){
+  if(e.end) return e.end;
+  if(e.endMeter) return {measure:e.endMeter.measure, beat:e.endMeter.beat};
+  if(e.endTime!==undefined) return {time:e.endTime};
+  if(e.endIndex!==undefined) return {index:e.endIndex};
+  return null; // null => use duration, or zero-length (point)
+}
+// coordinate -> local offset in the named regime's native unit
+function anchorToLocal(a,entry){
+  if(!a) return 0;
+  if(a.measure!==undefined) return (a.measure-1)*((entry&&entry.bpmsr)||4)+(a.beat||0);
+  if(a.beat!==undefined) return a.beat;
+  if(a.time!==undefined) return a.time;
+  if(a.index!==undefined) return a.index;
+  return 0;
+}
+// coordinate -> position on the shared spine
+function resolveGlobal(a,ambientEntry,spine){
+  if(!a) return ambientEntry?ambientEntry.startTime:0;
+  const entry=(a.regime&&spine[a.regime])?spine[a.regime]:ambientEntry;
+  return (entry?entry.startTime:0)+anchorToLocal(a,entry);
+}
+function anchorRegimeName(a,ambientEntry){
+  return (a&&a.regime)?a.regime:(ambientEntry?ambientEntry.id:null);
+}
+// first pass: place every named regime on the spine. 'free' layers
+// consume no span — they overlay, and their events borrow other clocks.
+function buildSpine(scoreData){
+  let g=0; const spine={};
+  (scoreData.score||[]).forEach((section,si)=>{
     const rs=section.regimeSettings||{};
-    const duration=rs.beats||rs.duration||rs.indices||1;
-    const sectionStartTime=globalTime;
+    const isFree=section.temporalRegime==='free';
+    const duration=isFree?0:(rs.beats??rs.duration??rs.indices??1);
     const bpmsr=rs.timeSignature?parseInt(rs.timeSignature.split('/')[0]):4;
+    const id=section.sectionId||('section '+(si+1));
+    spine[id]={id,startTime:g,duration,bpmsr,regime:section.temporalRegime,si};
+    g+=duration;
+  });
+  return {spine,total:g};
+}
+
+function processScore(scoreData){
+  const {spine,total}=buildSpine(scoreData);
+  const processedSections=[]; const processedEvents=[];
+  (scoreData.score||[]).forEach((section,si)=>{
+    const id=section.sectionId||('section '+(si+1));
+    const entry=spine[id];
+    const sectionStartTime=entry.startTime, duration=entry.duration;
     // symbolic vertical range
     let midiMin=Infinity, midiMax=-Infinity;
     const scan=ev=>{ const n=ev.note?noteNameToMidi(ev.note):null; if(n!=null){ midiMin=Math.min(midiMin,n); midiMax=Math.max(midiMax,n);} };
@@ -604,24 +695,25 @@ function processScore(scoreData){
     ctx.forEach(({event,track})=>{
       const inherited=track?.defaultEventType||section.defaultEventType||"point";
       const type=event.type||inherited;
-      let ls=event.time??event.startTime??event.startIndex;
-      let le=event.endTime??event.endIndex;
-      if(event.startMeter!==undefined&&ls===undefined) ls=meterToBeats(event.startMeter,bpmsr);
-      if(ls===undefined) ls=0;
-      if(event.endMeter!==undefined&&le===undefined) le=meterToBeats(event.endMeter,bpmsr);
-      else if(event.duration!==undefined&&le===undefined) le=ls+event.duration;
-      else if(le===undefined) le=ls;
+      const sA=startAnchorOf(event), eA=endAnchorOf(event);
+      const gStart=resolveGlobal(sA,entry,spine);
+      let gEnd;
+      if(eA) gEnd=resolveGlobal(eA,entry,spine);
+      else if(event.duration!==undefined){
+        // duration rides the START anchor's regime/units
+        gEnd=gStart+event.duration;
+      } else gEnd=gStart;
+
+      const startReg=anchorRegimeName(sA,entry), endReg=eA?anchorRegimeName(eA,entry):startReg;
+      const crossRegime = !!(startReg&&endReg&&startReg!==endReg);
 
       const drawSection={...(track||section),_midiMin:midiMin,_midiMax:midiMax,axisMode:(track||section).axisMode||section.axisMode};
-      const ev={...event,type,section:drawSection,globalStartTime:sectionStartTime+ls,globalEndTime:sectionStartTime+le};
-      // symbolic: derive numeric y from note
+      const ev={...event,type,section:drawSection,globalStartTime:gStart,globalEndTime:gEnd,_crossRegime:crossRegime,_startRegime:startReg,_endRegime:endReg};
       if(drawSection.axisMode==='symbolic'&&event.note){ const n=noteNameToMidi(event.note); ev.yValue=n; ev.startYValue=n; ev.endYValue=n; }
       processedEvents.push(ev);
     });
-    globalTime+=duration;
   });
-  totalDuration=globalTime;
-  return {processedSections,processedEvents,totalDuration};
+  return {processedSections,processedEvents,totalDuration:total};
 }
 
 function renderScore(){
@@ -675,11 +767,24 @@ function drawEvents(events,container,total,h){
   events.forEach(ev=>{
     if(ev.type==='point'){ const el=document.createElement('div'); el.className='event-point'; el.style.left=`${xp(ev.globalStartTime)}%`; el.style.top=`${getYPos(ev.yValue,ev.section)}%`; container.appendChild(el); if(ev.payload?.text) addPayload(el,ev.payload.text); if(ev.payload?.comment) el.title=ev.payload.comment; }
     else if(ev.type==='line'){
-      const sx=xp(ev.globalStartTime), sy=getYPos(ev.startYValue,ev.section), ex=xp(ev.globalEndTime), ey=getYPos(ev.endYValue,ev.section);
-      const el=document.createElement('div'); el.className='event-line';
-      const dx=(ex-sx)/100*fw, dy=(ey-sy)/100*h;
-      el.style.left=`${sx}%`; el.style.top=`${sy}%`; el.style.width=`${Math.sqrt(dx*dx+dy*dy)}px`; el.style.transform=`rotate(${Math.atan2(dy,dx)*180/Math.PI}deg)`;
-      container.appendChild(el); if(ev.payload?.text) addPayload(el,ev.payload.text); if(ev.payload?.comment) el.title=ev.payload.comment;
+      const nodeY=v=>{ if(ev.section.axisMode==='symbolic'&&typeof v==='string'){ const m=noteNameToMidi(v); return getYPos(m,ev.section);} return getYPos(v,ev.section); };
+      const sxp=xp(ev.globalStartTime), exp_=xp(ev.globalEndTime);
+      // build node path: [start, ...points, end] in (x%, y%)
+      const nodes=[{x:sxp,y:nodeY(ev.startYValue)}];
+      if(Array.isArray(ev.points)) ev.points.forEach(p=>nodes.push({x:sxp+(exp_-sxp)*(p.at||0),y:nodeY(p.value)}));
+      nodes.push({x:exp_,y:nodeY(ev.endYValue)});
+      const cls='event-line'+(ev._crossRegime?' cross-regime':'');
+      for(let s=0;s<nodes.length-1;s++){
+        const a=nodes[s], b=nodes[s+1];
+        const el=document.createElement('div'); el.className=cls;
+        const dx=(b.x-a.x)/100*fw, dy=(b.y-a.y)/100*h;
+        el.style.left=`${a.x}%`; el.style.top=`${a.y}%`; el.style.width=`${Math.sqrt(dx*dx+dy*dy)}px`; el.style.transform=`rotate(${Math.atan2(dy,dx)*180/Math.PI}deg)`;
+        container.appendChild(el);
+        if(s===0){
+          if(ev._crossRegime) el.title=`${ev._startRegime} → ${ev._endRegime}`+(ev.payload?.comment?` · ${ev.payload.comment}`:'');
+          else { if(ev.payload?.text) addPayload(el,ev.payload.text); if(ev.payload?.comment) el.title=ev.payload.comment; }
+        }
+      }
     }
     else if(ev.type==='group'){ const el=document.createElement('div'); el.className='event-group'; el.style.left=`${xp(ev.globalStartTime)}%`; el.style.top=`${getYPos(ev.yValue,ev.section)}%`; container.appendChild(el); if(ev.payload?.comment) el.title=ev.payload.comment; }
   });
@@ -790,17 +895,17 @@ function compileToMidi(){
   const raw=[];
   voice.events.forEach((e,i)=>{
     const type=e.type||defType;
-    // start beat
-    let sb=e.time??e.startTime??e.startIndex;
-    if(e.startMeter!==undefined&&sb===undefined) sb=meterToBeats(e.startMeter,bpmsr);
-    if(sb===undefined) sb=0;
-    sb=toBeats(sb);
+    // start beat — via the shared anchor model (v1.6), local to this voice's regime
+    const sA=startAnchorOf(e), eA=endAnchorOf(e);
+    if((sA&&sA.regime&&sA.regime!==voice.section.sectionId)||(eA&&eA.regime&&eA.regime!==voice.section.sectionId)){
+      warnings.push(`Event #${i} anchors another regime — the single-voice exporter resolves it in this voice's local frame. Cross-regime placement is exact only in the spine-aware mixdown.`);
+    }
+    let sb=toBeats(anchorToLocal(sA,{bpmsr}));
     // end beat
-    let eb=e.endTime??e.endIndex;
-    if(e.endMeter!==undefined&&eb===undefined) eb=meterToBeats(e.endMeter,bpmsr);
-    else if(e.duration!==undefined&&eb===undefined) eb=(e.time??e.startTime??e.startIndex??0)+e.duration, eb=toBeats(eb);
-    if(eb!==undefined&&e.endMeter!==undefined) eb=toBeats(eb);
-    if(eb===undefined) eb=null; // resolve later (point)
+    let eb;
+    if(eA) eb=toBeats(anchorToLocal(eA,{bpmsr}));
+    else if(e.duration!==undefined) eb=sb+(regime==='chronological'?e.duration*bpm/60:e.duration);
+    else eb=null; // resolve later (point)
 
     // pitch endpoints
     let startVal,endVal,isSlide=false;
@@ -933,7 +1038,7 @@ function convertMidiToTabota(){
         });
         tracks.push({trackId:tr.name?tr.name.replace(/\s+/g,'_'):`Track_${idx+1}`,axisMode:"symbolic",modeSettings:{tuning:"12-TET"},defaultEventType:"line",events});
       });
-      const score={projectName:file.name.split('.')[0]||"Converted",languageVersion:"1.5",score:[{sectionId:"Main_Import",temporalRegime:"metered",regimeSettings:{bpm,beats:Math.ceil(maxTicks/ppq),timeSignature:`${num}/${den}`},tracks}]};
+      const score={projectName:file.name.split('.')[0]||"Converted",languageVersion:"1.6",score:[{sectionId:"Main_Import",temporalRegime:"metered",regimeSettings:{bpm,beats:Math.ceil(maxTicks/ppq),timeSignature:`${num}/${den}`},tracks}]};
       const json=JSON.stringify(score,null,2);
       codeEditor.setValue(json); renderScore(); refreshVoices();
       const blob=new Blob([json],{type:'application/json'}); const url=URL.createObjectURL(blob);
