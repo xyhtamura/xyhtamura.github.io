@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>glossolalia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..400;1,9..144,300..400&family=DM+Mono:wght@300;400;500&family=Gentium+Plus:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* light mode — a phonetic specimen plate. no zero-chroma anywhere. */
+    --paper:#e9ecd8;          /* pale pistachio paper */
+    --paper-2:#eef0e2;
+    --ink:#3a2436;            /* deep plum ink */
+    --ink-soft:#7a5d72;
+    --hair:#b9b79a;           /* chartreuse-grey hairline */
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;overflow:hidden;background:var(--paper)}
+  body{
+    font-family:"DM Mono",monospace;color:var(--ink);
+    -webkit-tap-highlight-color:transparent;touch-action:none;cursor:crosshair;
+  }
+  #stage{display:block;width:100vw;height:100vh}
+
+  #plate-title{
+    position:fixed;top:max(20px,env(safe-area-inset-top));left:24px;pointer-events:none;user-select:none;
+    transition:opacity 2s ease;
+  }
+  #plate-title .t{font-family:"Fraunces",serif;font-style:italic;font-weight:300;font-size:22px;color:var(--ink)}
+  #plate-title .s{display:block;margin-top:2px;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+  #plate-title.dim{opacity:.4}
+
+  /* axis labels of the vowel-space specimen plate */
+  .axis{position:fixed;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);pointer-events:none;user-select:none;opacity:.7}
+  #ax-front{top:50%;left:14px;transform:translateY(-50%) rotate(180deg);writing-mode:vertical-rl}
+  #ax-back {top:50%;right:14px;transform:translateY(-50%);writing-mode:vertical-rl}
+  #ax-close{top:14px;left:50%;transform:translateX(-50%)}
+  #ax-open {bottom:14px;left:50%;transform:translateX(-50%)}
+
+  #hint{
+    position:fixed;left:0;right:0;bottom:max(40px,env(safe-area-inset-bottom));text-align:center;pointer-events:none;
+    font-size:12.5px;letter-spacing:.02em;color:var(--ink-soft);transition:opacity 1.6s ease;opacity:1;
+  }
+  #hint em{font-family:"Fraunces",serif;font-style:italic;color:var(--ink);font-weight:400}
+  #hint.gone{opacity:0}
+
+  #gate{
+    position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:10;
+    background:radial-gradient(130% 120% at 50% 38%, #f1f2e6 0%, #e3e6d0 75%);
+    transition:opacity .9s ease;
+  }
+  #gate.gone{opacity:0;pointer-events:none}
+  #gate .gi{text-align:center;max-width:380px;padding:0 26px;animation:rise 1.4s cubic-bezier(.2,.8,.2,1) both}
+  #gate h1{font-family:"Fraunces",serif;font-style:italic;font-weight:300;font-size:40px;color:var(--ink);margin-bottom:6px}
+  #gate .gtag{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:22px}
+  #gate p{font-size:13px;line-height:1.75;color:#574a55}
+  #gate .specimens{font-family:"Gentium Plus",serif;font-size:34px;color:var(--ink);letter-spacing:.18em;margin:26px 0 22px;opacity:.9}
+  #gate .enter{font-size:11px;letter-spacing:.08em;color:var(--ink-soft)}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+  /* offscreen font preloader */
+  #preload{position:absolute;left:-9999px;top:-9999px;opacity:0}
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+
+<div id="plate-title"><span class="t">glossolalia</span><span class="s">specimen plate · a seeming-speech</span></div>
+<div id="ax-front" class="axis">front · F2 high</div>
+<div id="ax-back"  class="axis">back · F2 low</div>
+<div id="ax-close" class="axis">close · F1 low</div>
+<div id="ax-open"  class="axis">open · F1 high</div>
+
+<div id="hint"><em>tap</em> to set a specimen · <em>tap one</em> to make it speak</div>
+
+<div id="gate">
+  <div class="gi">
+    <h1>glossolalia</h1>
+    <div class="gtag">a field guide to a language that isn't</div>
+    <p>specimens drift across a vowel space. where one sits is the vowel it is; disturb it and it wraps that vowel in a consonant and speaks. none of it means anything.</p>
+    <div class="specimens">ə&nbsp;&nbsp;ɛ&nbsp;&nbsp;u&nbsp;&nbsp;ʃ&nbsp;&nbsp;ɑ&nbsp;&nbsp;i</div>
+    <div class="enter">TOUCH TO ENTER · SOUND ON</div>
+  </div>
+</div>
+
+<span id="preload">
+  <span style='font-family:"Gentium Plus"'>iɪeɛæaɑɔoʊuəʌɜy ptkbdgsʃfhzvmnŋlrwj</span>
+  <span style='font-family:"Fraunces"'>glossolalia</span>
+  <span style='font-family:"DM Mono"'>F1 F2</span>
+</span>
+
+<script>
+"use strict";
+/* ============================================================
+   glossolalia — IPA specimen-cells that speak a seeming-language
+   Same instrument as the resonant bodies: only the resonator changed.
+   A vowel = formants = the modes of a vocal tract (source-filter model).
+   The page is a vowel space: position -> (F1,F2). Place IS vowel.
+   Strikes wrap the vowel in a consonant gesture -> a syllable that
+   only has to SEEM speakable. Nothing means anything.
+   ============================================================ */
+
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const pick=a=>a[(Math.random()*a.length)|0];
+const clamp=(v,a,b)=>v<a?a:v>b?b:v;
+const lerp=(a,b,t)=>a+(b-a)*t;
+const TAU=Math.PI*2;
+
+/* ---- vowel landmarks (F1,F2 in Hz) — only used to NAME a position ---- */
+const VOWELS=[
+ {g:'i',F1:280,F2:2250},{g:'ɪ',F1:390,F2:1990},{g:'e',F1:440,F2:2150},
+ {g:'ɛ',F1:540,F2:1820},{g:'æ',F1:660,F2:1700},{g:'a',F1:780,F2:1480},
+ {g:'ɑ',F1:760,F2:1020},{g:'ɔ',F1:570,F2:840 },{g:'o',F1:450,F2:880 },
+ {g:'ʊ',F1:440,F2:1020},{g:'u',F1:300,F2:850 },{g:'ə',F1:500,F2:1480},
+ {g:'ʌ',F1:620,F2:1220},{g:'ɜ',F1:520,F2:1420},{g:'y',F1:290,F2:1750}
+];
+
+/* ---- consonants as excitation gestures (locus = where formants begin) ---- */
+const CONS={
+ 'p':{t:'stop',vd:false,burst:900 ,loc:[700,1100,2400]},
+ 't':{t:'stop',vd:false,burst:4000,loc:[400,1700,2600]},
+ 'k':{t:'stop',vd:false,burst:1900,loc:[320,1990,2400]},
+ 'b':{t:'stop',vd:true ,burst:700 ,loc:[700,1100,2400]},
+ 'd':{t:'stop',vd:true ,burst:3000,loc:[400,1700,2600]},
+ 'g':{t:'stop',vd:true ,burst:1900,loc:[320,2000,2500]},
+ 's':{t:'fric',vd:false,nz:6800,q:3.5,amp:0.55},
+ 'ʃ':{t:'fric',vd:false,nz:3000,q:3.0,amp:0.55},
+ 'f':{t:'fric',vd:false,nz:7200,q:1.0,amp:0.32},
+ 'h':{t:'fric',vd:false,through:true,amp:0.30},
+ 'z':{t:'fric',vd:true ,nz:5200,q:3.0,amp:0.38},
+ 'v':{t:'fric',vd:true ,nz:6200,q:1.0,amp:0.26},
+ 'm':{t:'nas',loc:[280,950 ,2200]},
+ 'n':{t:'nas',loc:[280,1650,2600]},
+ 'ŋ':{t:'nas',loc:[280,2000,2500]},
+ 'l':{t:'apx',loc:[360,1300,2700]},
+ 'r':{t:'apx',loc:[440,1250,1600]}, /* low F3 = rhotic */
+ 'w':{t:'apx',loc:[330,700 ,2200]},
+ 'j':{t:'apx',loc:[300,2200,3000]}
+};
+const ALL_CONS=Object.keys(CONS);
+
+/* the colony shares ONE inventory, chosen once -> sounds like one language */
+let INVENTORY=[];
+function rollInventory(){
+  const shuf=ALL_CONS.slice().sort(()=>Math.random()-0.5);
+  INVENTORY=shuf.slice(0, 5+(Math.random()*3|0));
+}
+rollInventory();
+
+/* ============================================================
+   FORMANT SYNTH  (source -> 3 formant bandpass + noise gestures)
+   ============================================================ */
+const Voice={
+  ctx:null,master:null,wet:null,comp:null,noiseBuf:null,active:0,MAX:4,
+  start(){
+    if(this.ctx) return;
+    const AC=window.AudioContext||window.webkitAudioContext;
+    const ctx=new AC(); this.ctx=ctx;
+    const comp=ctx.createDynamicsCompressor();
+    comp.threshold.value=-18; comp.knee.value=24; comp.ratio.value=4; comp.attack.value=0.004; comp.release.value=0.25;
+    const master=ctx.createGain(); master.gain.value=0.0;
+    const conv=ctx.createConvolver(); conv.buffer=this._impulse(1.9,2.4);
+    const wet=ctx.createGain(); wet.gain.value=0.22;
+    const dry=ctx.createGain(); dry.gain.value=0.92;
+    master.connect(dry).connect(comp);
+    master.connect(conv).connect(wet).connect(comp);
+    comp.connect(ctx.destination);
+    this.master=master; this.wet=wet; this.comp=comp;
+    // shared noise
+    const n=ctx.sampleRate*1.0, buf=ctx.createBuffer(1,n,ctx.sampleRate), d=buf.getChannelData(0);
+    for(let i=0;i<n;i++) d[i]=Math.random()*2-1;
+    this.noiseBuf=buf;
+    master.gain.linearRampToValueAtTime(0.9, ctx.currentTime+1.0);
+  },
+  _impulse(dur,dec){
+    const ctx=this.ctx,n=Math.floor(ctx.sampleRate*dur),b=ctx.createBuffer(2,n,ctx.sampleRate);
+    for(let c=0;c<2;c++){const d=b.getChannelData(c);for(let i=0;i<n;i++){const t=i/n;d[i]=(Math.random()*2-1)*Math.pow(1-t,dec);}}
+    return b;
+  },
+  noiseSource(){const s=this.ctx.createBufferSource();s.buffer=this.noiseBuf;s.loop=true;return s;},
+
+  /* speak one syllable: onset(optional) + vowel(F1,F2,F3) + coda(optional) */
+  speak(p){
+    const ctx=this.ctx; if(!ctx) return 0;
+    if(this.active>=this.MAX) return 0;
+    const now=ctx.currentTime+0.02;
+    const loud=p.loud!=null?p.loud:0.5;
+
+    // ---- voiced source: sawtooth + vibrato + declining f0 ----
+    let f0=p.f0||140;
+    const src=ctx.createOscillator(); src.type='sawtooth';
+    src.frequency.setValueAtTime(f0,now);
+    const tilt=ctx.createBiquadFilter(); tilt.type='lowpass'; tilt.frequency.value=3200; tilt.Q.value=0.3;
+    const vib=ctx.createOscillator(); vib.type='sine'; vib.frequency.value=rnd(4.2,6.0);
+    const vibg=ctx.createGain(); vibg.gain.value=f0*0.012;
+    vib.connect(vibg).connect(src.frequency);
+
+    // three parallel formants
+    const F=[ctx.createBiquadFilter(),ctx.createBiquadFilter(),ctx.createBiquadFilter()];
+    const Fg=[ctx.createGain(),ctx.createGain(),ctx.createGain()];
+    const fgain=[1.0,0.6,0.32];
+    for(let i=0;i<3;i++){F[i].type='bandpass';F[i].Q.value=[7,9,11][i];Fg[i].gain.value=fgain[i];src.connect(tilt);tilt.connect(F[i]).connect(Fg[i]);}
+    const voiced=ctx.createGain(); voiced.gain.value=0;       // voicing envelope
+    Fg.forEach(g=>g.connect(voiced));
+
+    // noise path (frication / bursts / aspiration)
+    const nz=this.noiseSource();
+    const nbp=ctx.createBiquadFilter(); nbp.type='bandpass'; nbp.frequency.value=4000; nbp.Q.value=2;
+    const noise=ctx.createGain(); noise.gain.value=0;
+    nz.connect(nbp).connect(noise);
+
+    const out=ctx.createGain(); out.gain.value=loud;
+    voiced.connect(out); noise.connect(out); out.connect(this.master);
+
+    // ---- target vowel formants ----
+    const vF=[clamp(p.F1,220,950),clamp(p.F2,650,2500),clamp(p.F3||2600,2200,3200)];
+
+    let t=now, dur=0;
+    const on=p.onset?CONS[p.onset]:null;
+
+    const setF=(time,vals)=>{for(let i=0;i<3;i++){F[i].frequency.setValueAtTime(F[i].frequency.value,time);}};
+    const glideF=(t0,t1,from,to)=>{for(let i=0;i<3;i++){F[i].frequency.setValueAtTime(from[i],t0);F[i].frequency.linearRampToValueAtTime(to[i],t1);}};
+
+    // initialise formants
+    let startF=on&&on.loc?on.loc.slice():vF.slice();
+    for(let i=0;i<3;i++) F[i].frequency.setValueAtTime(startF[i],t);
+
+    // ===== ONSET =====
+    if(on){
+      if(on.t==='stop'){
+        const clo=rnd(0.05,0.08);                  // closure (silence)
+        if(on.vd){ voiced.gain.setValueAtTime(0.06,t); } // faint prevoicing
+        t+=clo;
+        // burst
+        nbp.frequency.setValueAtTime(on.burst,t); nbp.Q.value=1.2;
+        noise.gain.setValueAtTime(0,t);
+        noise.gain.linearRampToValueAtTime(on.vd?0.18:0.32, t+0.006);
+        noise.gain.exponentialRampToValueAtTime(0.001, t+ (on.vd?0.03:0.05));
+        const vot=on.vd?0.012:rnd(0.05,0.075);     // voice onset time
+        // aspiration for unvoiced
+        if(!on.vd){
+          nbp.frequency.setValueAtTime(2000,t+0.02);
+          noise.gain.linearRampToValueAtTime(0.10,t+0.02);
+          noise.gain.exponentialRampToValueAtTime(0.001,t+vot);
+        }
+        t+=vot;
+        glideF(t,t+0.05,startF,vF);
+        voiced.gain.setValueAtTime(voiced.gain.value,t);
+        voiced.gain.linearRampToValueAtTime(0.9,t+0.04);
+        t+=0.05;
+      } else if(on.t==='fric'){
+        const fl=rnd(0.10,0.15);
+        if(on.through){ nbp.frequency.setValueAtTime(vF[1],t); nbp.Q.value=1.2; }
+        else { nbp.frequency.setValueAtTime(on.nz,t); nbp.Q.value=on.q; }
+        noise.gain.setValueAtTime(0,t);
+        noise.gain.linearRampToValueAtTime(on.amp,t+0.03);
+        noise.gain.setValueAtTime(on.amp,t+fl-0.03);
+        noise.gain.exponentialRampToValueAtTime(0.001,t+fl+0.02);
+        if(on.vd){ voiced.gain.setValueAtTime(0.0,t); voiced.gain.linearRampToValueAtTime(0.4,t+0.04); }
+        t+=fl;
+        glideF(t,t+0.05,startF,vF);
+        voiced.gain.setValueAtTime(voiced.gain.value,t);
+        voiced.gain.linearRampToValueAtTime(0.9,t+0.05);
+        t+=0.05;
+      } else if(on.t==='nas'){
+        const nl=rnd(0.07,0.11);
+        voiced.gain.setValueAtTime(0,t);
+        voiced.gain.linearRampToValueAtTime(0.5,t+0.03);  // murmur, quieter
+        t+=nl;
+        glideF(t,t+0.06,startF,vF);
+        voiced.gain.linearRampToValueAtTime(0.9,t+0.06);
+        t+=0.06;
+      } else { // approximant
+        const al=rnd(0.06,0.10);
+        voiced.gain.setValueAtTime(0,t);
+        voiced.gain.linearRampToValueAtTime(0.85,t+0.05);
+        glideF(t,t+al,startF,vF);
+        t+=al;
+      }
+    } else {
+      // bare vowel onset
+      for(let i=0;i<3;i++) F[i].frequency.setValueAtTime(vF[i],t);
+      voiced.gain.setValueAtTime(0,t);
+      voiced.gain.linearRampToValueAtTime(0.9,t+0.05);
+      t+=0.05;
+    }
+
+    // ===== VOWEL BODY =====
+    const vlen=rnd(0.16,0.26);
+    f0=f0; // declination
+    src.frequency.setValueAtTime(src.frequency.value,t);
+    src.frequency.linearRampToValueAtTime(f0*0.90, t+vlen);
+    for(let i=0;i<3;i++) F[i].frequency.setValueAtTime(vF[i],t+vlen);
+    t+=vlen;
+
+    // ===== CODA =====
+    const co=p.coda?CONS[p.coda]:null;
+    if(co){
+      if(co.t==='fric'){
+        if(co.through){ nbp.frequency.setValueAtTime(vF[1],t);}
+        else { nbp.frequency.setValueAtTime(co.nz,t); nbp.Q.value=co.q; }
+        voiced.gain.linearRampToValueAtTime(0.0,t+0.04);
+        noise.gain.setValueAtTime(0,t);
+        noise.gain.linearRampToValueAtTime(co.amp*0.8,t+0.03);
+        noise.gain.exponentialRampToValueAtTime(0.001,t+0.13);
+        t+=0.13;
+      } else if(co.t==='nas'){
+        glideF(t,t+0.06,vF,co.loc);
+        voiced.gain.linearRampToValueAtTime(0.45,t+0.05);
+        voiced.gain.exponentialRampToValueAtTime(0.001,t+0.13);
+        t+=0.13;
+      } else if(co.t==='stop'){
+        voiced.gain.linearRampToValueAtTime(0.001,t+0.04); // unreleased
+        t+=0.06;
+      } else {
+        glideF(t,t+0.07,vF,co.loc);
+        voiced.gain.linearRampToValueAtTime(0.001,t+0.09);
+        t+=0.09;
+      }
+    } else {
+      voiced.gain.setValueAtTime(voiced.gain.value,t);
+      voiced.gain.exponentialRampToValueAtTime(0.001,t+0.08);
+      t+=0.08;
+    }
+
+    out.gain.setValueAtTime(loud,t-0.02);
+    out.gain.exponentialRampToValueAtTime(0.0001,t+0.05);
+    dur=t-now+0.1;
+
+    src.start(now); vib.start(now); nz.start(now);
+    const stop=now+dur+0.1;
+    src.stop(stop); vib.stop(stop); nz.stop(stop);
+
+    this.active++;
+    setTimeout(()=>{ try{out.disconnect()}catch(e){}; this.active=Math.max(0,this.active-1); }, (dur+0.2)*1000);
+    return dur;
+  }
+};
+
+/* ============================================================
+   FIELD
+   ============================================================ */
+const cv=document.getElementById('stage'); const g=cv.getContext('2d',{alpha:false});
+let W=0,H=0,DPR=1;
+function resize(){DPR=Math.min(2,window.devicePixelRatio||1);W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;cv.style.width=W+'px';cv.style.height=H+'px';g.setTransform(DPR,0,0,DPR,0,0);}
+addEventListener('resize',resize); resize();
+
+// vowel-space mapping (inset margins)
+const MX=()=>W*0.12, MY=()=>H*0.16;
+const xToF2=x=>lerp(2300,820, clamp((x-MX())/(W-2*MX()),0,1));
+const yToF1=y=>lerp(280,820,  clamp((y-MY())/(H-2*MY()),0,1));
+const F2toX=f=>MX()+(2300-f)/(2300-820)*(W-2*MX());
+const F1toY=f=>MY()+(f-280)/(820-280)*(H-2*MY());
+function nearestVowel(F1,F2){let best=VOWELS[0],bd=1e9;for(const v of VOWELS){const dx=(v.F2-F2)/1500,dy=(v.F1-F1)/600,d=dx*dx+dy*dy;if(d<bd){bd=d;best=v;}}return best;}
+
+// curated, non-schematic glyph hues (not analogous / not a tidy scheme)
+const HUES=[8,42,78,150,188,228,288,330];
+
+const cells=[]; const MAX_CELLS=9;
+const ghosts=[]; // spoken syllables drifting as asemic text
+
+function syllable(){
+  const onset = Math.random()<0.78 ? pick(INVENTORY) : null;
+  const coda  = Math.random()<0.32 ? pick(INVENTORY) : null;
+  return {onset,coda};
+}
+
+class Cell{
+  constructor(x,y){
+    this.x=x;this.y=y;this.vx=rnd(-9,9);this.vy=rnd(-9,9);
+    this.r=rnd(26,40);
+    this.f0=pick([rnd(96,130),rnd(130,165),rnd(165,210)]); // some low, some high voices
+    this.hue=pick(HUES);
+    this.off=rnd(0,TAU); // overprint phase
+    this.lobes=Array.from({length:3},()=>({k:2+(Math.random()*3|0),amp:rnd(0.03,0.09),ph:rnd(0,TAU),sp:rnd(-0.2,0.2)}));
+    this.exc=0; this.cool=0; this.born=0; this.rings=[];
+    this.glyph='ə';
+  }
+  outline(a){let m=1;for(const l of this.lobes)m+=l.amp*Math.sin(l.k*a+l.ph);return m;}
+  utter(loud,full){
+    if(this.cool>0||Voice.active>=Voice.MAX) return;
+    this.cool=rnd(0.85,1.15);
+    const F1=yToF1(this.y),F2=xToF2(this.x);
+    const F3 = 2400 + (F2-1500)*0.18 + rnd(-80,80);
+    let onset=null,coda=null;
+    if(full){const s=syllable();onset=s.onset;coda=s.coda;}
+    const dur=Voice.speak({f0:this.f0,F1,F2,F3,onset,coda,loud});
+    if(dur>0){
+      this.exc=Math.min(1.4,this.exc+0.7+loud);
+      this.rings.push({r:this.r*0.6,a:0.5});
+      const txt=(onset||'')+this.glyph+(coda||'');
+      ghosts.push({x:this.x,y:this.y-this.r*0.6,vx:rnd(-4,4),vy:rnd(-14,-22),a:1,size:this.r*0.9,hue:this.hue,txt});
+    }
+  }
+  step(dt,t){
+    this.born=Math.min(1,this.born+dt*1.5);
+    this.cool=Math.max(0,this.cool-dt);
+    this.exc*=Math.pow(0.05,dt);
+    for(const l of this.lobes)l.ph+=l.sp*dt;
+    this.off+=dt*0.4;
+    // gentle flow field
+    const fx=Math.sin(this.y*0.004+t*0.11)+Math.sin(this.x*0.003-t*0.07);
+    const fy=Math.cos(this.x*0.004-t*0.09)+Math.sin(this.y*0.003+t*0.05);
+    this.vx+=fx*4*dt; this.vy+=fy*4*dt;
+    this.vx*=Math.pow(0.5,dt); this.vy*=Math.pow(0.5,dt);
+    this.x+=this.vx*dt; this.y+=this.vy*dt;
+    // soft bounds within the plate
+    const m=this.r;
+    if(this.x<m){this.x=m;this.vx=Math.abs(this.vx);} if(this.x>W-m){this.x=W-m;this.vx=-Math.abs(this.vx);}
+    if(this.y<m){this.y=m;this.vy=Math.abs(this.vy);} if(this.y>H-m){this.y=H-m;this.vy=-Math.abs(this.vy);}
+    // identity = position
+    this.glyph=nearestVowel(yToF1(this.y),xToF2(this.x)).g;
+    // autonomous murmur (sparse)
+    if(Math.random()<0.05*dt*(1-Voice.active/Voice.MAX)) this.utter(rnd(0.28,0.5), Math.random()<0.5);
+    for(const rp of this.rings){rp.r+=90*dt;rp.a-=1.0*dt;}
+    this.rings=this.rings.filter(rp=>rp.a>0);
+  }
+  draw(){
+    const R=this.r*this.born*(1+this.exc*0.05); const ex=this.exc;
+    // specimen ring (wobbling membrane), hairline
+    g.save(); g.translate(this.x,this.y);
+    g.globalAlpha=0.5+ex*0.3; g.lineWidth=1; g.strokeStyle=`hsl(${this.hue},45%,42%)`;
+    g.beginPath();
+    for(let i=0;i<=48;i++){const a=i/48*TAU,rad=R*this.outline(a);const px=Math.cos(a)*rad,py=Math.sin(a)*rad;i?g.lineTo(px,py):g.moveTo(px,py);}
+    g.closePath(); g.stroke();
+    // utterance rings
+    for(const rp of this.rings){g.globalAlpha=clamp(rp.a,0,1)*0.5;g.lineWidth=1.2;g.beginPath();g.arc(0,0,rp.r,0,TAU);g.stroke();}
+    // risograph overprint glyph — three offset chromatic impressions (iridescent threshold in a print idiom)
+    const fs=R*1.65;
+    g.font=`${fs}px "Gentium Plus", serif`;
+    g.textAlign='center'; g.textBaseline='middle';
+    g.globalCompositeOperation='multiply';
+    const spread=(1.4+ex*5);
+    const layers=[[this.hue,this.off],[(this.hue+150)%360,this.off+TAU/3],[(this.hue+260)%360,this.off+2*TAU/3]];
+    for(const [hue,ph] of layers){
+      g.globalAlpha=0.78;
+      g.fillStyle=`hsl(${hue},70%,52%)`;
+      g.fillText(this.glyph, Math.cos(ph)*spread, Math.sin(ph)*spread);
+    }
+    g.globalCompositeOperation='source-over'; g.globalAlpha=1;
+    g.restore();
+  }
+}
+
+function seed(x,y){
+  if(cells.length>=MAX_CELLS) cells.shift();
+  const c=new Cell(x,y); cells.push(c);
+  c.glyph=nearestVowel(yToF1(y),xToF2(x)).g;
+  c.utter(0.42,false); // births with its bare vowel
+}
+
+/* collisions -> exchange of seeming-speech */
+function collide(dt){
+  for(let i=0;i<cells.length;i++)for(let j=i+1;j<cells.length;j++){
+    const a=cells[i],b=cells[j],dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||0.001,min=a.r+b.r;
+    if(d<min){const nx=dx/d,ny=dy/d,ov=min-d;
+      a.x-=nx*ov*0.5;a.y-=ny*ov*0.5;b.x+=nx*ov*0.5;b.y+=ny*ov*0.5;
+      const vn=(b.vx-a.vx)*nx+(b.vy-a.vy)*ny;
+      if(vn<0){const imp=-vn*0.85;a.vx-=nx*imp;a.vy-=ny*imp;b.vx+=nx*imp;b.vy+=ny*imp;
+        const inten=clamp(Math.abs(vn)/60,0,1);
+        if(inten>0.12){ (Math.random()<0.5?a:b).utter(0.3+inten*0.4, Math.random()<0.6); }
+      }
+    }
+  }
+}
+
+/* ---- interaction ---- */
+let lastInteract=performance.now();
+function hit(x,y){for(let i=cells.length-1;i>=0;i--){const c=cells[i];if(Math.hypot(x-c.x,y-c.y)<c.r*1.1)return c;}return null;}
+function pointer(x,y){
+  lastInteract=performance.now();
+  const c=hit(x,y);
+  if(c){ c.cool=0; c.utter(0.78,true); const ang=rnd(0,TAU); c.vx+=Math.cos(ang)*45;c.vy+=Math.sin(ang)*45; }
+  else seed(x,y);
+}
+cv.addEventListener('pointerdown',e=>{e.preventDefault();pointer(e.clientX,e.clientY);},{passive:false});
+
+/* ---- gate ---- */
+const gate=document.getElementById('gate'),hint=document.getElementById('hint'),titleEl=document.getElementById('plate-title');
+let started=false;
+function begin(){
+  if(started)return;started=true;
+  Voice.start();
+  Promise.all([
+    document.fonts.load('48px "Gentium Plus"'),
+    document.fonts.load('48px "Gentium Plus"','ə')
+  ]).catch(()=>{});
+  gate.classList.add('gone');
+  for(let i=0;i<3;i++) setTimeout(()=>seed(rnd(MX()+40,W-MX()-40),rnd(MY()+40,H-MY()-40)), i*420);
+  setTimeout(()=>hint.classList.add('gone'),7000);
+  setTimeout(()=>titleEl.classList.add('dim'),4500);
+}
+gate.addEventListener('pointerdown',e=>{e.preventDefault();begin();},{passive:false});
+
+/* ---- background: the specimen plate (vowel quadrilateral + landmarks) ---- */
+function drawPlate(){
+  // landmark vowels, faint, at their formant positions
+  g.save();
+  g.textAlign='center';g.textBaseline='middle';
+  g.font='15px "Gentium Plus", serif';
+  for(const v of VOWELS){
+    const x=F2toX(v.F2),y=F1toY(v.F1);
+    g.globalAlpha=0.16; g.fillStyle='#3a2436';
+    g.fillText(v.g,x,y);
+  }
+  // hairline quadrilateral connecting the corners i-u-ɑ-a
+  const corner=gl=>{const v=VOWELS.find(z=>z.g===gl);return[F2toX(v.F2),F1toY(v.F1)];};
+  const pts=['i','u','ɑ','a'].map(corner);
+  g.globalAlpha=0.18;g.strokeStyle='#9a9876';g.lineWidth=1;
+  g.beginPath();pts.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));g.closePath();g.stroke();
+  g.restore();
+}
+
+/* ---- grain ---- */
+let grain=null;
+function makeGrain(){
+  const gc=document.createElement('canvas');gc.width=140;gc.height=140;const c=gc.getContext('2d');
+  const img=c.createImageData(140,140),d=img.data;
+  for(let i=0;i<d.length;i+=4){const v=Math.random()*255;d[i]=58;d[i+1]=36;d[i+2]=54;d[i+3]=v*0.05;}
+  c.putImageData(img,0,0);grain=gc;
+}
+makeGrain();
+
+/* ---- loop ---- */
+let last=performance.now();
+function frame(now){
+  let dt=Math.min((now-last)/1000,0.05);last=now;const t=now/1000;
+  // paper
+  g.globalCompositeOperation='source-over';
+  g.fillStyle='#e9ecd8';g.fillRect(0,0,W,H);
+  drawPlate();
+
+  if(started){
+    for(const c of cells)c.step(dt,t);
+    collide(dt);
+    for(const c of cells)c.draw();
+    // ghost syllables (asemic poetry hanging in the air)
+    g.save();g.textAlign='center';g.textBaseline='middle';g.globalCompositeOperation='multiply';
+    for(const gh of ghosts){gh.x+=gh.vx*dt;gh.y+=gh.vy*dt;gh.vy*=Math.pow(0.6,dt);gh.a-=0.4*dt;
+      g.globalAlpha=clamp(gh.a,0,1)*0.55;g.font=`italic ${gh.size}px "Gentium Plus", serif`;
+      g.fillStyle=`hsl(${gh.hue},55%,40%)`;g.fillText(gh.txt,gh.x,gh.y);
+    }
+    g.restore();
+    for(let i=ghosts.length-1;i>=0;i--)if(ghosts[i].a<=0)ghosts.splice(i,1);
+    if(now-lastInteract>16000)hint.classList.remove('gone');
+  }
+  // grain overlay
+  if(grain){g.globalCompositeOperation='multiply';const ox=(t*7)%140,oy=(t*4)%140;
+    for(let y=-140+oy;y<H;y+=140)for(let x=-140+ox;x<W;x+=140)g.drawImage(grain,x,y);
+    g.globalCompositeOperation='source-over';}
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
