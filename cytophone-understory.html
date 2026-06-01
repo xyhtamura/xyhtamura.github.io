@@ -9,11 +9,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,300..500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
   :root{
-    /* chromatic-dark ground — no zero-chroma anywhere */
-    --ground-0:#0a1310;
-    --ground-1:#0e1a14;
-    --ink:#cfe0c4;
-    --faint:#7d9281;
+    /* drum-gong ground — bronze/patina, still chromatically charged */
+    --ground-0:#120d08;
+    --ground-1:#1f140b;
+    --ink:#f0d79a;
+    --faint:#a88762;
+    --patina:#3e695c;
+    --ember:#d57732;
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{height:100%;overflow:hidden;background:var(--ground-0)}
@@ -32,7 +34,7 @@
     text-align:center;pointer-events:none;
     font-size:13px;letter-spacing:.02em;color:var(--faint);
     transition:opacity 1.6s ease;opacity:1;
-    text-shadow:0 1px 12px rgba(0,0,0,.6);
+    text-shadow:0 1px 14px rgba(31,14,4,.72);
   }
   #hint em{font-family:"Fraunces",serif;font-style:italic;color:var(--ink);font-weight:400}
   #hint.gone{opacity:0}
@@ -49,7 +51,9 @@
   /* gentle gate so audio can start on first touch (autoplay policy) */
   #gate{
     position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
-    background:radial-gradient(120% 120% at 50% 40%, #11201a 0%, #0a1310 70%);
+    background:
+      radial-gradient(80% 80% at 48% 42%, rgba(194,126,48,.18) 0%, transparent 52%),
+      radial-gradient(120% 120% at 50% 40%, #2b1b0e 0%, #120d08 72%);
     z-index:10;transition:opacity .9s ease;
   }
   #gate.gone{opacity:0;pointer-events:none}
@@ -58,8 +62,11 @@
   #gate p{font-size:13px;line-height:1.7;color:var(--faint)}
   #gate .pulse{
     margin:30px auto 0;width:60px;height:60px;border-radius:50%;
-    background:radial-gradient(circle at 38% 34%, #d6f06a 0%, #6fae8e 45%, #1b3a32 100%);
-    box-shadow:0 0 40px rgba(170,210,120,.35);
+    background:
+      radial-gradient(circle at 38% 34%, #ffe6a3 0%, #c17a34 38%, #3f6d5d 78%, #19100a 100%);
+    box-shadow:
+      0 0 34px rgba(213,119,50,.36),
+      0 0 72px rgba(72,130,112,.18);
     animation:breathe 3.2s ease-in-out infinite;
   }
   @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
@@ -209,6 +216,26 @@ const rnd=(a,b)=>a+Math.random()*(b-a);
 const clamp=(v,a,b)=>v<a?a:v>b?b:v;
 const TAU=Math.PI*2;
 
+// bronze/drumhead palette: mostly copper/brass, with oxidized patina and oil-slick intrusions
+function weightedHue(bands){
+  let total = bands.reduce((s,b)=>s+b[2],0), r = Math.random()*total;
+  for(const [a,b,w] of bands){ if((r-=w)<=0) return rnd(a,b); }
+  const last=bands[bands.length-1]; return rnd(last[0],last[1]);
+}
+function gongBaseHue(){
+  return weightedHue([
+    [18, 54, .70],   // copper, bronze, brass
+    [58, 92, .10],   // old-gold / olive cast
+    [142,188, .12],  // verdigris / oxidized patina
+    [276,328, .08]   // oil-slick violet/magenta, rare
+  ]);
+}
+function gongRimHue(base){
+  if(Math.random()<.48) return weightedHue([[35,58,.55],[150,190,.35],[286,326,.10]]);
+  const offsets=[22,42,116,154,186,248,292];
+  return (base + offsets[Math.random()*offsets.length|0] + rnd(-8,8) + 360)%360;
+}
+
 const cells=[];
 const MAX_CELLS=12;
 
@@ -230,10 +257,10 @@ class Cell{
     // per-mode detune — slowly drifts so the cell's TUNING changes over time
     this.detune = MODE_RATIO.map(()=>rnd(-0.012,0.012));
     this.detVel = this.detune.map(()=>0);
-    // iridescent hue (always chromatic), drifts
-    this.hue = rnd(0,360);
-    this.hue2 = (this.hue + rnd(40,160))%360; // rim shimmer hue, not analogous-locked
-    this.hueDrift = rnd(-4,4);
+    // drum-gong hue: mostly bronze/copper, sometimes patina or oil-slick
+    this.hue = gongBaseHue();
+    this.hue2 = gongRimHue(this.hue); // rim shimmer hue, not analogous-locked
+    this.hueDrift = rnd(-1.1,1.1);
     this.spin = rnd(-0.3,0.3);      // conic shimmer rotation
     this.rot = rnd(0,TAU);
     this.exc = 0;                   // visual excitation envelope
@@ -326,10 +353,11 @@ class Cell{
 
     // core radial body
     const core=g.createRadialGradient(-R*0.3,-R*0.3,R*0.1, 0,0,R*1.25);
-    const L = 22 + ex*30;
-    core.addColorStop(0, `hsl(${this.hue}, 78%, ${clamp(L+34,0,92)}%)`);
-    core.addColorStop(0.45, `hsl(${this.hue}, 70%, ${clamp(L+6,0,80)}%)`);
-    core.addColorStop(1, `hsl(${(this.hue+30)%360}, 60%, ${clamp(L-12,4,60)}%)`);
+    const L = 19 + ex*28;
+    core.addColorStop(0, `hsl(${this.hue}, 76%, ${clamp(L+38,0,90)}%)`);
+    core.addColorStop(0.38, `hsl(${this.hue}, 62%, ${clamp(L+10,0,76)}%)`);
+    core.addColorStop(0.78, `hsl(${(this.hue+20)%360}, 54%, ${clamp(L-4,4,54)}%)`);
+    core.addColorStop(1, `hsl(${gongRimHue(this.hue)}, 42%, ${clamp(L-14,4,38)}%)`);
     g.fillStyle=core;
     g.fillRect(-R*2,-R*2,R*4,R*4);
 
@@ -338,12 +366,13 @@ class Cell{
     g.globalAlpha=0.45+ex*0.3;
     const con=g.createConicGradient ? g.createConicGradient(this.rot,0,0) : null;
     if(con){
-      con.addColorStop(0,    `hsla(${this.hue2},90%,62%,0)`);
-      con.addColorStop(0.18, `hsla(${this.hue2},92%,66%,.9)`);
-      con.addColorStop(0.30, `hsla(${(this.hue2+50)%360},90%,60%,0)`);
-      con.addColorStop(0.55, `hsla(${(this.hue+200)%360},88%,64%,.7)`);
-      con.addColorStop(0.72, `hsla(${this.hue2},80%,58%,0)`);
-      con.addColorStop(1,    `hsla(${this.hue2},90%,62%,0)`);
+      con.addColorStop(0,    `hsla(${this.hue2},86%,58%,0)`);
+      con.addColorStop(0.16, `hsla(${this.hue2},88%,62%,.82)`);
+      con.addColorStop(0.28, `hsla(${(this.hue2+42)%360},84%,56%,0)`);
+      con.addColorStop(0.50, `hsla(${(this.hue+150)%360},78%,56%,.55)`);
+      con.addColorStop(0.67, `hsla(${(this.hue+286)%360},82%,63%,.45)`);
+      con.addColorStop(0.78, `hsla(${this.hue2},72%,52%,0)`);
+      con.addColorStop(1,    `hsla(${this.hue2},86%,58%,0)`);
       // ring band: stroke a slightly inset blob with thick line
       g.lineWidth=R*0.5;
       g.strokeStyle=con;
@@ -355,12 +384,32 @@ class Cell{
       }
       g.closePath(); g.stroke();
     }
+    // quiet central boss + strike-flare: a gong/drumhead memory, not a literal icon
+    g.globalCompositeOperation='lighter';
+    g.globalAlpha=0.16 + Math.min(0.55, ex*0.34);
+    const boss=g.createRadialGradient(-R*.08,-R*.10,0, 0,0,R*.48);
+    boss.addColorStop(0,`hsla(${(this.hue+24)%360},86%,76%,1)`);
+    boss.addColorStop(0.42,`hsla(${this.hue},70%,48%,.58)`);
+    boss.addColorStop(1,`hsla(${this.hue2},78%,44%,0)`);
+    g.fillStyle=boss; g.fillRect(-R*.62,-R*.62,R*1.24,R*1.24);
+
+    // faint hammered membrane rings
+    g.globalCompositeOperation='lighter';
+    g.globalAlpha=0.10 + ex*0.08;
+    g.lineWidth=1;
+    for(let k=1;k<=3;k++){
+      const rr=R*(0.28+k*0.17);
+      g.strokeStyle=`hsla(${k%2?this.hue2:this.hue},70%,62%,.55)`;
+      g.beginPath(); g.arc(0,0,rr,0,TAU); g.stroke();
+    }
+
     // bright nucleus when excited
     if(ex>0.02){
-      g.globalAlpha=Math.min(0.9,ex*0.7);
-      const nu=g.createRadialGradient(0,0,0,0,0,R*0.6);
-      nu.addColorStop(0,`hsla(${(this.hue+60)%360},95%,82%,1)`);
-      nu.addColorStop(1,`hsla(${this.hue},90%,60%,0)`);
+      g.globalAlpha=Math.min(0.86,ex*0.65);
+      const nu=g.createRadialGradient(0,0,0,0,0,R*0.62);
+      nu.addColorStop(0,`hsla(${(this.hue+42)%360},92%,80%,1)`);
+      nu.addColorStop(0.42,`hsla(${this.hue},86%,58%,.6)`);
+      nu.addColorStop(1,`hsla(${this.hue2},84%,54%,0)`);
       g.fillStyle=nu; g.fillRect(-R,-R,R*2,R*2);
     }
     g.restore(); // unclip
@@ -369,7 +418,7 @@ class Cell{
     g.globalCompositeOperation='lighter';
     g.globalAlpha=0.5+ex*0.4;
     g.lineWidth=1.1;
-    g.strokeStyle=`hsla(${this.hue2},90%,${60+ex*20}%,.6)`;
+    g.strokeStyle=`hsla(${this.hue2},78%,${56+ex*18}%,.62)`;
     g.beginPath();
     for(let i=0;i<=steps;i++){
       const a=i/steps*TAU; const rad=R*this.outline(a)*(1+ex*0.06);
@@ -382,7 +431,7 @@ class Cell{
     for(const rp of this.ripples){
       g.globalAlpha=clamp(rp.a,0,1)*0.6;
       g.lineWidth=1.4;
-      g.strokeStyle=`hsla(${this.hue2},90%,70%,1)`;
+      g.strokeStyle=`hsla(${this.hue2},80%,64%,1)`;
       g.beginPath(); g.arc(0,0,rp.r,0,TAU); g.stroke();
     }
 
@@ -479,13 +528,14 @@ function frame(now){
 
   // trailing wash -> soft motion smear, like things caught mid-transformation
   g.globalCompositeOperation='source-over';
-  g.fillStyle='rgba(10,19,16,0.30)';
+  g.fillStyle='rgba(18,13,8,0.30)';
   g.fillRect(0,0,W,H);
 
   // faint chromatic vignette breathing in the ground
   const vg=g.createRadialGradient(W*0.5,H*0.45,Math.min(W,H)*0.1, W*0.5,H*0.5,Math.max(W,H)*0.75);
-  vg.addColorStop(0,'rgba(20,40,32,0.05)');
-  vg.addColorStop(1,'rgba(6,12,10,0.10)');
+  vg.addColorStop(0,'rgba(104,63,25,0.055)');
+  vg.addColorStop(0.55,'rgba(57,38,20,0.045)');
+  vg.addColorStop(1,'rgba(25,14,8,0.15)');
   g.fillStyle=vg; g.fillRect(0,0,W,H);
 
   if(started){
