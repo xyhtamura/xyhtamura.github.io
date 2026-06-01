@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>cytophone</title>
+<title>cytophone: understory</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,300..500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
@@ -68,13 +68,13 @@
 </head>
 <body>
 <canvas id="stage"></canvas>
-<div id="title">cytophone</div>
+<div id="title">cytophone: understory</div>
 <div id="hint"><em>tap</em> to seed a cell · <em>tap a cell</em> to wake it</div>
 
 <div id="gate">
   <div class="g-inner">
-    <h1>cytophone</h1>
-    <p>a small colony of resonant cells. they drift, collide, and ring in their own tunings. you only seed and disturb.</p>
+    <h1>cytophone: understory</h1>
+    <p>a small colony of resonant cells.</p>
     <div class="pulse"></div>
     <p style="margin-top:24px;font-size:11px;letter-spacing:.06em;opacity:.7">TOUCH TO ENTER · SOUND ON</p>
   </div>
@@ -99,27 +99,52 @@ const MODE_DECAY = [2.6,   2.0,   1.55,  1.35,  1.05,  0.85]; // seconds
    AUDIO
    ============================================================ */
 const Audio_ = {
-  ctx:null, master:null, lp:null, wet:null, voices:0, MAX_VOICES:11,
+  ctx:null, master:null, lp:null, wet:null, compressor:null, voices:0, MAX_VOICES:11,
   start(){
     if(this.ctx) return;
     const AC = window.AudioContext || window.webkitAudioContext;
     const ctx = new AC();
     this.ctx = ctx;
 
+    // 1. Master Gain Stage (Boosted from 0.0 to handle a higher target value)
     const master = ctx.createGain(); master.gain.value = 0.0;
-    // soft, underwater high-end
+    
+    // 2. Dynamics Compressor Node (The ear-protection ceiling)
+    const compressor = ctx.createDynamicsCompressor();
+    // Start compressing when the signal hits -24dB
+    compressor.threshold.setValueAtTime(-24, ctx.currentTime);
+    // Hard ceiling compression ratio
+    compressor.ratio.setValueAtTime(12, ctx.currentTime);
+    // Smooth, unnoticeable knee bend
+    compressor.knee.setValueAtTime(30, ctx.currentTime);
+    // Fast attack to catch sudden accidental overlapping strikes immediately
+    compressor.attack.setValueAtTime(0.003, ctx.currentTime);
+    // Smooth release so the audio doesn't "pump" aggressively
+    compressor.release.setValueAtTime(0.25, ctx.currentTime);
+
+    // 3. Filter Stage (Soft, underwater high-end)
     const lp = ctx.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=6200; lp.Q.value=0.2;
-    // reverb: synthesized impulse
+    
+    // 4. Spatialization/Reverb Stage
     const conv = ctx.createConvolver(); conv.buffer = this._impulse(2.8, 2.6);
-    const wet = ctx.createGain(); wet.gain.value = 0.34;
-    const dry = ctx.createGain(); dry.gain.value = 0.85;
+    const wet = ctx.createGain(); wet.gain.value = 0.40; // Slightly increased for a richer tail
+    const dry = ctx.createGain(); dry.gain.value = 0.95; // Boosted dry presence
 
+    // --- CONNECT THE GRAPH ---
+    // Cells -> master -> lp -> [dry / wet] -> compressor -> destination
     master.connect(lp);
-    lp.connect(dry).connect(ctx.destination);
-    lp.connect(conv).connect(wet).connect(ctx.destination);
+    
+    // Split into parallel dry/wet paths, then sum them into the compressor
+    lp.connect(dry).connect(compressor);
+    lp.connect(conv).connect(wet).connect(compressor);
+    
+    // Final safe output to the speakers
+    compressor.connect(ctx.destination);
 
-    this.master = master; this.lp = lp; this.wet = wet;
-    master.gain.linearRampToValueAtTime(0.9, ctx.currentTime + 1.2); // fade in
+    this.master = master; this.lp = lp; this.wet = wet; this.compressor = compressor;
+    
+    // Fades up to 1.6 (up from original 0.9) to make the ecosystem significantly louder
+    master.gain.linearRampToValueAtTime(1.6, ctx.currentTime + 1.2); 
   },
   _impulse(dur, decay){
     const ctx=this.ctx, n=Math.floor(ctx.sampleRate*dur), buf=ctx.createBuffer(2,n,ctx.sampleRate);
@@ -127,7 +152,6 @@ const Audio_ = {
       for(let i=0;i<n;i++){const t=i/n; d[i]=(Math.random()*2-1)*Math.pow(1-t,decay);}}
     return buf;
   },
-  // strike a body: f0 + per-mode detune array + intensity 0..1 + a "contact" tilt 0..1
   strike(f0, detune, vel, contact){
     const ctx=this.ctx; if(!ctx) return;
     if(this.voices >= this.MAX_VOICES) return;
@@ -141,10 +165,12 @@ const Audio_ = {
     for(let i=0;i<MODE_RATIO.length;i++){
       const f = f0 * MODE_RATIO[i] * (1 + detune[i]);
       if(f > 9000) continue;
-      // contact position emphasizes higher modes when struck near the rim
       const tilt = 1 - contact*(i/MODE_RATIO.length);
-      const amp = MODE_AMP[i] * tilt * (0.10 + 0.22*vel);
+      
+      // Amplified per-mode amplitude mapping to scale with the new headroom
+      const amp = MODE_AMP[i] * tilt * (0.15 + 0.35*vel);
       if(amp < 0.0015) continue;
+      
       const osc = ctx.createOsc ? ctx.createOsc() : ctx.createOscillator();
       osc.type = "sine";
       osc.frequency.value = f;

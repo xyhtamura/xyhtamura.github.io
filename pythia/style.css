@@ -71,6 +71,27 @@ body::after {
   background: var(--bg-1);
   border: 1px solid var(--line-hi);
   padding: clamp(24px, 4vw, 44px);
+  position: relative;
+  overflow: hidden;
+
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  
+  /* Point this to your texture file */
+  background-image: url('omphalos.png'); 
+  background-size: cover; 
+  background-position: center;
+  
+  /* This is where the magic happens */
+  mix-blend-mode: overlay; 
+  opacity: 1; 
+  
+  /* Ensures the texture doesn't block mouse clicks */
+  pointer-events: none; 
+  z-index: 0; 
 }
 
 /* ─────────────────────────── Header */

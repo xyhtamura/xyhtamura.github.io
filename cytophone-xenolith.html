@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>cytophone: xenolith</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,300..400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ground:#05100f;       /* dark steel-teal, chromatic */
+    --ink:#b8cfc9;
+    --faint:#5f7a74;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;overflow:hidden;background:var(--ground)}
+  body{font-family:"DM Mono",monospace;color:var(--ink);-webkit-tap-highlight-color:transparent;touch-action:none;cursor:crosshair}
+  #stage{display:block;width:100vw;height:100vh}
+
+  #title{position:fixed;top:max(20px,env(safe-area-inset-top));left:22px;font-family:"Fraunces",serif;font-style:italic;font-weight:300;font-size:17px;letter-spacing:.01em;color:var(--faint);pointer-events:none;user-select:none;transition:opacity 2s ease}
+  #title.dim{opacity:.35}
+
+  #hint{position:fixed;left:0;right:0;bottom:max(64px,calc(env(safe-area-inset-bottom) + 44px));text-align:center;pointer-events:none;font-size:13px;letter-spacing:.02em;color:var(--faint);transition:opacity 1.6s ease;opacity:1;text-shadow:0 1px 12px rgba(0,0,0,.6)}
+  #hint em{font-family:"Fraunces",serif;font-style:italic;color:var(--ink);font-weight:400}
+  #hint.gone{opacity:0}
+
+  /* wet/dry send — minimal, the one control. dry = raw source, wet = a built-in plate */
+  #fx{position:fixed;left:50%;bottom:max(22px,env(safe-area-inset-bottom));transform:translateX(-50%);
+      display:flex;align-items:center;gap:11px;opacity:.32;transition:opacity .5s ease;z-index:5;user-select:none}
+  #fx:hover{opacity:.95}
+  #fx .lbl{font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+  #wet{-webkit-appearance:none;appearance:none;width:168px;height:2px;background:#26413c;border-radius:2px;outline:none;cursor:pointer}
+  #wet::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:#9fd9c8;box-shadow:0 0 10px rgba(150,220,200,.5);cursor:pointer}
+  #wet::-moz-range-thumb{width:13px;height:13px;border:none;border-radius:50%;background:#9fd9c8;box-shadow:0 0 10px rgba(150,220,200,.5);cursor:pointer}
+
+  #gate{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 120% at 50% 40%, #0c1c1a 0%, #05100f 70%);z-index:10;transition:opacity .9s ease}
+  #gate.gone{opacity:0;pointer-events:none}
+  #gate .gi{text-align:center;max-width:360px;padding:0 24px;animation:rise 1.4s cubic-bezier(.2,.8,.2,1) both}
+  #gate h1{font-family:"Fraunces",serif;font-style:italic;font-weight:300;font-size:34px;color:var(--ink);margin-bottom:14px}
+  #gate p{font-size:13px;line-height:1.7;color:var(--faint)}
+  #gate .pulse{margin:30px auto 0;width:60px;height:60px;border-radius:50%;
+    background:radial-gradient(circle at 38% 34%, #d8e8c8 0%, #6fae9e 40%, #1b3a36 100%);
+    box-shadow:0 0 40px rgba(150,200,180,.3);animation:breathe 3.2s ease-in-out infinite}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  @keyframes breathe{0%,100%{transform:scale(.92);opacity:.8}50%{transform:scale(1.08);opacity:1}}
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<div id="title">cytophone: xenolith</div>
+<div id="hint"><em>tap</em> to seed a body · <em>tap a body</em> to strike it · they ring each other</div>
+<div id="fx"><span class="lbl">dry</span><input id="wet" type="range" min="0" max="100" value="12"><span class="lbl">wet</span></div>
+
+<div id="gate">
+  <div class="gi">
+    <h1>cytophone: xenolith</h1>
+    <p>a colony of ringing bodies.</p>
+    <div class="pulse"></div>
+    <p style="margin-top:24px;font-size:11px;letter-spacing:.06em;opacity:.7">TOUCH TO ENTER · SOUND ON</p>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   cytophone — impossible materials by decoupled modal synthesis
+   lightness  -> pitch        (decoupled from size; small bodies stay tappable)
+   size       -> sustain/body (long ring, low-mode weight)
+   geometry   -> mode set     (round=sparse/near-harmonic, jagged=dense/clangorous)
+   substance(hue) -> behaviour in time (decay, hf-damping, beating, attack, glide)
+   geometry x substance = materials we never have to name.
+   Dry by default; one wet/dry send into a built-in dark plate.
+   ============================================================ */
+
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const pick=a=>a[(Math.random()*a.length)|0];
+const clamp=(v,a,b)=>v<a?a:v>b?b:v;
+const lerp=(a,b,t)=>a+(b-a)*t;
+const TAU=Math.PI*2;
+const u=x=>0.5+0.5*Math.sin(x); // 0..1 wave
+
+/* lightness -> frequency (wide, log) */
+const lightToF0 = L => 78*Math.pow(2, clamp(L,0,1)*3.7);   // ~78 .. ~1020 Hz
+
+/* substance: hue (deg) -> independent temporal params via multi-sine.
+   Every hue is a unique, coherent blend. No named materials. */
+function substance(h){
+  const r=h/360*TAU;
+  return {
+    decay:  0.45 + 2.9*u(r*1.0 + 0.3),   // base ring length (s)
+    hf:     0.16 + 0.90*u(r*2.0 + 1.1),  // higher modes die faster (skin<->glass)
+    beat:   0.62*u(r*3.0 + 2.0),         // detuned-pair beating (the metal shimmer)
+    bright: 0.18 + 0.85*u(r*1.6 + 4.0),  // attack-transient amount
+    glide:  0.55*u(r*2.4 + 0.7)          // onset downward pitch-glide
+  };
+}
+/* geometry: jaggedness -> mode ratios (cell supplies fixed irregularities) */
+function modeRatios(jag, irr){
+  const N=Math.round(3 + jag*6);                 // 3..9 partials
+  const stretch=1 + 0.20*jag;                    // inharmonic stretch
+  const out=[];
+  for(let i=0;i<N;i++){
+    const base=Math.pow(i+1, stretch);
+    out.push(base*(1 + jag*0.34*irr[i]));         // clangorous detune when jagged
+  }
+  return out;
+}
+
+/* ============================================================
+   AUDIO
+   ============================================================ */
+const Sound={
+  ctx:null, bus:null, dry:null, wet:null, comp:null, out:null, clusters:0, MAX:8, wetAmt:0.12,
+  start(){
+    if(this.ctx) return;
+    const AC=window.AudioContext||window.webkitAudioContext; const ctx=new AC(); this.ctx=ctx;
+    const comp=ctx.createDynamicsCompressor();
+    comp.threshold.value=-16; comp.knee.value=22; comp.ratio.value=4; comp.attack.value=0.003; comp.release.value=0.25;
+    const out=ctx.createGain(); out.gain.value=0.0;
+    const bus=ctx.createGain();           // all strikes land here (the dry source)
+    const dry=ctx.createGain();
+    const conv=ctx.createConvolver(); conv.buffer=this._plate(3.6);
+    const wet=ctx.createGain();
+    bus.connect(dry).connect(comp);
+    bus.connect(conv).connect(wet).connect(comp);
+    comp.connect(out).connect(ctx.destination);
+    this.bus=bus; this.dry=dry; this.wet=wet; this.comp=comp; this.out=out;
+    this.setWet(this.wetAmt);
+    out.gain.linearRampToValueAtTime(0.9, ctx.currentTime+1.0);
+  },
+  setWet(w){ this.wetAmt=w; if(!this.ctx)return;
+    // send-style: dry stays mostly present so the source is always usable
+    this.dry.gain.value = lerp(1.0,0.72,w);
+    this.wet.gain.value = w*0.85;
+  },
+  _plate(dur){ // big, DARK plate (one-pole lowpass darkens the tail)
+    const ctx=this.ctx,n=Math.floor(ctx.sampleRate*dur),b=ctx.createBuffer(2,n,ctx.sampleRate);
+    for(let c=0;c<2;c++){const d=b.getChannelData(c);let prev=0;
+      for(let i=0;i<n;i++){const t=i/n;const white=(Math.random()*2-1)*Math.pow(1-t,2.6);prev=prev*0.62+white*0.38;d[i]=prev;}}
+    return b;
+  },
+  strike(cell, vel, contact){
+    const ctx=this.ctx; if(!ctx||this.clusters>=this.MAX) return;
+    const now=ctx.currentTime+0.005;
+    const f0=lightToF0(cell.light);
+    const s=substance(cell.hue);
+    const ratios=modeRatios(cell.jag, cell.irr);
+    const sus=lerp(0.55,1.75,cell.sizeN);          // big body rings longer
+    const cluster=ctx.createGain(); cluster.gain.value=1; cluster.connect(this.bus);
+    this.clusters++;
+    let longest=0;
+    const N=ratios.length;
+    for(let i=0;i<N;i++){
+      const f=f0*ratios[i]; if(f>11000) continue;
+      // amplitude: falloff, size boosts lows, contact tilts center<->rim
+      let amp=1/Math.pow(i+1,0.85);
+      amp*= (i<2 ? lerp(0.9,1.5,cell.sizeN) : lerp(1.15,0.78,cell.sizeN));
+      amp*= lerp(1-i/N, i/N+0.3, contact);          // center=low modes, rim=high modes
+      amp*= (0.10 + 0.22*vel);
+      if(amp<0.0012) continue;
+      const dec=Math.max(0.05, s.decay*sus/(1 + s.hf*i*0.55));
+      const gn=ctx.createGain();
+      gn.gain.setValueAtTime(0,now);
+      gn.gain.linearRampToValueAtTime(amp,now+0.004);
+      gn.gain.exponentialRampToValueAtTime(0.0001,now+dec);
+      const o=ctx.createOscillator(); o.type='sine';
+      const gd=f*s.glide*0.05;                       // start slightly sharp, settle (struck pitch-drop)
+      o.frequency.setValueAtTime(f+gd,now);
+      o.frequency.linearRampToValueAtTime(f,now+0.02+0.10*s.glide);
+      o.connect(gn).connect(cluster); o.start(now); o.stop(now+dec+0.05);
+      longest=Math.max(longest,dec);
+      // beating partner on low modes -> shimmer of struck metal
+      if(i<4 && s.beat>0.05){
+        const det=s.beat*(2.0+i*1.4);                // a few Hz
+        const o2=ctx.createOscillator(); o2.type='sine';
+        o2.frequency.setValueAtTime(f+gd+det,now);
+        o2.frequency.linearRampToValueAtTime(f+det,now+0.02+0.10*s.glide);
+        const g2=ctx.createGain();
+        g2.gain.setValueAtTime(0,now); g2.gain.linearRampToValueAtTime(amp*0.7,now+0.004);
+        g2.gain.exponentialRampToValueAtTime(0.0001,now+dec);
+        o2.connect(g2).connect(cluster); o2.start(now); o2.stop(now+dec+0.05);
+      }
+    }
+    // bright attack transient: high partials that die fast (the initial clang)
+    const tN=2+(s.bright*2|0);
+    for(let k=0;k<tN;k++){
+      const f=f0*(6+k*3.3)*(1+0.04*k); if(f>13000) continue;
+      const dec=0.05+0.10*(1-s.hf);
+      const amp=s.bright*(0.05+0.10*vel)/(k+1);
+      const gn=ctx.createGain(); gn.gain.setValueAtTime(amp,now); gn.gain.exponentialRampToValueAtTime(0.0001,now+dec);
+      const o=ctx.createOscillator(); o.type='sine'; o.frequency.value=f;
+      o.connect(gn).connect(cluster); o.start(now); o.stop(now+dec+0.03);
+    }
+    setTimeout(()=>{try{cluster.disconnect()}catch(e){};this.clusters=Math.max(0,this.clusters-1);},(longest+0.15)*1000);
+  }
+};
+
+/* ============================================================
+   FIELD
+   ============================================================ */
+const cv=document.getElementById('stage'); const g=cv.getContext('2d',{alpha:false});
+let W=0,H=0,DPR=1;
+function resize(){DPR=Math.min(2,window.devicePixelRatio||1);W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;cv.style.width=W+'px';cv.style.height=H+'px';g.setTransform(DPR,0,0,DPR,0,0);}
+addEventListener('resize',resize); resize();
+
+const cells=[]; const MAX_CELLS=12;
+
+class Cell{
+  constructor(x,y){
+    this.x=x;this.y=y;this.vx=rnd(-12,12);this.vy=rnd(-12,12);
+    this.size=rnd(24,62);                 // radius + sustain (NOT pitch). stays tappable.
+    this.sizeN=(this.size-24)/(62-24);
+    this.light=rnd(0.08,0.96);            // PITCH (brightness)
+    this.jag=rnd(0,1);                    // geometry -> timbre
+    this.hue=rnd(0,360);                  // substance -> material-in-time
+    this.sat=rnd(0.16,0.42);              // chroma: free, low, varied
+    this.irr=Array.from({length:9},()=>rnd(-1,1)); // fixed mode irregularities
+    this.lobes=Array.from({length:4},()=>({k:2+(Math.random()*4|0),ph:rnd(0,TAU),sp:rnd(-0.22,0.22)}));
+    this.shimPhase=rnd(0,TAU);
+    this.exc=0;this.cool=0;this.born=0;this.rings=[];this.age=0;
+  }
+  // geometry deforms more when jagged -> you SEE the clangor
+  outline(a){let m=1;const amp=0.05+this.jag*0.22;for(const l of this.lobes)m+=amp*Math.sin(l.k*a+l.ph)/this.lobes.length*2;return m;}
+  strike(vel,contact){
+    if(this.cool>0) return; vel=clamp(vel,0,1); if(vel<0.04) return;
+    this.cool=0.09; this.exc=Math.min(1.5,this.exc+0.5+vel*0.8);
+    this.rings.push({r:this.size*0.5,a:0.5+vel*0.4});
+    Sound.strike(this,vel,contact);
+  }
+  step(dt,t){
+    this.age+=dt; this.born=Math.min(1,this.born+dt*1.4); this.cool=Math.max(0,this.cool-dt);
+    this.exc*=Math.pow(0.05,dt);
+    for(const l of this.lobes) l.ph+=l.sp*dt;
+    this.shimPhase+=dt*0.5;
+    // material slowly transforms; PITCH (light) stays its identity
+    this.hue=(this.hue+ (this.jag-0.5)*6*dt +360)%360;
+    this.jag=clamp(this.jag + Math.sin(t*0.07+this.x*0.01)*0.04*dt, 0, 1);
+    // gentle flow + damping
+    const fx=Math.sin(this.y*0.004+t*0.13)+Math.sin(this.x*0.003-t*0.09);
+    const fy=Math.cos(this.x*0.004-t*0.11)+Math.sin(this.y*0.003+t*0.07);
+    this.vx+=fx*6*dt; this.vy+=fy*6*dt; this.vx*=Math.pow(0.55,dt); this.vy*=Math.pow(0.55,dt);
+    this.x+=this.vx*dt; this.y+=this.vy*dt;
+    const R=this.size;
+    if(this.x<R){this.x=R;this.vx=Math.abs(this.vx);this.strike(clamp(Math.abs(this.vx)/60,0,1),1);}
+    if(this.x>W-R){this.x=W-R;this.vx=-Math.abs(this.vx);this.strike(clamp(Math.abs(this.vx)/60,0,1),1);}
+    if(this.y<R){this.y=R;this.vy=Math.abs(this.vy);this.strike(clamp(Math.abs(this.vy)/60,0,1),1);}
+    if(this.y>H-R){this.y=H-R;this.vy=-Math.abs(this.vy);this.strike(clamp(Math.abs(this.vy)/60,0,1),1);}
+    for(const rp of this.rings){rp.r+=120*dt;rp.a-=0.9*dt;}
+    this.rings=this.rings.filter(rp=>rp.a>0);
+  }
+  draw(){
+    const R=this.size*this.born*(1+this.exc*0.05), ex=this.exc;
+    const L=lerp(16,80,this.light);            // brightness == pitch, legible at a glance
+    const sat=Math.round(this.sat*100);
+    g.save(); g.translate(this.x,this.y);
+
+    // blob path
+    const steps=64; const pathPts=[];
+    g.beginPath();
+    for(let i=0;i<=steps;i++){const a=i/steps*TAU;const rad=R*this.outline(a)*(1+ex*0.06);const px=Math.cos(a)*rad,py=Math.sin(a)*rad;pathPts.push([px,py]);i?g.lineTo(px,py):g.moveTo(px,py);}
+    g.closePath();
+
+    g.save(); g.clip();
+    // base body (low-chroma, lightness=pitch)
+    const core=g.createRadialGradient(-R*0.3,-R*0.3,R*0.1,0,0,R*1.3);
+    core.addColorStop(0,`hsl(${this.hue},${sat}%,${clamp(L+18,4,92)}%)`);
+    core.addColorStop(0.55,`hsl(${this.hue},${sat}%,${clamp(L,4,80)}%)`);
+    core.addColorStop(1,`hsl(${(this.hue+24)%360},${sat}%,${clamp(L-12,2,60)}%)`);
+    g.fillStyle=core; g.fillRect(-R*2,-R*2,R*4,R*4);
+
+    // impossible-surface shimmer (procedural oil-slick; texture image would composite here)
+    g.globalCompositeOperation='overlay';
+    const con=g.createConicGradient?g.createConicGradient(this.shimPhase,0,0):null;
+    if(con){
+      con.addColorStop(0,    `hsla(${(this.hue+60)%360},70%,60%,.0)`);
+      con.addColorStop(0.16, `hsla(${(this.hue+60)%360},80%,66%,.55)`);
+      con.addColorStop(0.34, `hsla(${(this.hue+200)%360},75%,55%,.0)`);
+      con.addColorStop(0.58, `hsla(${(this.hue+300)%360},80%,62%,.45)`);
+      con.addColorStop(0.78, `hsla(${(this.hue+140)%360},70%,58%,.0)`);
+      con.addColorStop(1,    `hsla(${(this.hue+60)%360},70%,60%,.0)`);
+      g.fillStyle=con; g.fillRect(-R*2,-R*2,R*4,R*4);
+    }
+    // specular highlight — flares on strike (struck surface catches light)
+    g.globalCompositeOperation='lighter';
+    const sx=-R*0.34, sy=-R*0.40, sr=R*(0.5+ex*0.7);
+    const spec=g.createRadialGradient(sx,sy,0,sx,sy,sr);
+    spec.addColorStop(0,`hsla(${(this.hue+40)%360},60%,85%,${0.35+ex*0.5})`);
+    spec.addColorStop(1,`hsla(${this.hue},60%,80%,0)`);
+    g.fillStyle=spec; g.fillRect(-R*2,-R*2,R*4,R*4);
+    g.restore(); // unclip
+
+    // rim
+    g.globalCompositeOperation='lighter'; g.globalAlpha=0.5+ex*0.4; g.lineWidth=1.1;
+    g.strokeStyle=`hsla(${this.hue},${Math.min(70,sat+25)}%,${clamp(L+30,20,88)}%,.6)`;
+    g.beginPath(); pathPts.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1])); g.closePath(); g.stroke();
+    // ripples
+    for(const rp of this.rings){g.globalAlpha=clamp(rp.a,0,1)*0.55;g.lineWidth=1.3;g.strokeStyle=`hsla(${this.hue},60%,75%,1)`;g.beginPath();g.arc(0,0,rp.r,0,TAU);g.stroke();}
+    g.restore(); g.globalCompositeOperation='source-over'; g.globalAlpha=1;
+  }
+}
+
+function seed(x,y){ if(cells.length>=MAX_CELLS) cells.shift(); cells.push(new Cell(x,y)); }
+
+function collide(dt){
+  for(let i=0;i<cells.length;i++)for(let j=i+1;j<cells.length;j++){
+    const a=cells[i],b=cells[j],dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||0.001,min=a.size+b.size;
+    if(d<min){const nx=dx/d,ny=dy/d,ov=min-d;
+      a.x-=nx*ov*0.5;a.y-=ny*ov*0.5;b.x+=nx*ov*0.5;b.y+=ny*ov*0.5;
+      const vn=(b.vx-a.vx)*nx+(b.vy-a.vy)*ny;
+      if(vn<0){const imp=-vn*0.9;a.vx-=nx*imp;a.vy-=ny*imp;b.vx+=nx*imp;b.vy+=ny*imp;
+        const inten=clamp(Math.abs(vn)/70,0,1); a.strike(inten,0.4); b.strike(inten,0.4);
+      }
+    }
+  }
+}
+
+/* interaction: tap empty = seed; tap body = strike + nudge. small bodies still tappable. */
+let lastInteract=performance.now();
+function hit(x,y){for(let i=cells.length-1;i>=0;i--){const c=cells[i];if(Math.hypot(x-c.x,y-c.y)<Math.max(c.size,26)*1.1)return c;}return null;}
+function pointer(x,y){lastInteract=performance.now();const c=hit(x,y);
+  if(c){c.cool=0;c.strike(0.9,0.1);const ang=rnd(0,TAU);c.vx+=Math.cos(ang)*55;c.vy+=Math.sin(ang)*55;}
+  else seed(x,y);
+}
+cv.addEventListener('pointerdown',e=>{e.preventDefault();pointer(e.clientX,e.clientY);},{passive:false});
+
+const wetEl=document.getElementById('wet');
+wetEl.addEventListener('input',()=>Sound.setWet(wetEl.value/100));
+
+/* gate */
+const gate=document.getElementById('gate'),hint=document.getElementById('hint'),titleEl=document.getElementById('title');
+let started=false;
+function begin(){if(started)return;started=true;Sound.start();gate.classList.add('gone');
+  for(let i=0;i<3;i++) seed(rnd(W*0.25,W*0.75),rnd(H*0.3,H*0.7));
+  setTimeout(()=>hint.classList.add('gone'),7000); setTimeout(()=>titleEl.classList.add('dim'),4000);
+}
+gate.addEventListener('pointerdown',e=>{e.preventDefault();begin();},{passive:false});
+
+/* loop */
+let last=performance.now();
+function frame(now){
+  let dt=Math.min((now-last)/1000,0.05);last=now;const t=now/1000;
+  g.globalCompositeOperation='source-over';
+  g.fillStyle='rgba(5,16,15,0.30)'; g.fillRect(0,0,W,H);
+  const vg=g.createRadialGradient(W*0.5,H*0.45,Math.min(W,H)*0.1,W*0.5,H*0.5,Math.max(W,H)*0.75);
+  vg.addColorStop(0,'rgba(16,40,36,0.05)'); vg.addColorStop(1,'rgba(2,8,7,0.12)');
+  g.fillStyle=vg; g.fillRect(0,0,W,H);
+  if(started){
+    for(const c of cells)c.step(dt,t);
+    collide(dt);
+    for(const c of cells)c.draw();
+    if(now-lastInteract>14000) hint.classList.remove('gone');
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

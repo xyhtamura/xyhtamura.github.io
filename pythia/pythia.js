@@ -79,7 +79,8 @@ window.onload = () => {
     let vizEnabled           = true;
     let activeGrains         = [];
     let currentAmplitude     = 0;        // live amplitude, for dot opacity scaling
-    let controlWaveformCache = null;     // offscreen canvas (shared by ctrl + delay views)
+    let controlWaveformCache = null;     // offscreen canvas — teal
+    let ampWaveformCache     = null;     // offscreen canvas — ember (same ctrl data, scrolled)
     let sourceWaveformCache  = null;
 
     // ── Pre-computation ───────────────────────────────────────────────────────
@@ -106,14 +107,9 @@ window.onload = () => {
     };
 
     // ── Waveform cache ────────────────────────────────────────────────────────
-    // Renders buffer to an offscreen canvas once; each frame blits cheaply.
-    const buildWaveformCache = (buffer, referenceCanvas) => {
-        const w = referenceCanvas.offsetWidth  || 800;
-        const h = referenceCanvas.offsetHeight || 72;
-
-        referenceCanvas.width  = w;
-        referenceCanvas.height = h;
-
+    // Builds an offscreen canvas from buffer data. Canvas sizing is handled by
+    // refreshWaveformCaches — this function only draws.
+    const buildWaveformCache = (buffer, w, h, waveColor = 'rgba(88,178,168,0.5)') => {
         const off = document.createElement('canvas');
         off.width  = w;
         off.height = h;
@@ -135,7 +131,7 @@ window.onload = () => {
         const data = buffer.getChannelData(0);
         const step = Math.max(1, Math.floor(data.length / w));
 
-        ctx.strokeStyle = 'rgba(88,178,168,0.5)';
+        ctx.strokeStyle = waveColor;
         ctx.lineWidth = 1;
         ctx.beginPath();
         for (let x = 0; x < w; x++) {
@@ -159,15 +155,26 @@ window.onload = () => {
     const refreshWaveformCaches = () => {
         if (!vizEnabled) return;
         if (controlBuffer && controlCanvas) {
-            controlWaveformCache = buildWaveformCache(controlBuffer, controlCanvas);
-            // Delay canvas uses same waveform data — just size it and share the cache
+            const w = controlCanvas.offsetWidth  || 800;
+            const h = controlCanvas.offsetHeight || 72;
+            controlCanvas.width  = w;
+            controlCanvas.height = h;
+            controlWaveformCache = buildWaveformCache(controlBuffer, w, h, 'rgba(88,178,168,0.5)');
+
+            // Amp view: same ctrl data, ember colour, same dimensions
             if (delayCanvas) {
-                delayCanvas.width  = controlCanvas.width;
-                delayCanvas.height = controlCanvas.height;
+                delayCanvas.width  = w;
+                delayCanvas.height = h;
+                ampWaveformCache   = buildWaveformCache(controlBuffer, w, h, 'rgba(216,104,64,0.6)');
             }
         }
-        if (sourceBuffer && sourceCanvas)
-            sourceWaveformCache = buildWaveformCache(sourceBuffer, sourceCanvas);
+        if (sourceBuffer && sourceCanvas) {
+            const w = sourceCanvas.offsetWidth  || 800;
+            const h = sourceCanvas.offsetHeight || 72;
+            sourceCanvas.width  = w;
+            sourceCanvas.height = h;
+            sourceWaveformCache = buildWaveformCache(sourceBuffer, w, h, 'rgba(88,178,168,0.5)');
+        }
     };
 
     // ── Per-frame canvas rendering ────────────────────────────────────────────
@@ -202,24 +209,36 @@ window.onload = () => {
         ctx.fill();
     };
 
-    // Delay amplitude canvas: same waveform as ctrl, playhead at t - delay.
-    // Shows which point in the control's timeline is currently shaping grain amplitude.
-    // Gap between ctrl and delay playheads = the delay value.
+    // Delay / amplitude canvas.
+    // The waveform IMAGE scrolls left/right based on params.delay — the terrain moves,
+    // not the playhead. Positive delay shifts the waveform right (earlier content
+    // drifts toward the playhead); negative delay shifts it left (future content).
+    // The playhead pin stays at the same screen position as the ctrl canvas.
+    // Works even when paused: the scroll preview reflects the current delay value.
     const renderDelayCanvas = () => {
-        if (!controlWaveformCache || !delayCanvas || !controlBuffer) return;
+        if (!ampWaveformCache || !delayCanvas || !controlBuffer) return;
         const w   = delayCanvas.width;
         const h   = delayCanvas.height;
         const ctx = delayCanvas.getContext('2d');
 
-        ctx.drawImage(controlWaveformCache, 0, 0);
+        // Pixel shift: positive delay → shift right (show earlier file content)
+        const pixelShift = (params.delay / controlBuffer.duration) * w;
+        // Wrap into [0, w) so we always draw exactly two tiles covering the canvas
+        const wrapped = ((pixelShift % w) + w) % w;
+
+        ctx.fillStyle = '#111209';
+        ctx.fillRect(0, 0, w, h);
+
+        // Two copies tile the canvas seamlessly regardless of shift
+        ctx.drawImage(ampWaveformCache, wrapped - w, 0);
+        ctx.drawImage(ampWaveformCache, wrapped,     0);
 
         if (!isPlaying) return;
 
-        const t      = (audioContext.currentTime - startTime) % controlBuffer.duration;
-        const ampT   = ((t - params.delay) % controlBuffer.duration + controlBuffer.duration) % controlBuffer.duration;
-        const x      = (ampT / controlBuffer.duration) * w;
+        // Playhead fixed at same t position as ctrl canvas
+        const t = (audioContext.currentTime - startTime) % controlBuffer.duration;
+        const x = (t / controlBuffer.duration) * w;
 
-        // Playhead line — ember/terracotta
         ctx.strokeStyle = 'rgba(216,104,64,0.85)';
         ctx.lineWidth   = 1;
         ctx.beginPath();
@@ -227,7 +246,6 @@ window.onload = () => {
         ctx.lineTo(x, h);
         ctx.stroke();
 
-        // Top marker triangle
         ctx.fillStyle = '#d86840';
         ctx.beginPath();
         ctx.moveTo(x - 4, 0);
@@ -389,6 +407,10 @@ window.onload = () => {
                 dryGain.gain.value = Math.cos(v * 0.5 * Math.PI);
                 wetGain.gain.value = Math.cos((1 - v) * 0.5 * Math.PI);
             }
+            // Preview the scrolled amp waveform immediately when delay changes, even when paused
+            if (key === 'delay' && vizEnabled && ampWaveformCache && !isPlaying) {
+                renderDelayCanvas();
+            }
         });
     });
 
@@ -411,6 +433,7 @@ window.onload = () => {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
             controlWaveformCache = null;
+            ampWaveformCache     = null;
             sourceWaveformCache  = null;
             refreshWaveformCaches();
         }, 200);
@@ -551,6 +574,8 @@ window.onload = () => {
         if (vizEnabled) {
             if (controlWaveformCache && controlCanvas)
                 controlCanvas.getContext('2d').drawImage(controlWaveformCache, 0, 0);
+            if (ampWaveformCache && delayCanvas)
+                renderDelayCanvas(); // uses the scrolling draw, just skips the playhead
             if (sourceWaveformCache && sourceCanvas)
                 sourceCanvas.getContext('2d').drawImage(sourceWaveformCache, 0, 0);
         }
