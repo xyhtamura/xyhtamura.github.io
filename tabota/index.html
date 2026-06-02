@@ -38,7 +38,7 @@
   --membrane-pink:#d1336b;  /* magenta — lines / slides */
   --tide:         #11897e;  /* teal-cyan — structure / links / primary action */
   --tide-deep:    #0c6c63;
-  --ember:        #dd6b12;  /* amber — warnings / overflow */
+  --ember:        #dd6b12;  /* amber — warnings / overflow / refusals */
   --bruise:       #6a47d8;  /* violet — secondary structural */
 
   --mono: "IBM Plex Mono", "SFMono-Regular", Menlo, monospace;
@@ -98,20 +98,7 @@ body{
 .lede b{ color:var(--bone); font-weight:600; }
 .lede a{ color:var(--tide); text-decoration:none; border-bottom:1px solid var(--tide); }
 .lede a:hover{ color:var(--tide-deep); border-color:var(--tide-deep); }
-
-/* --- canvas doctrine -------------------------------------------------- */
-.doctrine{ border:1px solid var(--silt); border-left:3px solid var(--algae);
-  border-radius:3px; background:linear-gradient(180deg,#ffffffae,var(--abyss-2));
-  padding:16px 20px 14px; position:relative; }
-.doctrine-mark{ font-family:var(--display); font-style:italic; font-size:16px;
-  color:var(--bone); margin-bottom:8px; }
-.doctrine p{ font-size:12.5px; line-height:1.62; color:var(--bone-dim); margin:0 0 9px; max-width:96ch; }
-.doctrine p:last-child{ margin-bottom:0; }
-.doctrine b{ color:var(--bone); font-weight:600; }
-.doctrine em{ color:var(--membrane-pink); font-style:italic; }
-.doctrine code{ background:var(--abyss-2); color:var(--membrane-pink);
-  padding:1px 5px; border-radius:2px; font-size:.92em; }
-.doctrine-coda{ color:var(--tide-deep)!important; font-style:italic; border-top:1px solid var(--silt-2); padding-top:9px; }
+.lede .fct{ color:var(--bruise); font-weight:500; }
 
 /* --- panels ----------------------------------------------------------- */
 .panel{ border:1px solid var(--silt); border-radius:3px; background:var(--membrane);
@@ -176,9 +163,10 @@ input[type=file]::file-selector-button{ font-family:var(--mono); background:var(
   z-index:10; background:var(--bruise); border:2px solid var(--tide); border-radius:2px; }
 .event-line{ position:absolute; height:2.5px; background:var(--membrane-pink);
   transform-origin:0 50%; z-index:9; border-radius:2px; }
-.event-line.cross-regime{ height:0; border-top:2.5px dashed var(--bruise); background:transparent; }
-.event-line.cross-regime::after{ content:""; position:absolute; right:-3px; top:-3px;
-  width:6px; height:6px; border-radius:50%; background:var(--bruise); }
+.event-bar{ position:absolute; height:7px; background:var(--algae); opacity:.85;
+  transform:translateY(-50%); z-index:9; border-radius:2px; }
+.event-band{ position:absolute; background:var(--bruise); opacity:.16;
+  border:1px dashed var(--bruise); z-index:8; border-radius:2px; }
 .event-payload{ position:absolute; transform:translate(14px,-50%); font-size:11px;
   color:var(--bone-dim); white-space:nowrap; z-index:11; }
 .grid-line-vertical{ position:absolute; width:1px; height:100%; top:0; background:rgba(24,48,43,0.07); }
@@ -235,6 +223,14 @@ table.report tr:hover td{ background:rgba(24,48,43,0.04); }
 .warnings{ margin-top:12px; }
 .warn{ font-size:11.5px; color:var(--ember); border-left:2px solid var(--ember);
   padding:4px 0 4px 11px; margin:5px 0; }
+/* refusal block — "here are the things I cannot do" */
+.refusals{ margin-top:14px; border:1px solid var(--ember); border-radius:2px;
+  background:#dd6b120d; padding:11px 13px; }
+.refusals h4{ margin:0 0 7px; color:var(--ember); font-family:var(--display); font-weight:400;
+  font-size:14px; }
+.refusals ul{ margin:0; padding-left:18px; }
+.refusals li{ font-size:11.5px; color:var(--bone-dim); line-height:1.5; margin-bottom:4px; }
+.refusals li b{ color:var(--bone); font-weight:500; }
 .bend-bar{ display:inline-block; width:54px; height:6px; background:var(--abyss-2);
   border:1px solid var(--silt); position:relative; vertical-align:middle; }
 .bend-bar i{ position:absolute; top:0; bottom:0; width:1px; background:var(--bone-faint); left:50%; }
@@ -254,6 +250,8 @@ table.report tr:hover td{ background:rgba(24,48,43,0.04); }
 .ref code{ background:var(--abyss-2); color:var(--membrane-pink); padding:2px 5px; border-radius:2px; font-size:.9em; }
 .ref pre{ background:var(--abyss-2); border:1px solid var(--silt); border-radius:2px; padding:14px; overflow:auto; }
 .ref pre code{ color:var(--bone); display:block; white-space:pre; }
+.stale-note{ font-size:11.5px; color:var(--ember); border-left:2px solid var(--ember);
+  padding:4px 0 4px 11px; margin:0 0 14px; }
 .sample pre{ background:var(--abyss-2); border:1px solid var(--silt); border-radius:2px; padding:13px;
   white-space:pre-wrap; word-break:break-word; font-size:12px; max-height:200px; overflow:auto; }
 .sample .panel-head{ border-bottom:none; padding:0 0 8px; }
@@ -261,6 +259,12 @@ table.report tr:hover td{ background:rgba(24,48,43,0.04); }
 .json-number{ color:var(--algae); } .json-boolean{ color:var(--bruise); }
 .hidden{ display:none!important; }
 ::selection{ background:#bfe7e1; color:var(--bone); }
+
+/* --- model key (facets) ----------------------------------------------- */
+.facets{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin-top:4px; }
+.facet{ border:1px solid var(--silt); border-radius:2px; padding:9px 11px; background:var(--abyss-2); }
+.facet b{ color:var(--bruise); font-size:11.5px; letter-spacing:.04em; }
+.facet span{ display:block; color:var(--bone-dim); font-size:11px; line-height:1.5; margin-top:3px; }
 </style>
 </head>
 <body>
@@ -269,7 +273,7 @@ table.report tr:hover td{ background:rgba(24,48,43,0.04); }
 <div class="masthead">
   <div class="logo">
     <h1>Tabota<span class="kanji">田</span></h1>
-    <span class="tag">microtonal score · time grammar · transfer language</span>
+    <span class="tag">event description language · one type · transfer to MIDI</span>
   </div>
   <div class="meta-strip">
     <a class="rolllink" href="tabota_roll.html" title="Open the visual piano-roll editor">
@@ -284,27 +288,19 @@ table.report tr:hover td{ background:rgba(24,48,43,0.04); }
       <span class="rl-arr">→</span>
     </a>
 
-    <span class="chip">lang <b>v1.6</b></span>
+    <span class="chip">lang <b>v2.0</b></span>
     <span class="chip" id="chip-bend">bend <b>±24 st</b></span>
   </div>
 </div>
 
 <p class="lede">
-  A workspace for the Tabota notation language: <b>write or paste</b> a score and see it plotted, then <b>compile it to microtonal MIDI</b> or read MIDI back into Tabota. Pitch may be written as raw frequency, symbolic notes, or tuned through Scala <code>.scl</code> files; playback retunes ordinary MIDI notes through pitch bend so the result can travel into a normal DAW. For drawing directly instead of typing JSON, open the <a href="tabota_roll.html">piano-roll editor</a> — a lighter, polyphonic canvas with voice-aware MIDI export. For rhythm, open <a href="cycla_builder.html">Cycla</a>: a companion builder for <code>.cyc</code> files, treating meter as a recursive subdivision grammar — a tuning system for time, parallel to how Scala describes tuning systems for pitch.
+  A workspace for the Tabota notation language. In v2 there is a single recursive type — the <b>Event</b> — and everything in a score is one. An Event is a bag of optional, stackable facets: a <span class="fct">frame</span> (the regime role: it turns the Event into a coordinate field its children are read in), a <span class="fct">value</span> (a pitch, a lane, an instruction), a <span class="fct">position</span>, an <span class="fct">extent</span>, and nested <span class="fct">events</span>. None are required — an empty <code>{}</code> is a valid Event, and the same facets describe a note, a regime, or a whole movement.
+</p>
+<p class="lede">
+  Tabota is a language of <b>description, not scheduling</b>: it can express relations that are indeterminate, over-determined, or even paradoxical. This workspace is a <b>realizer</b> — it plots and compiles the <b>determinate fragment</b> (events placed at exact coordinates with exact or gliding pitch) to microtonal MIDI, retuning through pitch bend so the result travels into a normal DAW. Anything outside that fragment — relational placement (<code>after</code>, <code>meets</code>), ranges, open extents, cycles — stays valid in the language, but is listed under <b>“cannot schedule here”</b> rather than drawn. To draw notes directly, open the <a href="tabota_roll.html">piano-roll editor</a>; for rhythm, <a href="cycla_builder.html">Cycla</a> treats meter as a recursive subdivision grammar, a tuning system for time.
 </p>
 
-<aside class="doctrine">
-  <div class="doctrine-mark">The Canvas Doctrine</div>
-  <p>Tabota treats the <b>digital canvas as the primary composition environment</b>, not a transcription of performance instructions. A note is defined as points in coordinate space and extended backward or forward by duration. Its start and end may be authored within a regime, but a duration-bearing note may extend <em>out</em> of the regime that authored it — <b>a regime is only the authoring field, not a container</b> that governs everything inside it.</p>
-  <p>Conventional notation is a set of instructions for live performers; digital composition is under no such obligation, and nothing here happens live. The canvas is a graphic space — closer to drawing than to dictation, where time need not be metered — yet these remain events that will eventually be realized, and that realization is resolved only in the <b>down-translation</b>. The native Tabota encoding is the high-fidelity master (the vector, the <code>.svg</code>); every later translation, above all MIDI, is permitted to be a <b>lower-fidelity shadow</b> (the raster, the <code>.jpeg</code>). A start authored in one regime and an end resolved in another are stored exactly as written; conversion to meter happens only for the tempo track at MIDI mixdown, and it is allowed to be approximate.</p>
-  <p class="doctrine-coda">The aim is absolute freedom of graphical representation, so temporal expression isn't limited by conventions about itself — while still allowing time and pitch to be rigorously defined wherever the composer wants them.</p>
-</aside>
-
-<p class="note" style="margin:-6px 2px 0;">
-  <b>On glides (v1.6):</b> a line event interpolates its value across two independent axes. <em>Value space</em> — pitch defaults to <code>log-frequency</code> (linear in cents), so a straight-<i>sounding</i> glide is log-frequency with linear easing. <em>Easing</em> — an optional <code>curve</code>, the function <code>s(k)</code> on the unit interval, given as a math expression in <code>k</code> (the exact master) or a <code>[[k,s],…]</code> sample table (a hand-drawn shape). Tabota names no curves; <code>linear</code> is the only default. Arbitrary contours come from interior <code>points</code>. Editor presets like "exp" or "smooth" live in the client and compile down to a <code>curve</code>.
-</p>
-
-
+<div class="facets" id="facet-key"></div>
 
   <!-- VISUALIZER ------------------------------------------------------- -->
   <div class="panel">
@@ -315,7 +311,7 @@ table.report tr:hover td{ background:rgba(24,48,43,0.04); }
         <div class="zoom"><span>Y</span><button class="zoom-btn" id="zoom-y-out">–</button><button class="zoom-btn" id="zoom-y-in">+</button></div>
       </div>
     </div>
-    <div class="panel-body"><div id="score-container"></div></div>
+    <div class="panel-body"><div id="score-container"></div><div id="resolve-report"></div></div>
   </div>
 
   <!-- EDITOR ----------------------------------------------------------- -->
@@ -327,10 +323,9 @@ table.report tr:hover td{ background:rgba(24,48,43,0.04); }
           <option value="">load sample…</option>
           <option value="main">Language showcase</option>
           <option value="micro">Microtonal scale (Hz)</option>
-          <option value="symbolic">Symbolic melody + slide</option>
-          <option value="theatre">Theatrical cues</option>
-          <option value="handover">Regime handover (hybrid note)</option>
-          <option value="glide">Glide &amp; easing (curves)</option>
+          <option value="symbolic">Symbolic melody + glide</option>
+          <option value="theatre">Theatrical cues (achronous)</option>
+          <option value="relational">Relations &amp; the unschedulable</option>
         </select>
         <button class="action-btn" id="beautify-btn">Beautify</button>
         <button class="copy-btn icon-btn" id="copy-main-json">
@@ -353,7 +348,7 @@ table.report tr:hover td{ background:rgba(24,48,43,0.04); }
 
     <!-- EXPORT ........................................................ -->
     <div class="tabpane active" id="pane-export">
-      <p class="note">Compiles <b>one monophonic voice</b> to a Standard MIDI File. Each note is placed on the nearest 12-TET key and retuned with a single per-channel pitch bend, so any microtonal frequency transfers exactly. The file writes an <code>RPN&nbsp;0,0</code> message that tells the receiving synth what bend range to expect — set it to match your instrument.</p>
+      <p class="note">Compiles <b>one voice</b> — a frame-bearing Event with a pitched axis — to a Standard MIDI File. Each note is placed on the nearest 12-TET key and retuned with a single per-channel pitch bend, so any microtonal frequency transfers exactly. Only the <b>determinate fragment</b> of the voice is written; events positioned by relation, range, or unresolved reference are reported below as unschedulable. The file writes an <code>RPN&nbsp;0,0</code> message telling the synth what bend range to expect — set it to match your instrument.</p>
 
       <div class="controls-grid" style="margin-top:16px;">
         <label class="field">Voice
@@ -367,7 +362,7 @@ table.report tr:hover td{ background:rgba(24,48,43,0.04); }
             <option value="12-TET">12-TET (equal)</option>
             <option value="pythagorean">Pythagorean</option>
             <option value="just">Just intonation</option>
-            <option value="score">Use score's tuning</option>
+            <option value="score">Use frame's tuning</option>
             <option value="custom">Custom map (paste below)</option>
           </select>
         </label>
@@ -409,7 +404,7 @@ table.report tr:hover td{ background:rgba(24,48,43,0.04); }
       <div class="row-actions" style="margin-top:16px;">
         <button class="primary" id="compile-btn">Compile to MIDI</button>
         <a class="btn hidden" id="midi-download" download="voice.mid">↓ Download .mid</a>
-        <span class="note" id="compile-hint">Reads the score above. Frequency lanes use Hz directly; symbolic lanes use note names resolved through the chosen tuning.</span>
+        <span class="note" id="compile-hint">Reads the score above. Frequency frames use Hz directly; symbolic frames resolve note names through the chosen tuning.</span>
       </div>
 
       <div id="export-output"></div>
@@ -417,7 +412,7 @@ table.report tr:hover td{ background:rgba(24,48,43,0.04); }
 
     <!-- IMPORT ........................................................ -->
     <div class="tabpane" id="pane-import">
-      <p class="note">Convert a <code>.mid</code> file into a Tabota v1.6 score. Tracks become symbolic lanes (12-TET note names). The result is loaded straight into the editor above.</p>
+      <p class="note">Convert a <code>.mid</code> file into a Tabota <b>v2</b> score. Each MIDI track becomes a child Event carrying a symbolic frame (12-TET note names); notes become value+position+extent Events. The result is loaded straight into the editor above.</p>
       <div style="margin:16px 0;"><input type="file" id="midi-input" accept=".mid,.midi"></div>
       <div class="controls-grid">
         <label class="field" style="text-transform:none;letter-spacing:0;">
@@ -437,12 +432,12 @@ table.report tr:hover td{ background:rgba(24,48,43,0.04); }
     </div>
   </div>
 
-  <!-- REFERENCE -------------------------------------------------------- -->
+  <!-- SAMPLES ---------------------------------------------------------- -->
   <div class="panel">
     <div class="panel-head"><h2>Samples</h2><span class="idx">copy &amp; render</span></div>
     <div class="panel-body">
-      <div class="sample"><div class="panel-head"><h4 style="margin:0;color:var(--tide);">Microtonal scale (frequency)</h4><button class="copy-btn" data-target="micro">Copy &amp; Render</button></div><pre><code id="s-micro"></code></pre></div>
-      <div class="sample" style="margin-top:14px;"><div class="panel-head"><h4 style="margin:0;color:var(--tide);">Symbolic melody + slide</h4><button class="copy-btn" data-target="symbolic">Copy &amp; Render</button></div><pre><code id="s-symbolic"></code></pre></div>
+      <div class="sample"><div class="panel-head"><h4 style="margin:0;color:var(--tide);">Symbolic melody + glide</h4><button class="copy-btn" data-target="symbolic">Copy &amp; Render</button></div><pre><code id="s-symbolic"></code></pre></div>
+      <div class="sample" style="margin-top:14px;"><div class="panel-head"><h4 style="margin:0;color:var(--tide);">Relations &amp; the unschedulable</h4><button class="copy-btn" data-target="relational">Copy &amp; Render</button></div><pre><code id="s-relational"></code></pre></div>
     </div>
   </div>
 
@@ -459,6 +454,7 @@ table.report tr:hover td{ background:rgba(24,48,43,0.04); }
 /* ============================================================
    TABOTA MICROTONAL ENGINE  (validated against @tonejs/midi)
    pure functions — note/freq math, tuning, pitch bend, SMF writer
+   [v2: unchanged — the engine is model-agnostic]
    ============================================================ */
 const PITCH_CLASS={'C':0,'C#':1,'DB':1,'D':2,'D#':3,'EB':3,'E':4,'F':5,'F#':6,'GB':6,'G':7,'G#':8,'AB':8,'A':9,'A#':10,'BB':10,'B':11};
 const NOTE_NAMES=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
@@ -544,35 +540,336 @@ class MidiWriter{
 }
 
 /* ============================================================
-   APP STATE + SAMPLES
+   V2 RESOLVER  (recursive Event walk → determinate fragment)
+   ------------------------------------------------------------
+   A frame establishes the coordinate system its children are read in
+   and supplies the conversion keys (bpm for time, tuning for pitch).
+   Nesting is a SCOPE edge (inherit, like CSS), not a temporal "during":
+   children inherit the frame; a child may outlast its parent.
+   We resolve only VALUE positions (at / meter / index) and exact or
+   gliding pitch — the fragment the Roll emits and a DAW can read.
+   Relational / range / open / reference forms are collected as
+   "cannot schedule here" rather than placed.
+   ============================================================ */
+const NOMINAL_INDEX_SEC=0.6;          // achronous slot width for layout
+const DEFAULT_BPM=120;
+
+function meterToBeats(m,beatsPerMeasure){ return ((m.measure-1)*(beatsPerMeasure||4))+m.beat; }
+
+// Merge an Event's own frame onto the inherited frame (lexical scope).
+function deriveFrame(ev, inh){
+  const f=ev.frame||{};
+  let temporal=inh.temporal, tset=inh.temporalSettings, bpm=inh.bpm, bpmsr=inh.beatsPerMeasure;
+  if(f.temporal){
+    temporal=f.temporal; tset=f.temporalSettings||{};
+    bpm=(tset.bpm!=null?tset.bpm:inh.bpm); // bpm is a conversion key: own > inherited
+    bpmsr=tset.timeSignature?parseInt(tset.timeSignature.split('/')[0]):(inh.beatsPerMeasure||4);
+  }
+  let axis=inh.axis, aset=inh.axisSettings;
+  if(f.axis){ axis=f.axis; aset=f.axisSettings||{}; }
+  return {temporal,temporalSettings:tset,bpm,beatsPerMeasure:bpmsr,axis,axisSettings:aset,hasOwnFrame:!!ev.frame};
+}
+
+// Convert a quantity in a frame's units into seconds.
+function unitToSec(val,frame){
+  if(val==null) return null;
+  if(!frame||!frame.temporal) return val;                       // root context → seconds
+  if(frame.temporal==='chronological'){
+    const u=(frame.temporalSettings&&frame.temporalSettings.units)||'seconds';
+    return u==='milliseconds'?val/1000:(u==='minutes'?val*60:val);
+  }
+  if(frame.temporal==='metered') return val*60/(frame.bpm||DEFAULT_BPM);
+  if(frame.temporal==='achronous') return val*NOMINAL_INDEX_SEC;
+  return val;
+}
+
+// Onset in the governing frame's own units. null if not given by VALUE.
+function localOnset(ev,frame){
+  const p=ev.position||{};
+  if(p.at!=null) return p.at;
+  if(p.meter) return meterToBeats(p.meter,frame.beatsPerMeasure);
+  if(p.index!=null) return p.index;
+  if(p.anchor&&p.anchor.time!=null) return p.anchor.time;       // approximation: pin time as onset
+  return null;
+}
+// Why an onset is *unresolvable* by value (for the refusal report). null if it is resolvable / absent.
+function onsetRefusal(ev){
+  const p=ev.position||{};
+  if(p.relations&&p.relations.length) return 'relational placement ('+p.relations.map(r=>r.type).join(', ')+')';
+  if(p.between) return 'indeterminate window (position.between)';
+  return null;
+}
+// Local extent length in frame units. null if not a plain length.
+function localExtentLen(ev,frame,onLocal){
+  const x=ev.extent||{};
+  if(x.duration!=null) return x.duration;
+  if(x.endAt!=null) return x.endAt-(onLocal||0);
+  if(x.endMeter) return meterToBeats(x.endMeter,frame.beatsPerMeasure)-(onLocal||0);
+  return null;
+}
+function extentRefusal(ev){
+  const x=ev.extent||{};
+  if(x.end==='open') return 'open extent (goes on forever)';
+  if(x.until) return 'extent ends at a landmark (extent.until)';
+  if(x.between) return 'indeterminate duration (extent.between)';
+  return null;
+}
+
+function tuningFromFrame(frame){
+  const a=(frame&&frame.axisSettings)||{};
+  return {system:'12-TET', a4:a.a4||440};
+}
+// Resolve value.pitch → {hz} | {from,to} | {band:[lo,hi]} | {unresolved:reason} | null
+function resolvePitch(pv,frame){
+  if(!pv) return null;
+  const tn=tuningFromFrame(frame);
+  const toHz=x=> (typeof x==='number')?x:(resolveNoteFreq(x,tn));
+  if(pv.hz!=null) return {hz:pv.hz, label:pv.hz.toFixed(2)+' Hz'};
+  if(pv.note!=null){ const h=toHz(pv.note); return h?{hz:h,label:pv.note}:{unresolved:'unknown note "'+pv.note+'"'}; }
+  if(pv.from!=null||pv.to!=null){ const a=toHz(pv.from!=null?pv.from:pv.to), b=toHz(pv.to!=null?pv.to:pv.from);
+    return {from:a,to:b,label:(typeof pv.from==='string'?pv.from:Math.round(a))+' → '+(typeof pv.to==='string'?pv.to:Math.round(b))}; }
+  if(pv.between){ const lo=toHz(pv.between.low), hi=toHz(pv.between.high); return {band:[lo,hi],label:'['+pv.between.low+'–'+pv.between.high+']'}; }
+  if(pv.relativeTo) return {unresolved:'pitch relative to "'+pv.relativeTo+'"'};
+  return null;
+}
+
+const ROOT_FRAME={temporal:null,temporalSettings:{},bpm:null,beatsPerMeasure:4,axis:null,axisSettings:{}};
+
+/* Walk the tree. Returns {nodes, frames, totalSec, refusals}. */
+function resolveScore(data){
+  const nodes=[], frames=[], refusals=[];
+  let primaryAxis=null, primaryAxisSettings=null;
+
+  function describe(ev,idx,depth){
+    return ev.id || (ev.role?ev.role:'event')+' @'+depth+'.'+idx;
+  }
+
+  function walk(list, inh, originSec, depth, seqStartSec){
+    let cursor=seqStartSec;            // for positionless sequential layout at this level
+    let spanMin=Infinity, spanMax=-Infinity;
+    (list||[]).forEach((ev,idx)=>{
+      if(!ev||typeof ev!=='object') return;
+      const frame=deriveFrame(ev,inh);
+      if(frame.axis && !primaryAxis){ primaryAxis=frame.axis; primaryAxisSettings=frame.axisSettings; }
+
+      // ---- onset ----
+      const onLocal=localOnset(ev,frame);
+      const oRef=onLocal==null?onsetRefusal(ev):null;
+      let onsetSec=null, placed=true;
+      if(onLocal!=null){ onsetSec=originSec+unitToSec(onLocal,frame); }
+      else if(oRef){ placed=false; refusals.push({who:describe(ev,idx,depth),why:oRef}); }
+      else { onsetSec = depth===0 ? cursor : originSec; }   // positionless: sequential at top, at-parent nested
+
+      // ---- extent ----
+      const extLen=localExtentLen(ev,frame,onLocal||0);
+      const xRef=extLen==null?extentRefusal(ev):null;
+      let endSec=null, open=false;
+      if(placed){
+        if(extLen!=null) endSec=onsetSec+unitToSec(extLen,frame);
+        else if((ev.extent||{}).end==='open'){ open=true; }
+        // else: point (endSec stays null until children resolve)
+      }
+      if(xRef && xRef.indexOf('open')<0){ refusals.push({who:describe(ev,idx,depth),why:xRef}); }
+
+      // ---- pitch / value ----
+      const pitch = ev.value ? resolvePitch(ev.value.pitch,frame) : null;
+      if(pitch && pitch.unresolved){ refusals.push({who:describe(ev,idx,depth),why:pitch.unresolved}); }
+
+      // ---- recurse into children (origin = this event's onset) ----
+      let childMin=Infinity, childMax=-Infinity;
+      if(ev.events && ev.events.length){
+        const childOrigin = onsetSec!=null?onsetSec:originSec;
+        const r=walk(ev.events, frame, childOrigin, depth+1, childOrigin);
+        childMin=r.min; childMax=r.max;
+      }
+
+      // container extent defaults: untilChildrenEnd / no extent + has children → bound to children
+      if(placed && endSec==null && !open && isFinite(childMax)) endSec=childMax;
+      if(placed && open===false && endSec==null) endSec=onsetSec;   // bare point
+
+      // ---- record drawable node ----
+      if(placed){
+        const isFrame=!!ev.frame;
+        const node={
+          onsetSec, endSec:(endSec==null?onsetSec:endSec), open, depth,
+          frame, axis:frame.axis, axisSettings:frame.axisSettings,
+          pitch, lane:ev.value&&ev.value.lane, text:ev.value&&ev.value.text,
+          comment:ev.payload&&ev.payload.comment,
+          label:describe(ev,idx,depth), isFrame,
+          hasChildren:!!(ev.events&&ev.events.length)
+        };
+        nodes.push(node);
+        if(isFrame){ frames.push({onsetSec,endSec:node.endSec,label:ev.id||ev.role||('frame '+(frames.length+1)),axis:frame.axis}); }
+        spanMin=Math.min(spanMin,onsetSec); spanMax=Math.max(spanMax,node.endSec,isFinite(childMax)?childMax:onsetSec);
+        cursor=Math.max(cursor,node.endSec);
+      } else if(isFinite(childMax)){
+        spanMin=Math.min(spanMin,childMin); spanMax=Math.max(spanMax,childMax);
+      }
+    });
+    return {min:spanMin,max:spanMax};
+  }
+
+  const r=walk(data.score, ROOT_FRAME, 0, 0, 0);
+  const totalSec=Math.max(isFinite(r.max)?r.max:0, 0.0001);
+  // open-extent nodes extend to the score end for drawing
+  nodes.forEach(n=>{ if(n.open) n.endSec=totalSec; });
+  return {nodes,frames,totalSec,refusals,primaryAxis,primaryAxisSettings};
+}
+
+/* ============================================================
+   APP STATE + V2 SAMPLES
    ============================================================ */
 let zoom={x:1,y:1};
 const BASE_TIMELINE_HEIGHT=300;
 let codeEditor;
+let GLOBAL_MIDI_RANGE={min:48,max:84};   // recomputed per render for symbolic y
+
+const FACETS=[
+  ['frame','the regime role — a coordinate field its children are read in (temporal + axis + conversion keys)'],
+  ['value','what the Event is: a pitch (Hz / note / glide / band), a lane, or an instruction'],
+  ['position','where it sits: at / meter / index (exact), or relation / between (deferred to a realizer)'],
+  ['extent','its own duration / end — decoupled from what it contains'],
+  ['events','nested Events. scope, not "during": a child may outlast its parent']
+];
 
 const samples={
-  main:`{ "projectName": "Tabota Language Showcase", "languageVersion": "1.6", "score": [ { "sectionId": "A1_Melody", "temporalRegime": "metered", "regimeSettings": { "beats": 4, "bpm": 120 }, "axisMode": "frequency", "modeSettings": { "minHz": 100, "maxHz": 2000 }, "events": [ { "type": "line", "startTime": 0, "endTime": 2, "startYValue": 440.0, "endYValue": 523.25, "payload": { "comment": "A4 to C5" } }, { "type": "point", "time": 2.5, "yValue": 587.33, "payload": { "comment": "D5" } }, { "type": "line", "startTime": 3, "endTime": 4, "startYValue": 659.25, "endYValue": 675.50, "payload": { "comment": "E5 bend" } } ] }, { "sectionId": "B1_Rhythm", "temporalRegime": "chronological", "regimeSettings": { "duration": 2 }, "axisMode": "categorical", "modeSettings": { "categories": ["Kick", "Snare", "Hi-Hat"] }, "events": [ { "type": "point", "time": 0.0, "yValue": "Kick" }, { "type": "point", "time": 0.5, "yValue": "Snare" }, { "type": "point", "time": 1.0, "yValue": "Kick" }, { "type": "point", "time": 1.5, "yValue": "Snare" } ] } ] }`,
-  micro:`{ "projectName": "Microtonal Scale", "languageVersion": "1.6", "score": [ { "sectionId": "Scale", "temporalRegime": "metered", "regimeSettings": { "beats": 8, "bpm": 90 }, "axisMode": "frequency", "modeSettings": { "minHz": 200, "maxHz": 600 }, "events": [ { "type": "point", "time": 0, "yValue": 261.63 }, { "type": "point", "time": 1, "yValue": 285.00 }, { "type": "point", "time": 2, "yValue": 311.13 }, { "type": "point", "time": 3, "yValue": 340.00 }, { "type": "point", "time": 4, "yValue": 369.99 }, { "type": "point", "time": 5, "yValue": 405.00 }, { "type": "point", "time": 6, "yValue": 440.00 }, { "type": "point", "time": 7, "yValue": 480.00 } ] } ] }`,
-  symbolic:`{ "projectName": "Symbolic Melody", "languageVersion": "1.6", "score": [ { "sectionId": "Theme", "temporalRegime": "metered", "regimeSettings": { "beats": 8, "bpm": 100 }, "axisMode": "symbolic", "modeSettings": { "tuning": "12-TET", "a4": 440 }, "defaultEventType": "line", "events": [ { "startTime": 0, "duration": 1, "note": "C4" }, { "startTime": 1, "duration": 1, "note": "E4" }, { "startTime": 2, "duration": 1, "note": "G4" }, { "startTime": 3, "duration": 2, "note": "A4" }, { "type": "line", "startTime": 5, "duration": 3, "startYValue": 440.0, "endYValue": 587.33, "payload": { "comment": "gliss A4 -> D5" } } ] } ] }`,
-  theatre:`{ "projectName": "Simple Stage Play", "languageVersion": "1.6", "score": [ { "sectionId": "Act 1, Scene 1", "temporalRegime": "achronous", "regimeSettings": { "indices": 4 }, "axisMode": "instructional", "events": [ { "type": "point", "index": 0, "yValue": 25, "payload": { "text": "House lights down." } }, { "type": "point", "index": 1, "yValue": 50, "payload": { "text": "Spotlight center." } }, { "type": "line", "startIndex": 2, "endIndex": 3, "startYValue": 75, "endYValue": 75, "payload": { "text": "Actor crosses." } }, { "type": "point", "index": 4, "yValue": 75, "payload": { "text": "'Am I late?'" } } ] } ] }`,
-  handover:`{ "projectName": "Regime Handover", "languageVersion": "1.6", "score": [ { "sectionId": "Metered_A", "temporalRegime": "metered", "regimeSettings": { "beats": 8, "bpm": 120, "timeSignature": "4/4" }, "axisMode": "symbolic", "modeSettings": { "tuning": "12-TET", "a4": 440 }, "defaultEventType": "line", "events": [ { "start": { "measure": 1, "beat": 0 }, "duration": 1, "note": "C4" }, { "start": { "measure": 1, "beat": 1 }, "duration": 1, "note": "E4" }, { "id": "carry", "start": { "measure": 2, "beat": 0 }, "end": { "regime": "Chrono_B", "time": 1.0 }, "note": "G4", "payload": { "comment": "one contiguous note: starts on beat 1 of bar 2 in A, ends 1.0s into B" } } ] }, { "sectionId": "Chrono_B", "temporalRegime": "chronological", "regimeSettings": { "duration": 3, "units": "seconds", "renderMeter": { "bpm": 120, "timeSignature": "4/4" } }, "axisMode": "frequency", "modeSettings": { "minHz": 200, "maxHz": 800 }, "defaultEventType": "point", "events": [ { "at": { "time": 1.5 }, "yValue": 440.0, "payload": { "comment": "A4 at 1.5s" } }, { "at": { "time": 2.5 }, "yValue": 493.88, "payload": { "comment": "B4 at 2.5s" } } ] }, { "sectionId": "Free_Overlay", "temporalRegime": "free", "regimeSettings": {}, "axisMode": "frequency", "modeSettings": { "minHz": 200, "maxHz": 800 }, "events": [ { "type": "line", "start": { "regime": "Metered_A", "measure": 1, "beat": 2 }, "end": { "regime": "Chrono_B", "time": 2.0 }, "startYValue": 300.0, "endYValue": 600.0, "payload": { "comment": "ungoverned layer: every anchor names its own clock" } } ] } ] }`,
-  glide:`{ "projectName": "Glide & Easing", "languageVersion": "1.6", "score": [ { "sectionId": "Glides", "temporalRegime": "metered", "regimeSettings": { "beats": 12, "bpm": 90, "timeSignature": "4/4" }, "axisMode": "frequency", "modeSettings": { "minHz": 320, "maxHz": 760 }, "events": [ { "type": "line", "start": { "beat": 0 }, "end": { "beat": 3 }, "startYValue": 440.0, "endYValue": 660.0, "payload": { "comment": "linear easing in log-frequency — a straight-sounding rise" } }, { "type": "line", "start": { "beat": 4 }, "end": { "beat": 7 }, "startYValue": 440.0, "endYValue": 660.0, "curve": "(exp(3*k)-1)/(exp(3)-1)", "payload": { "comment": "exponential easing, curvature 3 (slow then fast)" } }, { "type": "line", "start": { "beat": 8 }, "end": { "beat": 12 }, "startYValue": 440.0, "endYValue": 440.0, "points": [ { "at": 0.25, "value": 587.33, "curve": "(1-cos(pi*k))/2" }, { "at": 0.5, "value": 440.0 }, { "at": 0.75, "value": 369.99 } ], "payload": { "comment": "contour: up / back / down / back, sine ease on the first leg" } } ] } ] }`
+  main:`{
+  "projectName": "Tabota Language Showcase",
+  "languageVersion": "2.0",
+  "metadata": { "profile": "determinate" },
+  "score": [
+    {
+      "id": "A1_Melody",
+      "role": "regime",
+      "frame": {
+        "temporal": "metered", "temporalSettings": { "beats": 4, "bpm": 120, "timeSignature": "4/4" },
+        "axis": "frequency", "axisSettings": { "minHz": 100, "maxHz": 2000 }
+      },
+      "events": [
+        { "value": { "pitch": { "from": 440.0, "to": 523.25 } }, "position": { "at": 0 }, "extent": { "duration": 2 }, "payload": { "comment": "A4 -> C5 glide" } },
+        { "value": { "pitch": { "hz": 587.33 } }, "position": { "at": 2.5 }, "payload": { "comment": "D5" } },
+        { "value": { "pitch": { "from": 659.25, "to": 675.50 } }, "position": { "at": 3 }, "extent": { "duration": 1 }, "payload": { "comment": "E5 microtonal bend" } }
+      ]
+    },
+    {
+      "id": "B1_Rhythm",
+      "role": "regime",
+      "frame": {
+        "temporal": "chronological", "temporalSettings": { "duration": 2, "units": "seconds" },
+        "axis": "categorical", "axisSettings": { "categories": ["Kick", "Snare", "Hi-Hat"] }
+      },
+      "events": [
+        { "value": { "lane": "Kick" },  "position": { "at": 0.0 } },
+        { "value": { "lane": "Snare" }, "position": { "at": 0.5 } },
+        { "value": { "lane": "Kick" },  "position": { "at": 1.0 } },
+        { "value": { "lane": "Snare" }, "position": { "at": 1.5 } }
+      ]
+    }
+  ]
+}`,
+  micro:`{
+  "projectName": "Microtonal Scale",
+  "languageVersion": "2.0",
+  "score": [
+    {
+      "id": "Scale", "role": "regime",
+      "frame": {
+        "temporal": "metered", "temporalSettings": { "beats": 8, "bpm": 90 },
+        "axis": "frequency", "axisSettings": { "minHz": 200, "maxHz": 600 }
+      },
+      "events": [
+        { "value": { "pitch": { "hz": 261.63 } }, "position": { "at": 0 } },
+        { "value": { "pitch": { "hz": 285.00 } }, "position": { "at": 1 } },
+        { "value": { "pitch": { "hz": 311.13 } }, "position": { "at": 2 } },
+        { "value": { "pitch": { "hz": 340.00 } }, "position": { "at": 3 } },
+        { "value": { "pitch": { "hz": 369.99 } }, "position": { "at": 4 } },
+        { "value": { "pitch": { "hz": 405.00 } }, "position": { "at": 5 } },
+        { "value": { "pitch": { "hz": 440.00 } }, "position": { "at": 6 } },
+        { "value": { "pitch": { "hz": 480.00 } }, "position": { "at": 7 } }
+      ]
+    }
+  ]
+}`,
+  symbolic:`{
+  "projectName": "Symbolic Melody",
+  "languageVersion": "2.0",
+  "score": [
+    {
+      "id": "Theme", "role": "regime",
+      "frame": {
+        "temporal": "metered", "temporalSettings": { "beats": 8, "bpm": 100 },
+        "axis": "symbolic", "axisSettings": { "tuning": "12-TET", "a4": 440 }
+      },
+      "events": [
+        { "value": { "pitch": { "note": "C4" } }, "position": { "at": 0 }, "extent": { "duration": 1 } },
+        { "value": { "pitch": { "note": "E4" } }, "position": { "at": 1 }, "extent": { "duration": 1 } },
+        { "value": { "pitch": { "note": "G4" } }, "position": { "at": 2 }, "extent": { "duration": 1 } },
+        { "value": { "pitch": { "note": "A4" } }, "position": { "at": 3 }, "extent": { "duration": 2 } },
+        { "value": { "pitch": { "from": "A4", "to": "D5" } }, "position": { "at": 5 }, "extent": { "duration": 3 }, "payload": { "comment": "gliss" } }
+      ]
+    }
+  ]
+}`,
+  theatre:`{
+  "projectName": "Simple Stage Play",
+  "languageVersion": "2.0",
+  "score": [
+    {
+      "id": "Act 1, Scene 1", "role": "regime",
+      "frame": { "temporal": "achronous", "axis": "instructional" },
+      "events": [
+        { "value": { "text": "House lights down." }, "position": { "index": 0 } },
+        { "value": { "text": "Spotlight center." },  "position": { "index": 1 } },
+        { "value": { "text": "Actor crosses." },     "position": { "index": 2 } },
+        { "value": { "text": "'Am I late?'" },        "position": { "index": 3 } }
+      ]
+    }
+  ]
+}`,
+  relational:`{
+  "projectName": "Relations and the Unschedulable",
+  "languageVersion": "2.0",
+  "metadata": { "profile": "full" },
+  "score": [
+    {
+      "id": "Spine", "role": "regime",
+      "frame": {
+        "temporal": "metered", "temporalSettings": { "beats": 8, "bpm": 100 },
+        "axis": "symbolic", "axisSettings": { "tuning": "12-TET" }
+      },
+      "events": [
+        { "id": "A", "value": { "pitch": { "note": "C4" } }, "position": { "at": 0 }, "extent": { "duration": 2 } },
+        { "id": "B", "value": { "pitch": { "note": "G4" } }, "position": { "relations": [ { "type": "m", "of": { "event": "A", "point": "end" } } ] }, "extent": { "duration": 2 },
+          "payload": { "comment": "B meets A — placement deferred to a realizer that solves relations" } },
+        { "id": "C", "value": { "pitch": { "between": { "low": "E4", "high": "B4" } } }, "position": { "between": { "from": { "event": "A" }, "to": { "event": "B" } } },
+          "payload": { "comment": "indeterminate pitch AND onset" } },
+        { "id": "P1", "value": { "pitch": { "note": "D4" } }, "position": { "relations": [ { "type": "bi", "of": { "event": "P2" } } ] } },
+        { "id": "P2", "value": { "pitch": { "note": "F4" } }, "position": { "relations": [ { "type": "bi", "of": { "event": "P1" } } ] },
+          "payload": { "comment": "P1 after P2, P2 after P1 — a well-formed graph with no schedule. Valid in TaboTa; unschedulable here." } }
+      ]
+    }
+  ]
+}`
 };
 
 /* ============================================================
    INIT
    ============================================================ */
 document.addEventListener('DOMContentLoaded',()=>{
+  // facet key
+  const fk=document.getElementById('facet-key');
+  fk.innerHTML=FACETS.map(([n,d])=>`<div class="facet"><b>${n}</b><span>${d}</span></div>`).join('');
+
   codeEditor=CodeMirror.fromTextArea(document.getElementById('json-input'),{
     mode:{name:"javascript",json:true}, lineNumbers:true, matchBrackets:true
   });
   codeEditor.setValue(JSON.stringify(JSON.parse(samples.main),null,2));
 
-  document.getElementById('s-micro').innerHTML=syntaxHighlight(samples.micro);
   document.getElementById('s-symbolic').innerHTML=syntaxHighlight(samples.symbolic);
+  document.getElementById('s-relational').innerHTML=syntaxHighlight(samples.relational);
 
   document.querySelectorAll('.copy-btn').forEach(b=>b.addEventListener('click',handleCopyClick));
-  document.getElementById('render-btn').addEventListener('click',renderScore);
+  document.getElementById('render-btn').addEventListener('click',()=>{renderScore();refreshVoices();});
   document.getElementById('beautify-btn').addEventListener('click',beautifyJson);
   document.getElementById('sample-select').addEventListener('change',e=>{
     if(e.target.value){ codeEditor.setValue(JSON.stringify(JSON.parse(samples[e.target.value]),null,2)); renderScore(); refreshVoices(); e.target.value=''; }
@@ -599,8 +896,6 @@ document.addEventListener('DOMContentLoaded',()=>{
     document.querySelector('#chip-bend b').textContent='±'+(e.target.value||'?')+' st';
   });
   document.getElementById('compile-btn').addEventListener('click',compileToMidi);
-
-  // import controls
   document.getElementById('import-btn').addEventListener('click',convertMidiToTabota);
 
   refreshVoices();
@@ -609,206 +904,149 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 
 /* ============================================================
-   VISUALIZER  (extended to render symbolic lanes)
+   VISUALIZER
    ============================================================ */
-function meterToBeats(m,bpmsr){ return ((m.measure-1)*bpmsr)+m.beat; }
-
-/* ============================================================
-   SHARED ANCHOR MODEL  (v1.6)
-   Every endpoint is a regime-anchored coordinate. The same resolver
-   feeds the visualizer and the MIDI compiler so they agree on where a
-   note lives — including a contiguous hybrid note whose start and end
-   name different regimes. The spine (sectionId -> placement) is the
-   interchange currency; it is a projection, not where the anchor lives.
-   ============================================================ */
-function startAnchorOf(e){
-  if(e.start) return e.start;
-  if(e.at) return e.at;
-  if(e.startMeter) return {measure:e.startMeter.measure, beat:e.startMeter.beat};
-  if(e.startTime!==undefined) return {time:e.startTime};
-  if(e.startIndex!==undefined) return {index:e.startIndex};
-  if(e.time!==undefined) return {time:e.time};
-  if(e.index!==undefined) return {index:e.index};
-  return null;
-}
-function endAnchorOf(e){
-  if(e.end) return e.end;
-  if(e.endMeter) return {measure:e.endMeter.measure, beat:e.endMeter.beat};
-  if(e.endTime!==undefined) return {time:e.endTime};
-  if(e.endIndex!==undefined) return {index:e.endIndex};
-  return null; // null => use duration, or zero-length (point)
-}
-// coordinate -> local offset in the named regime's native unit
-function anchorToLocal(a,entry){
-  if(!a) return 0;
-  if(a.measure!==undefined) return (a.measure-1)*((entry&&entry.bpmsr)||4)+(a.beat||0);
-  if(a.beat!==undefined) return a.beat;
-  if(a.time!==undefined) return a.time;
-  if(a.index!==undefined) return a.index;
-  return 0;
-}
-// coordinate -> position on the shared spine
-function resolveGlobal(a,ambientEntry,spine){
-  if(!a) return ambientEntry?ambientEntry.startTime:0;
-  const entry=(a.regime&&spine[a.regime])?spine[a.regime]:ambientEntry;
-  return (entry?entry.startTime:0)+anchorToLocal(a,entry);
-}
-function anchorRegimeName(a,ambientEntry){
-  return (a&&a.regime)?a.regime:(ambientEntry?ambientEntry.id:null);
-}
-// first pass: place every named regime on the spine. 'free' layers
-// consume no span — they overlay, and their events borrow other clocks.
-function buildSpine(scoreData){
-  let g=0; const spine={};
-  (scoreData.score||[]).forEach((section,si)=>{
-    const rs=section.regimeSettings||{};
-    const isFree=section.temporalRegime==='free';
-    const duration=isFree?0:(rs.beats??rs.duration??rs.indices??1);
-    const bpmsr=rs.timeSignature?parseInt(rs.timeSignature.split('/')[0]):4;
-    const id=section.sectionId||('section '+(si+1));
-    spine[id]={id,startTime:g,duration,bpmsr,regime:section.temporalRegime,si};
-    g+=duration;
-  });
-  return {spine,total:g};
-}
-
-function processScore(scoreData){
-  const {spine,total}=buildSpine(scoreData);
-  const processedSections=[]; const processedEvents=[];
-  (scoreData.score||[]).forEach((section,si)=>{
-    const id=section.sectionId||('section '+(si+1));
-    const entry=spine[id];
-    const sectionStartTime=entry.startTime, duration=entry.duration;
-    // symbolic vertical range
-    let midiMin=Infinity, midiMax=-Infinity;
-    const scan=ev=>{ const n=ev.note?noteNameToMidi(ev.note):null; if(n!=null){ midiMin=Math.min(midiMin,n); midiMax=Math.max(midiMax,n);} };
-    (section.events||[]).forEach(scan);
-    (section.tracks||[]).forEach(t=>(t.events||[]).forEach(scan));
-    if(midiMin===Infinity){ midiMin=48; midiMax=84; } else { midiMin-=3; midiMax+=3; }
-
-    processedSections.push({...section,startTime:sectionStartTime,duration,_midiMin:midiMin,_midiMax:midiMax});
-
-    const ctx=[];
-    (section.events||[]).forEach(e=>ctx.push({event:e,track:null}));
-    (section.tracks||[]).forEach(t=>(t.events||[]).forEach(e=>ctx.push({event:e,track:t})));
-
-    ctx.forEach(({event,track})=>{
-      const inherited=track?.defaultEventType||section.defaultEventType||"point";
-      const type=event.type||inherited;
-      const sA=startAnchorOf(event), eA=endAnchorOf(event);
-      const gStart=resolveGlobal(sA,entry,spine);
-      let gEnd;
-      if(eA) gEnd=resolveGlobal(eA,entry,spine);
-      else if(event.duration!==undefined){
-        // duration rides the START anchor's regime/units
-        gEnd=gStart+event.duration;
-      } else gEnd=gStart;
-
-      const startReg=anchorRegimeName(sA,entry), endReg=eA?anchorRegimeName(eA,entry):startReg;
-      const crossRegime = !!(startReg&&endReg&&startReg!==endReg);
-
-      const drawSection={...(track||section),_midiMin:midiMin,_midiMax:midiMax,axisMode:(track||section).axisMode||section.axisMode};
-      const ev={...event,type,section:drawSection,globalStartTime:gStart,globalEndTime:gEnd,_crossRegime:crossRegime,_startRegime:startReg,_endRegime:endReg};
-      if(drawSection.axisMode==='symbolic'&&event.note){ const n=noteNameToMidi(event.note); ev.yValue=n; ev.startYValue=n; ev.endYValue=n; }
-      processedEvents.push(ev);
-    });
-  });
-  return {processedSections,processedEvents,totalDuration:total};
-}
-
 function renderScore(){
   const c=document.getElementById('score-container'); c.innerHTML='';
+  const rep=document.getElementById('resolve-report'); rep.innerHTML='';
   let data;
   try{ data=JSON.parse(codeEditor.getValue()); }
   catch(e){ c.innerHTML=`<p style="color:var(--membrane-pink);">JSON parse error: ${e.message}</p>`; return; }
-  const {processedSections,processedEvents,totalDuration}=processScore(data);
-  if(totalDuration===0) return;
-  const wrap=document.createElement('div'); wrap.className='timeline-wrapper';
-  const h=BASE_TIMELINE_HEIGHT*zoom.y; wrap.style.height=`${h}px`;
-  const view=document.createElement('div'); view.className='timeline-view'; view.style.width=`${100*zoom.x}%`;
-  const yAxis=document.createElement('div'); yAxis.className='y-axis';
-  const xAxis=document.createElement('div'); xAxis.className='x-axis'; xAxis.style.width=`${100*zoom.x}%`;
-  wrap.append(yAxis,view,xAxis);
-  drawBackground(processedSections,view,xAxis,yAxis,totalDuration);
-  drawEvents(processedEvents,view,totalDuration,h);
-  c.appendChild(wrap);
+
+  const R=resolveScore(data);
+
+  // symbolic vertical range across all symbolic nodes
+  let mn=Infinity,mx=-Infinity;
+  R.nodes.forEach(n=>{ if(n.axis==='symbolic'&&n.pitch){ [n.pitch.hz,n.pitch.from,n.pitch.to].forEach(h=>{ if(h){ const m=freqToMidi(h); mn=Math.min(mn,m); mx=Math.max(mx,m);} }); } });
+  if(mn===Infinity){ mn=48; mx=84; } else { mn=Math.floor(mn)-3; mx=Math.ceil(mx)+3; }
+  GLOBAL_MIDI_RANGE={min:mn,max:mx};
+
+  if(R.totalSec>0.0002 && R.nodes.length){
+    const wrap=document.createElement('div'); wrap.className='timeline-wrapper';
+    const h=BASE_TIMELINE_HEIGHT*zoom.y; wrap.style.height=`${h}px`;
+    const view=document.createElement('div'); view.className='timeline-view'; view.style.width=`${100*zoom.x}%`;
+    const yAxis=document.createElement('div'); yAxis.className='y-axis';
+    const xAxis=document.createElement('div'); xAxis.className='x-axis'; xAxis.style.width=`${100*zoom.x}%`;
+    wrap.append(yAxis,view,xAxis);
+    drawBackground(R,view,xAxis,yAxis);
+    drawEvents(R,view,h);
+    c.appendChild(wrap);
+  } else if(!R.nodes.length){
+    c.innerHTML='<p class="note">Nothing placeable yet — every Event defers its position to a realizer (see below), or the score is empty.</p>';
+  }
+
+  // refusal report — "here are the things I cannot do"
+  if(R.refusals.length){
+    let h='<div class="refusals"><h4>Cannot schedule here — valid TaboTa, outside this realizer\u2019s determinate fragment</h4><ul>';
+    R.refusals.forEach(r=>{ h+=`<li><b>${r.who}</b> — ${r.why}</li>`; });
+    h+='</ul></div>';
+    rep.innerHTML=h;
+  }
 }
 
-function drawBackground(sections,view,xAxis,yAxis,total){
+function drawBackground(R,view,xAxis,yAxis){
+  const total=R.totalSec;
   const colors=['#11897e1c','#d1336b18','#5d8c0018','#6a47d818'];
-  sections.forEach((s,i)=>{
-    const x=(s.startTime/total)*100, w=(s.duration/total)*100;
+  R.frames.forEach((s,i)=>{
+    const x=(s.onsetSec/total)*100, w=Math.max(0,((s.endSec-s.onsetSec)/total)*100);
     const bg=document.createElement('div'); bg.className='section-background'; bg.style.left=`${x}%`; bg.style.width=`${w}%`; bg.style.background=colors[i%colors.length]; view.appendChild(bg);
     const d=document.createElement('div'); d.className='section-divider'; d.style.left=`${x}%`;
-    const l=document.createElement('div'); l.className='section-divider-label'; l.textContent=s.sectionId||('section '+(i+1)); d.appendChild(l); view.appendChild(d);
+    const l=document.createElement('div'); l.className='section-divider-label'; l.textContent=s.label; d.appendChild(l); view.appendChild(d);
   });
-  for(let i=0;i<=total*zoom.x;i++){ const x=(i/total)*100; if(x>100) break;
+  // x grid in seconds
+  const ticks=Math.min(40,Math.max(4,Math.round(total)));
+  for(let i=0;i<=ticks;i++){ const t=total*(i/ticks); const x=(t/total)*100; if(x>100.0001) break;
     const ln=document.createElement('div'); ln.className='grid-line-vertical'; ln.style.left=`${x}%`; view.appendChild(ln);
-    const lb=document.createElement('div'); lb.className='axis-label'; lb.textContent=i; lb.style.left=`${x}%`; lb.style.transform='translateX(-50%)'; xAxis.appendChild(lb);
+    const lb=document.createElement('div'); lb.className='axis-label'; lb.textContent=(total<=20?t.toFixed(1):Math.round(t))+'s'; lb.style.left=`${x}%`; lb.style.transform='translateX(-50%)'; xAxis.appendChild(lb);
   }
-  if(sections.length){
-    const s=sections[0]; const mode=s.axisMode;
-    if(mode==='frequency'){ const{minHz=20,maxHz=20000}=s.modeSettings||{}; for(let i=0;i<10;i++){ const p=i/9; const hz=Math.exp(Math.log(minHz)+p*(Math.log(maxHz)-Math.log(minHz))); const y=(1-p)*100; const lb=document.createElement('div'); lb.className='axis-label'; lb.textContent=`${hz<1000?Math.round(hz):(hz/1000).toFixed(1)+'k'} Hz`; lb.style.top=`${y}%`; lb.style.right='6px'; lb.style.transform='translateY(-50%)'; yAxis.appendChild(lb);} }
-    else if(mode==='symbolic'){ const span=s._midiMax-s._midiMin; const step=Math.max(1,Math.round(span/8)); for(let m=Math.ceil(s._midiMin/step)*step;m<=s._midiMax;m+=step){ const y=(1-(m-s._midiMin)/span)*100; const lb=document.createElement('div'); lb.className='axis-label'; lb.textContent=midiToName(m); lb.style.top=`${y}%`; lb.style.right='6px'; lb.style.transform='translateY(-50%)'; yAxis.appendChild(lb);} }
-    else if(mode==='categorical'){ (s.modeSettings.categories||[]).forEach((cat,i)=>{ const y=(i+0.5)/s.modeSettings.categories.length*100; const lb=document.createElement('div'); lb.className='axis-label'; lb.textContent=cat; lb.style.top=`${y}%`; lb.style.right='6px'; lb.style.transform='translateY(-50%)'; yAxis.appendChild(lb);}); }
-  }
+  // y axis from the primary axis
+  const mode=R.primaryAxis, ms=R.primaryAxisSettings||{};
+  if(mode==='frequency'){ const minHz=ms.minHz||20,maxHz=ms.maxHz||20000; for(let i=0;i<10;i++){ const p=i/9; const hz=Math.exp(Math.log(minHz)+p*(Math.log(maxHz)-Math.log(minHz))); const y=(1-p)*100; const lb=document.createElement('div'); lb.className='axis-label'; lb.textContent=`${hz<1000?Math.round(hz):(hz/1000).toFixed(1)+'k'} Hz`; lb.style.top=`${y}%`; lb.style.right='6px'; lb.style.transform='translateY(-50%)'; yAxis.appendChild(lb);} }
+  else if(mode==='symbolic'){ const span=GLOBAL_MIDI_RANGE.max-GLOBAL_MIDI_RANGE.min||1; const step=Math.max(1,Math.round(span/8)); for(let m=Math.ceil(GLOBAL_MIDI_RANGE.min/step)*step;m<=GLOBAL_MIDI_RANGE.max;m+=step){ const y=(1-(m-GLOBAL_MIDI_RANGE.min)/span)*100; const lb=document.createElement('div'); lb.className='axis-label'; lb.textContent=midiToName(m); lb.style.top=`${y}%`; lb.style.right='6px'; lb.style.transform='translateY(-50%)'; yAxis.appendChild(lb);} }
+  else if(mode==='categorical'){ (ms.categories||[]).forEach((cat,i)=>{ const y=(i+0.5)/(ms.categories.length||1)*100; const lb=document.createElement('div'); lb.className='axis-label'; lb.textContent=cat; lb.style.top=`${y}%`; lb.style.right='6px'; lb.style.transform='translateY(-50%)'; yAxis.appendChild(lb);}); }
 }
 
-function getYPos(v,section){
-  if(section.axisMode==='frequency'){ const{minHz=20,maxHz=20000}=section.modeSettings||{}; if(v<=0) return 100; return (1-(Math.log(v)-Math.log(minHz))/(Math.log(maxHz)-Math.log(minHz)))*100; }
-  if(section.axisMode==='symbolic'){ const span=(section._midiMax-section._midiMin)||1; return (1-(v-section._midiMin)/span)*100; }
-  if(section.axisMode==='categorical'){ const idx=(section.modeSettings.categories||[]).indexOf(v); return (idx+0.5)/(section.modeSettings.categories||[v]).length*100; }
-  return v||50;
+function getYPos(hz, node){
+  const ms=node.axisSettings||{};
+  if(node.axis==='frequency'){ const minHz=ms.minHz||20,maxHz=ms.maxHz||20000; if(hz<=0) return 100; return (1-(Math.log(hz)-Math.log(minHz))/(Math.log(maxHz)-Math.log(minHz)))*100; }
+  if(node.axis==='symbolic'){ const span=GLOBAL_MIDI_RANGE.max-GLOBAL_MIDI_RANGE.min||1; return (1-(freqToMidi(hz)-GLOBAL_MIDI_RANGE.min)/span)*100; }
+  return 50;
 }
+function laneY(lane,node){ const cats=(node.axisSettings&&node.axisSettings.categories)||[]; const i=cats.indexOf(lane); return ((i<0?0:i)+0.5)/(cats.length||1)*100; }
 
-function drawEvents(events,container,total,h){
+function drawEvents(R,container,h){
   const vw=document.getElementById('score-container').clientWidth, fw=vw*zoom.x;
+  const total=R.totalSec;
   const xp=t=>(t/total)*100;
-  events.forEach(ev=>{
-    if(ev.type==='point'){ const el=document.createElement('div'); el.className='event-point'; el.style.left=`${xp(ev.globalStartTime)}%`; el.style.top=`${getYPos(ev.yValue,ev.section)}%`; container.appendChild(el); if(ev.payload?.text) addPayload(el,ev.payload.text); if(ev.payload?.comment) el.title=ev.payload.comment; }
-    else if(ev.type==='line'){
-      const nodeY=v=>{ if(ev.section.axisMode==='symbolic'&&typeof v==='string'){ const m=noteNameToMidi(v); return getYPos(m,ev.section);} return getYPos(v,ev.section); };
-      const sxp=xp(ev.globalStartTime), exp_=xp(ev.globalEndTime);
-      // build node path: [start, ...points, end] in (x%, y%)
-      const nodes=[{x:sxp,y:nodeY(ev.startYValue)}];
-      if(Array.isArray(ev.points)) ev.points.forEach(p=>nodes.push({x:sxp+(exp_-sxp)*(p.at||0),y:nodeY(p.value)}));
-      nodes.push({x:exp_,y:nodeY(ev.endYValue)});
-      const cls='event-line'+(ev._crossRegime?' cross-regime':'');
-      for(let s=0;s<nodes.length-1;s++){
-        const a=nodes[s], b=nodes[s+1];
-        const el=document.createElement('div'); el.className=cls;
-        const dx=(b.x-a.x)/100*fw, dy=(b.y-a.y)/100*h;
-        el.style.left=`${a.x}%`; el.style.top=`${a.y}%`; el.style.width=`${Math.sqrt(dx*dx+dy*dy)}px`; el.style.transform=`rotate(${Math.atan2(dy,dx)*180/Math.PI}deg)`;
-        container.appendChild(el);
-        if(s===0){
-          if(ev._crossRegime) el.title=`${ev._startRegime} → ${ev._endRegime}`+(ev.payload?.comment?` · ${ev.payload.comment}`:'');
-          else { if(ev.payload?.text) addPayload(el,ev.payload.text); if(ev.payload?.comment) el.title=ev.payload.comment; }
-        }
+  // instructional stagger counter
+  let instrIdx=0;
+  R.nodes.forEach(n=>{
+    if(n.isFrame && !n.pitch && !n.lane && !n.text) return;  // pure regime: drawn as background
+    const sx=xp(n.onsetSec), ex=xp(n.endSec);
+
+    if(n.axis==='categorical' && n.lane){
+      const el=document.createElement('div'); el.className='event-point'; el.style.left=`${sx}%`; el.style.top=`${laneY(n.lane,n)}%`; container.appendChild(el);
+      if(n.comment) el.title=n.comment; return;
+    }
+    if(n.axis==='instructional' || (!n.pitch && n.text)){
+      const el=document.createElement('div'); el.className='event-point'; el.style.background='var(--bruise)'; el.style.boxShadow='0 0 0 1.5px #fff,0 0 0 2.5px var(--bruise)';
+      el.style.left=`${sx}%`; el.style.top=`${(12+ (instrIdx%6)*14)}%`; instrIdx++; container.appendChild(el);
+      if(n.text) addPayload(el,n.text); if(n.comment) el.title=n.comment; return;
+    }
+    if(!n.pitch) return;
+
+    if(n.pitch.band){          // indeterminate pitch → translucent band
+      const y0=getYPos(n.pitch.band[1],n), y1=getYPos(n.pitch.band[0],n);
+      const el=document.createElement('div'); el.className='event-band';
+      el.style.left=`${sx}%`; el.style.top=`${Math.min(y0,y1)}%`; el.style.width=`${Math.max(2,ex-sx)}%`; el.style.height=`${Math.abs(y1-y0)}%`;
+      container.appendChild(el); if(n.comment) el.title=n.comment; return;
+    }
+    if(n.pitch.from!=null){    // glide
+      const sy=getYPos(n.pitch.from,n), ey=getYPos(n.pitch.to,n);
+      const el=document.createElement('div'); el.className='event-line';
+      const dx=(ex-sx)/100*fw, dy=(ey-sy)/100*h;
+      el.style.left=`${sx}%`; el.style.top=`${sy}%`; el.style.width=`${Math.sqrt(dx*dx+dy*dy)}px`; el.style.transform=`rotate(${Math.atan2(dy,dx)*180/Math.PI}deg)`;
+      container.appendChild(el); if(n.comment) el.title=n.comment; return;
+    }
+    if(n.pitch.hz!=null){
+      const y=getYPos(n.pitch.hz,n);
+      if(n.endSec-n.onsetSec>1e-6){ // sustained → bar
+        const el=document.createElement('div'); el.className='event-bar'; el.style.left=`${sx}%`; el.style.top=`${y}%`; el.style.width=`${Math.max(1.2,ex-sx)}%`; container.appendChild(el); if(n.comment) el.title=n.comment;
+      } else {
+        const el=document.createElement('div'); el.className='event-point'; el.style.left=`${sx}%`; el.style.top=`${y}%`; container.appendChild(el); if(n.comment) el.title=n.comment;
       }
     }
-    else if(ev.type==='group'){ const el=document.createElement('div'); el.className='event-group'; el.style.left=`${xp(ev.globalStartTime)}%`; el.style.top=`${getYPos(ev.yValue,ev.section)}%`; container.appendChild(el); if(ev.payload?.comment) el.title=ev.payload.comment; }
   });
 }
 function addPayload(el,text){ const p=document.createElement('div'); p.className='event-payload'; p.textContent=text; el.appendChild(p); }
 
 /* ============================================================
-   VOICE ENUMERATION  (for single-voice export)
+   VOICE ENUMERATION  (v2: a voice = a pitched frame-bearing Event)
    ============================================================ */
 function enumerateVoices(data){
   const voices=[];
-  (data.score||[]).forEach((section,si)=>{
-    const rs=section.regimeSettings||{};
-    const bpmsr=rs.timeSignature?parseInt(rs.timeSignature.split('/')[0]):4;
-    const base={section,si,regime:section.temporalRegime,bpm:rs.bpm||null,beatsPerMeasure:bpmsr};
-    if(section.events&&section.events.length){
-      voices.push({...base,key:`s${si}`,label:`${section.sectionId||'section '+(si+1)} · ${section.axisMode||'—'}`,axisMode:section.axisMode,modeSettings:section.modeSettings,events:section.events,defaultEventType:section.defaultEventType});
-    }
-    (section.tracks||[]).forEach((track,ti)=>{
-      if(track.events&&track.events.length){
-        voices.push({...base,key:`s${si}t${ti}`,label:`${section.sectionId||'section '+(si+1)} ▸ ${track.trackId||'track '+(ti+1)} · ${track.axisMode||section.axisMode||'—'}`,axisMode:track.axisMode||section.axisMode,modeSettings:track.modeSettings||section.modeSettings,events:track.events,defaultEventType:track.defaultEventType||section.defaultEventType});
+  function walk(list, inh, path){
+    (list||[]).forEach((ev,idx)=>{
+      if(!ev||typeof ev!=='object') return;
+      const frame=deriveFrame(ev,inh);
+      const here=path.concat(idx);
+      const isPitched = frame.axis==='frequency'||frame.axis==='symbolic'||
+        // infer from a child if axis unset
+        (!frame.axis && (ev.events||[]).some(c=>c.value&&c.value.pitch));
+      if(ev.frame && isPitched){
+        // gather leaf pitched children that do NOT open their own pitched frame
+        const leaves=[];
+        (function gather(kids){ (kids||[]).forEach(k=>{
+          if(k.frame && (k.frame.axis==='frequency'||k.frame.axis==='symbolic')) return; // own voice
+          if(k.value&&k.value.pitch) leaves.push(k);
+          if(k.events) gather(k.events);
+        }); })(ev.events);
+        if(leaves.length) voices.push({key:here.join('-'), label:(ev.id||ev.role||('voice '+here.join('.')))+' · '+(frame.axis||'pitched'), frame, leaves});
       }
+      if(ev.events) walk(ev.events, frame, here);
     });
-  });
+  }
+  walk(data.score, ROOT_FRAME, []);
   return voices;
 }
 
@@ -816,13 +1054,10 @@ function refreshVoices(){
   const sel=document.getElementById('exp-voice'); if(!sel) return;
   let data; try{ data=JSON.parse(codeEditor.getValue()); }catch(e){ sel.innerHTML='<option>— invalid JSON —</option>'; return; }
   const voices=enumerateVoices(data);
-  const prev=sel.value;
-  sel.innerHTML='';
-  if(!voices.length){ sel.innerHTML='<option>— no voices —</option>'; return; }
+  const prev=sel.value; sel.innerHTML='';
+  if(!voices.length){ sel.innerHTML='<option>— no pitched voices —</option>'; return; }
   voices.forEach(v=>{ const o=document.createElement('option'); o.value=v.key; o.textContent=v.label; sel.appendChild(o); });
-  // prefer first pitched voice
-  const pitched=voices.find(v=>v.axisMode==='frequency'||v.axisMode==='symbolic');
-  sel.value=voices.some(v=>v.key===prev)?prev:(pitched?pitched.key:voices[0].key);
+  sel.value=voices.some(v=>v.key===prev)?prev:voices[0].key;
 }
 
 /* ============================================================
@@ -837,27 +1072,36 @@ function getTuningSpec(){
     try{ const raw=JSON.parse(document.getElementById('exp-custommap').value||'{}'); map=raw.notes?raw.notes:raw; }catch(e){}
     return {system:'custom',a4,map};
   }
-  if(sys==='score'){
-    // resolved later from the voice's modeSettings; placeholder
-    return {system:'score',a4,tonic};
-  }
+  if(sys==='score') return {system:'score',a4,tonic};
   return {system:sys,a4,tonic};
 }
-
-function resolveScoreTuning(voice,a4){
-  const ms=voice.modeSettings||{};
-  if(ms.tuning&&typeof ms.tuning==='object'&&ms.tuning.system==='custom'){
-    // inline map not available without file fetch — fall back, note in warnings
-    return {system:'12-TET',a4:ms.a4||a4,_fallback:'custom tuning file not embedded; using 12-TET'};
-  }
-  return {system:'12-TET',a4:ms.a4||a4};
+function resolveFrameTuning(frame,a4){
+  const a=(frame&&frame.axisSettings)||{};
+  if(a.tuning&&typeof a.tuning==='object'&&a.tuning.system==='custom')
+    return {system:'12-TET',a4:a.a4||a4,_fallback:'custom .scl tuning not embedded; using 12-TET'};
+  return {system:'12-TET',a4:a.a4||a4};
 }
-
-// pull a frequency for an event endpoint
-function eventFreq(value,axisMode,tuning){
-  if(typeof value==='number') return value;            // Hz (frequency mode or numeric)
+function valFreq(value,tuning){
+  if(typeof value==='number') return value;
   if(typeof value==='string'){ const f=resolveNoteFreq(value,tuning); if(f) return f; const n=noteNameToMidi(value); return n!=null?midiToFreq(n,tuning.a4):null; }
   return null;
+}
+
+// onset/extent of a leaf in BEATS of its voice frame (determinate fragment only)
+function leafBeats(ev,frame){
+  const p=ev.position||{};
+  const toBeat=v=> frame.temporal==='chronological' ? v*(frame.bpm||DEFAULT_BPM)/60 : v;  // metered already beats; achronous index≈beat
+  let sb=null;
+  if(p.at!=null) sb=toBeat(p.at);
+  else if(p.meter) sb=meterToBeats(p.meter,frame.beatsPerMeasure);
+  else if(p.index!=null) sb=p.index;
+  else return null;                       // relational/between → not in fragment
+  const x=ev.extent||{};
+  let eb=null;
+  if(x.duration!=null) eb=sb+toBeat(x.duration);
+  else if(x.endAt!=null) eb=toBeat(x.endAt);
+  else if(x.endMeter) eb=meterToBeats(x.endMeter,frame.beatsPerMeasure);
+  return {sb,eb};
 }
 
 function compileToMidi(){
@@ -866,7 +1110,7 @@ function compileToMidi(){
   const voices=enumerateVoices(data);
   const key=document.getElementById('exp-voice').value;
   const voice=voices.find(v=>v.key===key)||voices[0];
-  if(!voice){ out.innerHTML='<div class="warn">No voice with events found.</div>'; return; }
+  if(!voice){ out.innerHTML='<div class="warn">No pitched voice found. A voice is an Event carrying a frame with a frequency or symbolic axis.</div>'; return; }
 
   const range=Math.max(1,parseInt(document.getElementById('exp-range').value)||24);
   const ppq=parseInt(document.getElementById('exp-ppq').value)||480;
@@ -875,68 +1119,47 @@ function compileToMidi(){
   const vel=Math.min(127,Math.max(1,parseInt(document.getElementById('exp-velocity').value)||100));
   const pointLen=parseFloat(document.getElementById('exp-pointlen').value)||1;
   const slideRes=Math.max(1,parseInt(document.getElementById('exp-slidres').value)||16);
-  const bpm=parseFloat(document.getElementById('exp-bpm').value)||voice.bpm||120;
+  const bpm=parseFloat(document.getElementById('exp-bpm').value)||voice.frame.bpm||120;
   const a4=parseFloat(document.getElementById('exp-a4').value)||440;
+  const bpmsr=voice.frame.beatsPerMeasure||4;
 
-  let tuning=getTuningSpec();
-  const warnings=[];
-  if(tuning.system==='score'){ tuning=resolveScoreTuning(voice,a4); if(tuning._fallback) warnings.push(tuning._fallback); }
+  let tuning=getTuningSpec(); const warnings=[];
+  if(tuning.system==='score'){ tuning=resolveFrameTuning(voice.frame,a4); if(tuning._fallback) warnings.push(tuning._fallback); }
 
-  const axisMode=voice.axisMode||'frequency';
-  if(axisMode==='categorical'||axisMode==='instructional'){ out.innerHTML=`<div class="warn">Voice "${voice.label}" is <b>${axisMode}</b> — no pitch data to export. Choose a frequency or symbolic voice.</div>`; return; }
-
-  // time conversion: local field -> beats
-  const regime=voice.regime;
-  const toBeats = (v)=> regime==='chronological' ? v*bpm/60 : v; // achronous index ~ 1 beat; metered already beats
-  const bpmsr=voice.beatsPerMeasure;
-
-  // 1) build raw note list (sorted by start beat)
-  const defType=voice.defaultEventType||'point';
+  // 1) determinate pitched leaves → raw notes (beats)
   const raw=[];
-  voice.events.forEach((e,i)=>{
-    const type=e.type||defType;
-    // start beat — via the shared anchor model (v1.6), local to this voice's regime
-    const sA=startAnchorOf(e), eA=endAnchorOf(e);
-    if((sA&&sA.regime&&sA.regime!==voice.section.sectionId)||(eA&&eA.regime&&eA.regime!==voice.section.sectionId)){
-      warnings.push(`Event #${i} anchors another regime — the single-voice exporter resolves it in this voice's local frame. Cross-regime placement is exact only in the spine-aware mixdown.`);
-    }
-    let sb=toBeats(anchorToLocal(sA,{bpmsr}));
-    // end beat
-    let eb;
-    if(eA) eb=toBeats(anchorToLocal(eA,{bpmsr}));
-    else if(e.duration!==undefined) eb=sb+(regime==='chronological'?e.duration*bpm/60:e.duration);
-    else eb=null; // resolve later (point)
-
-    // pitch endpoints
+  voice.leaves.forEach((e,i)=>{
+    const pv=e.value&&e.value.pitch; if(!pv) return;
+    if(pv.between||pv.relativeTo){ warnings.push(`Event #${i} skipped — indeterminate pitch (not in the determinate fragment).`); return; }
+    const b=leafBeats(e,voice.frame);
+    if(!b){ warnings.push(`Event #${i} skipped — relational/indeterminate position (not schedulable here).`); return; }
     let startVal,endVal,isSlide=false;
-    if(e.note!==undefined){ startVal=endVal=e.note; }
-    else if(e.startYValue!==undefined||e.endYValue!==undefined){ startVal=e.startYValue??e.endYValue; endVal=e.endYValue??e.startYValue; isSlide=(startVal!==endVal); }
-    else if(e.yValue!==undefined){ startVal=endVal=e.yValue; }
-    else { return; } // nothing pitched
-
-    const fStart=eventFreq(startVal,axisMode,tuning), fEnd=eventFreq(endVal,axisMode,tuning);
+    if(pv.note!=null){ startVal=endVal=pv.note; }
+    else if(pv.hz!=null){ startVal=endVal=pv.hz; }
+    else if(pv.from!=null||pv.to!=null){ startVal=pv.from!=null?pv.from:pv.to; endVal=pv.to!=null?pv.to:pv.from; isSlide=(startVal!==endVal); }
+    else return;
+    const fStart=valFreq(startVal,tuning), fEnd=valFreq(endVal,tuning);
     if(fStart==null){ warnings.push(`Event #${i} skipped — could not resolve pitch "${startVal}".`); return; }
-    raw.push({i,type,sb,eb,fStart,fEnd:fEnd??fStart,isSlide,label:(e.note!==undefined?e.note:(typeof startVal==='number'?startVal.toFixed(2)+' Hz':String(startVal)))});
+    raw.push({i,sb:b.sb,eb:(b.eb!=null?b.eb:null),fStart,fEnd:fEnd!=null?fEnd:fStart,isSlide,
+      label:(pv.note!=null?pv.note:(typeof startVal==='number'?startVal.toFixed(2)+' Hz':String(startVal)))});
   });
   raw.sort((a,b)=>a.sb-b.sb);
-
-  if(!raw.length){ out.innerHTML='<div class="warn">No pitched events to export in this voice.</div>'; return; }
+  if(!raw.length){ out.innerHTML='<div class="warn">No determinate pitched events in this voice. (Relational, ranged, or referenced events are valid TaboTa but are not schedulable here.)</div>'; return; }
 
   // 2) resolve durations + enforce monophony (clip to next start)
   for(let k=0;k<raw.length;k++){
-    const nextStart = k+1<raw.length ? raw[k+1].sb : null;
-    if(raw[k].eb==null) raw[k].eb = raw[k].sb + (nextStart!=null?Math.min(pointLen,nextStart-raw[k].sb):pointLen);
-    if(nextStart!=null && raw[k].eb>nextStart){ raw[k].clipped=true; raw[k].eb=nextStart; }
+    const nextStart=k+1<raw.length?raw[k+1].sb:null;
+    if(raw[k].eb==null) raw[k].eb=raw[k].sb+(nextStart!=null?Math.min(pointLen,nextStart-raw[k].sb):pointLen);
+    if(nextStart!=null&&raw[k].eb>nextStart){ raw[k].clipped=true; raw[k].eb=nextStart; }
     if(raw[k].eb<=raw[k].sb) raw[k].eb=raw[k].sb+Math.max(0.0625,pointLen*0.25);
   }
 
   // 3) write MIDI
   const w=new MidiWriter(ppq);
-  w.tempo(0,bpm); w.timeSignature(0,bpmsr,4); w.trackName(0,(data.projectName||'voice')+' / '+(voice.section.sectionId||''));
-  w.programChange(0,ch,program);
-  w.setBendRange(0,ch,range);
+  w.tempo(0,bpm); w.timeSignature(0,bpmsr,4); w.trackName(0,(data.projectName||'voice')+' / '+(voice.label||''));
+  w.programChange(0,ch,program); w.setBendRange(0,ch,range);
 
-  const report=[]; let maxDevCents=0; let overflowCount=0;
+  const report=[]; let maxDevCents=0, overflowCount=0;
   raw.forEach(n=>{
     const startTick=n.sb*ppq, endTick=n.eb*ppq;
     if(!n.isSlide){
@@ -950,27 +1173,25 @@ function compileToMidi(){
       const mStart=freqToMidi(n.fStart,a4), mEnd=freqToMidi(n.fEnd,a4);
       const base=Math.round(mStart);
       const steps=Math.max(2,Math.ceil((n.eb-n.sb)*slideRes));
-      let ovf=false, maxc=0;
+      let ovf=false,maxc=0;
       for(let s=0;s<=steps;s++){ const t=s/steps; const tm=mStart+(mEnd-mStart)*t; const bb=bendForTargetMidi(tm,base,range); if(bb.overflow) ovf=true; const tick=startTick+(endTick-startTick)*t; w.pitchBend(tick,ch,bb.pb14); maxc=Math.max(maxc,Math.abs(bb.deltaSemis*100)); }
-      w.noteOn(startTick,ch,base,vel);
-      w.noteOff(endTick,ch,base);
-      if(ovf){ overflowCount++; warnings.push(`Slide #${n.i} (${n.label}) spans more than ±${range} st from base ${midiToName(base)} — bend clamped. Increase bend range or split the slide.`); }
+      w.noteOn(startTick,ch,base,vel); w.noteOff(endTick,ch,base);
+      if(ovf){ overflowCount++; warnings.push(`Slide #${n.i} (${n.label}) spans more than ±${range} st from base ${midiToName(base)} — bend clamped. Increase range or split.`); }
       maxDevCents=Math.max(maxDevCents,maxc);
       report.push({i:n.i,beat:n.sb,dur:n.eb-n.sb,label:n.label+' → '+n.fEnd.toFixed(2)+'Hz',hz:n.fStart,base,cents:(mStart-base)*100,pb:freqToBend(n.fStart,range,a4).pb14,slide:true,clip:n.clipped,overflow:ovf});
     }
   });
 
   const bytes=w.build();
-  const blob=new Blob([bytes],{type:'audio/midi'});
-  const url=URL.createObjectURL(blob);
+  const blob=new Blob([bytes],{type:'audio/midi'}); const url=URL.createObjectURL(blob);
   const dl=document.getElementById('midi-download');
   dl.href=url; dl.download=((data.projectName||'voice').replace(/\s+/g,'_'))+'_voice.mid'; dl.classList.remove('hidden');
 
-  renderReport(out,report,{range,bpm,ppq,a4,tuning,voice,notes:raw.length,maxDevCents,overflowCount,warnings,bytes:bytes.length});
+  renderReport(out,report,{range,bpm,ppq,a4,tuning,notes:raw.length,maxDevCents,overflowCount,warnings,bytes:bytes.length});
 }
 
 function centsClass(c){ const r=Math.round(c); return r>0?'cents-pos':(r<0?'cents-neg':'cents-zero'); }
-function bendBar(pb){ const center=8192; const frac=(pb-center)/8192; const half=27; const w=Math.abs(frac)*half; const left=frac>=0?50:(50-(w/54*100)); return `<span class="bend-bar"><i></i><u style="left:${frac>=0?50:(50-w/54*100)}%;width:${w/54*100}%"></u></span>`; }
+function bendBar(pb){ const center=8192; const frac=(pb-center)/8192; const w=Math.abs(frac)*27; return `<span class="bend-bar"><i></i><u style="left:${frac>=0?50:(50-w/54*100)}%;width:${w/54*100}%"></u></span>`; }
 
 function renderReport(out,report,info){
   let h=`<div class="summary">
@@ -987,11 +1208,8 @@ function renderReport(out,report,info){
   report.forEach(r=>{
     const flags=[]; if(r.slide) flags.push('<span class="flag-slide">slide</span>'); if(r.overflow) flags.push('<span class="flag-clip">clamp</span>'); if(r.clip) flags.push('<span class="flag-clip">clip</span>');
     h+=`<tr>
-      <td>${r.i}</td>
-      <td>${r.beat.toFixed(3)}</td>
-      <td>${r.dur.toFixed(3)}</td>
-      <td class="note-cell">${r.label}</td>
-      <td>${r.hz.toFixed(3)}</td>
+      <td>${r.i}</td><td>${r.beat.toFixed(3)}</td><td>${r.dur.toFixed(3)}</td>
+      <td class="note-cell">${r.label}</td><td>${r.hz.toFixed(3)}</td>
       <td class="note-cell">${midiToName(r.base)} <span style="color:var(--bone-faint)">(${r.base})</span></td>
       <td class="${centsClass(r.cents)}">${r.cents>0?'+':''}${r.cents.toFixed(1)}</td>
       <td class="pb-val">${r.pb}${r.pb===8192?' <span style="color:var(--bone-faint)">·ctr</span>':''}</td>
@@ -1001,12 +1219,12 @@ function renderReport(out,report,info){
   });
   h+='</tbody></table></div>';
   if(info.warnings.length){ h+='<div class="warnings">'+info.warnings.map(w=>`<div class="warn">${w}</div>`).join('')+'</div>'; }
-  h+=`<p class="note" style="margin-top:12px;">Center value <code>8192</code> = no bend (note sits exactly on its 12-TET key). The receiving synth must be set to a ±${info.range}-semitone bend range — the file requests this automatically via RPN&nbsp;0,0, but not every device honors it.</p>`;
+  h+=`<p class="note" style="margin-top:12px;">Center value <code>8192</code> = no bend (note sits exactly on its 12-TET key). The synth must use a ±${info.range}-semitone bend range — the file requests this via RPN&nbsp;0,0, but not every device honors it.</p>`;
   out.innerHTML=h;
 }
 
 /* ============================================================
-   MIDI -> TABOTA  (integrated importer)
+   MIDI -> TABOTA  (v2 output)
    ============================================================ */
 function ticksToMeter(ticks,ppq,bpmsr){ const tb=ticks/ppq; return {measure:Math.floor(tb/bpmsr)+1,beat:parseFloat((tb%bpmsr).toFixed(3))}; }
 
@@ -1023,27 +1241,40 @@ function convertMidiToTabota(){
       const bpm=midi.header.tempos.length?Math.round(midi.header.tempos[0].bpm):120;
       let num=4,den=4;
       if(midi.header.timeSignatures.length){ num=midi.header.timeSignatures[0].timeSignature[0]; den=midi.header.timeSignatures[0].timeSignature[1]; }
-      let maxTicks=0; const tracks=[];
+      let maxTicks=0; const trackEvents=[];
       midi.tracks.forEach((tr,idx)=>{
         if(!tr.notes.length) return;
         const events=[];
         tr.notes.forEach(note=>{
           const endT=note.ticks+note.durationTicks; if(endT>maxTicks) maxTicks=endT;
-          const o={note:note.name};
           const durBeats=parseFloat((note.durationTicks/ppq).toFixed(3));
-          if(fmt==='meter-duration'){ o.startMeter=ticksToMeter(note.ticks,ppq,num); o.duration=durBeats; }
-          else if(fmt==='meter-full'){ o.startMeter=ticksToMeter(note.ticks,ppq,num); o.endMeter=ticksToMeter(endT,ppq,num); }
-          else { o.startTime=parseFloat((note.ticks/ppq).toFixed(3)); o.duration=durBeats; }
+          const o={ value:{ pitch:{ note:note.name } } };
+          if(fmt==='meter-duration'){ o.position={ meter:ticksToMeter(note.ticks,ppq,num) }; o.extent={ duration:durBeats }; }
+          else if(fmt==='meter-full'){ o.position={ meter:ticksToMeter(note.ticks,ppq,num) }; o.extent={ endMeter:ticksToMeter(endT,ppq,num) }; }
+          else { o.position={ at:parseFloat((note.ticks/ppq).toFixed(3)) }; o.extent={ duration:durBeats }; }
           events.push(o);
         });
-        tracks.push({trackId:tr.name?tr.name.replace(/\s+/g,'_'):`Track_${idx+1}`,axisMode:"symbolic",modeSettings:{tuning:"12-TET"},defaultEventType:"line",events});
+        trackEvents.push({
+          id:(tr.name?tr.name.replace(/\s+/g,'_'):`Track_${idx+1}`), role:"regime",
+          frame:{ axis:"symbolic", axisSettings:{ tuning:"12-TET", a4:440 } },
+          events
+        });
       });
-      const score={projectName:file.name.split('.')[0]||"Converted",languageVersion:"1.6",score:[{sectionId:"Main_Import",temporalRegime:"metered",regimeSettings:{bpm,beats:Math.ceil(maxTicks/ppq),timeSignature:`${num}/${den}`},tracks}]};
+      const score={
+        projectName:file.name.split('.')[0]||"Converted",
+        languageVersion:"2.0",
+        metadata:{ profile:"determinate" },
+        score:[{
+          id:"Main_Import", role:"regime",
+          frame:{ temporal:"metered", temporalSettings:{ bpm, beats:Math.ceil(maxTicks/ppq), timeSignature:`${num}/${den}` } },
+          events:trackEvents
+        }]
+      };
       const json=JSON.stringify(score,null,2);
       codeEditor.setValue(json); renderScore(); refreshVoices();
       const blob=new Blob([json],{type:'application/json'}); const url=URL.createObjectURL(blob);
       const dl=document.getElementById('json-download'); dl.href=url; dl.download=`${score.projectName}_tabota.json`; dl.classList.remove('hidden');
-      hint.textContent=`Imported ${tracks.length} track(s), ${bpm} BPM, ${num}/${den}. Loaded into editor.`; hint.style.color='var(--algae)';
+      hint.textContent=`Imported ${trackEvents.length} track(s), ${bpm} BPM, ${num}/${den}. Loaded into editor.`; hint.style.color='var(--algae)';
     }catch(err){ console.error(err); hint.textContent='Could not parse MIDI: '+err.message; hint.style.color='var(--ember)'; }
   };
   reader.readAsArrayBuffer(file);
@@ -1065,7 +1296,8 @@ function handleCopyClick(e){
 function syntaxHighlight(s){ if(typeof s!='string') s=JSON.stringify(s,null,2); s=s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); return s.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,m=>{ let c='json-number'; if(/^"/.test(m)) c=/:$/.test(m)?'json-key':'json-string'; else if(/true|false/.test(m)) c='json-boolean'; return '<span class="'+c+'">'+m+'</span>'; }); }
 async function loadReferenceGuide(){
   const t=document.getElementById('markdown-content');
-  try{ const r=await fetch('tabota_reference_guide.md'); if(!r.ok) throw new Error('status '+r.status); t.innerHTML=marked.parse(await r.text()); }
+  const banner='<div class="stale-note">The samples above are v2.0. The loaded reference guide may still describe v1.5 — its v2 rewrite is pending.</div>';
+  try{ const r=await fetch('tabota_reference_guide.md'); if(!r.ok) throw new Error('status '+r.status); t.innerHTML=banner+marked.parse(await r.text()); }
   catch(e){ t.innerHTML='<p class="note">Reference guide loads from <code>tabota_reference_guide.md</code> when this file is hosted alongside it.</p>'; }
 }
 </script>

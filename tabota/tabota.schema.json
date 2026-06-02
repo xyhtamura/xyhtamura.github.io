@@ -458,21 +458,26 @@
         "type",
         "of"
       ],
-      "description": "A qualitative temporal relation to a landmark, after Allen's interval algebra, with an optional quantitative offset.",
+      "description": "A qualitative temporal relation between this Event (the subject X) and a landmark on another Event (Y), using Allen's interval-algebra notation. Subject-relative: X r Y. Optional quantitative 'offset' adds a metric gap. Nesting (events:[]) is NOT one of these \u2014 nesting is a scope/inheritance edge (see Event.frame), and the temporal relation between a container and its child is a separate, free relation that defaults to 'd' in the Roll but is unconstrained in the language.",
       "properties": {
         "type": {
           "type": "string",
           "enum": [
-            "after",
-            "before",
-            "meets",
-            "overlaps",
-            "during",
-            "starts",
-            "finishes",
-            "equals",
-            "simultaneous"
-          ]
+            "b",
+            "bi",
+            "m",
+            "mi",
+            "o",
+            "oi",
+            "s",
+            "si",
+            "d",
+            "di",
+            "f",
+            "fi",
+            "="
+          ],
+          "$comment": "Allen's 13: b before / bi after \u00b7 m meets / mi met-by \u00b7 o overlaps / oi overlapped-by \u00b7 s starts / si started-by \u00b7 d during / di contains \u00b7 f finishes / fi finished-by \u00b7 = equals. Inverses included so the subject can carry the relation from either side."
         },
         "of": {
           "$ref": "#/definitions/Landmark"
@@ -486,10 +491,19 @@
     "Landmark": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "event"
+      "description": "A point in time located by reference. Three forms: a STRUCTURAL point on any Event (its edges/proportion), a COORDINATE inside a regime's coordinate field (a position along its expanse, in that frame's units \u2014 only Events carrying a frame can be addressed this way), or the score DATUM (the temporal reference point z, 'when the score starts'). 'After Note Z' is {event:'Z'}; 'beat 12 of Regime A' is {event:'A', coord:12}; 'when the score starts' is {origin:'score-start'}.",
+      "anyOf": [
+        {
+          "required": [
+            "event"
+          ]
+        },
+        {
+          "required": [
+            "origin"
+          ]
+        }
       ],
-      "description": "A point located by reference to another Event. Since only named Events are referenceable, 'the end of Note Z in Regime A' is simply { event: 'Z', point: 'end' } \u2014 Z carries its own id.",
       "properties": {
         "event": {
           "type": "string",
@@ -504,7 +518,25 @@
             "middle"
           ],
           "default": "end",
-          "$comment": "'onset' is a synonym for 'start'. Default 'end' matches the intuition that 'after A' usually means after A finishes."
+          "$comment": "Structural points present on ANY Event regardless of frame. 'onset' = 'start'. Default 'end' matches 'after A' = after A finishes."
+        },
+        "coord": {
+          "description": "A position INSIDE the referenced Event's own coordinate field; the Event must carry a frame. Given in that frame's units (beat/second/index, or a MeterPosition).",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "$ref": "#/definitions/MeterPosition"
+            }
+          ]
+        },
+        "origin": {
+          "type": "string",
+          "enum": [
+            "score-start"
+          ],
+          "description": "The score's temporal reference point z. The one privileged ground that pins an otherwise relative web to the clock; every absolute time is, formally, a relation to this."
         }
       }
     },
