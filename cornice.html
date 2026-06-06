@@ -1,0 +1,1708 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cornice</title>
+  <!--
+NIGHT TERRARIUM — GLYPH PHASE / ASCII PROTOTYPE
+
+This single-file build is an early prototype for a browser-based navigable terrarium/worldtoy. The goal is to develop the underlying world logic before committing to sprites, textures, or more elaborate graphics.
+
+Core concept:
+- A small nocturnal terrarium at the edge of an impossible city.
+- The world is currently rendered through ASCII/glyph characters, but these glyphs should be treated as temporary visual skins for semantic world-objects.
+- Each tile/object should ideally have an identity, type, tags, behavior, and future sprite/texture slots. The character displayed on screen is not the object itself; it is only the current glyph representation of that object.
+
+Aesthetic / vibe:
+- Terminal ecology, haunted garden, fungal interface, night-party ruin, tiny ecumenopolis understory.
+- Synthetic-organic, post-digital, damp, luminous, strange, decorative, alive.
+- Avoid pure black/white/gray neutrality where possible; prefer tinted darks, sickly glows, biased pastels, neon mud, fungal colors, and chromatic contamination.
+- The world should feel readable and atmospheric, not visually chaotic, but still dense, kind of like a digital wimmelbilder or polly pocket. 
+
+Interaction goals:
+- The player should move freely through the space with WASD / arrow keys.
+- Movement should feel responsive and lightweight.
+- Walking should not constantly trigger text or reshuffle the world.
+- Tile/object descriptions should appear through deliberate inspection, such as mouse click/tap, not by default proximity spam.
+- The terrarium should feel explorable, not overly gamified.
+
+Animation goals:
+- Most glyphs should remain stable.
+- Only certain object types should animate:
+  - water/liquid tiles may cycle through wave glyphs on a timer
+  - plants/fungi/vines may occasionally respond to wind-like sweeps
+  - entities/creatures/ghosts may wander occasionally
+  - special machines, wires, signals, or lights may pulse
+- Animation should be object-specific and timer-based, not caused by every player movement.
+
+Architecture goals:
+- Keep data, rendering, and behavior conceptually separate.
+- The tile/object database should prepare for future replacement with sprites, textures, or generated graphics.
+- A future renderer should be able to swap from glyph mode to sprite/texture mode without rewriting map logic or object behavior.
+- The project should remain single-file-friendly for now, but the code should be organized so it can later split into modules if needed.
+
+Performance goals:
+- Do not rebuild the entire grid on every movement.
+- Build the grid once, then update only changed cells when possible.
+- Keep CSS effects atmospheric but not too expensive.
+- Use lightweight timers/requestAnimationFrame carefully.
+- Favor readable responsiveness over excessive visual effects.
+
+Long-term direction:
+This is not only a game prototype. It is a small intermedia system where space, text, sound, object behavior, and visual notation can eventually interrelate. The ASCII phase is a semantic skeleton: a way to prototype an event-relation world where glyphs, objects, sounds, memories, and future sprites can all become different skins or expressions of the same underlying terrarium.
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-deep:   #06030f;
+      --bg-mid:    #080d05;
+      --mold:      #2dff6e;
+      --petal:     #f0b8de;
+      --acid:      #e8e52f;
+      --frost:     #4dfff0;
+      --bruise:    #9055ff;
+      --ink:       #cfe8d2;
+      --cell:      clamp(12px, 1.5vw, 16px);
+      --line:      1.06;
+      --font-mono: "Cascadia Code","JetBrains Mono","Iosevka Term","Victor Mono",
+                   "Space Mono","SFMono-Regular",Consolas,monospace;
+      --weather-tint:  #2dff6e;
+      --mouse-x: 50%;
+      --mouse-y: 50%;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+
+
+    html, body {
+      min-height: 100%; color: var(--ink);
+      background:
+        radial-gradient(ellipse at 8% 12%,  rgba(232,229,47,.13),  transparent 22rem),
+        radial-gradient(ellipse at 88% 6%,  rgba(90,20,120,.6),    transparent 28rem),
+        radial-gradient(ellipse at 76% 88%, rgba(30,230,100,.1),   transparent 24rem),
+        radial-gradient(ellipse at 48% 54%, rgba(232,183,218,.04), transparent 34rem),
+        linear-gradient(145deg, var(--bg-deep), var(--bg-mid) 55%, #120518);
+      font-family: var(--font-mono);
+      overflow-x: hidden;
+    }
+
+    /* ── Global overlays ── */
+    body::before, body::after {
+      content: ""; pointer-events: none; position: fixed; inset: 0;
+      mix-blend-mode: screen;
+    }
+    body::before {
+      opacity: .22;
+      background-image:
+        repeating-linear-gradient(0deg,  rgba(240,184,222,.07) 0, rgba(240,184,222,.07) 1px, transparent 1px, transparent 5px),
+        repeating-linear-gradient(90deg, rgba(45,255,110,.04)  0, rgba(45,255,110,.04)  1px, transparent 1px, transparent 12px);
+      animation: scanDrift 80s linear infinite;
+    }
+    body::after {
+      opacity: .2;
+      background:
+        radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(232,229,47,.26), transparent 11rem),
+        linear-gradient(90deg, transparent, rgba(240,184,222,.06), transparent);
+      filter: blur(4px);
+    }
+    body.node-activated::before {
+      animation: nodeActivate 1.1s ease-out forwards;
+      opacity: 1;
+    }
+
+    /* ── Layout shell ── */
+    .shell {
+      width: min(940px, calc(100vw - 18px));
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 14px 0 18px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 10px;
+    }
+
+    /* ── Header ── */
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: end;
+      padding: 13px 18px 11px;
+      border: 1px solid rgba(240,184,222,.11);
+      border-left: 3px solid var(--mold);
+      border-radius: 16px;
+      background: linear-gradient(108deg,
+        rgba(45,255,110,.05) 0%,
+        rgba(25,8,32,.5) 50%,
+        rgba(90,20,120,.08) 100%);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 10px 50px rgba(4,1,12,.4), inset 0 0 30px rgba(232,229,47,.025);
+    }
+
+h1 {
+  font-family: "Syne Mono", var(--font-mono);
+  font-size: clamp(19px, 3.9vw, 38px);
+  letter-spacing: -0.07em;
+  line-height: .82;
+  color: transparent;
+  background: linear-gradient(92deg,
+    var(--petal)   0%,
+    #ff42a0       12%,
+    var(--acid)   30%,
+    var(--mold)   52%,
+    var(--frost)  68%,
+    var(--bruise) 84%,
+    #f060c0      100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  filter: drop-shadow(0 0 18px rgba(45,255,110,.2));
+}
+    .subtitle {
+      margin: 7px 0 0;
+      color: #95a890;
+      font-size: 10.5px;
+      line-height: 1.5;
+      max-width: 50ch;
+      letter-spacing: .02em;
+    }
+
+    .status-strip {
+      display: grid; justify-items: end; gap: 5px;
+      min-width: min(290px,30vw);
+      font-size: 9.5px; color: #c8c89a; text-align: right;
+    }
+    .pill-row { display: flex; flex-wrap: wrap; justify-content: end; gap: 4px; }
+    .pill {
+      border: 1px solid rgba(232,229,47,.17);
+      border-radius: 30px;
+      padding: 3px 8px;
+      background: rgba(6,18,10,.5);
+      white-space: nowrap;
+      letter-spacing: .04em;
+    }
+    #weatherPill { border-color: color-mix(in srgb, var(--weather-tint) 38%, rgba(232,229,47,.17)); }
+    #vistaPill   { border-color: color-mix(in srgb, var(--frost) 22%, rgba(232,229,47,.17)); }
+
+    /* ── Main grid ── */
+    main { display: grid; grid-template-columns: minmax(0,1fr) 302px; gap: 10px; align-items: stretch; }
+
+    /* ── Shared surface styles ── */
+    .world-wrap, .panel, footer {
+      border: 1px solid rgba(207,232,210,.1);
+      background: linear-gradient(152deg, rgba(5,10,18,.65), rgba(22,6,30,.68), rgba(5,25,16,.58));
+      border-radius: 4px;
+      backdrop-filter: blur(14px);
+    }
+
+    /* ── World wrap — specimen case ── */
+    .world-wrap {
+      position: relative; overflow: hidden; padding: 13px;
+      min-height: 360px; display: grid; place-items: center;
+      border-color: rgba(207,232,210,.16);
+      box-shadow:
+        0 0 0 4px rgba(4,1,10,.96),
+        0 0 0 5px rgba(207,232,210,.1),
+        0 32px 100px rgba(1,0,4,.65),
+        inset 0 0 80px rgba(240,184,222,.025);
+    }
+    /* Inner ambient glow */
+    .world-wrap::before {
+      content: ""; position: absolute; inset: 9px;
+      border-radius: 3px; pointer-events: none;
+      background:
+        radial-gradient(ellipse at 30% 22%, rgba(240,184,222,.08), transparent 14rem),
+        radial-gradient(ellipse at 68% 76%, rgba(45,255,110,.06),  transparent 16rem),
+        linear-gradient(180deg, rgba(232,229,47,.025), transparent 40%, rgba(90,20,120,.08));
+      filter: saturate(140%);
+    }
+    /* Corner marks — specimen-case crosshairs */
+    .world-corners {
+	  border-radius: 30px;
+      position: absolute; inset: 8px; pointer-events: none; z-index: 4;
+      background:
+        linear-gradient(var(--mold),var(--mold)) 0   0   / 20px 1px  no-repeat,
+        linear-gradient(var(--mold),var(--mold)) 0   0   / 1px  20px no-repeat,
+        linear-gradient(var(--mold),var(--mold)) 100% 0   / 20px 1px  no-repeat,
+        linear-gradient(var(--mold),var(--mold)) 100% 0   / 1px  20px no-repeat,
+        linear-gradient(var(--mold),var(--mold)) 0   100% / 20px 1px  no-repeat,
+        linear-gradient(var(--mold),var(--mold)) 0   100% / 1px  20px no-repeat,
+        linear-gradient(var(--mold),var(--mold)) 100% 100% / 20px 1px  no-repeat,
+        linear-gradient(var(--mold),var(--mold)) 100% 100% / 1px  20px no-repeat;
+      opacity: .35;
+    }
+
+    /* ── World grid ── */
+    #world {
+      --cols: 52;
+      position: relative; z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(var(--cols), 1ch);
+      align-content: center; justify-content: center;
+      gap: 0; font-size: var(--cell); line-height: var(--line);
+      letter-spacing: 0; user-select: none; white-space: pre;
+      padding: 10px; border-radius: 3px; color: #c2dcc5;
+      background: rgba(14,5,22,.52);
+      box-shadow:
+        inset 0 0 0 1px rgba(207,232,210,.06),
+        inset 0 0 70px rgba(2,3,10,.35),
+        inset 0 0 120px color-mix(in srgb, var(--weather-tint) 6%, transparent);
+      transition: box-shadow 1.4s ease;
+    }
+
+    /* ── Cells ── */
+    .cell { display: inline-grid; place-items: center; width: 1ch; height: calc(var(--cell) * var(--line)); cursor: crosshair; }
+    .cell:hover { background: rgba(240,184,222,.1); outline: 1px solid rgba(232,229,47,.2); position: relative; z-index: 3; }
+    .selected { text-shadow: 0 0 .6em currentColor; background: rgba(232,229,47,.12); outline: 1px solid rgba(232,229,47,.4); position: relative; z-index: 3; }
+    .terrain  { opacity: .8; }
+    .entity   { opacity: .98; font-weight: 700; text-shadow: 0 0 .5em currentColor; }
+    .solid    { filter: contrast(1.06) saturate(1.12); }
+    .sky-tier { opacity: .55; font-weight: 300; }
+    .player   { color: #fff26e; text-shadow: 0 0 4px #e5e32f, 0 0 14px #ff65d8, 0 0 28px #2dff6e; animation: playerPulse .88s ease-in-out infinite alternate; z-index: 4; }
+
+    .fx-glow    { animation: glow    1.7s ease-in-out infinite alternate; }
+    .fx-flicker { animation: flicker .18s steps(2,end) infinite; }
+    .fx-breathe { animation: breathe 2.8s ease-in-out infinite alternate; }
+    .fx-ripple  { animation: ripple  1.4s ease-in-out infinite alternate; }
+    .fx-drift   { animation: drift   3.7s ease-in-out infinite alternate; }
+    .fx-wire    { animation: wire    2.3s linear infinite; }
+    .fx-rare    { animation: rare    3.8s ease-in-out infinite alternate; }
+
+    /* ── Panel ── */
+    .panel {
+      padding: 14px; display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      gap: 0; overflow: hidden;
+      border-color: rgba(207,232,210,.13);
+      box-shadow: 0 20px 80px rgba(2,1,5,.4), inset 0 0 50px rgba(240,184,222,.02);
+    }
+    .panel > h2 {
+      margin: 0 0 11px;
+      font-size: 9.5px; letter-spacing: .22em; text-transform: uppercase;
+      color: color-mix(in srgb, var(--mold) 45%, #6a7d6a);
+    }
+
+    /* ── Scan card — specimen readout ── */
+    .scan-card {
+      border-top: 1px dashed rgba(207,232,210,.18);
+      border-bottom: 1px dashed rgba(207,232,210,.1);
+      border-left: 3px solid color-mix(in srgb, var(--weather-tint) 45%, transparent);
+      border-right: none;
+	  border-radius: 20px;
+      padding: 10px 10px 10px 13px;
+      background: linear-gradient(160deg,
+        rgba(45,255,110,.03) 0%,
+        rgba(22,6,30,.18) 60%,
+        rgba(90,20,120,.07) 100%);
+      min-height: 148px;
+      transition: border-left-color 1.2s ease;
+    }
+    .scan-card.scan-active { animation: scanFlash .45s ease-out forwards; }
+
+    #scanName {
+      font-size: 14px; line-height: 1.15; color: var(--petal);
+      letter-spacing: -.03em; margin-bottom: 8px;
+      text-shadow: 0 0 12px rgba(240,184,222,.22);
+    }
+    #scanText  { color: #c5dfb8; font-size: 11.5px; line-height: 1.65; min-height: 48px; max-height: 76px; overflow: hidden; }
+    #scanMeta  { margin-top: 9px; display: flex; flex-wrap: wrap; gap: 4px; font-size: 9px; color: #d4cc6a; }
+    .tag       { border: 1px solid rgba(212,204,106,.18); border-radius: 10px; padding: 2px 5px; background: rgba(80,8,50,.18); letter-spacing: .04em; }
+
+    /* ── Specimen log ── */
+    .specimen-section {
+      display: flex; flex-direction: column; gap: 5px;
+      min-height: 0; overflow: hidden;
+      padding: 10px 0;
+      border-top: 1px dashed rgba(207,232,210,.12);
+      border-bottom: 1px dashed rgba(207,232,210,.1);
+      margin: 8px 0;
+    }
+    .specimen-header  { display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+    .section-label    { font-size: 9.5px; letter-spacing: .18em; text-transform: uppercase; color: color-mix(in srgb, var(--frost) 30%, #5a6e5a); }
+    .specimen-count   { font-size: 9.5px; color: #3e523e; font-variant-numeric: tabular-nums; }
+    .specimen-log {
+      overflow-y: auto;
+      max-height: 148px;
+      border-radius: 20px;
+      border: 1px solid rgba(240,184,222,.07);
+      background: rgba(8,2,14,.5);
+      padding: 4px;
+      display: flex; flex-direction: column; gap: 1px;
+      scrollbar-color: rgba(240,184,222,.15) transparent; scrollbar-width: thin;
+    }
+    .specimen-entry { display: grid; grid-template-columns: 14px 1fr auto; gap: 5px; align-items: center; padding: 3px 5px; font-size: 9.5px; }
+    .specimen-entry:hover { background: rgba(207,232,210,.04); }
+    .specimen-glyph  { text-align: center; font-size: 10px; text-shadow: 0 0 .5em currentColor; }
+    .specimen-name   { color: #a8c4a0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .specimen-badge  { font-size: 8.5px; color: rgba(207,232,210,.28); }
+    .specimen-entry.is-revisit .specimen-name { color: #788e76; }
+    .specimen-entry.is-auto { opacity: .58; }
+    .specimen-entry.is-auto .specimen-name { font-style: italic; color: #889e88; }
+    .world-divider { text-align: center; font-size: 8.5px; color: rgba(207,232,210,.16); padding: 3px 0; letter-spacing: .1em; flex-shrink: 0; }
+
+    /* ── Controls ── */
+    .controls { display: grid; gap: 6px; }
+
+    button {
+      font: inherit; font-size: 11.5px; font-weight: 700; letter-spacing: .04em;
+      color: #120820; border: 0; cursor: pointer;
+      background: linear-gradient(98deg, var(--petal), var(--acid) 42%, var(--mold));
+      box-shadow: 0 6px 20px rgba(45,255,110,.12), inset 0 0 14px rgba(255,255,255,.1);
+      padding: 9px 12px;
+	  border-radius: 10px;
+      transition: transform .1s ease, filter .1s ease;
+      /* Asymmetric octagonal clip */
+      clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 9px 100%, 0 calc(100% - 9px));
+    }
+    button:hover  { transform: translateY(-1px); filter: saturate(1.15) brightness(1.07); }
+    button:active { transform: translateY(1px) scale(.994); }
+
+    .ghost-button {
+      color: #c8dcc0;
+      background: rgba(207,232,210,.045);
+      border: 1px solid rgba(207,232,210,.14);
+      box-shadow: inset 0 0 12px rgba(240,184,222,.03);
+      /* Different clip — bottom-right corner only */
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 9px), calc(100% - 9px) 100%, 0 100%);
+    }
+
+    /* ── Volume slider ── */
+    .vol-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 7px;
+      padding: 2px 0 4px;
+    }
+    .vol-label { font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: #4e624e; }
+    .vol-val   { font-size: 9px; color: #4e624e; font-variant-numeric: tabular-nums; min-width: 26px; text-align: right; }
+
+    input[type=range] {
+      -webkit-appearance: none; appearance: none;
+      height: 2px;
+      background: linear-gradient(to right,
+        var(--mold) calc(var(--pct, 70) * 1%),
+        rgba(207,232,210,.14) 0);
+      outline: none; cursor: pointer; border: none;
+      border-radius: 0;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 10px; height: 10px;
+      background: var(--mold);
+      clip-path: polygon(50% 0%,100% 50%,50% 100%,0% 50%);
+      cursor: pointer;
+    }
+    input[type=range]::-moz-range-thumb {
+      width: 10px; height: 10px;
+      background: var(--mold);
+      clip-path: polygon(50% 0%,100% 50%,50% 100%,0% 50%);
+      border: none; cursor: pointer;
+    }
+
+    /* ── Footer ── */
+    footer { padding: 9px 14px; color: #687866; font-size: 10.5px; line-height: 1.6; }
+    code   { color: var(--petal); background: rgba(240,184,222,.07); border-radius: 2px; padding: 1px 4px; }
+
+    /* ── Keyframes ── */
+    @keyframes glow      { from{filter:brightness(.9) saturate(1.05);transform:scale(.98)} to{filter:brightness(1.35) saturate(1.4);transform:scale(1.04)} }
+    @keyframes flicker   { 0%,100%{opacity:.95} 50%{opacity:.4} }
+    @keyframes breathe   { from{opacity:.65;filter:blur(.04px)} to{opacity:1;filter:blur(.26px)} }
+    @keyframes ripple    { from{transform:translateY(0);opacity:.65} to{transform:translateY(-1px);opacity:.95} }
+    @keyframes drift     { from{transform:translateX(-.7px)} to{transform:translateX(.7px)} }
+    @keyframes wire      { from{filter:hue-rotate(0deg) brightness(.88)} to{filter:hue-rotate(38deg) brightness(1.24)} }
+    @keyframes rare      { from{filter:brightness(1) hue-rotate(0deg);transform:scale(.96)} to{filter:brightness(1.7) hue-rotate(50deg);transform:scale(1.06)} }
+    @keyframes playerPulse { from{transform:scale(.92)} to{transform:scale(1.08)} }
+    @keyframes scanDrift { from{background-position:0 0,0 0} to{background-position:0 5px,0 0} }
+    @keyframes scanFlash {
+      0%  { box-shadow: inset 3px 0 0 color-mix(in srgb, var(--weather-tint) 80%, transparent),
+                        inset 0 0 24px color-mix(in srgb, var(--weather-tint) 10%, transparent); }
+      100%{ box-shadow: none; }
+    }
+    @keyframes nodeActivate { 0%{opacity:.88;filter:hue-rotate(210deg) brightness(3.5) saturate(1.8)} 100%{opacity:.22;filter:none} }
+
+    @media (max-width: 840px) {
+      header { grid-template-columns: 1fr; }
+      .status-strip { justify-items: start; text-align: left; min-width: 0; }
+      .pill-row { justify-content: start; }
+      main { grid-template-columns: 1fr; }
+      .world-wrap, .panel { min-height: auto; }
+      #world { font-size: clamp(9px, 2.3vw, 13px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div>
+        <h1>Cornice</h1>
+        <p class="subtitle">Nocturnal balcony at the edge of an impossible city. Click any glyph to parse. WASD or arrows to traverse.</p>
+      </div>
+      <div class="status-strip">
+        <div class="pill-row">
+          <span class="pill" id="vistaPill">vista: —</span>
+          <span class="pill" id="weatherPill">weather: —</span>
+          <span class="pill" id="seedPill">seed: —</span>
+        </div>
+        <div class="pill-row">
+          <span class="pill">WASD / ↑↓←→ move</span>
+          <span class="pill">click: inspect</span>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="world-wrap" aria-label="ASCII terrarium map">
+        <div class="world-corners" aria-hidden="true"></div>
+        <div id="world" role="img" aria-label="A randomised ASCII terrarium balcony"></div>
+      </section>
+
+      <aside class="panel">
+        <h2>Signal Scanner</h2>
+        <section class="scan-card" id="scanCard">
+          <div id="scanName">unfocused dampness</div>
+          <div id="scanText">Click any glyph to inspect. The balcony railing divides the scenic backdrop from the deck layer.</div>
+          <div id="scanMeta"></div>
+        </section>
+        <section class="specimen-section">
+          <div class="specimen-header">
+            <span class="section-label">Parsed Specimens</span>
+            <span class="specimen-count" id="specimenCount">0 catalogued</span>
+          </div>
+          <div class="specimen-log" id="specimenLog"></div>
+        </section>
+        <div class="controls">
+          <button id="sceneBtn">Shift Distant Vista</button>
+          <button id="rerollBtn" class="ghost-button">Recombine structural layout</button>
+          <button class="ghost-button" id="soundBtn">Awaken tiny sound engine</button>
+          <div class="vol-row">
+            <span class="vol-label">vol</span>
+            <input type="range" id="volumeSlider" min="0" max="100" value="70" step="1">
+            <span class="vol-val" id="volVal">70%</span>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <footer>
+      <code>Night Terrarium v3.</code>
+      Pack API: <code>window.NightTerrarium.registerPack({ tiles, entities, scenes, weather, biomes })</code>
+    </footer>
+  </div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// PACK REGISTRY
+// ═══════════════════════════════════════════════════════════════════
+window.NightTerrarium = window.NightTerrarium || {
+  packs: (window.NIGHTTERRARIUM_PACKS || []),
+  registerPack(pack) { this.packs.push(pack); }
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// CONSTANTS
+// ═══════════════════════════════════════════════════════════════════
+const COLS = 52;
+const ROWS = 22;
+const PITCH_SCALE = [82.41,87.31,98.00,110.00,123.47,130.81,146.83,164.81,185.00,196.00,220.00,246.94,261.63,293.66,329.63,392.00,440.00];
+function getQuantizedFreq(idx) { return PITCH_SCALE[Math.max(0, Math.min(Math.round(idx), PITCH_SCALE.length-1))]; }
+
+// ═══════════════════════════════════════════════════════════════════
+// BASE DATA
+// ═══════════════════════════════════════════════════════════════════
+const BASE_TILE_DB = {
+  damp_soil: {
+    id:"damp_soil", glyphs:[".","\u00b7","`","\u02d9"],
+    name:"damp soil", type:"terrain", zLayer:"floor", solid:false,
+    color:"#b7c5ad", fx:"", windResponsive:false,
+    blobChance:null, spawnWeight:0,
+    tags:["walkable","soil","wet"],
+    whispers:["the ground keeps count without becoming a ledger","small pressure, small memory","soil rehearses being a floor","every step negotiates"]
+  },
+  moss_wall: {
+    id:"moss_wall", glyphs:["#","\u2593","\u2592"],
+    name:"moss wall", type:"terrain", zLayer:"wall", solid:true,
+    color:"#35e36a", fx:"solid", windResponsive:false,
+    tags:["boundary","moss","wet"],
+    whispers:["the wall is mostly plant agreement","blocked, but not dead","moss holds the edge in its mouth","a breathing boundary"]
+  },
+  bruised_stone: {
+    id:"bruised_stone", glyphs:["%","&","8"],
+    name:"bruised stone", type:"terrain", zLayer:"wall", solid:true,
+    color:"#8f5cff", fx:"solid", windResponsive:false,
+    tags:["stone","boundary","mineral","old-city"],
+    whispers:["a stone with urban aftertaste","wounded somehow","the mineral looks kind of civic","older than the city"]
+  },
+  neon_fuzz: {
+    id:"neon_fuzz", glyphs:[",","'",";","\u02cc"],
+    name:"neon fuzz", type:"terrain", zLayer:"floor", solid:false,
+    color:"#55ff8f", fx:"", windResponsive:true,
+    blobChance:0.22, blobCount:5, blobRadius:4, blobRadiusY:2,
+    tags:["walkable","fungal","grass","bioluminescent","wind-responsive"],
+    whispers:["soft things garbling","grass pretending","each comma is a root","the fuzz blooms on frequencies"]
+  },
+  black_water: {
+    id:"black_water", glyphs:["~","\u2248","\u224b","\u223f"],
+    name:"black water", type:"terrain", zLayer:"floor", solid:false,
+    color:"#60d6ff", fx:"", animated:true, windResponsive:false,
+    blobChance:0.10, blobCount:3, blobRadius:3, blobRadiusY:2,
+    tags:["walkable","liquid","reflection","sound-source"],
+    sound:{ scaleIndex:3, type:"sine" },
+    whispers:["it reflects from a city not loaded yet","water as an interface with no buttons","the pond keeps a [weather] cache","something about surface tension"]
+  },
+  city_debris: {
+    id:"city_debris", glyphs:[":","\u2237","\u205a","\u259a"],
+    name:"city debris", type:"terrain", zLayer:"floor", solid:false,
+    color:"#d6b35e", fx:"", windResponsive:false,
+    blobChance:0.15, blobCount:3, blobRadius:3, blobRadiusY:1,
+    tags:["walkable","urban","ruin"],
+    whispers:["the city punctuates, not punctually","a misplaced file","broken tile, civic dandruff","the refuse of completed events"]
+  },
+  wire_vine: {
+    id:"wire_vine", glyphs:["=","+","\u00f7","\u256c"],
+    name:"wire vine", type:"terrain", zLayer:"overhead", solid:false,
+    color:"#e8b7da", fx:"", windResponsive:true,
+    tags:["walkable","vine","cybernetic","conductive","wind-responsive"],
+    sound:{ scaleIndex:5, type:"triangle" },
+    whispers:["voltage by rumor","a grid-tendril","this is not a cable exactly","root system of a machine"]
+  },
+  balcony_rail: {
+    id:"balcony_rail", glyphs:["\u2550","\u2566","\u2569","\u256c","\u2e1c"],
+    name:"balcony railing", type:"structure", zLayer:"wall", solid:true,
+    color:"#e8b7da", fx:"solid fx-breathe", windResponsive:false,
+    tags:["boundary","architecture","protective","ironwork"],
+    whispers:["Cold decorative security grid.","It keeps the garden.","Look out across the tier below.","The inside and the fall."]
+  },
+  ancient_node: {
+    id:"ancient_node", glyphs:["\u25c8","\u229b","\u2295"],
+    name:"ancient node", type:"structure", zLayer:"floor", solid:false,
+    color:"#ff78c8", fx:"fx-rare entity", rare:true,
+    tags:["rare","structure","unknown-origin","receptive"],
+    sound:{ scaleIndex:16, type:"sine" },
+    whispers:["This node predates the current rendering engine. Its function has been retroactively classified.","Something was anchored here once. The anchor is gone but the record persists in the substrate.","Activating this terminal causes brief interference in the local atmosphere.","You have been logged in seven discontinued systems simultaneously."]
+  },
+  void_patch: {
+    id:"void_patch", glyphs:["\u2591","\u2592","\u2593"],
+    name:"void patch", type:"terrain", zLayer:"floor", solid:false,
+    color:"#bd93f9", fx:"fx-breathe", rare:true,
+    tags:["rare","void","unknown-substrate","permeable"],
+    whispers:["The floor here has been slightly replaced. The original material is no longer available for loading.","A patch of non-canonical surface. Walking on it feels like a minor licensing violation.","This area was last updated in a cycle that does not appear in the changelog.","Substrate origin: unknown. Substrate state: [weather]. Notes: \u2014"]
+  }
+};
+
+const BASE_ENTITY_DB = {
+  glow_flower: {
+    id:"glow_flower", glyphs:["*","\u2736","\u2737"], name:"glow flower", type:"organism",
+    solid:false, mobile:false, windResponsive:true, color:"#e5e32f", fx:"fx-glow entity",
+    spawnWeight:4, glyphCycleSpeed:0.07,
+    tags:["organism","flower","light","wind-responsive"], sound:{ scaleIndex:9, type:"sine" },
+    whispers:["I'm borrowing the city\u2019s insomnia.","the same soft command.","I remember a party that has not happened yet.","Each cycle: absorb available light. Output: approximate warmth."]
+  },
+  machine_mushroom: {
+    id:"machine_mushroom", glyphs:["m","\u2663","\u265f"], name:"machine mushroom", type:"organism-machine",
+    solid:false, mobile:false, windResponsive:false, color:"#ff78c8", fx:"fx-breathe entity",
+    spawnWeight:3, glyphCycleSpeed:0.11,
+    tags:["fungus","machine","FM-chirp"], sound:{ scaleIndex:6, type:"square" },
+    whispers:["My cap receives [weather] tonight.","spore = broadcast","How many tokens have we eaten tonight?","The mycelium network."]
+  },
+  moth_cloud: {
+    id:"moth_cloud", glyphs:["o","\u00b0","\u00a4"], name:"moth cloud", type:"swarm",
+    solid:false, mobile:true, moveChance:0.32, windResponsive:false, color:"#d0b6ff", fx:"fx-drift entity",
+    spawnWeight:3, glyphCycleSpeed:0.22,
+    tags:["swarm","air","mobile-entity","light-seeking"], sound:{ scaleIndex:11, type:"triangle" },
+    whispers:["We're made of many flight errors.","Light is a habit. I'm a bit tired.","Small air tonight during this [weather].","Fogllowing."]
+  },
+  party_ghost: {
+    id:"party_ghost", glyphs:["g","&","?"], name:"party ghost", type:"npc",
+    solid:false, mobile:true, moveChance:0.16, windResponsive:false, color:"#e8b7da", fx:"fx-breathe entity",
+    spawnWeight:2, glyphCycleSpeed:0.05,
+    tags:["npc","ghost","mobile-entity"], sound:{ scaleIndex:8, type:"sine" },
+    whispers:["I came for the opening and stayed for the humidity.","Everyone here is either a guest, a host, or a substrate.","Do you know who curated the fog?","My invitation expired in a previous build. I prefer it here."]
+  },
+  archive_bird: {
+    id:"archive_bird", glyphs:["\u039b","\u03bb","\u2227"], name:"archive bird", type:"organism",
+    solid:false, mobile:false, windResponsive:false, color:"#c8e0d8", fx:"entity",
+    spawnWeight:1, glyphCycleSpeed:0.04,
+    tags:["organism","avian","observer","logging"], sound:{ scaleIndex:13, type:"sine" },
+    whispers:["The bird has been cataloguing this balcony since before it was rendered.","It observes. It makes a small note.","Archive bird. Status: passive monitoring. Format: [weather].","You have been seen. This is not a warning."],
+    autoWhispers:["The balcony air is warmer near the flowers.","Something moved in the water just now.","The railing creaks in ways that do not resolve into language.","A moth has completed seventeen orbits of the same light source.","The debris layer has shifted slightly. No cause identified.","Atmospheric conditions: [weather]. Logged.","The ghost has been in the same quadrant for longer than expected.","A plant produced something that resembles a signal.","No new entities detected. No old entities have left.","The water is remembering something it didn\u2019t know before.","Soil moisture within expected parameters. Nothing is expected.","One wire vine has grown approximately one cell since last observation."]
+  },
+  
+    lantern_snail: {
+    id:"lantern_snail", glyphs:["s","\u02e2","\u25e6"], name:"lantern snail", type:"organism",
+    solid:false, mobile:true, moveChance:0.08, windResponsive:false, color:"#d8ff7a", fx:"fx-glow entity",
+    spawnWeight:2, glyphCycleSpeed:0.04,
+    tags:["organism","slow","light","mobile-entity","soft-machine"], sound:{ scaleIndex:4, type:"sine" },
+    whispers:["I carry one weather pixel under my shell.","Slow is also a traversal protocol.","The path behind me is slightly more awake.","Please do not hurry the bioluminescence."]
+  },
+
+  signal_crab: {
+    id:"signal_crab", glyphs:["c","\u03f2","\u22c9"], name:"signal crab", type:"organism-machine",
+    solid:false, mobile:true, moveChance:0.22, windResponsive:false, color:"#4dfff0", fx:"fx-wire entity",
+    spawnWeight:2, glyphCycleSpeed:0.12,
+    tags:["organism","machine","sideways","mobile-entity","signal"], sound:{ scaleIndex:10, type:"square" },
+    whispers:["I walk sideways when the network is too direct.","Left claw: receive. Right claw: respeak.","Antenna wet. Signal edible.","Every packet arrives tasting like salt."]
+  },
+
+  puddle_saint: {
+    id:"puddle_saint", glyphs:["p","\u03c1","\u25cc"], name:"puddle saint", type:"liquid-spirit",
+    solid:false, mobile:false, windResponsive:false, color:"#60d6ff", fx:"fx-ripple entity",
+    spawnWeight:1, glyphCycleSpeed:0.09,
+    tags:["liquid","spirit","reflection","weather-bound"], sound:{ scaleIndex:12, type:"triangle" },
+    whispers:["Do not kneel. I am only shallow water with opinions.","Your reflection has been lightly revised.","A halo forms when the humidity is uncertain.","I bless the surface tension."]
+  },
+
+  bracket_wasp: {
+    id:"bracket_wasp", glyphs:["}","{","]","["], name:"bracket wasp", type:"syntax-swarm",
+    solid:false, mobile:true, moveChance:0.34, windResponsive:false, color:"#e8e52f", fx:"fx-flicker entity",
+    spawnWeight:2, glyphCycleSpeed:0.18,
+    tags:["swarm","syntax","mobile-entity","punctuation","irritable"], sound:{ scaleIndex:14, type:"square" },
+    whispers:["Nested incorrectly. Stinging anyway.","The garden compiles.","Do not touch the closing bracket.","We pollinate unresolved clauses."]
+  },
+
+  elevator_seed: {
+    id:"elevator_seed", glyphs:["e","\u25b5","\u21df"], name:"elevator seed", type:"infrastructure-organism",
+    solid:false, mobile:false, windResponsive:true, color:"#bd93f9", fx:"fx-breathe entity",
+    spawnWeight:1, glyphCycleSpeed:0.05,
+    tags:["seed","infrastructure","vertical","wind-responsive","dormant"], sound:{ scaleIndex:7, type:"sine" },
+    whispers:["I dream of becoming a floor selector.","Buried in soil. Or lobby carpet. Hard to know.","Up is an administrative promise.","When I sprout, something below will arrive."]
+  },
+
+  data_gecko: {
+    id:"data_gecko", glyphs:["k","\u03ba","\u2310"], name:"data gecko", type:"organism",
+    solid:false, mobile:true, moveChance:0.26, windResponsive:false, color:"#55ff8f", fx:"fx-drift entity",
+    spawnWeight:2, glyphCycleSpeed:0.08,
+    tags:["organism","reptile","mobile-entity","wall-reader","cache"], sound:{ scaleIndex:5, type:"triangle" },
+    whispers:["I lick condensation.","Warm wall. Old data.","My tail dropped in a previous session.","Small feet, many permissions."]
+  },
+
+  rain_clerk: {
+    id:"rain_clerk", glyphs:["r","\u211e","\u2042"], name:"rain clerk", type:"npc",
+    solid:false, mobile:true, moveChance:0.12, windResponsive:false, color:"#cfe8d2", fx:"fx-breathe entity",
+    spawnWeight:1, glyphCycleSpeed:0.03,
+    tags:["npc","weather","bureaucracy","mobile-entity"], sound:{ scaleIndex:3, type:"sine" },
+    whispers:["Please file all droplets in triplicate.","The forecast has been delayed.","Humidity is a context.","The ink dissolved."]
+  },
+
+  railing_cat: {
+    id:"railing_cat", glyphs:["n","\u2229","\u1d0e"], name:"railing cat", type:"animal-ghost",
+    solid:false, mobile:true, moveChance:0.18, windResponsive:false, color:"#f0b8de", fx:"fx-breathe entity",
+    spawnWeight:1, glyphCycleSpeed:0.06,
+    tags:["animal","ghost","mobile-entity","edge-dweller"], sound:{ scaleIndex:15, type:"sine" },
+    whispers:["I know the edge.","The city below pretends not to purr.","Do not ask which life this is.","I sleep where the balcony becomes."]
+  },
+
+  socket_fern: {
+    id:"socket_fern", glyphs:["f","\u03c6","\u2733"], name:"socket fern", type:"plant-machine",
+    solid:false, mobile:false, windResponsive:true, color:"#2dff6e", fx:"fx-wire entity",
+    spawnWeight:3, glyphCycleSpeed:0.10,
+    tags:["plant","machine","conductive","wind-responsive","photosynthetic"], sound:{ scaleIndex:6, type:"triangle" },
+    whispers:["Electrical photosynthesis.","My leaves fit into discontinued ports.","I grow toward available voltage.","The socket was empty."]
+  },
+
+  static_child: {
+    id:"static_child", glyphs:["x","\u00d7","\u22c7"], name:"static child", type:"apparition",
+    solid:false, mobile:true, moveChance:0.10, windResponsive:false, color:"#ff78c8", fx:"fx-flicker entity",
+    spawnWeight:1, glyphCycleSpeed:0.20,
+    tags:["ghost","apparition","mobile-entity","signal-noise"], sound:{ scaleIndex:16, type:"square" },
+    whispers:["I was rendered too early.","Do you hear the room behind the room?","My outline is buffering.","I only appear where the garden forgets to be decorative."]
+  },
+
+  zinc_minnow: {
+    id:"zinc_minnow", glyphs:["z","\u223d","\u22ef"], name:"zinc minnow", type:"liquid-organism",
+    solid:false, mobile:true, moveChance:0.28, windResponsive:false, color:"#9ee8ff", fx:"fx-ripple entity",
+    spawnWeight:2, glyphCycleSpeed:0.16,
+    tags:["organism","liquid","fish","mobile-entity","metallic"], sound:{ scaleIndex:9, type:"triangle" },
+    whispers:["Tiny metal thought in the black water.","I swim through reflection.","Scales taste like old batteries.","The pond is larger on the rendered side."]
+  },
+
+  velvet_router: {
+    id:"velvet_router", glyphs:["v","\u25c7","\u25c8"], name:"velvet router", type:"soft-infrastructure",
+    solid:false, mobile:false, windResponsive:false, color:"#9055ff", fx:"fx-rare entity",
+    spawnWeight:1, glyphCycleSpeed:0.05,
+    tags:["infrastructure","network","soft-machine","rare","signal"], sound:{ scaleIndex:2, type:"sine" },
+    whispers:["Packets arrive wearing little coats.","I route carpets inefficiently.","The network is warm where it should be neutral.","Connection refused. Connection reconsidered. Connection held."]
+  }
+  
+  
+};
+
+const PLAYER_SPEC = {
+  id:"player", name:"you / cursor-body", type:"player", solid:false, color:"#fff26e",
+  tags:["player","camera","visitor","embodied"],
+  whispers:["A body small enough to read the garden one glyph at a time.","Present. Uncertain of the correct interaction model.","Moving through the terrarium at approximately one tile per decision.","You are technically a cursor. The @ sign is just a convention."]
+};
+
+const BASE_DISTANT_SCENES = [
+  { id:"city_skyline",  name:"City Skyline",         color:"#6b549e", glyphs:["|","\u2591","\u2588"," ","\u2584","\u2596","."], whispers:["The ecumenopolis extends forever into the haze.","Windows flicker like slow memory leaks.","Unrendered high-rises wait for attention."], tags:["distant","urban","skyline","monolithic"] },
+  { id:"silent_sea",    name:"Silent Sea",            color:"#1e5276", glyphs:["~","\u223d"," ","\u2500","\u2591"],             whispers:["An ocean made of discarded database transactions.","The water doesn\u2019t splash; it archives.","Deep waves cycle quietly underneath the deck."], tags:["abyssal","liquid","horizon","fluidic"] },
+  { id:"endless_mud",   name:"Endless Mud Plain",     color:"#5e4a3b", glyphs:["\u25b5","\u2234","\u2058"," ","\u00b7"],         whispers:["A tectonic flatline waiting for biological code.","Fungal slurry coats the ancient world floor.","The city was built on top of this damp geometry."], tags:["primordial","slurry","substrate","heavy"] },
+  { id:"deep_space",    name:"Abyssal Space Void",    color:"#bd93f9", glyphs:["*","."," ","\u00b0","\u25cc","\u2726"],         whispers:["Stars flicker through thin atmospheric shielding.","Cold computing nodes orbit silently overhead.","The dark space smells faintly of zinc and ozone."], tags:["cosmic","vacuum","stellar","infinite"] },
+  { id:"lower_level",   name:"Lower Level Terrace",     color:"#2ea164", glyphs:["X","#","\u2592","\u2550","\u2571"," "],         whispers:["Neon moisture pipes hum down below in the structural underdeck.","Industrial fans breathe out warm, recycled humidity.","Another terrarium is running directly beneath your feet."], tags:["infrastructure","underbelly","industrial","dense"] },
+    { 
+    id:"antenna_forest", name:"Antenna Forest", color:"#4dfff0",
+    glyphs:["\u2571","\u2572","|","\u02c4","\u02c5"," ","."],
+    whispers:["A forest of reception towers grows where the trees ran out.","Every branch is listening to a different century.","The wind arrives already encoded."],
+    tags:["distant","signal","forest","broadcast","vertical"]
+  },
+
+  { 
+    id:"pink_refinery", name:"Pink Refinery", color:"#f060c0",
+    glyphs:["\u2593","\u2592","\u258c","\u2551","\u25a0"," ","."],
+    whispers:["The refinery exhales rose-colored industrial dew.","Soft vapor rises from machines that learned perfume by accident.","Someone is distilling the sunset into coolant."],
+    tags:["distant","industrial","pink","vapor","chemical"]
+  },
+
+  { 
+    id:"sleeping_mall", name:"Sleeping Mall", color:"#d6b35e",
+    glyphs:["M","\u2591","\u25a1","\u25ab","_"," ","."],
+    whispers:["An abandoned mall glows with emergency nostalgia.","Escalators sleep in opposite directions.","The atrium fountain still remembers being impressive."],
+    tags:["distant","commercial","ruin","interior","nostalgia"]
+  },
+
+  { 
+    id:"fungal_suburb", name:"Fungal Suburb", color:"#55ff8f",
+    glyphs:["\u2302","\u25e0","\u25e1","\u2591","m"," ","."],
+    whispers:["Small houses soften under municipal mycelium.","Every lawn has become a quiet antenna.","The cul-de-sacs bloom in repeating colonies."],
+    tags:["distant","suburb","fungal","domestic","colony"]
+  },
+
+  { 
+    id:"mirror_wetlands", name:"Mirror Wetlands", color:"#9ee8ff",
+    glyphs:["~","\u223f","\u22ef","\u25cc"," ","."],
+    whispers:["The wetlands reflect a sky from a different build.","Birds land on the water and appear twice, then incorrectly.","Each puddle stores a spare horizon."],
+    tags:["distant","wetland","reflection","liquid","horizon"]
+  },
+
+  { 
+    id:"server_monastery", name:"Server Monastery", color:"#cfe8d2",
+    glyphs:["\u2588","\u2591","\u256c","\u25a1","\u22ee"," ","."],
+    whispers:["Cold aisles chant in processed air.","The monks have been replaced by uptime agreements.","Somewhere inside, a fan is praying continuously."],
+    tags:["distant","server","monastery","cold","ritual"]
+  },
+
+  { 
+    id:"bruise_mountains", name:"Bruise Mountains", color:"#9055ff",
+    glyphs:["\u25b2","\u25b5","\u2571","\u2572","\u2234"," ","."],
+    whispers:["The mountains rise like pressure under skin.","Purple ridges hold the city at a distance.","Old tectonics pulse beneath the decorative layer."],
+    tags:["distant","mountain","mineral","bruise","geologic"]
+  },
+
+  { 
+    id:"orbital_billboard", name:"Orbital Billboard", color:"#e8e52f",
+    glyphs:["\u25cc","\u25ce","\u25c9","-","*"," ","."],
+    whispers:["A dead advertisement circles the atmosphere forever.","Its slogan has eroded into pure luminance.","The billboard still believes someone is watching."],
+    tags:["distant","orbital","advertising","satellite","luminous"]
+  },
+
+  { 
+    id:"glass_graveyard", name:"Glass Graveyard", color:"#d0b6ff",
+    glyphs:["\u25ca","\u25c7","\u2571","\u2572","\u22c4"," ","."],
+    whispers:["Broken towers stand in polite transparency.","The graveyard shines too cleanly to be abandoned.","Every shard contains a slightly delayed city."],
+    tags:["distant","glass","ruin","tower","transparent"]
+  },
+
+  { 
+    id:"black_canal", name:"Black Canal", color:"#1e5276",
+    glyphs:["\u2500","\u2550","~","\u224b","\u2591"," ","."],
+    whispers:["A canal moves through the lower city without making water sounds.","Cargo lights drift by like encrypted insects.","The current is slow because it is carrying too much history."],
+    tags:["distant","canal","liquid","transport","night"]
+  },
+
+  { 
+    id:"weather_factory", name:"Weather Factory", color:"#e8b7da",
+    glyphs:["\u2593","\u2592","\u2058","\u2234","\u25cb"," ","."],
+    whispers:["Clouds are assembled on a line and released unfinished.","A foreman adjusts the humidity with a long pink lever.","The rain has a serial number tonight."],
+    tags:["distant","weather","factory","cloud","manufactured"]
+  },
+
+  { 
+    id:"taxidermy_moon", name:"Taxidermy Moon", color:"#f0b8de",
+    glyphs:["\u25d0","\u25d1","\u25cc","\u00b0","*"," ","."],
+    whispers:["A preserved moon hangs low behind the skyline.","Its surface has been brushed and pinned into place.","No tide trusts it anymore."],
+    tags:["distant","moon","cosmic","preserved","uncanny"]
+  },
+
+  { 
+    id:"neon_quarry", name:"Neon Quarry", color:"#2dff6e",
+    glyphs:["\u259a","\u259e","\u25a0","\u25b5","\u2237"," ","."],
+    whispers:["Workers excavate luminous stone from the dark.","The quarry face glows where the city has bitten it.","Each cut exposes another artificial mineral."],
+    tags:["distant","quarry","mineral","neon","excavation"]
+  },
+
+  { 
+    id:"airport_afterlife", name:"Airport Afterlife", color:"#bd93f9",
+    glyphs:["\u2500","\u2192","\u21e2","\u25a1","\u22ef"," ","."],
+    whispers:["Endless gates blink for flights that will never board.","The carpet pattern repeats into metaphysics.","A voice announces a delay in the afterlife terminal."],
+    tags:["distant","airport","liminal","transit","afterlife"]
+  },
+
+  { 
+    id:"soft_power_station", name:"Soft Power Station", color:"#ff78c8",
+    glyphs:["\u25c8","\u25c7","\u2551","\u256c","\u223f"," ","."],
+    whispers:["The station converts tenderness into uneven voltage.","Cables hum with civic feeling.","The transformers are wrapped in velvet insulation."],
+    tags:["distant","power","infrastructure","soft-machine","voltage"]
+  }
+];
+
+const BASE_WEATHER = [
+  { name:"electric humidity",       tint:"#2dff6e", droneFreq:110.00, line:"spores move like weak radio" },
+  { name:"pink industrial dew",     tint:"#f0b8de", droneFreq: 98.00, line:"condensation collects on every sign" },
+  { name:"acid moon drizzle",       tint:"#e8e52f", droneFreq:123.47, line:"the light tastes almost metallic" },
+  { name:"violet maintenance fog",  tint:"#9055ff", droneFreq: 82.41, line:"repair crews have become atmospheric" },
+    { name:"greenhouse static",       tint:"#55ff8f", droneFreq:146.83, line:"leaves click softly against the signal" },
+  { name:"mauve pressure rain",     tint:"#d0b6ff", droneFreq:130.81, line:"the air presses down like wet velvet" },
+  { name:"fungal heat shimmer",     tint:"#35e36a", droneFreq:164.81, line:"warm spores bend the balcony light" },
+  { name:"blue-black condensation", tint:"#60d6ff", droneFreq: 87.31, line:"the rail sweats in tiny unreadable maps" },
+  { name:"golden server haze",      tint:"#d6b35e", droneFreq:196.00, line:"fans exhale a mineral afternoon" },
+  { name:"petal smog",              tint:"#ff78c8", droneFreq:185.00, line:"soft exhaust gathers around the flowers" },
+  { name:"low orbital mist",        tint:"#bd93f9", droneFreq:220.00, line:"satellite fog drifts through the open deck" },
+  { name:"moldlight overcast",      tint:"#2ea164", droneFreq: 98.00, line:"everything green becomes slightly infrastructural" },
+  { name:"zinc night rain",         tint:"#9ee8ff", droneFreq:246.94, line:"droplets land with a faint battery taste" },
+  { name:"bruised monsoon",         tint:"#8f5cff", droneFreq:110.00, line:"the weather arrives purple and already tired" },
+  { name:"neon mud season",         tint:"#4f4e0f", droneFreq:123.47, line:"the floor glows from underneath its dirt" },
+  { name:"archival drizzle",        tint:"#c8e0d8", droneFreq:261.63, line:"rain files itself into obsolete categories" },
+  { name:"terminal pollen",         tint:"#e5e32f", droneFreq:293.66, line:"yellow dust accumulates on every command" },
+  { name:"warm machine breath",     tint:"#f0b8de", droneFreq:329.63, line:"the balcony inhales through hidden vents" },
+  { name:"blackwater weather",      tint:"#1e5276", droneFreq: 82.41, line:"the pond rises into the air without spilling" },
+  { name:"velvet interference",     tint:"#9055ff", droneFreq:392.00, line:"distant transmissions arrive soft and incorrect" },
+  { name:"soft alarm fog",          tint:"#f060c0", droneFreq:440.00, line:"a warning light forgets what it was warning about" },
+  { name:"glasshouse moonburn",     tint:"#cfe8d2", droneFreq:130.81, line:"pale light collects on the specimen case" },
+  { name:"rustling broadcast dew",  tint:"#4dfff0", droneFreq:146.83, line:"every wet surface tries to receive something" },
+  { name:"afterparty humidity",     tint:"#e8b7da", droneFreq:220.00, line:"the fog smells like guests who have not left" }
+];
+
+const BASE_BIOME_TEMPLATES = [
+  { id:"pond_corner",  paint(cx,cy,api){ api.blob(cx,cy,3,2,"black_water",0.08); api.blob(cx,cy,5,3,"neon_fuzz",0.20); } },
+  { id:"debris_field", paint(cx,cy,api){ api.blob(cx,cy,5,2,"city_debris",0.16); api.blob(cx+2,cy,2,1,"city_debris",0.08); } },
+  { id:"moss_grove",   paint(cx,cy,api){ api.blob(cx,cy,4,3,"neon_fuzz",0.24); api.blob(cx,cy,2,1,"neon_fuzz",0.06); } },
+  { id:"urban_scar",   paint(cx,cy,api){ api.blob(cx,cy,3,1,"bruised_stone",0.10); api.blob(cx,cy,5,2,"city_debris",0.16); } },
+  { id:"water_garden", paint(cx,cy,api){ api.blob(cx,cy,4,2,"black_water",0.09); api.blob(cx-3,cy+1,2,1,"neon_fuzz",0.14); api.blob(cx+3,cy-1,2,1,"neon_fuzz",0.12); } },
+  {
+    id: "sunken_circuit",
+    name: "Sunken Circuit",
+    paint(cx, cy, api) {
+      // A damp structural trench where water pools over industrial debris and wire vine overgrowth
+      api.blob(cx, cy, 5, 1, "city_debris", 0.12);
+      api.blob(cx, cy, 3, 1, "black_water", 0.05);
+      // Run an asymmetric vein of wire vines alongside the trench
+      if (api.chance(0.7)) {
+        api.blob(cx + (api.rand() > 0.5 ? 1 : -1), cy, 4, 1, "wire_vine", 0.25);
+      }
+    }
+  },
+
+  {
+    id: "fungal_spire_cluster",
+    name: "Fungal Spire Cluster",
+    paint(cx, cy, api) {
+      // A thick colony of neon fuzz acting as a soft, living cushion around mossy structural boundaries
+      api.blob(cx, cy, 4, 3, "neon_fuzz", 0.30);
+      api.blob(cx, cy, 2, 2, "moss_wall", 0.15); // Solid elements breaking up the walking deck
+      // Scatter some debris dandruff around the edges of the colony
+      if (api.chance(0.6)) {
+        api.blob(cx + 1, cy + 1, 3, 2, "city_debris", 0.40);
+      }
+    }
+  },
+
+  {
+    id: "drip_alcove",
+    name: "Drip Alcove",
+    paint(cx, cy, api) {
+      // A deeply textured corner pocket where old stone faces the elements, collecting dark condensation
+      api.blob(cx, cy, 3, 2, "bruised_stone", 0.20);
+      api.blob(cx, cy + 1, 2, 1, "black_water", 0.10);
+      api.blob(cx, cy - 1, 3, 1, "wire_vine", 0.15);
+    }
+  },
+
+  {
+    id: "glitch_glade",
+    name: "Glitch Glade",
+    paint(cx, cy, api) {
+      // An unstable, patchy biome where the raw floor alternates unpredictably between soil, fuzz, and rare voids
+      api.blob(cx, cy, 4, 2, "neon_fuzz", 0.25);
+      if (api.chance(0.4)) {
+        // Punctuates the center with a non-canonical void patch if available in the TILE_DB
+        api.blob(cx, cy, 2, 1, "void_patch", 0.05);
+      } else {
+        api.blob(cx, cy, 3, 1, "damp_soil", 0.10);
+      }
+      api.blob(cx + 2, cy - 1, 2, 1, "city_debris", 0.20);
+    }
+  },
+
+  {
+    id: "overdeck_tangle",
+    name: "Overdeck Tangle",
+    paint(cx, cy, api) {
+      // A heavily webbed intersection dominated by cybernetic wire vines choking out old city remnants
+      api.blob(cx, cy, 5, 2, "wire_vine", 0.10);
+      api.blob(cx, cy, 2, 1, "city_debris", 0.15);
+      api.blob(cx - 2, cy, 3, 1, "neon_fuzz", 0.35);
+    }
+  }
+  
+];
+
+// ═══════════════════════════════════════════════════════════════════
+// LIVE DB (rebuilt each generateWorld)
+// ═══════════════════════════════════════════════════════════════════
+let TILE_DB, ENTITY_DB, DISTANT_SCENES, WEATHER, BIOME_TEMPLATES, ENTITY_POOL;
+
+function buildDB() {
+  TILE_DB         = { ...BASE_TILE_DB };
+  ENTITY_DB       = { ...BASE_ENTITY_DB };
+  DISTANT_SCENES  = [...BASE_DISTANT_SCENES];
+  WEATHER         = [...BASE_WEATHER];
+  BIOME_TEMPLATES = [...BASE_BIOME_TEMPLATES];
+  for (const pack of (window.NightTerrarium?.packs ?? [])) {
+    if (pack.tiles)   Object.assign(TILE_DB, pack.tiles);
+    if (pack.entities) Object.assign(ENTITY_DB, pack.entities);
+    if (pack.scenes)  DISTANT_SCENES.push(...pack.scenes);
+    if (pack.weather) WEATHER.push(...pack.weather);
+    if (pack.biomes)  BIOME_TEMPLATES.push(...pack.biomes);
+  }
+  ENTITY_POOL = [];
+  for (const spec of Object.values(ENTITY_DB)) {
+    const w = spec.spawnWeight ?? 2;
+    for (let i = 0; i < w; i++) ENTITY_POOL.push(spec.id);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════════
+const state = {
+  seed:0, rng:null, weather:null,
+  vistaBlend:[],   // [{sceneIdx, weight}, ...]  — replaces single currentSceneIndex
+  skyVista:[],     // 2D array: blend-index assigned to each sky cell
+  terrain:[], terrainGlyphs:[], entities:[],
+  player:{ x:26, y:14 }, selected:null,
+  uidCounter:1, animTick:0,
+  wind:{ active:false, front:-99, width:3.5, dir:1 },
+  audio:null, soundOn:false, droneNodes:null,
+  specimenTotal:0,
+  railParams:{ a:0, b:1, c:-8, amp:2, waveLength:40, phase:0 }
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// DOM REFS
+// ═══════════════════════════════════════════════════════════════════
+const world          = document.getElementById("world");
+const scanCard       = document.getElementById("scanCard");
+const scanName       = document.getElementById("scanName");
+const scanText       = document.getElementById("scanText");
+const scanMeta       = document.getElementById("scanMeta");
+const specimenLog    = document.getElementById("specimenLog");
+const specimenCountEl= document.getElementById("specimenCount");
+const seedPill       = document.getElementById("seedPill");
+const weatherPill    = document.getElementById("weatherPill");
+const vistaPill      = document.getElementById("vistaPill");
+const volumeSlider   = document.getElementById("volumeSlider");
+const volVal         = document.getElementById("volVal");
+const cellEls        = [];
+const pressedKeys    = new Set();
+
+// ═══════════════════════════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════════════════════════
+function mulberry32(seed) {
+  return () => {
+    let t = seed += 0x6D2B79F5;
+    t = Math.imul(t ^ t>>>15, t|1);
+    t ^= t + Math.imul(t ^ t>>>7, t|61);
+    return ((t ^ t>>>14)>>>0) / 4294967296;
+  };
+}
+function rand()           { return state.rng(); }
+function pick(arr)        { return arr[Math.floor(rand() * arr.length)]; }
+function pickNative(arr)  { return arr[Math.floor(Math.random() * arr.length)]; }
+function chance(n)        { return rand() < n; }
+function clamp(v,lo,hi)   { return Math.max(lo, Math.min(hi, v)); }
+function inBounds(x,y)    { return x>=0 && x<COLS && y>=0 && y<ROWS; }
+
+// ═══════════════════════════════════════════════════════════════════
+// RAIL / SKY
+// ═══════════════════════════════════════════════════════════════════
+function evaluateRailValue(x, y) {
+  const { a, b, c, amp, waveLength, phase } = state.railParams;
+  const lineY = -(a * x + c) / b;
+  const curve = amp * Math.sin(2 * Math.PI * x / waveLength + phase);
+  return y - Math.floor(lineY + curve);
+}
+function isSky(x,y)  { return evaluateRailValue(x,y) < 0; }
+function isRail(x,y) { return evaluateRailValue(x,y) === 0; }
+
+// Validate rail generates enough walkable deck — up to 15 attempts
+function randomizeRailingStructure() {
+  for (let attempt = 0; attempt < 15; attempt++) {
+    const type = pick(["horizontal","horizontal","horizontal","diagonal_fall","diagonal_rise"]);
+    const amp = 1.5 + rand() * 3.0, waveLength = 36 + rand() * 40, phase = rand() * Math.PI * 2;
+    let a, b = 1, c;
+    if (type === "horizontal")    { a=(rand()-.5)*.09;          c=-(6  + rand()*9); }
+    else if (type==="diagonal_fall") { a=0.16+rand()*.20;       c=-(4  + rand()*7); }
+    else                          { a=-(0.16+rand()*.20);        c=-(14 + rand()*7); }
+
+    state.railParams = { a, b, c, amp, waveLength, phase };
+
+    // Count walkable cells in lower two-thirds
+    let ground = 0;
+    for (let y=Math.ceil(ROWS*.34); y<ROWS-1; y++)
+      for (let x=2; x<COLS-2; x++)
+        if (!isSky(x,y) && !isRail(x,y)) ground++;
+
+    if (ground >= 45) return; // enough deck — accept
+  }
+  // Hard fallback: safe flat rail
+  state.railParams = { a:0, b:1, c:-8, amp:1.5, waveLength:40, phase:0 };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// VISTA BLEND  (replaces single currentSceneIndex)
+// ═══════════════════════════════════════════════════════════════════
+function buildVistaBlend() {
+  const n = DISTANT_SCENES.length;
+  // Fisher-Yates with seeded RNG to pick unique indices
+  const avail = [...Array(n).keys()];
+  for (let i = n-1; i > 0; i--) {
+    const j = Math.floor(rand() * (i+1));
+    [avail[i], avail[j]] = [avail[j], avail[i]];
+  }
+  const count = chance(0.12) ? 3 : (chance(0.44) ? 2 : 1);
+  const sel   = avail.slice(0, count);
+
+  if (count === 1) {
+    state.vistaBlend = [{ sceneIdx: sel[0], weight: 1.0 }];
+  } else if (count === 2) {
+    const w = 0.52 + rand() * 0.34;
+    state.vistaBlend = [{ sceneIdx:sel[0], weight:w }, { sceneIdx:sel[1], weight:1-w }];
+  } else {
+    const w1 = 0.36 + rand() * 0.28;
+    const w2 = (1-w1) * (0.38 + rand() * 0.34);
+    state.vistaBlend = [
+      { sceneIdx:sel[0], weight:w1 },
+      { sceneIdx:sel[1], weight:w2 },
+      { sceneIdx:sel[2], weight:1-w1-w2 }
+    ];
+  }
+}
+
+// Assign blend index to every sky cell (seeded version for world generation)
+function buildSkyVistaSeeded() {
+  state.skyVista = [];
+  for (let y=0; y<ROWS; y++) {
+    state.skyVista[y] = [];
+    for (let x=0; x<COLS; x++) {
+      if (!isSky(x,y)) { state.skyVista[y][x] = -1; continue; }
+      const r = rand(); let acc=0, vIdx=0;
+      for (let v=0; v<state.vistaBlend.length; v++) {
+        acc += state.vistaBlend[v].weight;
+        if (r < acc) { vIdx=v; break; }
+      }
+      state.skyVista[y][x] = vIdx;
+    }
+  }
+}
+
+// Re-assign sky cells with Math.random (for interactive shiftScene)
+function rebuildSkyVista() {
+  state.skyVista = [];
+  for (let y=0; y<ROWS; y++) {
+    state.skyVista[y] = [];
+    for (let x=0; x<COLS; x++) {
+      if (!isSky(x,y)) { state.skyVista[y][x] = -1; continue; }
+      const r = Math.random(); let acc=0, vIdx=0;
+      for (let v=0; v<state.vistaBlend.length; v++) {
+        acc += state.vistaBlend[v].weight;
+        if (r < acc) { vIdx=v; break; }
+      }
+      state.skyVista[y][x] = vIdx;
+    }
+  }
+}
+
+function getSceneForCell(x, y) {
+  const vIdx = state.skyVista[y]?.[x] ?? 0;
+  return DISTANT_SCENES[state.vistaBlend[vIdx]?.sceneIdx ?? 0];
+}
+
+function updateVistaPill() {
+  if (!state.vistaBlend.length) return;
+  if (state.vistaBlend.length === 1) {
+    vistaPill.textContent = `vista: ${DISTANT_SCENES[state.vistaBlend[0].sceneIdx].name.toLowerCase()}`;
+    return;
+  }
+  const parts = state.vistaBlend.map(v =>
+    `${DISTANT_SCENES[v.sceneIdx].name.toLowerCase()} ${Math.round(v.weight*100)}%`
+  );
+  vistaPill.textContent = `vista: ${parts.join(' \u2215 ')}`;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// WORLD GENERATION
+// ═══════════════════════════════════════════════════════════════════
+function blob(cx, cy, rx, ry, tileId, raggedness) {
+  for (let y=cy-ry-1; y<=cy+ry+1; y++) {
+    for (let x=cx-rx-1; x<=cx+rx+1; x++) {
+      if (!inBounds(x,y) || isSky(x,y) || isRail(x,y)) continue;
+      if (x===0 || y===ROWS-1 || x===COLS-1) continue;
+      const dx=(x-cx)/rx, dy=(y-cy)/ry;
+      if (dx*dx+dy*dy < 1+(rand()-.5)*raggedness*3) state.terrain[y][x].id = tileId;
+    }
+  }
+}
+
+function placeBiomes() {
+  const api = { blob, rand, chance, pick, inBounds, isSky };
+  for (let i=0, att=0; i<3 && att<60; att++) {
+    const cx = 5 + Math.floor(rand()*(COLS-10));
+    const cy = 4 + Math.floor(rand()*(ROWS-8));
+    if (isSky(cx,cy)) continue;
+    pick(BIOME_TEMPLATES).paint(cx, cy, api);
+    i++;
+  }
+}
+
+function placeBlobTerrain() {
+  for (const spec of Object.values(TILE_DB)) {
+    if (!spec.blobChance) continue;
+    const count=spec.blobCount||4, rx=spec.blobRadius||3, ry=spec.blobRadiusY||2;
+    for (let i=0; i<count; i++)
+      blob(3+Math.floor(rand()*(COLS-6)), 3+Math.floor(rand()*(ROWS-6)), rx, ry, spec.id, spec.blobChance);
+  }
+}
+
+function placeVines() {
+  for (let y=1; y<ROWS-1; y++) {
+    for (let x=1; x<COLS-1; x++) {
+      if (isSky(x,y)||isRail(x,y)||state.terrain[y][x].id!=="damp_soil") continue;
+      const adj = [[0,-1],[1,0],[0,1],[-1,0]].some(([dx,dy]) => {
+        const nx=x+dx, ny=y+dy;
+        return inBounds(nx,ny)&&!isSky(nx,ny)&&(TILE_DB[state.terrain[ny][nx].id]?.solid??false);
+      });
+      if (adj && chance(0.20)) state.terrain[y][x].id = "wire_vine";
+    }
+  }
+}
+
+function placeRareTiles() {
+  const rare = Object.values(TILE_DB).filter(t => t.rare);
+  if (!rare.length) return;
+  const count = 1+(chance(0.45)?1:0);
+  for (let i=0; i<count; i++) {
+    for (let att=0; att<300; att++) {
+      const x=2+Math.floor(rand()*(COLS-4)), y=2+Math.floor(rand()*(ROWS-4));
+      if (isSky(x,y)||isRail(x,y)||state.terrain[y][x].id!=="damp_soil") continue;
+      state.terrain[y][x].id = pick(rare).id; break;
+    }
+  }
+}
+
+function freezeTerrainGlyphs() {
+  state.terrainGlyphs = [];
+  for (let y=0; y<ROWS; y++) {
+    state.terrainGlyphs[y] = [];
+    for (let x=0; x<COLS; x++) {
+      const id = state.terrain[y][x].id;
+      if (id === "sky_tier") {
+        state.terrainGlyphs[y][x] = pick(getSceneForCell(x,y).glyphs);
+      } else {
+        state.terrainGlyphs[y][x] = pick(TILE_DB[id]?.glyphs??["."]);
+      }
+    }
+  }
+}
+
+function placeEntities() {
+  if (!ENTITY_POOL.length) return;
+  const total = 18+Math.floor(rand()*10);
+  let count=0, att=0;
+  while (count<total && att<2000) {
+    att++;
+    const x=1+Math.floor(rand()*(COLS-2)), y=1+Math.floor(rand()*(ROWS-2));
+    if (isSky(x,y)||isRail(x,y)) continue;
+    if (TILE_DB[state.terrain[y][x].id]?.solid) continue;
+    if (state.entities.some(e=>e.x===x&&e.y===y)) continue;
+    const id = pick(ENTITY_POOL);
+    state.entities.push({ uid:state.uidCounter++, id, x, y,
+      glyphIndex: Math.floor(rand()*(ENTITY_DB[id]?.glyphs.length||1)),
+      phase: rand(), inspectCount:0 });
+    count++;
+  }
+}
+
+// Organic fallback island — called when the deck has almost no walkable cells
+function plantIsland(cx, cy) {
+  const pattern = [
+    [-1,0,"neon_fuzz"],[1,0,"neon_fuzz"],[0,-1,"neon_fuzz"],[0,1,"city_debris"],
+    [-2,0,"city_debris"],[2,0,"neon_fuzz"],[0,-2,"damp_soil"],[-1,-1,"wire_vine"],
+    [1,-1,"neon_fuzz"],[1,1,"city_debris"],[-1,1,"damp_soil"],[2,-1,"black_water"]
+  ];
+  pattern.forEach(([dx,dy,tid]) => {
+    const tx=cx+dx, ty=cy+dy;
+    if (!inBounds(tx,ty)||isRail(tx,ty)) return;
+    state.terrain[ty][tx].id = tid;
+    if (state.terrainGlyphs[ty]) state.terrainGlyphs[ty][tx] = pick(TILE_DB[tid]?.glyphs??["."]);
+    if (ENTITY_POOL.length && Math.random()<0.4 && !state.entities.some(e=>e.x===tx&&e.y===ty)) {
+      const pool = ENTITY_POOL.filter(id=>id!=="archive_bird");
+      const id   = pickNative(pool.length ? pool : ENTITY_POOL);
+      state.entities.push({ uid:state.uidCounter++, id, x:tx, y:ty, glyphIndex:0, phase:rand(), inspectCount:0 });
+    }
+  });
+  addSpecimen("emergency alcove", "\u25ca", "#8f5cff", false, "Rail geometry left minimal deck. Small pocket carved at coordinates.");
+}
+
+function placePlayer() {
+  const valid = [];
+  for (let y=2; y<ROWS-2; y++)
+    for (let x=2; x<COLS-2; x++)
+      if (!isSky(x,y)&&!isRail(x,y)&&!(TILE_DB[state.terrain[y][x].id]?.solid))
+        valid.push({x,y});
+
+  if (valid.length >= 4) { state.player = pickNative(valid); return; }
+
+  // Find ANY non-sky, non-rail cell scanning inward from bottom-center
+  let fallback = null;
+  outer: for (let y=ROWS-2; y>=1; y--) {
+    for (let dx=0; dx<COLS/2; dx++) {
+      for (const x of [Math.floor(COLS/2)+dx, Math.floor(COLS/2)-dx]) {
+        if (inBounds(x,y)&&!isSky(x,y)&&!isRail(x,y)) { fallback={x,y}; break outer; }
+      }
+    }
+  }
+
+  if (!fallback) {
+    // Nuclear: force safe rail and reinit sky
+    state.railParams = { a:0, b:1, c:-8, amp:1.5, waveLength:40, phase:0 };
+    for (let y=0; y<ROWS; y++) for (let x=0; x<COLS; x++) {
+      if (isSky(x,y))  state.terrain[y][x].id = "sky_tier";
+      if (isRail(x,y)) state.terrain[y][x].id = "balcony_rail";
+      else if (state.terrain[y][x].id==="sky_tier") state.terrain[y][x].id = "damp_soil";
+    }
+    fallback = { x:Math.floor(COLS/2), y:ROWS-4 };
+  }
+
+  state.player = fallback;
+  // Force clear player cell
+  if (!isSky(fallback.x,fallback.y)) state.terrain[fallback.y][fallback.x].id = "damp_soil";
+  plantIsland(fallback.x, fallback.y);
+}
+
+function generateWorld() {
+  buildDB();
+  state.seed        = Date.now() % 1000000000;
+  state.rng         = mulberry32(state.seed);
+  state.weather     = pick(WEATHER);
+  state.selected    = null;
+  state.animTick    = 0;
+  state.uidCounter  = 1;
+
+  randomizeRailingStructure();
+  buildVistaBlend();
+
+  // Init terrain
+  state.terrain = Array.from({length:ROWS}, () =>
+    Array.from({length:COLS}, () => ({id:"damp_soil", historyTags:[]}))
+  );
+  state.entities = [];
+
+  // Sky, rail, outer walls
+  for (let y=0; y<ROWS; y++) for (let x=0; x<COLS; x++) {
+    if (isSky(x,y))  { state.terrain[y][x].id = "sky_tier"; continue; }
+    if (isRail(x,y)) { state.terrain[y][x].id = "balcony_rail"; continue; }
+    if (x===0||y===ROWS-1||x===COLS-1) state.terrain[y][x].id = chance(0.18)?"bruised_stone":"moss_wall";
+  }
+
+  placeBiomes();
+  placeBlobTerrain();
+  placeVines();
+  placeRareTiles();
+  buildSkyVistaSeeded();     // must precede freezeTerrainGlyphs
+  freezeTerrainGlyphs();
+  placeEntities();
+  placePlayer();
+  applyWeatherTint();
+  updateDronePitch();
+  updateVistaPill();
+
+  if (state.specimenTotal > 0) {
+    const d = document.createElement("div");
+    d.className = "world-divider";
+    d.textContent = "\u2500\u2500 new world \u2500\u2500";
+    specimenLog.prepend(d);
+  }
+
+  seedPill.textContent    = `seed: ${state.seed}`;
+  weatherPill.textContent = `weather: ${state.weather.name}`;
+  render();
+  resetInspector();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// RENDERING
+// ═══════════════════════════════════════════════════════════════════
+function buildGrid() {
+  world.style.setProperty("--cols", COLS);
+  world.textContent = ""; cellEls.length = 0;
+  const frag = document.createDocumentFragment();
+  for (let y=0; y<ROWS; y++) {
+    cellEls[y]=[];
+    for (let x=0; x<COLS; x++) {
+      const span=document.createElement("span");
+      span.className="cell"; span.dataset.x=x; span.dataset.y=y;
+      cellEls[y][x]=span; frag.appendChild(span);
+    }
+  }
+  world.appendChild(frag); refreshAllCells();
+}
+function render()          { if (!cellEls.length) buildGrid(); else refreshAllCells(); }
+function refreshAllCells() { for (let y=0;y<ROWS;y++) for (let x=0;x<COLS;x++) refreshCell(x,y); }
+
+function refreshCell(x, y) {
+  const span=cellEls[y]?.[x]; if (!span) return;
+  span.className="cell"; span.style.color="";
+  if (state.selected?.x===x && state.selected?.y===y) span.classList.add("selected");
+
+  if (state.player.x===x && state.player.y===y) { span.textContent="@"; span.classList.add("player"); return; }
+
+  const ent=state.entities.find(e=>e.x===x&&e.y===y);
+  if (ent) {
+    const spec=ENTITY_DB[ent.id]||ENTITY_DB.party_ghost;
+    let glyph;
+    if (spec.glyphCycleSpeed && spec.glyphs.length>1) {
+      const idx=Math.floor(Math.abs(state.animTick*spec.glyphCycleSpeed+ent.phase*spec.glyphs.length*7))%spec.glyphs.length;
+      glyph=spec.glyphs[idx];
+    } else { glyph=spec.glyphs[ent.glyphIndex||0]; }
+    if (spec.windResponsive&&windTouches(x,y)) glyph=pickNative(spec.glyphs);
+    span.textContent=glyph; span.className+=` entity ${spec.fx||""}`; span.style.color=spec.color; return;
+  }
+
+  const cell=state.terrain[y][x];
+  if (cell.id==="sky_tier") {
+    const scene=getSceneForCell(x,y);
+    span.classList.add("sky-tier"); span.style.color=scene.color;
+    if (state.animTick%4===0 && Math.random()<0.008) state.terrainGlyphs[y][x]=pickNative(scene.glyphs);
+    span.textContent=state.terrainGlyphs[y][x]; return;
+  }
+
+  const spec=TILE_DB[cell.id]||TILE_DB.damp_soil;
+  if (cell.id==="black_water") span.textContent=spec.glyphs[(state.animTick+x+y)%spec.glyphs.length];
+  else if (spec.windResponsive&&windTouches(x,y)) span.textContent=spec.glyphs[(state.animTick+x)%spec.glyphs.length];
+  else span.textContent=state.terrainGlyphs[y][x];
+  span.className+=` terrain ${spec.fx||""}`; span.style.color=spec.color;
+}
+
+function applyWeatherTint() {
+  if (!state.weather) return;
+  document.documentElement.style.setProperty("--weather-tint", state.weather.tint);
+  if (scanCard) scanCard.style.borderLeftColor = `color-mix(in srgb, ${state.weather.tint} 45%, transparent)`;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// ANIMATION LOOP
+// ═══════════════════════════════════════════════════════════════════
+function windTouches(x,y) {
+  if (!state.wind.active) return false;
+  const pos=state.wind.dir===1 ? x+y*.35 : (COLS-x)+y*.35;
+  return Math.abs(pos-state.wind.front)<state.wind.width;
+}
+
+function animateLoops() {
+  state.animTick++;
+  // Wind
+  if (!state.wind.active&&state.animTick%14===0&&Math.random()<0.18) {
+    state.wind.active=true; state.wind.dir=Math.random()<.5?1:-1; state.wind.front=-state.wind.width;
+  } else if (state.wind.active) {
+    state.wind.front+=2.5; if (state.wind.front>COLS+10) state.wind.active=false;
+  }
+  // Entity movement
+  state.entities.forEach(ent => {
+    const spec=ENTITY_DB[ent.id]; if (!spec?.mobile||Math.random()>(spec.moveChance||0.2)) return;
+    let dx,dy;
+    if (ent.id==="moth_cloud"&&Math.random()<0.32) {
+      const flowers=state.entities.filter(e=>e.id==="glow_flower");
+      if (flowers.length) {
+        const near=flowers.reduce((n,f)=>{ const d=Math.abs(f.x-ent.x)+Math.abs(f.y-ent.y); return (!n||d<n.d)?{f,d}:n; },null);
+        if (near&&near.d>0&&near.d<14) {
+          dx=Math.sign(near.f.x-ent.x); dy=Math.sign(near.f.y-ent.y);
+          if (Math.random()<.58) dy=0; else dx=0;
+        } else [dx,dy]=pickNative([[1,0],[-1,0],[0,1],[0,-1],[0,0]]);
+      } else [dx,dy]=pickNative([[1,0],[-1,0],[0,1],[0,-1],[0,0]]);
+    } else [dx,dy]=pickNative([[1,0],[-1,0],[0,1],[0,-1],[0,0]]);
+
+    const nx=clamp(ent.x+dx,1,COLS-2), ny=clamp(ent.y+dy,1,ROWS-2);
+    if (isSky(nx,ny)||isRail(nx,ny)) return;
+    if (TILE_DB[state.terrain[ny][nx].id]?.solid) return;
+    if (state.player.x===nx&&state.player.y===ny) return;
+    if (state.entities.some(e=>e!==ent&&e.x===nx&&e.y===ny)) return;
+    const ox=ent.x,oy=ent.y; ent.x=nx; ent.y=ny; refreshCell(ox,oy); refreshCell(nx,ny);
+  });
+  // Archive bird auto-whispers
+  if (state.animTick%22===0) {
+    const emitters=state.entities.filter(e=>ENTITY_DB[e.id]?.autoWhispers?.length);
+    if (emitters.length&&Math.random()<0.3) {
+      const emitter=pickNative(emitters), spec=ENTITY_DB[emitter.id];
+      const w=pickNative(spec.autoWhispers).replace("[weather]",state.weather?.name??"\u2014");
+      addSpecimen(spec.name, spec.glyphs[0], spec.color, false, w);
+    }
+  }
+  // Refresh animated cells
+  for (let y=0;y<ROWS;y++) for (let x=0;x<COLS;x++) {
+    const id=state.terrain[y][x].id, spec=TILE_DB[id];
+    if (id==="black_water"||id==="sky_tier"||(spec?.windResponsive&&state.wind.active)) refreshCell(x,y);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// SOUND  — fixed async resume
+// ═══════════════════════════════════════════════════════════════════
+function masterGainFromSlider() { return (parseInt(volumeSlider.value)/100)*0.9; }
+
+function ensureAudio() {
+  if (state.audio) return state.audio;
+  const AudioCtx=window.AudioContext||window.webkitAudioContext;
+  if (!AudioCtx) return null;
+  const ctx=new AudioCtx();
+  const master=ctx.createGain();
+  master.gain.value = masterGainFromSlider();
+  master.connect(ctx.destination);
+  state.audio={ ctx, master };
+  return state.audio;
+}
+
+function playTone(spec, intensity=1) {
+  if (!state.soundOn) return;
+  const s=spec?.sound; if (!s||s.scaleIndex===undefined) return;
+  const audio=ensureAudio(); if (!audio) return;
+  const { ctx, master }=audio;
+  const play=() => {
+    const osc=ctx.createOscillator(), gain=ctx.createGain(), now=ctx.currentTime;
+    osc.type=s.type||"sine";
+    osc.frequency.setValueAtTime(getQuantizedFreq(s.scaleIndex), now);
+    gain.gain.setValueAtTime(0.001, now);
+    gain.gain.exponentialRampToValueAtTime(Math.min(0.22*intensity,0.25), now+0.015);
+    gain.gain.exponentialRampToValueAtTime(0.001, now+0.30);
+    osc.connect(gain); gain.connect(master); osc.start(now); osc.stop(now+0.35);
+  };
+  if (ctx.state==="suspended") ctx.resume().then(play).catch(()=>{});
+  else play();
+}
+
+function startAmbientDrone() {
+  if (!state.soundOn||!state.weather) return;
+  const audio=ensureAudio(); if (!audio) return;
+  if (state.droneNodes) { updateDronePitch(); return; }
+  const { ctx, master }=audio;
+  const start=() => {
+    const gainNode=ctx.createGain();
+    gainNode.gain.setValueAtTime(0.001, ctx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.022, ctx.currentTime+5);
+    gainNode.connect(master);
+    const freq=state.weather.droneFreq||110;
+    const oscs=[[freq,"sine"],[freq*1.003,"sine"],[freq*2.001,"sine"]].map(([f,type])=>{
+      const osc=ctx.createOscillator(); osc.type=type; osc.frequency.value=f;
+      osc.connect(gainNode); osc.start(); return osc;
+    });
+    state.droneNodes={ oscs, gainNode };
+  };
+  if (ctx.state==="suspended") ctx.resume().then(start).catch(()=>{}); else start();
+}
+
+function stopAmbientDrone() {
+  if (!state.droneNodes) return;
+  const { oscs, gainNode }=state.droneNodes;
+  if (state.audio) gainNode.gain.linearRampToValueAtTime(0.001, state.audio.ctx.currentTime+2.5);
+  setTimeout(()=>{ oscs.forEach(o=>{try{o.stop();}catch(e){}}); state.droneNodes=null; }, 3000);
+}
+
+function updateDronePitch() {
+  if (!state.droneNodes||!state.audio||!state.weather) return;
+  const { oscs }=state.droneNodes, { ctx }=state.audio;
+  const freq=state.weather.droneFreq||110;
+  [freq,freq*1.003,freq*2.001].forEach((f,i)=>{ if(oscs[i]) oscs[i].frequency.linearRampToValueAtTime(f,ctx.currentTime+3); });
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// INTERACTION
+// ═══════════════════════════════════════════════════════════════════
+function move(dx, dy) {
+  const nx=state.player.x+dx, ny=state.player.y+dy;
+  if (!inBounds(nx,ny)) return;
+  const cell=state.terrain[ny][nx];
+  if (cell.id==="sky_tier"||isSky(nx,ny)||isRail(nx,ny)) return;
+  if (TILE_DB[cell.id]?.solid) { if(state.soundOn) playTone({sound:{scaleIndex:1,type:"square"}},0.22); return; }
+  const ent=state.entities.find(e=>e.x===nx&&e.y===ny);
+  if (ent&&ENTITY_DB[ent.id]?.solid) { if(state.soundOn) playTone({sound:{scaleIndex:1,type:"square"}},0.22); return; }
+  const old={...state.player}; state.player={x:nx,y:ny};
+  refreshCell(old.x,old.y); refreshCell(nx,ny);
+}
+
+function inspectAt(x, y) {
+  if (!inBounds(x,y)) return;
+  const oldSel=state.selected?{...state.selected}:null;
+  state.selected={x,y};
+  if (oldSel) refreshCell(oldSel.x,oldSel.y);
+  refreshCell(x,y);
+  // Scan flash
+  scanCard.classList.remove("scan-active"); void scanCard.offsetWidth; scanCard.classList.add("scan-active");
+  setTimeout(()=>scanCard.classList.remove("scan-active"), 480);
+
+  // Player self-inspect
+  if (x===state.player.x&&y===state.player.y) {
+    scanName.textContent=PLAYER_SPEC.name;
+    scanText.textContent=pickNative(PLAYER_SPEC.whispers);
+    scanMeta.innerHTML="";
+    PLAYER_SPEC.tags.forEach(t=>{const s=document.createElement("span");s.className="tag";s.textContent=t;scanMeta.appendChild(s);});
+    addSpecimen(PLAYER_SPEC.name,"@","#fff26e");
+    if(state.soundOn) playTone({sound:{scaleIndex:6,type:"sine"}},0.4);
+    return;
+  }
+
+  // Sky
+  if (state.terrain[y][x].id==="sky_tier") {
+    const scene=getSceneForCell(x,y);
+    scanName.textContent=scene.name;
+    scanText.textContent=pickNative(scene.whispers)+" Look far beyond the edge.";
+    scanMeta.innerHTML="";
+    scene.tags.forEach(t=>{const s=document.createElement("span");s.className="tag";s.textContent=t;scanMeta.appendChild(s);});
+    addSpecimen(scene.name, pickNative(scene.glyphs), scene.color);
+    if(state.soundOn) playTone({sound:{scaleIndex:12,type:"sine"}},0.4);
+    return;
+  }
+
+  // Entity or terrain
+  const ent=state.entities.find(e=>e.x===x&&e.y===y);
+  const cell=state.terrain[y][x];
+  const spec=ent?(ENTITY_DB[ent.id]||ENTITY_DB.party_ghost):(TILE_DB[cell.id]||TILE_DB.damp_soil);
+
+  let isRevisit=false;
+  if (ent) { ent.inspectCount=(ent.inspectCount||0)+1; isRevisit=ent.inspectCount>1; }
+  else { isRevisit=cell.historyTags.length>0; cell.historyTags.push(state.animTick); }
+
+  let whisper;
+  if (ent&&spec.whispers?.length>1) whisper=spec.whispers[(ent.inspectCount-1)%spec.whispers.length];
+  else whisper=pickNative(spec.whispers||["Quiet architecture."]);
+  whisper=whisper.replace("[weather]",state.weather?.name??"\u2014");
+
+  scanName.textContent=(isRevisit?`${spec.name} \u21a9`:spec.name)+(ent?"":`\u00a0[${x},${y}]`);
+  scanText.textContent=whisper;
+  scanMeta.innerHTML="";
+  (spec.tags||[]).forEach(t=>{const s=document.createElement("span");s.className="tag";s.textContent=t;scanMeta.appendChild(s);});
+
+  if (!ent&&cell.id==="ancient_node") {
+    document.body.classList.add("node-activated");
+    setTimeout(()=>document.body.classList.remove("node-activated"),1200);
+    if(state.soundOn) playTone({sound:{scaleIndex:16,type:"sine"}},1.2);
+  } else {
+    if(state.soundOn) playTone({sound:spec.sound||{scaleIndex:4,type:"sine"}},0.65);
+  }
+
+  const glyph=ent?(ENTITY_DB[ent.id]?.glyphs[0]||"?"):(TILE_DB[cell.id]?.glyphs[0]||".");
+  addSpecimen(spec.name, glyph, spec.color||"#c2dcc5", isRevisit);
+}
+
+function addSpecimen(name, glyph, color, isRevisit=false, autoNote=null) {
+  state.specimenTotal++;
+  specimenCountEl.textContent=`${state.specimenTotal} catalogued`;
+
+  const entry=document.createElement("div");
+  entry.className=`specimen-entry${isRevisit?" is-revisit":""}${autoNote?" is-auto":""}`;
+  const glEl=document.createElement("span"); glEl.className="specimen-glyph"; glEl.style.color=color; glEl.textContent=glyph;
+  const nmEl=document.createElement("span"); nmEl.className="specimen-name"; nmEl.textContent=autoNote||name;
+  if (autoNote) nmEl.title=`${name}: ${autoNote}`;
+  const bdEl=document.createElement("span"); bdEl.className="specimen-badge";
+  bdEl.textContent=autoNote?"\u2303":(isRevisit?"\u21a9":"");
+  entry.append(glEl,nmEl,bdEl);
+  specimenLog.prepend(entry);
+  // Hard cap — prune oldest entries
+  while (specimenLog.children.length > 20) specimenLog.lastChild.remove();
+}
+
+function resetInspector() {
+  scanName.textContent="panoramic safety balcony";
+  scanText.textContent="Click any tile or entity to inspect. The balcony railing separates the scenic backdrop from the garden deck.";
+  scanMeta.innerHTML="";
+  ["balcony-tier","scenic-vista","read-intentional"].forEach(t=>{
+    const s=document.createElement("span");s.className="tag";s.textContent=t;scanMeta.appendChild(s);
+  });
+}
+
+function shiftScene() {
+  // Advance primary scene index
+  state.vistaBlend[0].sceneIdx = (state.vistaBlend[0].sceneIdx+1) % DISTANT_SCENES.length;
+  // 35% chance to also randomise the secondary blend weight / swap secondary scene
+  if (state.vistaBlend.length > 1 && Math.random() < 0.35) {
+    const avoidIdx = state.vistaBlend.map(v=>v.sceneIdx);
+    const others   = [...Array(DISTANT_SCENES.length).keys()].filter(i=>!avoidIdx.includes(i));
+    if (others.length) state.vistaBlend[1].sceneIdx = others[Math.floor(Math.random()*others.length)];
+  }
+  rebuildSkyVista();
+  for (let y=0;y<ROWS;y++) for (let x=0;x<COLS;x++) {
+    if (state.skyVista[y]?.[x]>=0) {
+      const scene=getSceneForCell(x,y);
+      state.terrainGlyphs[y][x]=pickNative(scene.glyphs);
+    }
+  }
+  refreshAllCells();
+  updateVistaPill();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// EVENT LISTENERS
+// ═══════════════════════════════════════════════════════════════════
+document.addEventListener("keydown", e => {
+  const k=e.key.toLowerCase();
+  const dirs={w:[0,-1],s:[0,1],a:[-1,0],d:[1,0],arrowup:[0,-1],arrowdown:[0,1],arrowleft:[-1,0],arrowright:[1,0]};
+  if (!dirs[k]) return; e.preventDefault();
+  if (!pressedKeys.has(k)) { pressedKeys.add(k); move(...dirs[k]); }
+});
+document.addEventListener("keyup", e => pressedKeys.delete(e.key.toLowerCase()));
+setInterval(() => {
+  if (!pressedKeys.size) return;
+  const active=[...pressedKeys].at(-1);
+  const dirs={w:[0,-1],s:[0,1],a:[-1,0],d:[1,0],arrowup:[0,-1],arrowdown:[0,1],arrowleft:[-1,0],arrowright:[1,0]};
+  if (dirs[active]) move(...dirs[active]);
+}, 90);
+
+world.addEventListener("click", e => {
+  const cell=e.target.closest(".cell"); if (!cell) return;
+  inspectAt(Number(cell.dataset.x), Number(cell.dataset.y));
+});
+
+document.addEventListener("mousemove", e => {
+  document.documentElement.style.setProperty("--mouse-x", `${(e.clientX/innerWidth*100).toFixed(1)}%`);
+  document.documentElement.style.setProperty("--mouse-y", `${(e.clientY/innerHeight*100).toFixed(1)}%`);
+}, { passive:true });
+
+volumeSlider.addEventListener("input", () => {
+  const v=parseInt(volumeSlider.value);
+  volVal.textContent=`${v}%`;
+  volumeSlider.style.setProperty("--pct", v);
+  if (state.audio?.master) state.audio.master.gain.setTargetAtTime(masterGainFromSlider(), state.audio.ctx.currentTime, 0.05);
+});
+// Init slider fill
+volumeSlider.style.setProperty("--pct", volumeSlider.value);
+
+document.getElementById("sceneBtn").addEventListener("click", shiftScene);
+document.getElementById("rerollBtn").addEventListener("click", generateWorld);
+document.getElementById("soundBtn").addEventListener("click", async e => {
+  const audio=ensureAudio();
+  if (audio?.ctx.state==="suspended") await audio.ctx.resume();
+  state.soundOn=!state.soundOn;
+  e.target.textContent=state.soundOn?"Let sound sleep":"Awaken tiny sound engine";
+  if (state.soundOn) startAmbientDrone(); else stopAmbientDrone();
+});
+
+// ═══════════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════════
+generateWorld();
+setInterval(animateLoops, 380);
+</script>
+</body>
+</html>
