@@ -1568,7 +1568,7 @@ function inspectAt(x, y) {
   if (state.terrain[y][x].id==="sky_tier") {
     const scene=getSceneForCell(x,y);
     scanName.textContent=scene.name;
-    scanText.textContent=pickNative(scene.whispers)+" Look far beyond the edge.";
+    scanText.textContent=pickNative(scene.whispers);
     scanMeta.innerHTML="";
     scene.tags.forEach(t=>{const s=document.createElement("span");s.className="tag";s.textContent=t;scanMeta.appendChild(s);});
     addSpecimen(scene.name, pickNative(scene.glyphs), scene.color);
