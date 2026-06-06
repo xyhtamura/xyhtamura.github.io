@@ -1730,7 +1730,7 @@ document.getElementById("soundBtn").addEventListener("click", async e => {
   const audio=ensureAudio();
   if (audio?.ctx.state==="suspended") await audio.ctx.resume();
   state.soundOn=!state.soundOn;
-  e.target.textContent=state.soundOn?"Let sound sleep":"Awaken tiny sound engine";
+  e.target.textContent=state.soundOn?"Sound Off":"Sound On";
   if (state.soundOn) startAmbientDrone(); else stopAmbientDrone();
 });
 
