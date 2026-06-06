@@ -30,8 +30,16 @@
   }
   #plate-title .t{font-family:"Fraunces",serif;font-style:italic;font-weight:300;font-size:22px;color:var(--ink)}
   #plate-title .s{display:block;margin-top:2px;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
-  #plate-title.dim{opacity:.4}
+/* Change this existing rule to fully hide the title instead of dimming it */
+#plate-title.dim{opacity:0} 
 
+/* Add this rule right below it to transition and hide the axis labels */
+.axis {
+  transition: opacity 2s ease;
+}
+.axis.gone {
+  opacity: 0 !important;
+}
   /* axis labels of the vowel-space specimen plate */
   .axis{position:fixed;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);pointer-events:none;user-select:none;opacity:.7}
   #ax-front{top:50%;left:14px;transform:translateY(-50%) rotate(180deg);writing-mode:vertical-rl}
@@ -589,8 +597,13 @@ function begin(){
   ]).catch(()=>{});
   gate.classList.add('gone');
   for(let i=0;i<3;i++) setTimeout(()=>seed(rnd(MX()+40,W-MX()-40),rnd(MY()+40,H-MY()-40)), i*420);
-  setTimeout(()=>hint.classList.add('gone'),7000);
-  setTimeout(()=>titleEl.classList.add('dim'),4500);
+  
+  // --- CHANGE HERE: Hide all UI elements ---
+  setTimeout(()=>hint.classList.add('gone'), 2000);  // Hide hint quicker
+  setTimeout(()=>titleEl.classList.add('dim'), 2000); // Hide title completely
+  setTimeout(()=> {
+    document.querySelectorAll('.axis').forEach(el => el.classList.add('gone'));
+  }, 2000);
 }
 gate.addEventListener('pointerdown',e=>{e.preventDefault();begin();},{passive:false});
 
@@ -640,7 +653,7 @@ function frame(now){
     }
     g.restore();
     for(let i=ghosts.length-1;i>=0;i--)if(ghosts[i].a<=0)ghosts.splice(i,1);
-    if(now-lastInteract>16000)hint.classList.remove('gone');
+    <!--if(now-lastInteract>16000)hint.classList.remove('gone');-->
   }
   if(grain){g.globalCompositeOperation='multiply';const ox=(t*7)%140,oy=(t*4)%140;
     for(let y=-140+oy;y<H;y+=140)for(let x=-140+ox;x<W;x+=140)g.drawImage(grain,x,y);

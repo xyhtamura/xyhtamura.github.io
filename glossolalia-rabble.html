@@ -19,7 +19,7 @@
   #plate-title{position:fixed;top:max(20px,env(safe-area-inset-top));left:24px;pointer-events:none;user-select:none;transition:opacity 2s ease}
   #plate-title .t{font-family:"Fraunces",serif;font-style:italic;font-weight:300;font-size:22px;color:var(--ink)}
   #plate-title .s{display:block;margin-top:2px;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
-  #plate-title.dim{opacity:.4}
+ #plate-title.dim{opacity:0}
 
   #hint{position:fixed;left:0;right:0;bottom:max(40px,env(safe-area-inset-bottom));text-align:center;pointer-events:none;font-size:12.5px;letter-spacing:.02em;color:var(--ink-soft);transition:opacity 1.6s ease;opacity:1}
   #hint em{font-family:"Fraunces",serif;font-style:italic;color:var(--ink);font-weight:400}
@@ -27,7 +27,16 @@
 
   #clear{position:fixed;top:max(20px,env(safe-area-inset-top));right:22px;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);
     cursor:pointer;opacity:.4;transition:opacity .4s ease;user-select:none;z-index:6}
-  #clear:hover{opacity:.9}
+  /* Update the existing dim rule to fully hide the title */
+#plate-title.dim{opacity:0}
+
+/* Update the existing #clear style block to include a transition for opacity */
+#clear{
+  position:fixed;top:max(20px,env(safe-area-inset-top));right:22px;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);
+  cursor:pointer;opacity:.4;transition:opacity .4s ease;user-select:none;z-index:6
+}
+/* Add this rule directly below it */
+#clear.gone{opacity:0 !important; pointer-events:none}
 
   #gate{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:10;background:radial-gradient(130% 120% at 50% 38%, #f1f2e6 0%, #e3e6d0 75%);transition:opacity .9s ease}
   #gate.gone{opacity:0;pointer-events:none}
@@ -383,11 +392,16 @@ addEventListener('keydown',e=>{if(e.key==='c')clearPage();});
 /* ---- gate ---- */
 const gate=document.getElementById('gate'),hint=document.getElementById('hint'),titleEl=document.getElementById('plate-title');
 let started=false;
-function begin(){if(started)return;started=true;Voice.start();
+function begin(){
+  if(started)return;started=true;Voice.start();
   Promise.all([document.fonts.load('48px "Gentium Plus"'),document.fonts.load('48px "Gentium Plus"','ə')]).catch(()=>{});
   gate.classList.add('gone');
   for(let i=0;i<3;i++) setTimeout(()=>seed(rnd(tray.x+50,tray.x+tray.w-50),rnd(tray.y+50,tray.y+tray.h-50)),i*460);
-  setTimeout(()=>hint.classList.add('gone'),8000);setTimeout(()=>titleEl.classList.add('dim'),4500);
+  
+  // --- CHANGE HERE: Hide all UI elements ---
+  setTimeout(()=>hint.classList.add('gone'), 2000);
+  setTimeout(()=>titleEl.classList.add('dim'), 2000);
+  setTimeout(()=>document.getElementById('clear').classList.add('gone'), 2000);
 }
 gate.addEventListener('pointerdown',e=>{e.preventDefault();begin();},{passive:false});
 
@@ -446,7 +460,7 @@ function frame(now){
     for(const gh of ghosts){gh.x+=gh.vx*dt;gh.y+=gh.vy*dt;gh.vy*=Math.pow(0.6,dt);gh.a-=0.5*dt;
       g.globalAlpha=clamp(gh.a,0,1)*0.5;g.font=`italic ${gh.size}px "Gentium Plus", serif`;g.fillStyle=`hsl(${gh.hue},55%,40%)`;g.fillText(gh.txt,gh.x,gh.y);}
     g.restore();for(let i=ghosts.length-1;i>=0;i--)if(ghosts[i].a<=0)ghosts.splice(i,1);
-    if(now-lastInteract>18000)hint.classList.remove('gone');
+    <!--if(now-lastInteract>18000)hint.classList.remove('gone');-->
   }
   if(grain){g.globalCompositeOperation='multiply';const ox=(t*7)%140,oy=(t*4)%140;for(let yy=-140+oy;yy<H;yy+=140)for(let xx=-140+ox;xx<W;xx+=140)g.drawImage(grain,xx,yy);g.globalCompositeOperation='source-over';}
   requestAnimationFrame(frame);
