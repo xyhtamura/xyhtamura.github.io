@@ -1477,8 +1477,8 @@ function animateLoops() {
 // ═══════════════════════════════════════════════════════════════════
 // SOUND  — decoupled into SFX vs Drone mix sub-buses
 // ═══════════════════════════════════════════════════════════════════
-function walkGainFromSlider() { return (parseInt(walkVolumeSlider.value)/100) * 1.5;}
-function droneGainFromSlider() { return (parseInt(droneVolumeSlider.value)/100) * 0.9; } // padded to balance continuous oscillations
+function walkGainFromSlider() { return (parseInt(walkVolumeSlider.value)/100) * 3;}
+function droneGainFromSlider() { return (parseInt(droneVolumeSlider.value)/100) * 2; } // padded to balance continuous oscillations
 
 function ensureAudio() {
   if (state.audio) return state.audio;
