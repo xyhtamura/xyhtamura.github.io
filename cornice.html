@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Cornice</title>
   <!--
-NIGHT TERRARIUM — GLYPH PHASE / ASCII PROTOTYPE
+CORNICE
 
-This single-file build is an early prototype for a browser-based navigable terrarium/worldtoy. The goal is to develop the underlying world logic before committing to sprites, textures, or more elaborate graphics.
+This single-file build is an early prototype for a browser-based navigable terrarium/worldtoy. This is a standalone ASCII experience with a developing underlying world logic but can transition eventually into sprites, textures, or more elaborate graphics.
 
 Core concept:
 - A small nocturnal terrarium at the edge of an impossible city.
@@ -49,8 +49,7 @@ Performance goals:
 - Use lightweight timers/requestAnimationFrame carefully.
 - Favor readable responsiveness over excessive visual effects.
 
-Long-term direction:
-This is not only a game prototype. It is a small intermedia system where space, text, sound, object behavior, and visual notation can eventually interrelate. The ASCII phase is a semantic skeleton: a way to prototype an event-relation world where glyphs, objects, sounds, memories, and future sprites can all become different skins or expressions of the same underlying terrarium.
+
 -->
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1541,6 +1540,7 @@ function move(dx, dy) {
   if (ent&&ENTITY_DB[ent.id]?.solid) { if(state.soundOn) playTone({sound:{scaleIndex:1,type:"square"}},0.22); return; }
   const old={...state.player}; state.player={x:nx,y:ny};
   refreshCell(old.x,old.y); refreshCell(nx,ny);
+  window.onTerrainStep?.(nx, ny, cell.id, !!ent, state.soundOn, state.weather?.droneFreq);
 }
 
 function inspectAt(x, y) {
@@ -1549,6 +1549,7 @@ function inspectAt(x, y) {
   state.selected={x,y};
   if (oldSel) refreshCell(oldSel.x,oldSel.y);
   refreshCell(x,y);
+  
   // Scan flash
   scanCard.classList.remove("scan-active"); void scanCard.offsetWidth; scanCard.classList.add("scan-active");
   setTimeout(()=>scanCard.classList.remove("scan-active"), 480);
@@ -1704,6 +1705,375 @@ document.getElementById("soundBtn").addEventListener("click", async e => {
 // ═══════════════════════════════════════════════════════════════════
 generateWorld();
 setInterval(animateLoops, 380);
+
+
+</script>
+<script>
+
+// ═══════════════════════════════════════════════════════════════════════
+// CORNICE — WALK SOUND ENGINE  (cornice_walk_sound.js)
+// Terrain-responsive footstep synthesis for Night Terrarium / Cornice.
+//
+// ── BACKWIRE (one line added to move() in cornice.html) ─────────────
+// In move(), after the line  `refreshCell(old.x,old.y); refreshCell(nx,ny);`
+// add:
+//   window.onTerrainStep?.(nx, ny, cell.id, !!ent, state.soundOn, state.weather?.droneFreq);
+//
+//
+// ── WHAT IS ACCESSIBLE FROM CORNICE main SCRIPT ─────────────────────
+// window.ensureAudio()  — shared AudioContext factory (function declaration ✓)
+// window.onTerrainStep  — hook set by this script
+// `state` is const, NOT on window — passed via the backwire hook instead.
+// ════════════════════════════════════════════════════════════════════════
+
+(function () {
+  'use strict';
+
+  // ── NOISE BUFFER CACHE ───────────────────────────────────────────────
+  // One 350ms white noise buffer per AudioContext session.
+  // AudioContext identity is stable across world rerolls (ensureAudio caches it).
+  // BufferSourceNodes cannot be restarted, so we create new ones from the same buffer.
+  let _noiseBuf = null;
+  let _noiseCachedCtx = null;
+
+  function getNoise(ctx) {
+    if (_noiseBuf && _noiseCachedCtx === ctx) return _noiseBuf;
+    const frames = Math.ceil(ctx.sampleRate * 0.35);
+    const buf    = ctx.createBuffer(1, frames, ctx.sampleRate);
+    const ch     = buf.getChannelData(0);
+    for (let i = 0; i < frames; i++) ch[i] = Math.random() * 2 - 1;
+    _noiseBuf       = buf;
+    _noiseCachedCtx = ctx;
+    return buf;
+  }
+
+  // Create a noise source reading from a random offset in the cached buffer.
+  // Random offset prevents every step sounding identical.
+  function mkNoise(ctx) {
+    const src = ctx.createBufferSource();
+    src.buffer = getNoise(ctx);
+    return src;
+  }
+
+  // ── TERRAIN SOUND PROFILES ───────────────────────────────────────────
+  // Signature: profile(ctx, out, phase)
+  //   ctx   — AudioContext
+  //   out   — AudioNode  (connect all synthesis here; already behind walkGain)
+  //   phase — 0 | 1, alternating per step (subtle L/R tonal micro-variation)
+  //
+  // Aesthetic targets: synthetic-organic, post-digital, damp, luminous, strange.
+  // Sounds should feel ambient and incidental — below inspect tones in prominence.
+
+  const PROFILES = {
+
+    // ── Damp soil ─────────────────────────────────────────────────────
+    // Sine body with fast pitch-drop (impact thud) + low bandpass noise (wet earth).
+    damp_soil(ctx, out, ph) {
+      const t = ctx.currentTime;
+
+      // Thud: sine dropping from ~90Hz to 40Hz over 90ms
+      const osc = ctx.createOscillator();
+      osc.type  = 'sine';
+      osc.frequency.setValueAtTime(88 + ph * 10, t);
+      osc.frequency.exponentialRampToValueAtTime(40, t + 0.09);
+      const g1 = ctx.createGain();
+      g1.gain.setValueAtTime(0.001, t);
+      g1.gain.exponentialRampToValueAtTime(0.20, t + 0.005);
+      g1.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+      osc.connect(g1); g1.connect(out);
+      osc.start(t); osc.stop(t + 0.15);
+
+      // Wet earth texture: bandpass noise at 210Hz
+      const src = mkNoise(ctx);
+      const bp  = ctx.createBiquadFilter();
+      bp.type   = 'bandpass'; bp.frequency.value = 210; bp.Q.value = 2.0;
+      const g2  = ctx.createGain();
+      g2.gain.setValueAtTime(0.001, t);
+      g2.gain.exponentialRampToValueAtTime(0.09, t + 0.003);
+      g2.gain.exponentialRampToValueAtTime(0.001, t + 0.10);
+      src.connect(bp); bp.connect(g2); g2.connect(out);
+      src.start(t, Math.random() * 0.15);
+    },
+
+    // ── Neon fuzz ─────────────────────────────────────────────────────
+    // Airy highpass rustle (like soft grass or soft circuitry) +
+    // brief bioluminescent shimmer ping.
+    neon_fuzz(ctx, out, ph) {
+      const t = ctx.currentTime;
+
+      // Rustle: highpass noise >3kHz, very short
+      const src = mkNoise(ctx);
+      const hp  = ctx.createBiquadFilter();
+      hp.type   = 'highpass'; hp.frequency.value = 3000;
+      const g1  = ctx.createGain();
+      g1.gain.setValueAtTime(0.001, t);
+      g1.gain.exponentialRampToValueAtTime(0.065, t + 0.002);
+      g1.gain.exponentialRampToValueAtTime(0.001, t + 0.075);
+      src.connect(hp); hp.connect(g1); g1.connect(out);
+      src.start(t, Math.random() * 0.15);
+
+      // Shimmer: sine at 1.2–1.5kHz, the fuzz's bioluminescent response
+      const osc = ctx.createOscillator();
+      osc.type  = 'sine';
+      osc.frequency.value = 1180 + ph * 240;
+      const g2 = ctx.createGain();
+      g2.gain.setValueAtTime(0.001, t);
+      g2.gain.exponentialRampToValueAtTime(0.032, t + 0.004);
+      g2.gain.exponentialRampToValueAtTime(0.001, t + 0.07);
+      osc.connect(g2); g2.connect(out);
+      osc.start(t); osc.stop(t + 0.09);
+    },
+
+    // ── Black water ───────────────────────────────────────────────────
+    // Bandpass splash noise + descending ripple sine (ring spreading outward).
+    black_water(ctx, out, ph) {
+      const t = ctx.currentTime;
+
+      // Splash: bandpass noise at 650Hz — wet, slightly resonant
+      const src = mkNoise(ctx);
+      const bp  = ctx.createBiquadFilter();
+      bp.type   = 'bandpass'; bp.frequency.value = 650; bp.Q.value = 1.1;
+      const g1  = ctx.createGain();
+      g1.gain.setValueAtTime(0.001, t);
+      g1.gain.exponentialRampToValueAtTime(0.13, t + 0.004);
+      g1.gain.exponentialRampToValueAtTime(0.001, t + 0.13);
+      src.connect(bp); bp.connect(g1); g1.connect(out);
+      src.start(t, Math.random() * 0.15);
+
+      // Ripple: sine descending from ~340Hz to 145Hz over 190ms
+      const osc = ctx.createOscillator();
+      osc.type  = 'sine';
+      osc.frequency.setValueAtTime(340 + ph * 35, t + 0.012);
+      osc.frequency.exponentialRampToValueAtTime(145, t + 0.20);
+      const g2 = ctx.createGain();
+      g2.gain.setValueAtTime(0.001, t + 0.012);
+      g2.gain.exponentialRampToValueAtTime(0.062, t + 0.017);
+      g2.gain.exponentialRampToValueAtTime(0.001, t + 0.21);
+      osc.connect(g2); g2.connect(out);
+      osc.start(t + 0.012); osc.stop(t + 0.24);
+    },
+
+    // ── City debris ───────────────────────────────────────────────────
+    // Mid-frequency crunch (impact) + two scatter rattles (debris settling).
+    city_debris(ctx, out, ph) {
+      const t = ctx.currentTime;
+
+      // Main crunch: bandpass noise at 1.1kHz
+      const src = mkNoise(ctx);
+      const bp  = ctx.createBiquadFilter();
+      bp.type   = 'bandpass'; bp.frequency.value = 1100; bp.Q.value = 0.65;
+      const g1  = ctx.createGain();
+      g1.gain.setValueAtTime(0.001, t);
+      g1.gain.exponentialRampToValueAtTime(0.16, t + 0.002);
+      g1.gain.exponentialRampToValueAtTime(0.001, t + 0.095);
+      src.connect(bp); bp.connect(g1); g1.connect(out);
+      src.start(t, Math.random() * 0.15);
+
+      // Scatter rattles: two slightly offset bursts at different frequencies
+      [0.038, 0.078].forEach((delay, i) => {
+        const s2 = mkNoise(ctx);
+        const f2 = ctx.createBiquadFilter();
+        f2.type  = 'bandpass';
+        f2.frequency.value = 850 + i * 520;
+        f2.Q.value         = 2.4;
+        const g2 = ctx.createGain();
+        g2.gain.setValueAtTime(0.001, t + delay);
+        g2.gain.exponentialRampToValueAtTime(0.058 - i * 0.015, t + delay + 0.002);
+        g2.gain.exponentialRampToValueAtTime(0.001, t + delay + 0.048);
+        s2.connect(f2); f2.connect(g2); g2.connect(out);
+        s2.start(t + delay, Math.random() * 0.15);
+      });
+    },
+
+    // ── Wire vine ─────────────────────────────────────────────────────
+    // Square-wave click with fast pitch-dive (metallic contact) +
+    // highpass noise zap (the vine sparks on footfall).
+    wire_vine(ctx, out, ph) {
+      const t = ctx.currentTime;
+
+      // Metallic click: square wave from ~560Hz diving to 130Hz over 32ms
+      const osc = ctx.createOscillator();
+      osc.type  = 'square';
+      osc.frequency.setValueAtTime(560 + ph * 70, t);
+      osc.frequency.exponentialRampToValueAtTime(130, t + 0.032);
+      const g1 = ctx.createGain();
+      g1.gain.setValueAtTime(0.001, t);
+      g1.gain.exponentialRampToValueAtTime(0.075, t + 0.002);
+      g1.gain.exponentialRampToValueAtTime(0.001, t + 0.042);
+      osc.connect(g1); g1.connect(out);
+      osc.start(t); osc.stop(t + 0.05);
+
+      // Electric zap: short highpass noise burst >4.2kHz
+      const src = mkNoise(ctx);
+      const hp  = ctx.createBiquadFilter();
+      hp.type   = 'highpass'; hp.frequency.value = 4200;
+      const g2  = ctx.createGain();
+      g2.gain.setValueAtTime(0.001, t);
+      g2.gain.exponentialRampToValueAtTime(0.038, t + 0.002);
+      g2.gain.exponentialRampToValueAtTime(0.001, t + 0.055);
+      src.connect(hp); hp.connect(g2); g2.connect(out);
+      src.start(t, Math.random() * 0.15);
+    },
+
+    // ── Void patch ────────────────────────────────────────────────────
+    // A substrate of non-canonical surface: disorientating pitch sweep
+    // plus two timed ghost echoes suggesting spatial instability.
+    void_patch(ctx, out, ph) {
+      const t    = ctx.currentTime;
+      const base = 175 + Math.random() * 200; // random per step
+
+      // Main sweep: sine rising then falling — the substrate seems uncertain
+      const osc = ctx.createOscillator();
+      osc.type  = 'sine';
+      osc.frequency.setValueAtTime(base, t);
+      osc.frequency.linearRampToValueAtTime(base * 1.85, t + 0.052);
+      osc.frequency.linearRampToValueAtTime(base * 0.52, t + 0.145);
+      const g1  = ctx.createGain();
+      g1.gain.setValueAtTime(0.001, t);
+      g1.gain.exponentialRampToValueAtTime(0.10, t + 0.007);
+      g1.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+      osc.connect(g1); g1.connect(out);
+
+      // Ghost echoes: two simple timed delays off the main sweep (no feedback loop)
+      // Pitch of the echo = pitch of what was in the delay line at tap time — eerie
+      [0.065, 0.138].forEach((dTime, i) => {
+        const delay = ctx.createDelay(0.3);
+        delay.delayTime.value = dTime;
+        const echo  = ctx.createGain();
+        echo.gain.value = 0.30 / (i * 1.6 + 1);
+        g1.connect(delay);
+        delay.connect(echo);
+        echo.connect(out);
+      });
+
+      osc.start(t); osc.stop(t + 0.18);
+
+      // Ghost harmonic: a secondary tone entering slightly late, pitch-displaced
+      const osc2  = ctx.createOscillator();
+      osc2.type   = 'sine';
+      osc2.frequency.value = base * (2.08 + ph * 0.28);
+      const g2    = ctx.createGain();
+      g2.gain.setValueAtTime(0.001, t + 0.022);
+      g2.gain.exponentialRampToValueAtTime(0.032, t + 0.038);
+      g2.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
+      osc2.connect(g2); g2.connect(out);
+      osc2.start(t + 0.022); osc2.stop(t + 0.18);
+    },
+
+    // ── Ancient node ──────────────────────────────────────────────────
+    // Arpeggiating harmonic stack — stepping on an ancient node resonates it.
+    // Uses the same root pitch class as the inspect tone for the node (220Hz).
+    ancient_node(ctx, out, ph) {
+      const t    = ctx.currentTime;
+      const root = 220;
+      // Harmonic ratios: root, perfect fifth, octave, golden-ratio harmonic
+      [1, 1.5, 2.0, 2.618].forEach((ratio, i) => {
+        const osc = ctx.createOscillator();
+        osc.type  = 'sine';
+        osc.frequency.value = root * ratio * (1 + ph * 0.003);
+        const d   = i * 0.013; // staggered entry
+        const g   = ctx.createGain();
+        g.gain.setValueAtTime(0.001, t + d);
+        g.gain.exponentialRampToValueAtTime(0.052 / (i * 0.4 + 1), t + d + 0.010);
+        g.gain.exponentialRampToValueAtTime(0.001, t + d + 0.21 + i * 0.04);
+        osc.connect(g); g.connect(out);
+        osc.start(t + d); osc.stop(t + d + 0.30);
+      });
+    },
+
+  };
+
+  // Fallback for pack-added tiles not yet in PROFILES — quiet soil variant.
+  // Also acts as the default when PROFILES[tileId] is undefined.
+  PROFILES._fallback = PROFILES.damp_soil;
+
+
+  // ── WALK ENGINE STATE ─────────────────────────────────────────────────
+  let _phase   = 0;                // L/R foot alternation (0 or 1)
+  let _lastMs  = 0;                // timestamp of last step
+  const COOLDOWN_MS = 55;          // minimum ms between footstep sounds
+
+
+  // ── CORE STEP FUNCTION ────────────────────────────────────────────────
+  // Called by window.onTerrainStep from within move() in cornice.html.
+  //
+  //   tileId     — terrain tile id the player just moved onto
+  //   hasEntity  — whether an entity occupies the same cell
+  //   soundOn    — state.soundOn from the main script
+  //   droneFreq  — state.weather?.droneFreq — used for weather colour on footsteps
+
+  function onStep(x, y, tileId, hasEntity, soundOn, droneFreq) {
+    if (!soundOn) return;
+
+    const now = performance.now();
+    if (now - _lastMs < COOLDOWN_MS) return;
+    _lastMs = now;
+
+    // Share the main script's AudioContext so the volume slider applies.
+    const audio = window.ensureAudio?.();
+    if (!audio) return;
+    const { ctx, master } = audio;
+
+    // ── Walk gain node ────────────────────────────────────────────────
+    // Footsteps sit below inspect tones (~half their amplitude).
+    // Profile oscillators peak at 0.10–0.20, so effective chain is:
+    //   profile_peak * walkGain * master ≈ 0.15 * 0.36 * 0.63 ≈ 0.034
+    const walkGain      = ctx.createGain();
+    walkGain.gain.value = 0.36;
+
+    // Entity underfoot: nudge slightly louder (you're stepping on/past something)
+    if (hasEntity) walkGain.gain.value *= 1.14;
+
+    // Weather influence via droneFreq (82–440 Hz → gain scale 0.82–1.06).
+    // Lower drone = heavier/damper conditions; higher = brighter/more active.
+    if (droneFreq) {
+      const norm = Math.max(0, Math.min(1, (droneFreq - 82) / (440 - 82)));
+      walkGain.gain.value *= 0.82 + norm * 0.24;
+    }
+
+    // ── Stereo panning: subtle L/R alternation ────────────────────────
+    // Chain: profiles → walkGain → [panner →] master
+    let out = walkGain; // profiles connect here
+    if (ctx.createStereoPanner) {
+      const pan     = ctx.createStereoPanner();
+      pan.pan.value = _phase === 0 ? -0.14 : 0.14;
+      walkGain.connect(pan);
+      pan.connect(master);
+    } else {
+      walkGain.connect(master);
+    }
+
+    // ── Dispatch ──────────────────────────────────────────────────────
+    const profile = Object.prototype.hasOwnProperty.call(PROFILES, tileId)
+      ? PROFILES[tileId]
+      : PROFILES._fallback;
+
+    const phase = _phase; // capture before we flip
+    const play  = () => {
+      try { profile(ctx, out, phase); } catch (_) { /* silent fail */ }
+    };
+
+    if (ctx.state === 'suspended') ctx.resume().then(play).catch(() => {});
+    else play();
+
+    _phase = 1 - _phase;
+  }
+
+
+  // ── HOOK REGISTRATION ─────────────────────────────────────────────────
+  // The backwire in move() calls: window.onTerrainStep?.(nx, ny, cell.id, !!ent, state.soundOn, state.weather?.droneFreq)
+  window.onTerrainStep = onStep;
+
+
+  // ── PUBLIC SURFACE ────────────────────────────────────────────────────
+  // For debugging or extending from other scripts / packs.
+  // e.g.: window.WalkSound.PROFILES.my_tile = (ctx, out, ph) => { ... }
+  window.WalkSound = { onStep, PROFILES };
+
+  if (typeof console !== 'undefined')
+    console.log('[WalkSound] Terrain-responsive footstep engine loaded. Profiles:', Object.keys(PROFILES).filter(k => k !== '_fallback'));
+
+})();
 </script>
 </body>
 </html>
