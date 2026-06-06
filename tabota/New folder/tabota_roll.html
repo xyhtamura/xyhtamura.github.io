@@ -8,6 +8,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/@tonejs/midi"></script>
+<!-- shared interpreter: exposes window.TabotaResolve.resolve() (same module index.html imports) -->
+<script type="module" src="tabota-resolve.js"></script>
 <style>
 :root{
   /* Light, fully hued — no achromatic axis. Pale tide-pool ground. */
@@ -1280,11 +1282,8 @@ cv.addEventListener('pointermove',e=>{
     const db=(p.x-d.sx)/view.pxPerBeat, dm=-(p.y-d.sy)/view.pxPerSemi;
     let ns=d.o.start+db; if(settings.snapTime) ns=snapBeat(ns);
     d.note.start=clampBeatToContent(ns);
-    d.note.pts=d.o.pts.map(q=>{
-      const shifted=midiToFreq(freqToMidi(q.hz,settings.a4)+dm, settings.a4);
-      const hz=settings.snapPitch?snapPitchHz(shifted):shifted;
-      const o={t:q.t, hz}; if(q.curve) o.curve=q.curve; return o;
-    });
+    const shift=settings.snapPitch?Math.round(dm):dm;
+    d.note.pts=d.o.pts.map(q=>{ const o={t:q.t, hz:midiToFreq(freqToMidi(q.hz,settings.a4)+shift,settings.a4)}; if(q.curve) o.curve=q.curve; return o; });
     draw(); updateStatus(); return;
   }
   if(d.mode==='segMove'){
@@ -2100,76 +2099,67 @@ function _notesFromV1(doc){
   const bend=(doc.midiExport && +doc.midiExport.bendRange)||null;
   return {notes:out, bpm, sig, a4, skipped, bend};
 }
-/* ---- v2 reader: walk the Event tree, inherit frames, take the determinate fragment ---- */
-function _frameOf(ev, inh){
-  const f=ev.frame||{}; const ts=f.temporalSettings||{}, as=f.axisSettings||{};
-  let sig=inh.sig;
-  if(ts.timeSignature){ const p=String(ts.timeSignature).split('/'); sig=[+p[0]||4, +p[1]||4]; }
-  return {
-    temporal: f.temporal||inh.temporal,
-    bpm: ts.bpm!=null?+ts.bpm:inh.bpm,
-    bpmsr: sig[0]||4, sig,
-    axis: f.axis||inh.axis,
-    a4: as.a4!=null?+as.a4:inh.a4
-  };
-}
-function _leafToNote(ev, fr){
-  const a4=fr.a4||settings.a4, axis=fr.axis||'frequency';
-  const toBeat=v=> fr.temporal==='chronological' ? (v*(fr.bpm||settings.bpm)/60) : (+v||0); // metered already beats
-  const p=ev.position||{};
-  if(p.relations || p.between) return null;                       // not determinate → cannot draw
-  let start;
-  if(p.at!=null) start=toBeat(p.at);
-  else if(p.meter) start=((p.meter.measure-1)*(fr.bpmsr||4))+(+p.meter.beat||0);
-  else if(p.index!=null) start=(+p.index||0)*settings.defLen;
-  else return null;
-  const x=ev.extent||{};
-  let dur;
-  if(x.duration!=null) dur=toBeat(x.duration);
-  else if(x.endAt!=null) dur=toBeat(x.endAt)-start;
-  else if(x.endMeter) dur=(((x.endMeter.measure-1)*(fr.bpmsr||4))+(+x.endMeter.beat||0))-start;
-  else dur=settings.defLen;                                        // open / until / point → default length
-  if(dur<=0) dur=settings.defLen;
-  const pv=ev.value.pitch;
-  if(pv.between || pv.relativeTo) return null;                     // indeterminate pitch → cannot draw
-  const voice=Math.max(1,(ev.payload&&ev.payload.voice)||1);
-  const velo=(ev.payload&&ev.payload.velocity!=null)?ev.payload.velocity:(+vel.value||96);
-  let type, pts, ncurve;
-  const contour = ev.payload && Array.isArray(ev.payload.contour) ? ev.payload.contour : null;
-  if(contour && contour.length){
-    const cs=contour.map(c=>({t:(c.pos!=null?c.pos:c.t)||0, hz:tabotaToHz(c.hz!=null?c.hz:(c.note!=null?c.note:c.yValue),axis,a4), curve:c.curve}))
-                    .filter(c=>c.hz!=null).sort((x,y)=>x.t-y.t);
-    if(cs.length<2) return null;
-    type = cs.some(c=>c.curve) ? 'glide' : 'free';
-    pts = cs.map(c=>{ const o={t:Math.max(0,Math.min(1,c.t)), hz:c.hz}; if(c.curve) o.curve=c.curve; return o; });
-  } else {
-    const sy=tabotaToHz(pv.hz!=null?pv.hz:(pv.note!=null?pv.note:pv.from), axis, a4);
-    let ey=tabotaToHz(pv.to!=null?pv.to:(pv.from!=null?pv.from:(pv.hz!=null?pv.hz:pv.note)), axis, a4);
-    if(ey==null) ey=sy;
-    if(sy==null) return null;
-    if(Math.abs(1200*Math.log2(ey/sy))<0.5){ type='hold'; pts=[{t:0,hz:sy}]; }
-    else { type='glide'; pts=[{t:0,hz:sy},{t:1,hz:ey}]; ncurve=(ev.payload&&ev.payload.curve)||pv.interpolation||'linear'; }
-  }
-  const n={id:NID++, start, dur, type, vel:velo, voice, pts};
-  if(type==='glide' && ncurve) n.curve=ncurve;
-  return n;
-}
+/* ---- v2 reader: an ADAPTER over the shared interpreter (tabota-resolve.js).
+   The Roll no longer interprets Tabota itself — it asks resolve() where everything
+   is, then keeps only its receptor's slice (pitched material placed in seconds) and
+   converts that to its beat-based note model. Points, achronous/ordinal, bands,
+   relational cycles and indeterminate things are dropped (counted as skipped);
+   index.html, with the same resolve(), draws them. ---- */
 function _notesFromV2(doc){
-  const out=[]; let skipped=0, bend=null;
-  let gBpm=settings.bpm, gSig=[settings.sigNum,settings.sigDen], gA4=settings.a4;
-  function walk(list, inh){
-    (list||[]).forEach(ev=>{
-      if(!ev||typeof ev!=='object') return;
-      const fr=_frameOf(ev,inh);
-      if((ev.frame||{}).temporal==='metered'){ if(fr.bpm) gBpm=fr.bpm; gSig=fr.sig; }
-      if((ev.frame||{}).axis && fr.a4) gA4=fr.a4;
-      if(ev.payload&&ev.payload.midiExport&&ev.payload.midiExport.bendRange) bend=+ev.payload.midiExport.bendRange;
-      if(ev.value&&ev.value.pitch){ const n=_leafToNote(ev,fr); if(n) out.push(n); else skipped++; }
-      if(ev.events) walk(ev.events, fr);
-    });
+  const TR = (typeof window!=='undefined') && window.TabotaResolve;
+  if(!TR || !TR.resolve){
+    flash('resolver (tabota-resolve.js) not loaded — open via a local server');
+    return {notes:[], bpm:settings.bpm, sig:[settings.sigNum,settings.sigDen], a4:settings.a4, skipped:0, bend:null};
   }
-  walk(doc.score, {temporal:'metered',bpm:settings.bpm,bpmsr:settings.sigNum,sig:[settings.sigNum,settings.sigDen],axis:'frequency',a4:settings.a4});
-  return {notes:out, bpm:gBpm, sig:gSig, a4:gA4, skipped, bend};
+  const R = TR.resolve(doc);
+
+  // master tempo / time-sig / tuning / bend — from the first metered + pitched frame in the doc
+  let mBpm=null,mNum=null,mDen=null,mA4=null,bend=null;
+  (function scan(list){ (list||[]).forEach(e=>{ if(!e||typeof e!=='object') return;
+    const f=e.frame||{}, ts=f.temporalSettings||{}, as=f.axisSettings||{};
+    if(f.temporal==='metered' && ts.bpm!=null && mBpm==null) mBpm=+ts.bpm;
+    if(f.temporal==='metered' && ts.timeSignature && mNum==null){ const p=String(ts.timeSignature).split('/'); mNum=+p[0]||4; mDen=+p[1]||4; }
+    if((f.axis==='frequency'||f.axis==='symbolic') && as.a4!=null && mA4==null) mA4=+as.a4;
+    if(e.payload && e.payload.midiExport && e.payload.midiExport.bendRange) bend=+e.payload.midiExport.bendRange;
+    if(e.events) scan(e.events);
+  }); })(doc.score);
+  const masterBpm=mBpm||settings.bpm, sigNum_=mNum||settings.sigNum, sigDen_=mDen||settings.sigDen, masterA4=mA4||settings.a4;
+  const SPB = masterBpm/60;                         // seconds -> beats of the Roll's single tempo
+
+  const out=[]; let skipped=0;
+  for(const n of R.nodes){
+    if(n.kind==='point'){ skipped++; continue; }    // points: valid Tabota, invisible on the Roll
+    if(n.kind!=='pitch'){ continue; }               // ignore frames, tempo markers, lanes, text
+    if(n.start.sec==null || n.tags.includes('ordinal') || !n.pitch){ skipped++; continue; }
+    const m=n.pitch.mode;
+    if(m!=='hz' && m!=='named' && m!=='glide'){ skipped++; continue; }   // band / relative: not drawable here
+    const start=n.start.sec*SPB;
+    const end=(n.end && n.end.sec!=null)?n.end.sec*SPB:start+settings.defLen;
+    let dur=end-start; if(dur<=0) dur=settings.defLen;
+    const voice=Math.max(1,(n.payload&&n.payload.voice)||1);
+    const velo=(n.payload&&n.payload.velocity!=null)?n.payload.velocity:(+vel.value||96);
+
+    let type, pts, ncurve;
+    const contour = n.payload && Array.isArray(n.payload.contour) ? n.payload.contour : null;
+    if(contour && contour.length>=2){
+      const cs=contour.map(c=>({t:(c.pos!=null?c.pos:c.t)||0, hz:tabotaToHz(c.hz!=null?c.hz:(c.note!=null?c.note:c.yValue),'frequency',masterA4), curve:c.curve}))
+                      .filter(c=>c.hz!=null).sort((a,b)=>a.t-b.t);
+      if(cs.length<2){ skipped++; continue; }
+      type=cs.some(c=>c.curve)?'glide':'free';
+      pts=cs.map(c=>{ const o={t:Math.max(0,Math.min(1,c.t)),hz:c.hz}; if(c.curve)o.curve=c.curve; return o; });
+    } else if(m==='glide'){
+      const a=n.pitch.from, b=n.pitch.to; if(a==null||b==null){ skipped++; continue; }
+      if(Math.abs(1200*Math.log2(b/a))<0.5){ type='hold'; pts=[{t:0,hz:a}]; }
+      else { type='glide'; pts=[{t:0,hz:a},{t:1,hz:b}]; ncurve=(n.payload&&n.payload.curve)||'linear'; }
+    } else {
+      const hz=n.pitch.hz; if(hz==null){ skipped++; continue; }
+      type='hold'; pts=[{t:0,hz}];
+    }
+    const note={id:NID++, start, dur, type, vel:velo, voice, pts};
+    if(type==='glide' && ncurve) note.curve=ncurve;
+    out.push(note);
+  }
+  return {notes:out, bpm:masterBpm, sig:[sigNum_,sigDen_], a4:masterA4, skipped, bend};
 }
 function _hasV2Shape(list){
   return Array.isArray(list) && list.some(ev=> ev && (ev.frame || ev.value || ev.position || ev.ref));

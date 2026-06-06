@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Critterances — Title Card</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Eater&family=Fredoka+One&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --slime:    #AAFF00;
+      --orange:   #FF6B00;
+      --banana:   #FFE900;
+      --hot-pink: #FF2D78;
+      --purple:   #6B2FFF;
+      --dark:     #18000A;
+      --paper:    #FFFCE8;
+      --teal:     #00CFFF;
+      --tongue:   #FF2D78;
+
+      --shadow: 10px 10px 0 var(--dark);
+      --shadow-big: 22px 22px 0 var(--dark);
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+    }
+
+    body {
+      display: grid;
+      place-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      overflow: hidden;
+      font-family: 'Fredoka One', 'Comic Sans MS', 'Chalkboard SE', 'Arial Rounded MT Bold', sans-serif;
+      color: var(--dark);
+      background:
+        radial-gradient(circle at 14% 10%, rgba(170, 255, 0, 0.98) 0 10%, transparent 11%),
+        radial-gradient(circle at 92% 82%, rgba(107, 47, 255, 0.92) 0 13%, transparent 14%),
+        var(--orange);
+      background-image:
+        radial-gradient(circle at 14% 10%, rgba(170, 255, 0, 0.98) 0 10%, transparent 11%),
+        radial-gradient(circle at 92% 82%, rgba(107, 47, 255, 0.92) 0 13%, transparent 14%),
+        url("crit.png");
+      background-size:
+        100% 100%,
+        100% 100%,
+        420px 420px;
+      background-position:
+        center,
+        center,
+        center;
+      background-repeat:
+        no-repeat,
+        no-repeat,
+        repeat;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      z-index: 0;
+      border: 8px solid var(--dark);
+      pointer-events: none;
+      filter: saturate(110%);
+      animation: wobble 9s infinite alternate ease-in-out;
+    }
+
+    body::before {
+      width: 44vmin;
+      height: 40vmin;
+      left: -14vmin;
+      top: -3vmin;
+      border-radius: 44% 56% 70% 30% / 42% 58% 38% 62%;
+      background: var(--slime);
+      box-shadow:
+        inset -12px -12px 0 rgba(0,0,0,0.12),
+        12px 12px 0 var(--dark);
+    }
+
+    body::after {
+      width: 52vmin;
+      height: 44vmin;
+      right: -18vmin;
+      bottom: -13vmin;
+      border-radius: 60% 40% 35% 65% / 48% 58% 42% 52%;
+      background: var(--purple);
+      box-shadow:
+        inset -14px -14px 0 rgba(0,0,0,0.16),
+        -10px -10px 0 var(--dark);
+      animation-duration: 12s;
+    }
+
+    @keyframes wobble {
+      0% {
+        transform: rotate(-4deg) scale(0.96);
+        border-radius: 42% 58% 72% 28% / 44% 54% 46% 56%;
+      }
+      100% {
+        transform: rotate(10deg) scale(1.04);
+        border-radius: 62% 38% 30% 70% / 52% 64% 36% 48%;
+      }
+    }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      width: min(1120px, calc(100vw - 36px));
+      aspect-ratio: 1200 / 630;
+      overflow: hidden;
+      border: 10px solid var(--dark);
+      border-radius: 34px 54px 24px 44px;
+      background:
+        radial-gradient(circle at 16% 18%, rgba(255, 45, 120, 0.34) 0 13%, transparent 14%),
+        radial-gradient(circle at 86% 30%, rgba(0, 207, 255, 0.38) 0 10%, transparent 11%),
+        radial-gradient(circle at 76% 88%, rgba(170, 255, 0, 0.44) 0 15%, transparent 16%),
+        var(--banana);
+      box-shadow:
+        var(--shadow-big),
+        inset 0 0 54px rgba(255, 107, 0, 0.16);
+      isolation: isolate;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -16px;
+      z-index: 0;
+      background-image: url("crit.png");
+      background-size: 350px 350px;
+      background-position: center;
+      opacity: 0.18;
+      mix-blend-mode: multiply;
+      filter: contrast(125%) saturate(125%);
+      transform: rotate(-2deg) scale(1.04);
+      pointer-events: none;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 24px;
+      z-index: 1;
+      border: 6px solid var(--dark);
+      border-radius: 25px 42px 16px 34px;
+      background: rgba(255, 252, 232, 0.20);
+      box-shadow:
+        inset 7px 7px 0 rgba(255,255,255,0.28),
+        inset -8px -8px 0 rgba(255, 107, 0, 0.10);
+      pointer-events: none;
+    }
+
+    .pills {
+      position: absolute;
+      top: 42px;
+      right: 50px;
+      z-index: 5;
+      display: flex;
+      gap: 8px;
+      padding: 6px;
+      border: 4px solid var(--dark);
+      border-radius: 999px;
+      background: var(--paper);
+      box-shadow: 5px 5px 0 var(--dark);
+      transform: rotate(2deg);
+    }
+
+    .pills span {
+      display: block;
+      width: 34px;
+      height: 14px;
+      border: 3px solid var(--dark);
+      border-radius: 999px;
+      background: var(--hot-pink);
+      box-shadow: inset -3px -2px 0 rgba(0,0,0,0.16);
+    }
+
+    .pills span:nth-child(2) { background: var(--slime); }
+    .pills span:nth-child(3) { background: var(--teal); }
+    .pills span:nth-child(4) { background: var(--purple); }
+
+    .blob {
+      position: absolute;
+      z-index: 2;
+      border: 8px solid var(--dark);
+      box-shadow: var(--shadow), inset -12px -12px 0 rgba(0,0,0,0.14);
+      pointer-events: none;
+    }
+
+    .blob.a {
+      width: 210px;
+      height: 150px;
+      left: 44px;
+      bottom: 54px;
+      background: var(--slime);
+      border-radius: 48% 52% 35% 65% / 42% 68% 32% 58%;
+      transform: rotate(-8deg);
+    }
+
+    .blob.b {
+      width: 180px;
+      height: 150px;
+      right: 72px;
+      top: 124px;
+      background: var(--purple);
+      border-radius: 60% 40% 56% 44% / 50% 38% 62% 50%;
+      transform: rotate(9deg);
+    }
+
+    .blob.c {
+      width: 112px;
+      height: 94px;
+      left: 25%;
+      top: 58px;
+      background: var(--teal);
+      border-radius: 42% 58% 48% 52% / 62% 42% 58% 38%;
+      transform: rotate(13deg);
+    }
+
+    .mouth {
+      position: absolute;
+      left: 52%;
+      top: 57%;
+      z-index: 2;
+      width: 170px;
+      height: 74px;
+      translate: -50% -50%;
+      background: var(--dark);
+      border: 6px solid var(--dark);
+      border-top: 10px dashed var(--banana);
+      border-bottom: 16px solid var(--hot-pink);
+      border-radius: 18px 18px 80px 80px;
+      transform: rotate(3deg);
+      box-shadow: 6px 6px 0 rgba(24,0,10,0.28);
+      animation: mouthPulse 1.7s ease-in-out infinite alternate;
+    }
+
+    @keyframes mouthPulse {
+      from { scale: 1 0.78; }
+      to   { scale: 1.08 1.12; }
+    }
+
+    .eye {
+      position: absolute;
+      z-index: 3;
+      width: 60px;
+      height: 60px;
+      border: 6px solid var(--dark);
+      border-radius: 50%;
+      background: var(--paper);
+      box-shadow: 5px 5px 0 var(--dark), inset 8px 8px 0 rgba(255,255,255,0.58);
+    }
+
+    .eye::after {
+      content: "";
+      position: absolute;
+      width: 19px;
+      height: 19px;
+      left: 22px;
+      top: 22px;
+      border-radius: 50%;
+      background: var(--dark);
+    }
+
+    .eye.one { right: 206px; top: 210px; transform: rotate(-9deg); }
+    .eye.two { right: 148px; top: 194px; width: 46px; height: 46px; background: var(--slime); }
+    .eye.two::after { width: 15px; height: 15px; left: 15px; top: 14px; }
+
+    .title {
+      position: absolute;
+      left: clamp(42px, 6vw, 86px);
+      right: clamp(42px, 6vw, 86px);
+      top: 50%;
+      z-index: 4;
+      transform: translateY(-51%) rotate(-2deg);
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 760px;
+      font-family: 'Eater', cursive;
+      font-size: clamp(4.25rem, 11.8vw, 9.6rem);
+      line-height: 0.83;
+      letter-spacing: -0.04em;
+      color: var(--hot-pink);
+      text-shadow:
+        5px 5px 0 var(--dark),
+        10px 10px 0 var(--orange);
+    }
+
+    .split {
+      display: block;
+      padding-left: 0.48em;
+      color: var(--purple);
+      text-shadow:
+        5px 5px 0 var(--dark),
+        10px 10px 0 var(--teal);
+    }
+
+    .label {
+      position: absolute;
+      left: 55px;
+      top: 46px;
+      z-index: 5;
+      display: inline-block;
+      padding: 8px 15px 9px;
+      border: 4px solid var(--dark);
+      border-radius: 12px 24px 7px 17px;
+      background: var(--hot-pink);
+      color: var(--paper);
+      font-size: clamp(0.65rem, 1.25vw, 0.95rem);
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+      box-shadow: 5px 5px 0 var(--dark);
+      transform: rotate(-3deg);
+    }
+
+    .tiny {
+      position: absolute;
+      left: 62px;
+      right: 62px;
+      bottom: 46px;
+      z-index: 5;
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 12px;
+      font-size: clamp(0.68rem, 1.25vw, 0.95rem);
+      text-transform: uppercase;
+      letter-spacing: 0.075em;
+    }
+
+    .tiny span {
+      display: inline-block;
+      padding: 7px 12px;
+      border: 3px solid var(--dark);
+      border-radius: 10px;
+      background: var(--paper);
+      box-shadow: 4px 4px 0 var(--dark);
+      transform: rotate(1.4deg);
+      white-space: nowrap;
+    }
+
+    .tiny span:last-child {
+      background: var(--slime);
+      transform: rotate(-2deg);
+    }
+
+    .scratch {
+      position: absolute;
+      z-index: 3;
+      height: 10px;
+      border-radius: 999px;
+      border: 3px solid var(--dark);
+      background: var(--paper);
+      box-shadow: 4px 4px 0 var(--dark);
+      transform: rotate(-9deg);
+      pointer-events: none;
+    }
+
+    .scratch.s1 { width: 160px; left: 11%; top: 34%; background: var(--teal); }
+    .scratch.s2 { width: 220px; right: 17%; bottom: 27%; background: var(--hot-pink); transform: rotate(7deg); }
+    .scratch.s3 { width: 90px; left: 50%; top: 18%; background: var(--slime); transform: rotate(15deg); }
+
+    @media (max-width: 720px) {
+      body { padding: 12px; }
+
+      .card {
+        width: calc(100vw - 24px);
+        border-width: 7px;
+        border-radius: 26px 38px 18px 30px;
+        box-shadow: 13px 13px 0 var(--dark);
+      }
+
+      .card::after {
+        inset: 15px;
+        border-width: 4px;
+      }
+
+      .label {
+        top: 26px;
+        left: 28px;
+        padding: 6px 11px;
+        border-width: 3px;
+        box-shadow: 3px 3px 0 var(--dark);
+      }
+
+      .pills {
+        top: 24px;
+        right: 28px;
+        gap: 5px;
+        padding: 4px;
+        border-width: 3px;
+        box-shadow: 3px 3px 0 var(--dark);
+      }
+
+      .pills span {
+        width: 24px;
+        height: 10px;
+        border-width: 2px;
+      }
+
+      .blob.a { width: 128px; height: 92px; left: 28px; bottom: 42px; border-width: 5px; }
+      .blob.b { width: 116px; height: 94px; right: 30px; top: 100px; border-width: 5px; }
+      .blob.c { display: none; }
+
+      .mouth { width: 104px; height: 50px; border-width: 4px; border-top-width: 7px; border-bottom-width: 10px; }
+      .eye.one { right: 105px; top: 145px; width: 42px; height: 42px; border-width: 4px; }
+      .eye.two { right: 70px; top: 132px; width: 34px; height: 34px; border-width: 4px; }
+      .eye::after { width: 13px; height: 13px; left: 14px; top: 14px; }
+      .eye.two::after { width: 10px; height: 10px; left: 10px; top: 9px; }
+
+      .title { left: 30px; right: 30px; }
+      h1 { text-shadow: 3px 3px 0 var(--dark), 7px 7px 0 var(--orange); }
+      .split { text-shadow: 3px 3px 0 var(--dark), 7px 7px 0 var(--teal); }
+
+      .tiny {
+        left: 28px;
+        right: 28px;
+        bottom: 24px;
+        font-size: 0.56rem;
+      }
+
+      .tiny span { padding: 5px 8px; border-width: 2px; box-shadow: 3px 3px 0 var(--dark); }
+      .scratch { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="card" aria-label="Critterances poster title card">
+
+
+    <i class="blob a"></i>
+    <i class="blob b"></i>
+    <i class="blob c"></i>
+
+    <i class="scratch s1"></i>
+    <i class="scratch s2"></i>
+    <i class="scratch s3"></i>
+
+    <i class="eye one"></i>
+    <i class="eye two"></i>
+    <i class="mouth"></i>
+
+    <section class="title">
+      <h1>Critter<span class="split">ances</span></h1>
+    </section>
+
+
+  </main>
+</body>
+</html>

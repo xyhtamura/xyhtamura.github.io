@@ -1296,7 +1296,6 @@ function handleCopyClick(e){
 function syntaxHighlight(s){ if(typeof s!='string') s=JSON.stringify(s,null,2); s=s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); return s.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,m=>{ let c='json-number'; if(/^"/.test(m)) c=/:$/.test(m)?'json-key':'json-string'; else if(/true|false/.test(m)) c='json-boolean'; return '<span class="'+c+'">'+m+'</span>'; }); }
 async function loadReferenceGuide(){
   const t=document.getElementById('markdown-content');
-  const banner='<div class="stale-note">The samples above are v2.0. The loaded reference guide may still describe v1.5 — its v2 rewrite is pending.</div>';
   try{ const r=await fetch('tabota_reference_guide.md'); if(!r.ok) throw new Error('status '+r.status); t.innerHTML=banner+marked.parse(await r.text()); }
   catch(e){ t.innerHTML='<p class="note">Reference guide loads from <code>tabota_reference_guide.md</code> when this file is hosted alongside it.</p>'; }
 }

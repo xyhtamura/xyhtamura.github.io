@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;600;700&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+  <title>Roil — Minimal Title Card</title>
+  <style>
+    :root {
+      --bg: #070605;
+      --panel: #0e0b09;
+      --panel-soft: rgba(14, 11, 9, 0.72);
+      --border: #2a1c14;
+      --border-hi: #4a2814;
+      --ember: #c84000;
+      --ember-hi: #f05010;
+      --gold: #c08820;
+      --gold-hi: #e8b840;
+      --green: #94c890;
+      --text: #ddd0bc;
+      --dim: #6a5040;
+      --faint: rgba(221, 208, 188, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+    }
+
+    body {
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background:
+        radial-gradient(ellipse 85% 55% at 50% 12%, rgba(76, 24, 6, 0.64), transparent 62%),
+        radial-gradient(ellipse 35% 20% at 78% 64%, rgba(200, 64, 0, 0.10), transparent 70%),
+        repeating-linear-gradient(0deg, transparent 0 3px, rgba(0,0,0,0.12) 3px 4px),
+        var(--bg);
+      color: var(--text);
+      font-family: "Chakra Petch", system-ui, sans-serif;
+      letter-spacing: 0.05em;
+    }
+
+    .card {
+      position: relative;
+      width: min(1120px, 96vw);
+      aspect-ratio: 16 / 9;
+      min-height: 360px;
+      overflow: hidden;
+      isolation: isolate;
+      background:
+        linear-gradient(180deg, rgba(255, 128, 32, 0.025), transparent 36%, rgba(0,0,0,0.24)),
+        var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow:
+        0 30px 90px rgba(0,0,0,0.64),
+        inset 0 0 0 1px rgba(255, 170, 68, 0.035),
+        inset 0 0 90px rgba(200, 64, 0, 0.055);
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 22px;
+      border: 1px solid rgba(74, 40, 20, 0.68);
+      border-radius: 5px;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255,255,255,0.014) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: radial-gradient(ellipse at center, black 0 55%, transparent 88%);
+      opacity: 0.34;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .corner {
+      position: absolute;
+      z-index: 4;
+      font-size: clamp(9px, 0.9vw, 12px);
+      line-height: 1.6;
+      text-transform: uppercase;
+      color: var(--dim);
+      font-weight: 600;
+      letter-spacing: 0.22em;
+    }
+
+    .corner b {
+      color: var(--gold);
+      font-weight: 600;
+    }
+
+    .corner.left { left: 46px; top: 42px; }
+    .corner.right { right: 46px; top: 42px; text-align: right; }
+    .corner.bottom { left: 46px; bottom: 38px; }
+    .corner.bottom-right { right: 46px; bottom: 38px; text-align: right; }
+
+    .title-field {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      z-index: 2;
+      padding: 8%;
+      text-align: center;
+    }
+
+    .sigil {
+      position: absolute;
+      width: min(48vw, 520px);
+      aspect-ratio: 1;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at center, rgba(232, 184, 64, 0.08), transparent 22%),
+        conic-gradient(from 12deg,
+          transparent 0 15deg,
+          rgba(192, 136, 32, 0.10) 15deg 17deg,
+          transparent 17deg 72deg,
+          rgba(200, 64, 0, 0.13) 72deg 73.5deg,
+          transparent 73.5deg 146deg,
+          rgba(148, 200, 144, 0.10) 146deg 147.5deg,
+          transparent 147.5deg 360deg);
+      border: 1px solid rgba(74, 40, 20, 0.36);
+      opacity: 0.78;
+      filter: blur(0.2px);
+    }
+
+    .sigil::before,
+    .sigil::after {
+      content: "";
+      position: absolute;
+      inset: 17%;
+      border-radius: inherit;
+      border: 1px solid rgba(192, 136, 32, 0.16);
+    }
+
+    .sigil::after {
+      inset: 32%;
+      border-color: rgba(200, 64, 0, 0.18);
+      box-shadow: 0 0 34px rgba(200,64,0,0.08);
+    }
+
+    h1 {
+      position: relative;
+      margin: 0;
+      font-family: "UnifrakturCook", Georgia, serif;
+      font-size: clamp(5.5rem, 21vw, 15rem);
+      line-height: 0.82;
+      letter-spacing: 0.035em;
+      color: transparent;
+      background-image:
+        linear-gradient(rgba(255, 232, 188, 0.42), rgba(255, 88, 12, 0.20)),
+        url("magma.png");
+      background-size: 100% 100%, 360px 360px;
+      background-position: center, 50% 62%;
+      background-repeat: no-repeat, repeat;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow:
+        1px 1px 0 rgba(40, 13, 0, 0.95),
+        0 0 24px rgba(200, 64, 0, 0.28),
+        0 0 64px rgba(200, 64, 0, 0.12);
+    }
+
+    .subtitle {
+      position: relative;
+      display: inline-grid;
+      grid-auto-flow: column;
+      gap: 1.1em;
+      align-items: center;
+      margin-top: 2.25em;
+      color: var(--dim);
+      font-size: clamp(0.62rem, 1.1vw, 0.86rem);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.36em;
+    }
+
+    .subtitle::before,
+    .subtitle::after {
+      content: "";
+      width: min(12vw, 118px);
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border-hi));
+    }
+
+    .subtitle::after {
+      background: linear-gradient(90deg, var(--border-hi), transparent);
+    }
+
+    .trace {
+      position: absolute;
+      left: 7.5%;
+      right: 7.5%;
+      top: 63.5%;
+      height: 70px;
+      z-index: 1;
+      opacity: 0.74;
+    }
+
+    .trace svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .trace .midline {
+      stroke: rgba(106, 80, 64, 0.32);
+      stroke-width: 1;
+      stroke-dasharray: 5 11;
+    }
+
+    .trace .wave {
+      fill: none;
+      stroke: rgba(200, 64, 0, 0.74);
+      stroke-width: 1.25;
+      filter: drop-shadow(0 0 8px rgba(200, 64, 0, 0.28));
+    }
+
+    .minimal-controls {
+      position: absolute;
+      left: 50%;
+      bottom: 76px;
+      transform: translateX(-50%);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      z-index: 4;
+      width: min(390px, 46vw);
+    }
+
+    .slot {
+      height: 22px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: 8px;
+      color: var(--dim);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--ember);
+      box-shadow: 0 0 12px rgba(200,64,0,0.45);
+    }
+
+    .slot:nth-child(2) .dot,
+    .slot:nth-child(4) .dot {
+      background: var(--gold);
+      box-shadow: 0 0 12px rgba(192,136,32,0.38);
+    }
+
+    .slot span:last-child {
+      height: 1px;
+      background: linear-gradient(90deg, rgba(192,136,32,0.44), transparent);
+      min-width: 0;
+    }
+
+    .glyph-row {
+      position: absolute;
+      left: 50%;
+      top: 24%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: clamp(18px, 3.6vw, 44px);
+      z-index: 4;
+      color: rgba(192, 136, 32, 0.38);
+      font-family: "UnifrakturCook", Georgia, serif;
+      font-size: clamp(1rem, 2vw, 1.9rem);
+      letter-spacing: 0.08em;
+    }
+
+    .ember-mark {
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      right: 12%;
+      bottom: 16%;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(240,80,16,0.14), transparent 68%);
+      filter: blur(18px);
+      z-index: 0;
+    }
+
+    @media (max-width: 720px) {
+      body { padding: 12px; }
+      .card { width: 100%; min-height: 420px; aspect-ratio: 4 / 5; }
+      .card::before { inset: 16px; }
+      .corner.left { left: 30px; top: 28px; }
+      .corner.right { right: 30px; top: 28px; }
+      .corner.bottom { left: 30px; bottom: 28px; }
+      .corner.bottom-right { right: 30px; bottom: 28px; }
+      .glyph-row { top: 27%; }
+      .trace { top: 66%; left: 10%; right: 10%; }
+      .minimal-controls { bottom: 66px; width: 70vw; }
+      .subtitle { letter-spacing: 0.22em; gap: 0.7em; }
+      .subtitle::before,
+      .subtitle::after { width: 40px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="card" aria-label="Roil minimal poster title card">
+    <div class="corner left">eosforos<br><b>aperiodic</b></div>
+    <div class="corner right">drift range<br><b>20—93 hz</b></div>
+    <div class="corner bottom">waveform<br><b>sawtooth</b></div>
+    <div class="corner bottom-right">state<br><b>roiling</b></div>
+
+    <div class="glyph-row" aria-hidden="true">
+      <span>I</span><span>II</span><span>III</span><span>IV</span>
+    </div>
+
+    <div class="ember-mark" aria-hidden="true"></div>
+
+    <section class="title-field">
+      <div class="sigil" aria-hidden="true"></div>
+      <div>
+        <h1>Roil</h1>
+        <div class="subtitle">Eosforos Oscillator</div>
+      </div>
+    </section>
+
+    <div class="trace" aria-hidden="true">
+      <svg viewBox="0 0 1000 100" preserveAspectRatio="none">
+        <path class="midline" d="M0 50 H1000" />
+        <path class="wave" d="M0 52 C 48 48, 70 44, 111 51 S 181 62, 226 50 S 285 31, 328 47 S 398 83, 452 54 S 519 22, 574 45 S 642 78, 694 52 S 762 34, 823 49 S 910 67, 1000 47" />
+      </svg>
+    </div>
+
+    <div class="minimal-controls" aria-hidden="true">
+      <div class="slot"><i class="dot"></i><span></span></div>
+      <div class="slot"><i class="dot"></i><span></span></div>
+      <div class="slot"><i class="dot"></i><span></span></div>
+      <div class="slot"><i class="dot"></i><span></span></div>
+    </div>
+  </main>
+</body>
+</html>

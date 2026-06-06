@@ -1,0 +1,615 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>cytophone: understory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,300..500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* drum-gong ground — bronze/patina, still chromatically charged */
+    --ground-0:#120d08;
+    --ground-1:#1f140b;
+    --ink:#f0d79a;
+    --faint:#a88762;
+    --patina:#3e695c;
+    --ember:#d57732;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;overflow:hidden;background:var(--ground-0)}
+  body{
+    font-family:"DM Mono",monospace;
+    color:var(--ink);
+    -webkit-tap-highlight-color:transparent;
+    touch-action:none;
+    cursor:crosshair;
+  }
+  #stage{display:block;width:100vw;height:100vh}
+
+
+/* UI Toggle Class */
+  body.hide-ui #title,
+  body.hide-ui #coll,
+  body.hide-ui #hint,
+  body.hide-ui #fx {
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+  /* minimal hint — fades out, returns briefly on idle */
+  #hint{
+    position:fixed;left:0;right:0;bottom:max(26px,env(safe-area-inset-bottom));
+    text-align:center;pointer-events:none;
+    font-size:13px;letter-spacing:.02em;color:var(--faint);
+    transition:opacity 1.6s ease;opacity:1;
+    text-shadow:0 1px 14px rgba(31,14,4,.72);
+  }
+  #hint em{font-family:"Fraunces",serif;font-style:italic;color:var(--ink);font-weight:400}
+  #hint.gone{opacity:0}
+
+  #title{
+    position:fixed;top:max(20px,env(safe-area-inset-top));left:22px;
+    font-family:"Fraunces",serif;font-style:italic;font-weight:300;
+    font-size:17px;letter-spacing:.01em;color:var(--faint);
+    pointer-events:none;user-select:none;
+    transition:opacity 2s ease;
+  }
+  #title.dim{opacity:.35}
+
+  /* wet/dry send — the collection's one shared control */
+  #fx{position:fixed;left:50%;bottom:max(22px,env(safe-area-inset-bottom));transform:translateX(-50%);
+      display:flex;align-items:center;gap:11px;opacity:.32;transition:opacity .5s ease;z-index:5;user-select:none}
+  #fx:hover{opacity:.95}
+  #fx .lbl{font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+  #wet{-webkit-appearance:none;appearance:none;width:168px;height:2px;background:#42301c;border-radius:2px;outline:none;cursor:pointer}
+  #wet::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--ember);box-shadow:0 0 10px rgba(213,119,50,.5);cursor:pointer}
+  #wet::-moz-range-thumb{width:13px;height:13px;border:none;border-radius:50%;background:var(--ember);box-shadow:0 0 10px rgba(213,119,50,.5);cursor:pointer}
+
+  /* collection switcher — shared furniture across the three */
+  #coll{position:fixed;top:max(20px,env(safe-area-inset-top));right:20px;z-index:6;display:flex;gap:13px;
+        font-size:10px;letter-spacing:.14em;text-transform:uppercase;opacity:.36;transition:opacity .5s ease;user-select:none}
+  #coll:hover{opacity:.92}
+  #coll a{color:var(--faint);text-decoration:none;transition:color .3s ease}
+  #coll a:hover{color:var(--ink)}
+  #coll a.on{color:var(--ember)}
+  #coll .sep{color:#4a3420}
+
+  /* gentle gate so audio can start on first touch (autoplay policy) */
+  #gate{
+    position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+    background:
+      radial-gradient(80% 80% at 48% 42%, rgba(194,126,48,.18) 0%, transparent 52%),
+      radial-gradient(120% 120% at 50% 40%, #2b1b0e 0%, #120d08 72%);
+    z-index:10;transition:opacity .9s ease;
+  }
+  #gate.gone{opacity:0;pointer-events:none}
+  #gate .g-inner{text-align:center;max-width:340px;padding:0 24px;animation:rise 1.4s cubic-bezier(.2,.8,.2,1) both}
+  #gate h1{font-family:"Fraunces",serif;font-style:italic;font-weight:300;font-size:34px;color:var(--ink);margin-bottom:14px}
+  #gate p{font-size:13px;line-height:1.7;color:var(--faint)}
+  #gate .pulse{
+    margin:30px auto 0;width:60px;height:60px;border-radius:50%;
+    background:
+      radial-gradient(circle at 38% 34%, #ffe6a3 0%, #c17a34 38%, #3f6d5d 78%, #19100a 100%);
+    box-shadow:
+      0 0 34px rgba(213,119,50,.36),
+      0 0 72px rgba(72,130,112,.18);
+    animation:breathe 3.2s ease-in-out infinite;
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  @keyframes breathe{0%,100%{transform:scale(.92);opacity:.8}50%{transform:scale(1.08);opacity:1}}
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<div id="title">cytophone: understory</div>
+<nav id="coll">
+  <a href="cytophone-understory.html" class="on">understory</a><span class="sep">·</span>
+  <a href="cytophone-halocline.html">halocline</a><span class="sep">·</span>
+  <a href="cytophone-xenolith.html">xenolith</a>
+</nav>
+<div id="hint"><em>tap</em> to seed a cell · <em>tap a cell</em> to wake it</div>
+<div id="fx"><span class="lbl">dry</span><input id="wet" type="range" min="0" max="100" value="35"><span class="lbl">wet</span></div>
+
+<div id="gate">
+  <div class="g-inner">
+    <h1>cytophone: understory</h1>
+    <p>a small colony of resonant cells.</p>
+    <div class="pulse"></div>
+    <p style="margin-top:24px;font-size:11px;letter-spacing:.06em;opacity:.7">TOUCH TO ENTER · SOUND ON</p>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   cytophone — resonant bodies as an encounter
+   one sim, two readers (eye + ear). tuning = morphology.
+   Cells are circular-membrane resonators: inharmonic by physics,
+   so there is no scale to be inside or outside of.
+   ============================================================ */
+
+/* ---------- circular membrane: inharmonic mode ratios ---------- */
+// ratios of Bessel zeros to the fundamental (real drumhead spectrum)
+const MODE_RATIO = [1.000, 1.593, 2.136, 2.296, 2.653, 2.918];
+const MODE_AMP   = [1.00,  0.62,  0.42,  0.34,  0.26,  0.19];
+const MODE_DECAY = [2.6,   2.0,   1.55,  1.35,  1.05,  0.85]; // seconds
+
+/* ============================================================
+   AUDIO
+   ============================================================ */
+const Audio_ = {
+  ctx:null, master:null, lp:null, dry:null, wet:null, compressor:null, voices:0, MAX_VOICES:11, wetAmt:0.35,
+  start(){
+    if(this.ctx) return;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    const ctx = new AC();
+    this.ctx = ctx;
+
+    // 1. Master Gain Stage (Boosted from 0.0 to handle a higher target value)
+    const master = ctx.createGain(); master.gain.value = 0.0;
+    
+    // 2. Dynamics Compressor Node (The ear-protection ceiling)
+    const compressor = ctx.createDynamicsCompressor();
+    // Start compressing when the signal hits -24dB
+    compressor.threshold.setValueAtTime(-24, ctx.currentTime);
+    // Hard ceiling compression ratio
+    compressor.ratio.setValueAtTime(12, ctx.currentTime);
+    // Smooth, unnoticeable knee bend
+    compressor.knee.setValueAtTime(30, ctx.currentTime);
+    // Fast attack to catch sudden accidental overlapping strikes immediately
+    compressor.attack.setValueAtTime(0.003, ctx.currentTime);
+    // Smooth release so the audio doesn't "pump" aggressively
+    compressor.release.setValueAtTime(0.25, ctx.currentTime);
+
+    // 3. Filter Stage (Soft, underwater high-end)
+    const lp = ctx.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=6200; lp.Q.value=0.2;
+    
+    // 4. Spatialization/Reverb Stage
+    const conv = ctx.createConvolver(); conv.buffer = this._impulse(2.8, 2.6);
+    const wet = ctx.createGain(); wet.gain.value = 0.40; // Slightly increased for a richer tail
+    const dry = ctx.createGain(); dry.gain.value = 0.95; // Boosted dry presence
+
+    // --- CONNECT THE GRAPH ---
+    // Cells -> master -> lp -> [dry / wet] -> compressor -> destination
+    master.connect(lp);
+    
+    // Split into parallel dry/wet paths, then sum them into the compressor
+    lp.connect(dry).connect(compressor);
+    lp.connect(conv).connect(wet).connect(compressor);
+    
+    // Final safe output to the speakers
+    compressor.connect(ctx.destination);
+
+    this.master = master; this.lp = lp; this.dry = dry; this.wet = wet; this.compressor = compressor;
+    this.setWet(this.wetAmt);
+    
+    // Fades up to 1.6 (up from original 0.9) to make the ecosystem significantly louder
+    master.gain.linearRampToValueAtTime(1.6, ctx.currentTime + 1.2); 
+  },
+  setWet(w){ this.wetAmt=w; if(!this.ctx) return;
+    // send-style: dry stays mostly present so the bronze source is always there
+    this.dry.gain.value = lerp(0.95,0.66,w);
+    this.wet.gain.value = w*1.05;               // bronze plate can bloom
+  },
+  _impulse(dur, decay){
+    const ctx=this.ctx, n=Math.floor(ctx.sampleRate*dur), buf=ctx.createBuffer(2,n,ctx.sampleRate);
+    for(let c=0;c<2;c++){const d=buf.getChannelData(c);
+      for(let i=0;i<n;i++){const t=i/n; d[i]=(Math.random()*2-1)*Math.pow(1-t,decay);}}
+    return buf;
+  },
+  strike(f0, detune, vel, contact){
+    const ctx=this.ctx; if(!ctx) return;
+    if(this.voices >= this.MAX_VOICES) return;
+    const now = ctx.currentTime;
+    const cluster = ctx.createGain();
+    cluster.gain.value = 1;
+    cluster.connect(this.master);
+
+    this.voices++;
+    let longest = 0;
+    for(let i=0;i<MODE_RATIO.length;i++){
+      const f = f0 * MODE_RATIO[i] * (1 + detune[i]);
+      if(f > 9000) continue;
+      const tilt = 1 - contact*(i/MODE_RATIO.length);
+      
+      // Amplified per-mode amplitude mapping to scale with the new headroom
+      const amp = MODE_AMP[i] * tilt * (0.15 + 0.35*vel);
+      if(amp < 0.0015) continue;
+      
+      const osc = ctx.createOsc ? ctx.createOsc() : ctx.createOscillator();
+      osc.type = "sine";
+      osc.frequency.value = f;
+      const g = ctx.createGain();
+      const dec = MODE_DECAY[i] * (0.7 + 0.5*Math.random());
+      g.gain.setValueAtTime(0, now);
+      g.gain.linearRampToValueAtTime(amp, now + 0.004);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + dec);
+      osc.connect(g).connect(cluster);
+      osc.start(now);
+      osc.stop(now + dec + 0.05);
+      longest = Math.max(longest, dec);
+    }
+    setTimeout(()=>{ try{cluster.disconnect()}catch(e){}; this.voices=Math.max(0,this.voices-1); },
+      (longest+0.1)*1000);
+  }
+};
+
+/* ============================================================
+   FIELD
+   ============================================================ */
+const cv = document.getElementById('stage');
+const g  = cv.getContext('2d', { alpha:false });
+let W=0,H=0,DPR=1;
+function resize(){
+  DPR = Math.min(2, window.devicePixelRatio||1);
+  W = window.innerWidth; H = window.innerHeight;
+  cv.width = W*DPR; cv.height = H*DPR;
+  cv.style.width=W+'px'; cv.style.height=H+'px';
+  g.setTransform(DPR,0,0,DPR,0,0);
+}
+window.addEventListener('resize', resize);
+resize();
+
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const clamp=(v,a,b)=>v<a?a:v>b?b:v;
+const lerp=(a,b,t)=>a+(b-a)*t;
+const TAU=Math.PI*2;
+
+// bronze/drumhead palette: mostly copper/brass, with oxidized patina and oil-slick intrusions
+function weightedHue(bands){
+  let total = bands.reduce((s,b)=>s+b[2],0), r = Math.random()*total;
+  for(const [a,b,w] of bands){ if((r-=w)<=0) return rnd(a,b); }
+  const last=bands[bands.length-1]; return rnd(last[0],last[1]);
+}
+function gongBaseHue(){
+  return weightedHue([
+    [18, 54, .70],   // copper, bronze, brass
+    [58, 92, .10],   // old-gold / olive cast
+    [142,188, .12],  // verdigris / oxidized patina
+    [276,328, .08]   // oil-slick violet/magenta, rare
+  ]);
+}
+function gongRimHue(base){
+  if(Math.random()<.48) return weightedHue([[35,58,.55],[150,190,.35],[286,326,.10]]);
+  const offsets=[22,42,116,154,186,248,292];
+  return (base + offsets[Math.random()*offsets.length|0] + rnd(-8,8) + 360)%360;
+}
+
+const cells=[];
+const MAX_CELLS=12;
+
+class Cell{
+  constructor(x,y,r){
+    this.x=x; this.y=y;
+    this.vx=rnd(-12,12); this.vy=rnd(-12,12);
+    this.r=r;                       // structural radius (drives f0)
+    this.breath=rnd(0,TAU);         // slow size oscillation
+    // blob outline: a few low harmonics that animate -> never stable
+    this.lobes=[];
+    const n = 3+ (Math.random()*3|0);
+    for(let i=0;i<n;i++) this.lobes.push({
+      k: 2+(Math.random()*4|0),     // angular frequency
+      amp: rnd(0.04,0.16),
+      ph: rnd(0,TAU),
+      sp: rnd(-0.25,0.25)           // morph speed
+    });
+    // per-mode detune — slowly drifts so the cell's TUNING changes over time
+    this.detune = MODE_RATIO.map(()=>rnd(-0.012,0.012));
+    this.detVel = this.detune.map(()=>0);
+    // drum-gong hue: mostly bronze/copper, sometimes patina or oil-slick
+    this.hue = gongBaseHue();
+    this.hue2 = gongRimHue(this.hue); // rim shimmer hue, not analogous-locked
+    this.hueDrift = rnd(-1.1,1.1);
+    this.spin = rnd(-0.3,0.3);      // conic shimmer rotation
+    this.rot = rnd(0,TAU);
+    this.exc = 0;                   // visual excitation envelope
+    this.ripples=[];
+    this.cool = 0;                  // strike cooldown
+    this.age = 0;
+    this.born = 0;                  // birth-in animation 0..1
+  }
+  get f0(){ return clamp(4400/this.r, 58, 360); }
+  get rr(){ return this.r * (1 + 0.06*Math.sin(this.breath)); } // breathing radius
+
+  outline(a){ // radius multiplier at angle a
+    let m=1;
+    for(const l of this.lobes) m += l.amp*Math.sin(l.k*a + l.ph);
+    return m;
+  }
+
+  excite(vel, contact){
+    if(this.cool>0) return;
+    vel = clamp(vel,0,1);
+    if(vel < 0.04) return;
+    this.cool = 0.10;
+    this.exc = Math.min(1.4, this.exc + 0.5 + vel*0.8);
+    this.ripples.push({r:this.rr*0.5, a:0.5+vel*0.4});
+    Audio_.strike(this.f0, this.detune, vel, contact);
+  }
+
+  step(dt, t){
+    this.age += dt;
+    this.born = Math.min(1, this.born + dt*1.4);
+    this.cool = Math.max(0, this.cool-dt);
+    this.exc *= Math.pow(0.06, dt);        // decay glow
+    this.breath += dt*0.5;
+    this.rot += this.spin*dt;
+    this.hue = (this.hue + this.hueDrift*dt + 360)%360;
+    this.hue2 = (this.hue2 + this.hueDrift*0.7*dt + 360)%360;
+
+    // morph the outline
+    for(const l of this.lobes) l.ph += l.sp*dt;
+
+    // slowly mutate tuning (random walk, mean-reverting)
+    for(let i=0;i<this.detune.length;i++){
+      this.detVel[i] += rnd(-0.0008,0.0008)*dt*60;
+      this.detVel[i] -= this.detune[i]*0.4*dt;   // pull back toward 0
+      this.detVel[i] *= 0.96;
+      this.detune[i] = clamp(this.detune[i]+this.detVel[i]*dt, -0.03, 0.03);
+    }
+
+    // ambient flow field — a calm, non-repeating drift
+    const fx = Math.sin(this.y*0.004 + t*0.13) + Math.sin(this.x*0.003 - t*0.09);
+    const fy = Math.cos(this.x*0.004 - t*0.11) + Math.sin(this.y*0.003 + t*0.07);
+    this.vx += fx*6*dt; this.vy += fy*6*dt;
+    // damping keeps it gentle
+    this.vx *= Math.pow(0.55,dt); this.vy *= Math.pow(0.55,dt);
+
+    this.x += this.vx*dt; this.y += this.vy*dt;
+
+    // walls: bounce + ring (contact ~ 1, struck at rim)
+    const R=this.rr;
+    if(this.x<R){ this.x=R; this.vx=Math.abs(this.vx); this.excite(clamp(Math.abs(this.vx)/60,0,1),1); }
+    if(this.x>W-R){ this.x=W-R; this.vx=-Math.abs(this.vx); this.excite(clamp(Math.abs(this.vx)/60,0,1),1); }
+    if(this.y<R){ this.y=R; this.vy=Math.abs(this.vy); this.excite(clamp(Math.abs(this.vy)/60,0,1),1); }
+    if(this.y>H-R){ this.y=H-R; this.vy=-Math.abs(this.vy); this.excite(clamp(Math.abs(this.vy)/60,0,1),1); }
+
+    // ripples
+    for(const rp of this.ripples){ rp.r += 120*dt; rp.a -= 0.9*dt; }
+    this.ripples = this.ripples.filter(rp=>rp.a>0);
+  }
+
+  draw(){
+    const R = this.rr * this.born;
+    const ex = this.exc;
+
+    g.save();
+    g.translate(this.x, this.y);
+
+    // build the blob path once
+    const steps=64;
+    g.beginPath();
+    for(let i=0;i<=steps;i++){
+      const a=i/steps*TAU;
+      const rad=R*this.outline(a)*(1+ex*0.06);
+      const px=Math.cos(a)*rad, py=Math.sin(a)*rad;
+      if(i===0) g.moveTo(px,py); else g.lineTo(px,py);
+    }
+    g.closePath();
+
+    g.save();
+    g.clip();
+
+    // core radial body
+    const core=g.createRadialGradient(-R*0.3,-R*0.3,R*0.1, 0,0,R*1.25);
+    const L = 19 + ex*28;
+    core.addColorStop(0, `hsl(${this.hue}, 76%, ${clamp(L+38,0,90)}%)`);
+    core.addColorStop(0.38, `hsl(${this.hue}, 62%, ${clamp(L+10,0,76)}%)`);
+    core.addColorStop(0.78, `hsl(${(this.hue+20)%360}, 54%, ${clamp(L-4,4,54)}%)`);
+    core.addColorStop(1, `hsl(${gongRimHue(this.hue)}, 42%, ${clamp(L-14,4,38)}%)`);
+    g.fillStyle=core;
+    g.fillRect(-R*2,-R*2,R*4,R*4);
+
+    // iridescent conic rim shimmer (threshold surface revealing instability)
+    g.globalCompositeOperation='lighter';
+    g.globalAlpha=0.45+ex*0.3;
+    const con=g.createConicGradient ? g.createConicGradient(this.rot,0,0) : null;
+    if(con){
+      con.addColorStop(0,    `hsla(${this.hue2},86%,58%,0)`);
+      con.addColorStop(0.16, `hsla(${this.hue2},88%,62%,.82)`);
+      con.addColorStop(0.28, `hsla(${(this.hue2+42)%360},84%,56%,0)`);
+      con.addColorStop(0.50, `hsla(${(this.hue+150)%360},78%,56%,.55)`);
+      con.addColorStop(0.67, `hsla(${(this.hue+286)%360},82%,63%,.45)`);
+      con.addColorStop(0.78, `hsla(${this.hue2},72%,52%,0)`);
+      con.addColorStop(1,    `hsla(${this.hue2},86%,58%,0)`);
+      // ring band: stroke a slightly inset blob with thick line
+      g.lineWidth=R*0.5;
+      g.strokeStyle=con;
+      g.beginPath();
+      for(let i=0;i<=steps;i++){
+        const a=i/steps*TAU; const rad=R*this.outline(a)*0.92;
+        const px=Math.cos(a)*rad, py=Math.sin(a)*rad;
+        if(i===0)g.moveTo(px,py);else g.lineTo(px,py);
+      }
+      g.closePath(); g.stroke();
+    }
+    // quiet central boss + strike-flare: a gong/drumhead memory, not a literal icon
+    g.globalCompositeOperation='lighter';
+    g.globalAlpha=0.16 + Math.min(0.55, ex*0.34);
+    const boss=g.createRadialGradient(-R*.08,-R*.10,0, 0,0,R*.48);
+    boss.addColorStop(0,`hsla(${(this.hue+24)%360},86%,76%,1)`);
+    boss.addColorStop(0.42,`hsla(${this.hue},70%,48%,.58)`);
+    boss.addColorStop(1,`hsla(${this.hue2},78%,44%,0)`);
+    g.fillStyle=boss; g.fillRect(-R*.62,-R*.62,R*1.24,R*1.24);
+
+    // faint hammered membrane rings
+    g.globalCompositeOperation='lighter';
+    g.globalAlpha=0.10 + ex*0.08;
+    g.lineWidth=1;
+    for(let k=1;k<=3;k++){
+      const rr=R*(0.28+k*0.17);
+      g.strokeStyle=`hsla(${k%2?this.hue2:this.hue},70%,62%,.55)`;
+      g.beginPath(); g.arc(0,0,rr,0,TAU); g.stroke();
+    }
+
+    // bright nucleus when excited
+    if(ex>0.02){
+      g.globalAlpha=Math.min(0.86,ex*0.65);
+      const nu=g.createRadialGradient(0,0,0,0,0,R*0.62);
+      nu.addColorStop(0,`hsla(${(this.hue+42)%360},92%,80%,1)`);
+      nu.addColorStop(0.42,`hsla(${this.hue},86%,58%,.6)`);
+      nu.addColorStop(1,`hsla(${this.hue2},84%,54%,0)`);
+      g.fillStyle=nu; g.fillRect(-R,-R,R*2,R*2);
+    }
+    g.restore(); // unclip
+
+    // soft outer membrane line
+    g.globalCompositeOperation='lighter';
+    g.globalAlpha=0.5+ex*0.4;
+    g.lineWidth=1.1;
+    g.strokeStyle=`hsla(${this.hue2},78%,${56+ex*18}%,.62)`;
+    g.beginPath();
+    for(let i=0;i<=steps;i++){
+      const a=i/steps*TAU; const rad=R*this.outline(a)*(1+ex*0.06);
+      const px=Math.cos(a)*rad, py=Math.sin(a)*rad;
+      if(i===0)g.moveTo(px,py);else g.lineTo(px,py);
+    }
+    g.closePath(); g.stroke();
+
+    // ripples
+    for(const rp of this.ripples){
+      g.globalAlpha=clamp(rp.a,0,1)*0.6;
+      g.lineWidth=1.4;
+      g.strokeStyle=`hsla(${this.hue2},80%,64%,1)`;
+      g.beginPath(); g.arc(0,0,rp.r,0,TAU); g.stroke();
+    }
+
+    g.restore();
+    g.globalCompositeOperation='source-over';
+    g.globalAlpha=1;
+  }
+}
+
+/* ---------- collisions between cells: each ring its own tuning ---------- */
+function collide(dt){
+  for(let i=0;i<cells.length;i++){
+    for(let j=i+1;j<cells.length;j++){
+      const a=cells[i], b=cells[j];
+      const dx=b.x-a.x, dy=b.y-a.y;
+      const d=Math.hypot(dx,dy)||0.0001;
+      const min=a.rr+b.rr;
+      if(d<min){
+        const nx=dx/d, ny=dy/d, overlap=min-d;
+        a.x-=nx*overlap*0.5; a.y-=ny*overlap*0.5;
+        b.x+=nx*overlap*0.5; b.y+=ny*overlap*0.5;
+        // relative speed along normal
+        const rvx=b.vx-a.vx, rvy=b.vy-a.vy;
+        const vn=rvx*nx+rvy*ny;
+        if(vn<0){
+          const imp=-vn*0.9;
+          a.vx-=nx*imp; a.vy-=ny*imp;
+          b.vx+=nx*imp; b.vy+=ny*imp;
+          const intensity=clamp(Math.abs(vn)/70,0,1);
+          // contact ~ 0.4 (struck between center and rim) -> warmer
+          a.excite(intensity,0.4);
+          b.excite(intensity,0.4);
+        }
+      }
+    }
+  }
+}
+
+function seed(x,y){
+  if(cells.length>=MAX_CELLS){
+    // dissolve the oldest to make room — threshold, never stable
+    cells.shift();
+  }
+  cells.push(new Cell(x,y, rnd(20,64)));
+}
+
+/* ---------- interaction: seed empty space, wake a cell ---------- */
+function hitTest(x,y){
+  for(let i=cells.length-1;i>=0;i--){
+    const c=cells[i];
+    if(Math.hypot(x-c.x,y-c.y) < c.rr*1.05) return c;
+  }
+  return null;
+}
+let lastInteract=performance.now();
+function pointer(x,y){
+  lastInteract=performance.now();
+  const c=hitTest(x,y);
+  if(c){
+    // wake it: strong central strike + a shove
+    c.exc=1.2; c.cool=0; c.excite(0.9,0.1);
+    const ang=rnd(0,TAU); c.vx+=Math.cos(ang)*60; c.vy+=Math.sin(ang)*60;
+  } else {
+    seed(x,y);
+  }
+}
+cv.addEventListener('pointerdown', e=>{
+  e.preventDefault();
+  pointer(e.clientX, e.clientY);
+}, {passive:false});
+
+/* ---------- gate / start ---------- */
+const gate=document.getElementById('gate');
+const hint=document.getElementById('hint');
+const titleEl=document.getElementById('title');
+const wetEl=document.getElementById('wet');
+wetEl.addEventListener('input',()=>Audio_.setWet(wetEl.value/100));
+let started=false;
+function begin(){
+  if(started) return; started=true;
+  Audio_.start();
+  gate.classList.add('gone');
+  // seed an initial small colony so there's an encounter immediately
+  for(let i=0;i<3;i++) seed(rnd(W*0.25,W*0.75), rnd(H*0.3,H*0.7));
+  setTimeout(()=>hint.classList.add('gone'), 6500);
+  setTimeout(()=>titleEl.classList.add('dim'), 4000);
+}
+gate.addEventListener('pointerdown', e=>{ e.preventDefault(); begin(); }, {passive:false});
+
+/* ---------- loop ---------- */
+let last=performance.now();
+function frame(now){
+  let dt=(now-last)/1000; last=now;
+  dt=Math.min(dt,0.05);
+  const t=now/1000;
+
+  // trailing wash -> soft motion smear, like things caught mid-transformation
+  g.globalCompositeOperation='source-over';
+  g.fillStyle='rgba(18,13,8,0.30)';
+  g.fillRect(0,0,W,H);
+
+  // faint chromatic vignette breathing in the ground
+  const vg=g.createRadialGradient(W*0.5,H*0.45,Math.min(W,H)*0.1, W*0.5,H*0.5,Math.max(W,H)*0.75);
+  vg.addColorStop(0,'rgba(104,63,25,0.055)');
+  vg.addColorStop(0.55,'rgba(57,38,20,0.045)');
+  vg.addColorStop(1,'rgba(25,14,8,0.15)');
+  g.fillStyle=vg; g.fillRect(0,0,W,H);
+
+  if(started){
+    for(const c of cells) c.step(dt,t);
+    collide(dt);
+    for(const c of cells) c.draw();
+
+    // bring the hint back if idle for a while
+    if(now-lastInteract>14000) hint.classList.remove('gone');
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+/* ---------- UI Toggle (Press 'h' to hide/show) ---------- */
+window.addEventListener('keydown', (e) => {
+  if (e.key.toLowerCase() === 'h') {
+    document.body.classList.toggle('hide-ui');
+  }
+});
+
+/* ---------- UI Toggle (Double-tap for mobile) ---------- */
+let lastTap = 0;
+window.addEventListener('pointerup', (e) => {
+  const currentTime = new Date().getTime();
+  const tapLength = currentTime - lastTap;
+  if (tapLength < 300 && tapLength > 0) {
+    document.body.classList.toggle('hide-ui');
+    e.preventDefault();
+  }
+  lastTap = currentTime;
+});
+</script>
+</body>
+</html>
