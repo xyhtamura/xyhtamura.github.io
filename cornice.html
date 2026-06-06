@@ -657,7 +657,7 @@ const BASE_ENTITY_DB = {
     id:"signal_crab", glyphs:["c","\u03f2","\u22c9"], name:"signal crab", type:"organism-machine",
     solid:false, mobile:true, moveChance:0.22, windResponsive:false, color:"#4dfff0", fx:"fx-wire entity",
     spawnWeight:2, glyphCycleSpeed:0.12,
-    tags:["organism","machine","sideways","mobile-entity","signal"], sound:{ scaleIndex:10, type:"square" },
+    tags:["organism","machine","sideways","mobile-entity","signal"], sound:{ scaleIndex:12, type:"square" },
     whispers:["I walk sideways when the network is too direct.","Left claw: receive. Right claw: respeak.","Antenna wet. Signal edible.","Every packet arrives tasting like salt."]
   },
 
@@ -993,6 +993,7 @@ function buildDB() {
 // ═══════════════════════════════════════════════════════════════════
 const state = {
   seed:0, rng:null, weather:null,
+  orientation: "bottom", 
   vistaBlend:[],   // [{sceneIdx, weight}, ...]  — replaces single currentSceneIndex
   skyVista:[],     // 2D array: blend-index assigned to each sky cell
   terrain:[], terrainGlyphs:[], entities:[],
@@ -1043,39 +1044,67 @@ function clamp(v,lo,hi)   { return Math.max(lo, Math.min(hi, v)); }
 function inBounds(x,y)    { return x>=0 && x<COLS && y>=0 && y<ROWS; }
 
 // ═══════════════════════════════════════════════════════════════════
-// RAIL / SKY
+// ORIENTATION-AWARE SPATIAL ENGINE
 // ═══════════════════════════════════════════════════════════════════
-function evaluateRailValue(x, y) {
-  const { a, b, c, amp, waveLength, phase } = state.railParams;
-  const lineY = -(a * x + c) / b;
-  const curve = amp * Math.sin(2 * Math.PI * x / waveLength + phase);
-  return y - Math.floor(lineY + curve);
+function getRailLine(coordinate) {
+  const { amp, waveLength, phase, c } = state.railParams;
+  // c handles the depth thickness, amp creates a organic wavy texture across the axis
+  return Math.floor(-c + amp * Math.sin(2 * Math.PI * coordinate / waveLength + phase));
 }
-function isSky(x,y)  { return evaluateRailValue(x,y) < 0; }
-function isRail(x,y) { return evaluateRailValue(x,y) === 0; }
+
+function isSky(x, y) {
+  const line = getRailLine(state.orientation === "left" || state.orientation === "right" ? y : x);
+  switch (state.orientation) {
+    case "bottom": return y < line;          // Sky is at the top half
+    case "top":    return y > line + 8;      // Sky is at the bottom half
+    case "left":   return x > line + 12;     // Sky is on the right side
+    case "right":  return x < line;          // Sky is on the left side
+    default:       return y < line;
+  }
+}
+
+function isRail(x, y) {
+  const line = getRailLine(state.orientation === "left" || state.orientation === "right" ? y : x);
+  switch (state.orientation) {
+    case "bottom": return y === line;
+    case "top":    return y === line + 8;
+    case "left":   return x === line + 12;
+    case "right":  return x === line;
+    default:       return y === line;
+  }
+}
 
 // Validate rail generates enough walkable deck — up to 15 attempts
 function randomizeRailingStructure() {
-  for (let attempt = 0; attempt < 15; attempt++) {
-    const type = pick(["horizontal","horizontal","horizontal","diagonal_fall","diagonal_rise"]);
-    const amp = 1.5 + rand() * 3.0, waveLength = 36 + rand() * 40, phase = rand() * Math.PI * 2;
-    let a, b = 1, c;
-    if (type === "horizontal")    { a=(rand()-.5)*.09;          c=-(6  + rand()*9); }
-    else if (type==="diagonal_fall") { a=0.16+rand()*.20;       c=-(4  + rand()*7); }
-    else                          { a=-(0.16+rand()*.20);        c=-(14 + rand()*7); }
+  // Randomly assign the structural orientation of the entire balcony grid
+  state.orientation = pick(["bottom", "bottom", "top", "left", "right"]);
 
-    state.railParams = { a, b, c, amp, waveLength, phase };
+  for (let attempt = 0; attempt < 25; attempt++) {
+    const amp = 1.0 + rand() * 2.5;
+    const waveLength = 25 + rand() * 30;
+    const phase = rand() * Math.PI * 2;
+    let c;
 
-    // Count walkable cells in lower two-thirds
+    // Tune specific axis offsets based on direction parameters
+    if (state.orientation === "bottom") c = -(5 + rand() * 4);
+    else if (state.orientation === "top") c = -(4 + rand() * 4);
+    else if (state.orientation === "left") c = -(4 + rand() * 5);
+    else c = -(14 + rand() * 6); // right side
+
+    state.railParams = { a: 0, b: 1, c, amp, waveLength, phase };
+
+    // Verify structural capacity (Ensure we have enough walkable deck surface)
     let ground = 0;
-    for (let y=Math.ceil(ROWS*.34); y<ROWS-1; y++)
-      for (let x=2; x<COLS-2; x++)
-        if (!isSky(x,y) && !isRail(x,y)) ground++;
-
-    if (ground >= 45) return; // enough deck — accept
+    for (let y = 1; y < ROWS - 1; y++) {
+      for (let x = 1; x < COLS - 1; x++) {
+        if (!isSky(x, y) && !isRail(x, y)) ground++;
+      }
+    }
+    if (ground >= 60) return; // Grid layout meets minimum spacing specifications
   }
-  // Hard fallback: safe flat rail
-  state.railParams = { a:0, b:1, c:-8, amp:1.5, waveLength:40, phase:0 };
+  // Fallback structural constants
+  state.orientation = "bottom";
+  state.railParams = { a: 0, b: 1, c: -8, amp: 1.5, waveLength: 40, phase: 0 };
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -1328,12 +1357,23 @@ function generateWorld() {
   state.entities = [];
 
   // Sky, rail, outer walls
-  for (let y=0; y<ROWS; y++) for (let x=0; x<COLS; x++) {
-    if (isSky(x,y))  { state.terrain[y][x].id = "sky_tier"; continue; }
-    if (isRail(x,y)) { state.terrain[y][x].id = "balcony_rail"; continue; }
-    if (x===0||y===ROWS-1||x===COLS-1) state.terrain[y][x].id = chance(0.18)?"bruised_stone":"moss_wall";
+// Look inside generateWorld() and replace the outer walls loop with this:
+  for (let y = 0; y < ROWS; y++) {
+    for (let x = 0; x < COLS; x++) {
+      if (isSky(x, y)) { 
+        state.terrain[y][x].id = "sky_tier"; 
+        continue; 
+      }
+      if (isRail(x, y)) { 
+        state.terrain[y][x].id = "balcony_rail"; 
+        continue; 
+      }
+      // Only paint structural boundaries on true non-sky border frames
+      if (x === 0 || y === ROWS - 1 || x === COLS - 1 || y === 0) {
+        state.terrain[y][x].id = chance(0.18) ? "bruised_stone" : "moss_wall";
+      }
+    }
   }
-
   placeBiomes();
   placeBlobTerrain();
   placeVines();
@@ -1650,11 +1690,11 @@ function addSpecimen(name, glyph, color, isRevisit=false, autoNote=null) {
 }
 
 function resetInspector() {
-  scanName.textContent="panoramic safety balcony";
-  scanText.textContent="Click any tile or entity to inspect. The balcony railing separates the scenic backdrop from the garden deck.";
-  scanMeta.innerHTML="";
-  ["balcony-tier","scenic-vista","read-intentional"].forEach(t=>{
-    const s=document.createElement("span");s.className="tag";s.textContent=t;scanMeta.appendChild(s);
+  scanName.textContent = `panoramic perspective balcony [${state.orientation}]`;
+  scanText.textContent = "Click any tile or entity to inspect. The balcony railing separates the scenic backdrop from the garden deck.";
+  scanMeta.innerHTML = "";
+  [`balcony-tier-${state.orientation}`, "scenic-vista", "read-intentional"].forEach(t => {
+    const s = document.createElement("span"); s.className = "tag"; s.textContent = t; scanMeta.appendChild(s);
   });
 }
 
