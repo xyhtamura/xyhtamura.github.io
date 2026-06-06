@@ -1737,6 +1737,14 @@ document.getElementById("soundBtn").addEventListener("click", async e => {
 // ═══════════════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════════════
+
+// Expose selected core state for add-on engines.
+window.COLS = COLS;
+window.ROWS = ROWS;
+window.state = state;
+window.cellEls = cellEls;
+window.isSky = isSky;
+window.refreshCell = refreshCell;
 generateWorld();
 setInterval(animateLoops, 380);
 
@@ -2005,6 +2013,174 @@ setInterval(animateLoops, 380);
 
   window.onTerrainStep = onStep;
   window.WalkSound = { onStep, PROFILES };
+})();
+</script>
+
+
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════
+// CORNICE — CLOUD ENGINE
+// Procedural, low-opacity vapor drifting through the distant skyline.
+// ═══════════════════════════════════════════════════════════════════════
+(function () {
+  'use strict';
+
+  // Cloud layer state tracking
+  const clouds = {
+    layers: [],
+    tickCounter: 0,
+    // Configuration properties
+    maxClouds: 4,
+    spawnChance: 0.15,
+    baseOpacity: 0.28
+  };
+
+  /**
+   * Generates a new random cloud object starting from the far left
+   */
+  function spawnCloud() {
+    if (clouds.layers.length >= clouds.maxClouds) return;
+    
+    // Rows 0 to 12 target the upper backdrop area
+    const startY = Math.floor(Math.random() * 13);
+    const width = 6 + Math.floor(Math.random() * 12);
+    const height = 2 + Math.floor(Math.random() * 3);
+    
+    // Choose varying glyph representations for soft, textual density
+    const vaporGlyphs = Math.random() > 0.5 
+      ? ["\u2591", "\u2592", " ", "\u00b7"] 
+      : ["\u25cc", "\u25cb", " ", "."];
+
+    clouds.layers.push({
+      x: -width, // Begin just off-screen left
+      y: startY,
+      width,
+      height,
+      glyphs: vaporGlyphs,
+      speed: 0.4 + Math.random() * 0.6, // Moves across columns per tick step
+      phase: Math.random() * Math.PI
+    });
+  }
+
+  /**
+   * Evaluates if a specific coordinate currently contains a cloud cell particle
+   * Returns a blending weight descriptor [0, 1] or null if clear
+   */
+  function getCloudDensityAt(x, y) {
+    let highestDensity = 0;
+    let fallbackGlyph = " ";
+
+    for (const cloud of clouds.layers) {
+      if (x >= cloud.x && x < cloud.x + cloud.width && y >= cloud.y && y < cloud.y + cloud.height) {
+        // Calculate organic ellipsoid feathering so edges don't look blocky
+        const dx = ((x - cloud.x) / (cloud.width - 1)) * 2 - 1;
+        const dy = ((y - cloud.y) / (cloud.height - 1)) * 2 - 1;
+        const dist = dx * dx + dy * dy;
+
+        if (dist < 1.15) {
+          const density = (1.15 - dist) * (0.7 + 0.3 * Math.sin(clouds.tickCounter * 0.1 + cloud.phase));
+          if (density > highestDensity) {
+            highestDensity = density;
+            // Map distance to glyph variety
+            const gIdx = Math.floor(Math.min(1, dist) * (cloud.glyphs.length - 1));
+            fallbackGlyph = cloud.glyphs[gIdx];
+          }
+        }
+      }
+    }
+
+    return highestDensity > 0.15 ? { density: highestDensity, glyph: fallbackGlyph } : null;
+  }
+
+  /**
+   * Upstream intercept execution hook matching the core rendering model
+   */
+  function patchCorniceRenderer() {
+    // Intercept the global refreshCell function safely
+    const originalRefreshCell = window.refreshCell;
+    if (!originalRefreshCell) return;
+
+window.refreshCell = function (x, y) {
+  originalRefreshCell(x, y);
+
+  const span = window.cellEls?.[y]?.[x];
+  if (!span) return;
+
+  // reset cloud styling before deciding whether to reapply it
+  span.style.opacity = "";
+
+  if (!window.isSky || !window.isSky(x, y)) return;
+  if (window.state?.player?.x === x && window.state?.player?.y === y) return;
+
+  const cloudMarker = getCloudDensityAt(x, y);
+  if (!cloudMarker) return;
+
+  const environmentTint = window.state?.weather?.tint || "#2dff6e";
+
+  if (Math.random() < cloudMarker.density * 0.75) {
+    span.textContent = cloudMarker.glyph;
+  }
+
+  span.style.color =
+    `color-mix(in srgb, #cfe8d2 ${Math.round(cloudMarker.density * 100)}%, ${environmentTint})`;
+  span.style.opacity = clouds.baseOpacity + cloudMarker.density * 0.3;
+};
+  }
+
+  /**
+   * Main lifecycle loop runner integrated with state timelines
+   */
+  function updateCloudEngine() {
+    clouds.tickCounter++;
+
+    // Increment drift across grid vectors
+    clouds.layers.forEach(cloud => {
+      cloud.x += cloud.speed;
+    });
+
+    // Garbage collect off-screen artifacts
+    clouds.layers = clouds.layers.filter(cloud => cloud.x < (window.COLS || 52) + 2);
+
+    // Roll odds to introduce new drafts
+    if (Math.random() < clouds.spawnChance) {
+      spawnCloud();
+    }
+
+    // Force updates over the sky coordinates explicitly
+    if (window.refreshCell && window.ROWS && window.COLS) {
+      for (let y = 0; y < window.ROWS; y++) {
+        for (let x = 0; x < window.COLS; x++) {
+          if (window.isSky && window.isSky(x, y)) {
+            window.refreshCell(x, y);
+          }
+        }
+      }
+    }
+  }
+
+  // Self-initializing structural launch sequence
+  function init() {
+    // Hook engine hooks into renderer
+    patchCorniceRenderer();
+
+    // Spawn a couple of clouds pre-warmed so the screen isn't empty on launch
+    for (let prewarm = 0; prewarm < 3; prewarm++) {
+      spawnCloud();
+      clouds.layers[prewarm].x = Math.floor(Math.random() * 40); // Scatter across screen
+    }
+
+    // Tie tracking updates alongside original loop rates
+    setInterval(updateCloudEngine, 450);
+  }
+
+  // Safe bootstrap anchor point checking if DOM structural hooks have mapped out
+  if (document.readyState === "complete" || document.readyState === "interactive") {
+    setTimeout(init, 50);
+  } else {
+    document.addEventListener("DOMContentLoaded", init);
+  }
+
 })();
 </script>
 </body>
