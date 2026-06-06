@@ -368,16 +368,22 @@ h1 {
       clip-path: polygon(0 0, 100% 0, 100% calc(100% - 9px), calc(100% - 9px) 100%, 0 100%);
     }
 
-    /* ── Volume slider ── */
+    /* ── Volume split row ── */
+    .vol-container {
+      display: grid;
+      gap: 6px;
+      margin-top: 8px;
+      border-top: 1px dashed rgba(207,232,210,.12);
+      padding-top: 8px;
+    }
     .vol-row {
       display: grid;
-      grid-template-columns: auto 1fr auto;
+      grid-template-columns: 50px 1fr 30px;
       align-items: center;
       gap: 7px;
-      padding: 2px 0 4px;
     }
-    .vol-label { font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: #4e624e; }
-    .vol-val   { font-size: 9px; color: #4e624e; font-variant-numeric: tabular-nums; min-width: 26px; text-align: right; }
+    .vol-label { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: #5a6e5a; white-space: nowrap; }
+    .vol-val   { font-size: 9px; color: #5a6e5a; font-variant-numeric: tabular-nums; text-align: right; }
 
     input[type=range] {
       -webkit-appearance: none; appearance: none;
@@ -478,10 +484,17 @@ h1 {
           <button id="rerollBtn" class="ghost-button">Shuffle</button>
           <button class="ghost-button" id="soundBtn">Sound On</button>
         </div>
-          <div class="vol-row">
-            <span class="vol-label">vol</span>
-            <input type="range" id="volumeSlider" min="0" max="100" value="70" step="1">
-            <span class="vol-val" id="volVal">70%</span>
+          <div class="vol-container">
+            <div class="vol-row">
+              <span class="vol-label">SFX</span>
+              <input type="range" id="walkVolumeSlider" min="0" max="100" value="70" step="1">
+              <span class="vol-val" id="walkVolVal">70%</span>
+            </div>
+            <div class="vol-row">
+              <span class="vol-label">Drone</span>
+              <input type="range" id="droneVolumeSlider" min="0" max="100" value="45" step="1">
+              <span class="vol-val" id="droneVolVal">45%</span>
+            </div>
           </div>
         </div>
       </aside>
@@ -993,7 +1006,7 @@ const state = {
 // ═══════════════════════════════════════════════════════════════════
 // DOM REFS
 // ═══════════════════════════════════════════════════════════════════
-const world          = document.getElementById("world");
+const world            = document.getElementById("world");
 const scanCard       = document.getElementById("scanCard");
 const scanName       = document.getElementById("scanName");
 const scanText       = document.getElementById("scanText");
@@ -1003,8 +1016,10 @@ const specimenCountEl= document.getElementById("specimenCount");
 const seedPill       = document.getElementById("seedPill");
 const weatherPill    = document.getElementById("weatherPill");
 const vistaPill      = document.getElementById("vistaPill");
-const volumeSlider   = document.getElementById("volumeSlider");
-const volVal         = document.getElementById("volVal");
+const walkVolumeSlider = document.getElementById("walkVolumeSlider");
+const walkVolVal       = document.getElementById("walkVolVal");
+const droneVolumeSlider = document.getElementById("droneVolumeSlider");
+const droneVolVal       = document.getElementById("droneVolVal");
 const cellEls        = [];
 const pressedKeys    = new Set();
 
@@ -1459,19 +1474,27 @@ function animateLoops() {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// SOUND  — fixed async resume
+// SOUND  — decoupled into SFX vs Drone mix sub-buses
 // ═══════════════════════════════════════════════════════════════════
-function masterGainFromSlider() { return (parseInt(volumeSlider.value)/100)*0.9; }
+function walkGainFromSlider() { return (parseInt(walkVolumeSlider.value)/100) * 1.5;}
+function droneGainFromSlider() { return (parseInt(droneVolumeSlider.value)/100) * 0.9; } // padded to balance continuous oscillations
 
 function ensureAudio() {
   if (state.audio) return state.audio;
   const AudioCtx=window.AudioContext||window.webkitAudioContext;
   if (!AudioCtx) return null;
   const ctx=new AudioCtx();
-  const master=ctx.createGain();
-  master.gain.value = masterGainFromSlider();
-  master.connect(ctx.destination);
-  state.audio={ ctx, master };
+  
+  // Independent sub-gain channels connected to destination
+  const walkGainBus = ctx.createGain();
+  walkGainBus.gain.value = walkGainFromSlider();
+  walkGainBus.connect(ctx.destination);
+
+  const droneGainBus = ctx.createGain();
+  droneGainBus.gain.value = droneGainFromSlider();
+  droneGainBus.connect(ctx.destination);
+
+  state.audio={ ctx, walkGainBus, droneGainBus };
   return state.audio;
 }
 
@@ -1479,7 +1502,7 @@ function playTone(spec, intensity=1) {
   if (!state.soundOn) return;
   const s=spec?.sound; if (!s||s.scaleIndex===undefined) return;
   const audio=ensureAudio(); if (!audio) return;
-  const { ctx, master }=audio;
+  const { ctx, walkGainBus }=audio;
   const play=() => {
     const osc=ctx.createOscillator(), gain=ctx.createGain(), now=ctx.currentTime;
     osc.type=s.type||"sine";
@@ -1487,7 +1510,7 @@ function playTone(spec, intensity=1) {
     gain.gain.setValueAtTime(0.001, now);
     gain.gain.exponentialRampToValueAtTime(Math.min(0.22*intensity,0.25), now+0.015);
     gain.gain.exponentialRampToValueAtTime(0.001, now+0.30);
-    osc.connect(gain); gain.connect(master); osc.start(now); osc.stop(now+0.35);
+    osc.connect(gain); gain.connect(walkGainBus); osc.start(now); osc.stop(now+0.35);
   };
   if (ctx.state==="suspended") ctx.resume().then(play).catch(()=>{});
   else play();
@@ -1497,12 +1520,12 @@ function startAmbientDrone() {
   if (!state.soundOn||!state.weather) return;
   const audio=ensureAudio(); if (!audio) return;
   if (state.droneNodes) { updateDronePitch(); return; }
-  const { ctx, master }=audio;
+  const { ctx, droneGainBus }=audio;
   const start=() => {
     const gainNode=ctx.createGain();
     gainNode.gain.setValueAtTime(0.001, ctx.currentTime);
     gainNode.gain.linearRampToValueAtTime(0.022, ctx.currentTime+5);
-    gainNode.connect(master);
+    gainNode.connect(droneGainBus);
     const freq=state.weather.droneFreq||110;
     const oscs=[[freq,"sine"],[freq*1.003,"sine"],[freq*2.001,"sine"]].map(([f,type])=>{
       const osc=ctx.createOscillator(); osc.type=type; osc.frequency.value=f;
@@ -1681,14 +1704,24 @@ document.addEventListener("mousemove", e => {
   document.documentElement.style.setProperty("--mouse-y", `${(e.clientY/innerHeight*100).toFixed(1)}%`);
 }, { passive:true });
 
-volumeSlider.addEventListener("input", () => {
-  const v=parseInt(volumeSlider.value);
-  volVal.textContent=`${v}%`;
-  volumeSlider.style.setProperty("--pct", v);
-  if (state.audio?.master) state.audio.master.gain.setTargetAtTime(masterGainFromSlider(), state.audio.ctx.currentTime, 0.05);
+// Split slider listeners 
+walkVolumeSlider.addEventListener("input", () => {
+  const v=parseInt(walkVolumeSlider.value);
+  walkVolVal.textContent=`${v}%`;
+  walkVolumeSlider.style.setProperty("--pct", v);
+  if (state.audio?.walkGainBus) state.audio.walkGainBus.gain.setTargetAtTime(walkGainFromSlider(), state.audio.ctx.currentTime, 0.05);
 });
-// Init slider fill
-volumeSlider.style.setProperty("--pct", volumeSlider.value);
+
+droneVolumeSlider.addEventListener("input", () => {
+  const v=parseInt(droneVolumeSlider.value);
+  droneVolVal.textContent=`${v}%`;
+  droneVolumeSlider.style.setProperty("--pct", v);
+  if (state.audio?.droneGainBus) state.audio.droneGainBus.gain.setTargetAtTime(droneGainFromSlider(), state.audio.ctx.currentTime, 0.05);
+});
+
+// Setup initial slider visual fills
+walkVolumeSlider.style.setProperty("--pct", walkVolumeSlider.value);
+droneVolumeSlider.style.setProperty("--pct", droneVolumeSlider.value);
 
 document.getElementById("sceneBtn").addEventListener("click", shiftScene);
 document.getElementById("rerollBtn").addEventListener("click", generateWorld);
@@ -1713,26 +1746,11 @@ setInterval(animateLoops, 380);
 // ═══════════════════════════════════════════════════════════════════════
 // CORNICE — WALK SOUND ENGINE  (cornice_walk_sound.js)
 // Terrain-responsive footstep synthesis for Night Terrarium / Cornice.
-//
-// ── BACKWIRE (one line added to move() in cornice.html) ─────────────
-// In move(), after the line  `refreshCell(old.x,old.y); refreshCell(nx,ny);`
-// add:
-//   window.onTerrainStep?.(nx, ny, cell.id, !!ent, state.soundOn, state.weather?.droneFreq);
-//
-//
-// ── WHAT IS ACCESSIBLE FROM CORNICE main SCRIPT ─────────────────────
-// window.ensureAudio()  — shared AudioContext factory (function declaration ✓)
-// window.onTerrainStep  — hook set by this script
-// `state` is const, NOT on window — passed via the backwire hook instead.
 // ════════════════════════════════════════════════════════════════════════
 
 (function () {
   'use strict';
 
-  // ── NOISE BUFFER CACHE ───────────────────────────────────────────────
-  // One 350ms white noise buffer per AudioContext session.
-  // AudioContext identity is stable across world rerolls (ensureAudio caches it).
-  // BufferSourceNodes cannot be restarted, so we create new ones from the same buffer.
   let _noiseBuf = null;
   let _noiseCachedCtx = null;
 
@@ -1747,31 +1765,15 @@ setInterval(animateLoops, 380);
     return buf;
   }
 
-  // Create a noise source reading from a random offset in the cached buffer.
-  // Random offset prevents every step sounding identical.
   function mkNoise(ctx) {
     const src = ctx.createBufferSource();
     src.buffer = getNoise(ctx);
     return src;
   }
 
-  // ── TERRAIN SOUND PROFILES ───────────────────────────────────────────
-  // Signature: profile(ctx, out, phase)
-  //   ctx   — AudioContext
-  //   out   — AudioNode  (connect all synthesis here; already behind walkGain)
-  //   phase — 0 | 1, alternating per step (subtle L/R tonal micro-variation)
-  //
-  // Aesthetic targets: synthetic-organic, post-digital, damp, luminous, strange.
-  // Sounds should feel ambient and incidental — below inspect tones in prominence.
-
   const PROFILES = {
-
-    // ── Damp soil ─────────────────────────────────────────────────────
-    // Sine body with fast pitch-drop (impact thud) + low bandpass noise (wet earth).
     damp_soil(ctx, out, ph) {
       const t = ctx.currentTime;
-
-      // Thud: sine dropping from ~90Hz to 40Hz over 90ms
       const osc = ctx.createOscillator();
       osc.type  = 'sine';
       osc.frequency.setValueAtTime(88 + ph * 10, t);
@@ -1783,7 +1785,6 @@ setInterval(animateLoops, 380);
       osc.connect(g1); g1.connect(out);
       osc.start(t); osc.stop(t + 0.15);
 
-      // Wet earth texture: bandpass noise at 210Hz
       const src = mkNoise(ctx);
       const bp  = ctx.createBiquadFilter();
       bp.type   = 'bandpass'; bp.frequency.value = 210; bp.Q.value = 2.0;
@@ -1795,13 +1796,8 @@ setInterval(animateLoops, 380);
       src.start(t, Math.random() * 0.15);
     },
 
-    // ── Neon fuzz ─────────────────────────────────────────────────────
-    // Airy highpass rustle (like soft grass or soft circuitry) +
-    // brief bioluminescent shimmer ping.
     neon_fuzz(ctx, out, ph) {
       const t = ctx.currentTime;
-
-      // Rustle: highpass noise >3kHz, very short
       const src = mkNoise(ctx);
       const hp  = ctx.createBiquadFilter();
       hp.type   = 'highpass'; hp.frequency.value = 3000;
@@ -1812,7 +1808,6 @@ setInterval(animateLoops, 380);
       src.connect(hp); hp.connect(g1); g1.connect(out);
       src.start(t, Math.random() * 0.15);
 
-      // Shimmer: sine at 1.2–1.5kHz, the fuzz's bioluminescent response
       const osc = ctx.createOscillator();
       osc.type  = 'sine';
       osc.frequency.value = 1180 + ph * 240;
@@ -1824,12 +1819,8 @@ setInterval(animateLoops, 380);
       osc.start(t); osc.stop(t + 0.09);
     },
 
-    // ── Black water ───────────────────────────────────────────────────
-    // Bandpass splash noise + descending ripple sine (ring spreading outward).
     black_water(ctx, out, ph) {
       const t = ctx.currentTime;
-
-      // Splash: bandpass noise at 650Hz — wet, slightly resonant
       const src = mkNoise(ctx);
       const bp  = ctx.createBiquadFilter();
       bp.type   = 'bandpass'; bp.frequency.value = 650; bp.Q.value = 1.1;
@@ -1840,7 +1831,6 @@ setInterval(animateLoops, 380);
       src.connect(bp); bp.connect(g1); g1.connect(out);
       src.start(t, Math.random() * 0.15);
 
-      // Ripple: sine descending from ~340Hz to 145Hz over 190ms
       const osc = ctx.createOscillator();
       osc.type  = 'sine';
       osc.frequency.setValueAtTime(340 + ph * 35, t + 0.012);
@@ -1853,12 +1843,8 @@ setInterval(animateLoops, 380);
       osc.start(t + 0.012); osc.stop(t + 0.24);
     },
 
-    // ── City debris ───────────────────────────────────────────────────
-    // Mid-frequency crunch (impact) + two scatter rattles (debris settling).
     city_debris(ctx, out, ph) {
       const t = ctx.currentTime;
-
-      // Main crunch: bandpass noise at 1.1kHz
       const src = mkNoise(ctx);
       const bp  = ctx.createBiquadFilter();
       bp.type   = 'bandpass'; bp.frequency.value = 1100; bp.Q.value = 0.65;
@@ -1869,7 +1855,6 @@ setInterval(animateLoops, 380);
       src.connect(bp); bp.connect(g1); g1.connect(out);
       src.start(t, Math.random() * 0.15);
 
-      // Scatter rattles: two slightly offset bursts at different frequencies
       [0.038, 0.078].forEach((delay, i) => {
         const s2 = mkNoise(ctx);
         const f2 = ctx.createBiquadFilter();
@@ -1885,13 +1870,8 @@ setInterval(animateLoops, 380);
       });
     },
 
-    // ── Wire vine ─────────────────────────────────────────────────────
-    // Square-wave click with fast pitch-dive (metallic contact) +
-    // highpass noise zap (the vine sparks on footfall).
     wire_vine(ctx, out, ph) {
       const t = ctx.currentTime;
-
-      // Metallic click: square wave from ~560Hz diving to 130Hz over 32ms
       const osc = ctx.createOscillator();
       osc.type  = 'square';
       osc.frequency.setValueAtTime(560 + ph * 70, t);
@@ -1903,7 +1883,6 @@ setInterval(animateLoops, 380);
       osc.connect(g1); g1.connect(out);
       osc.start(t); osc.stop(t + 0.05);
 
-      // Electric zap: short highpass noise burst >4.2kHz
       const src = mkNoise(ctx);
       const hp  = ctx.createBiquadFilter();
       hp.type   = 'highpass'; hp.frequency.value = 4200;
@@ -1915,14 +1894,10 @@ setInterval(animateLoops, 380);
       src.start(t, Math.random() * 0.15);
     },
 
-    // ── Void patch ────────────────────────────────────────────────────
-    // A substrate of non-canonical surface: disorientating pitch sweep
-    // plus two timed ghost echoes suggesting spatial instability.
     void_patch(ctx, out, ph) {
       const t    = ctx.currentTime;
-      const base = 175 + Math.random() * 200; // random per step
+      const base = 175 + Math.random() * 200;
 
-      // Main sweep: sine rising then falling — the substrate seems uncertain
       const osc = ctx.createOscillator();
       osc.type  = 'sine';
       osc.frequency.setValueAtTime(base, t);
@@ -1934,8 +1909,6 @@ setInterval(animateLoops, 380);
       g1.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
       osc.connect(g1); g1.connect(out);
 
-      // Ghost echoes: two simple timed delays off the main sweep (no feedback loop)
-      // Pitch of the echo = pitch of what was in the delay line at tap time — eerie
       [0.065, 0.138].forEach((dTime, i) => {
         const delay = ctx.createDelay(0.3);
         delay.delayTime.value = dTime;
@@ -1948,7 +1921,6 @@ setInterval(animateLoops, 380);
 
       osc.start(t); osc.stop(t + 0.18);
 
-      // Ghost harmonic: a secondary tone entering slightly late, pitch-displaced
       const osc2  = ctx.createOscillator();
       osc2.type   = 'sine';
       osc2.frequency.value = base * (2.08 + ph * 0.28);
@@ -1960,18 +1932,14 @@ setInterval(animateLoops, 380);
       osc2.start(t + 0.022); osc2.stop(t + 0.18);
     },
 
-    // ── Ancient node ──────────────────────────────────────────────────
-    // Arpeggiating harmonic stack — stepping on an ancient node resonates it.
-    // Uses the same root pitch class as the inspect tone for the node (220Hz).
     ancient_node(ctx, out, ph) {
       const t    = ctx.currentTime;
       const root = 220;
-      // Harmonic ratios: root, perfect fifth, octave, golden-ratio harmonic
       [1, 1.5, 2.0, 2.618].forEach((ratio, i) => {
         const osc = ctx.createOscillator();
         osc.type  = 'sine';
         osc.frequency.value = root * ratio * (1 + ph * 0.003);
-        const d   = i * 0.013; // staggered entry
+        const d   = i * 0.013;
         const g   = ctx.createGain();
         g.gain.setValueAtTime(0.001, t + d);
         g.gain.exponentialRampToValueAtTime(0.052 / (i * 0.4 + 1), t + d + 0.010);
@@ -1980,27 +1948,13 @@ setInterval(animateLoops, 380);
         osc.start(t + d); osc.stop(t + d + 0.30);
       });
     },
-
   };
 
-  // Fallback for pack-added tiles not yet in PROFILES — quiet soil variant.
-  // Also acts as the default when PROFILES[tileId] is undefined.
   PROFILES._fallback = PROFILES.damp_soil;
 
-
-  // ── WALK ENGINE STATE ─────────────────────────────────────────────────
-  let _phase   = 0;                // L/R foot alternation (0 or 1)
-  let _lastMs  = 0;                // timestamp of last step
-  const COOLDOWN_MS = 55;          // minimum ms between footstep sounds
-
-
-  // ── CORE STEP FUNCTION ────────────────────────────────────────────────
-  // Called by window.onTerrainStep from within move() in cornice.html.
-  //
-  //   tileId     — terrain tile id the player just moved onto
-  //   hasEntity  — whether an entity occupies the same cell
-  //   soundOn    — state.soundOn from the main script
-  //   droneFreq  — state.weather?.droneFreq — used for weather colour on footsteps
+  let _phase   = 0;                
+  let _lastMs  = 0;                
+  const COOLDOWN_MS = 55;          
 
   function onStep(x, y, tileId, hasEntity, soundOn, droneFreq) {
     if (!soundOn) return;
@@ -2009,48 +1963,37 @@ setInterval(animateLoops, 380);
     if (now - _lastMs < COOLDOWN_MS) return;
     _lastMs = now;
 
-    // Share the main script's AudioContext so the volume slider applies.
     const audio = window.ensureAudio?.();
     if (!audio) return;
-    const { ctx, master } = audio;
+    const { ctx, walkGainBus } = audio;
 
-    // ── Walk gain node ────────────────────────────────────────────────
-    // Footsteps sit below inspect tones (~half their amplitude).
-    // Profile oscillators peak at 0.10–0.20, so effective chain is:
-    //   profile_peak * walkGain * master ≈ 0.15 * 0.36 * 0.63 ≈ 0.034
     const walkGain      = ctx.createGain();
     walkGain.gain.value = 0.36;
 
-    // Entity underfoot: nudge slightly louder (you're stepping on/past something)
     if (hasEntity) walkGain.gain.value *= 1.14;
 
-    // Weather influence via droneFreq (82–440 Hz → gain scale 0.82–1.06).
-    // Lower drone = heavier/damper conditions; higher = brighter/more active.
     if (droneFreq) {
       const norm = Math.max(0, Math.min(1, (droneFreq - 82) / (440 - 82)));
       walkGain.gain.value *= 0.82 + norm * 0.24;
     }
 
-    // ── Stereo panning: subtle L/R alternation ────────────────────────
-    // Chain: profiles → walkGain → [panner →] master
-    let out = walkGain; // profiles connect here
+    let out = walkGain; 
     if (ctx.createStereoPanner) {
       const pan     = ctx.createStereoPanner();
       pan.pan.value = _phase === 0 ? -0.14 : 0.14;
       walkGain.connect(pan);
-      pan.connect(master);
+      pan.connect(walkGainBus); // Bound to decoupled master walk audio node channel instead of raw ctx destination
     } else {
-      walkGain.connect(master);
+      walkGain.connect(walkGainBus);
     }
 
-    // ── Dispatch ──────────────────────────────────────────────────────
     const profile = Object.prototype.hasOwnProperty.call(PROFILES, tileId)
       ? PROFILES[tileId]
       : PROFILES._fallback;
 
-    const phase = _phase; // capture before we flip
+    const phase = _phase; 
     const play  = () => {
-      try { profile(ctx, out, phase); } catch (_) { /* silent fail */ }
+      try { profile(ctx, out, phase); } catch (_) {}
     };
 
     if (ctx.state === 'suspended') ctx.resume().then(play).catch(() => {});
@@ -2059,20 +2002,8 @@ setInterval(animateLoops, 380);
     _phase = 1 - _phase;
   }
 
-
-  // ── HOOK REGISTRATION ─────────────────────────────────────────────────
-  // The backwire in move() calls: window.onTerrainStep?.(nx, ny, cell.id, !!ent, state.soundOn, state.weather?.droneFreq)
   window.onTerrainStep = onStep;
-
-
-  // ── PUBLIC SURFACE ────────────────────────────────────────────────────
-  // For debugging or extending from other scripts / packs.
-  // e.g.: window.WalkSound.PROFILES.my_tile = (ctx, out, ph) => { ... }
   window.WalkSound = { onStep, PROFILES };
-
-  if (typeof console !== 'undefined')
-    console.log('[WalkSound] Terrain-responsive footstep engine loaded. Profiles:', Object.keys(PROFILES).filter(k => k !== '_fallback'));
-
 })();
 </script>
 </body>
