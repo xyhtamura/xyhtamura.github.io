@@ -98,6 +98,17 @@ input[type=number].w48{width:48px}
 .legend .free{border-top-color:var(--violet)}
 
 /* stage */
+.rbar{display:flex; align-items:center; gap:8px; padding:6px 12px; font-size:12px; color:var(--ink-dim,#5a6f68);}
+.rbar-k{font-size:9.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-dim,#8a9b93);}
+#activeRegionName{color:var(--tide,#11897e); font-weight:600;}
+.rtabs{display:flex; gap:4px; align-items:flex-end; padding:8px 10px 0; flex-wrap:wrap;}
+.rtab{font-family:var(--mono,monospace); font-size:11.5px; background:var(--panel,#e7dfee); border:1px solid var(--line,#cdbcd6); border-bottom:none; color:var(--ink-dim,#5a6f68); padding:5px 10px; border-radius:5px 5px 0 0; cursor:pointer; display:inline-flex; align-items:center; gap:7px; line-height:1.2;}
+.rtab:hover{color:var(--ink,#18302b);}
+.rtab.on{background:var(--note-bg,#e3ebe6); color:var(--tide,#11897e); border-color:var(--tide,#11897e); font-weight:600;}
+.rtab em{font-style:normal; font-size:9.5px; letter-spacing:.04em; color:var(--ink-dim,#8a9b93); opacity:.85;}
+.rtab .rtab-x{font-size:13px; line-height:1; opacity:.45; margin-left:1px;}
+.rtab .rtab-x:hover{opacity:1; color:var(--ember,#dd6b12);}
+.rtab.rtab-add{color:var(--tide,#11897e); font-weight:700; padding:5px 11px;}
 .stage{position:relative; flex:1; min-height:0; overflow:hidden; background:var(--note-bg)}
 #roll{display:block; width:100%; height:100%; cursor:crosshair; touch-action:none}
 .stage.tool-select #roll{cursor:default}
@@ -171,6 +182,7 @@ footer code{font-family:var(--mono); color:var(--ink)}
     <button data-tool="pen" title="Pen — click to place points, double-click/Enter to finish (P)">✎ pen</button>
     <button data-tool="free" title="Freehand contour (F)">∿ free</button>
     <button data-tool="erase" title="Erase (E)">⌫ erase</button>
+    <button data-tool="slice" title="Slice — click to cut the region under the cursor into two at that beat (S)">⌿ slice</button>
     <button data-tool="pan" title="Pan (space-drag)">✋ pan</button>
   </div>
   <div class="group">
@@ -179,6 +191,15 @@ footer code{font-family:var(--mono); color:var(--ink)}
       <button data-m="replace" class="on" title="Replace — a click or marquee starts a fresh selection">replace</button>
       <button data-m="include" title="Include — clicks &amp; marquees add to the selection (or hold Shift)">＋ incl</button>
       <button data-m="exclude" title="Exclude — clicks &amp; marquees remove from the selection (or hold Alt)">− excl</button>
+    </div>
+  </div>
+
+  <div class="group">
+    <label>band</label>
+    <div class="seg" id="selBandSeg">
+      <button data-b="box" class="on" title="Box — free rectangular marquee">▢ box</button>
+      <button data-b="vertical" title="Time band — sweep horizontally to select a span of time across all pitches">▮ time</button>
+      <button data-b="horizontal" title="Pitch band — sweep vertically to select a register across all time">▬ pitch</button>
     </div>
   </div>
 
@@ -289,6 +310,7 @@ footer code{font-family:var(--mono); color:var(--ink)}
   </div>
 </div>
 
+<div id="regionTabs" class="rbar"><span class="rbar-k">region</span> <span id="activeRegionName"></span></div>
 <div class="stage tool-hold" id="stage">
   <canvas id="roll"></canvas>
   <div class="drawer" id="drawer">
@@ -554,7 +576,8 @@ let DPR=Math.max(1,window.devicePixelRatio||1);
 
 /* ---- view state ---- */
 const view={
-  pxPerBeat:64, pxPerSemi:14,
+  pxPerSec:128, pxPerSemi:14,            // seconds is the canvas's true axis
+  get pxPerBeat(){ return this.pxPerSec*60/(+bpm.value||120); },  // derived per the active region's tempo
   scrollX:0, scrollY:0,                // px
   midiMin:24, midiMax:108,             // C1..C8
   tool:'hold', timeRegime:'meter', pitchRegime:'scale',
@@ -567,6 +590,80 @@ const settings={
   get snapTime(){return snapTime.checked;}, get snapPitch(){return snapPitch.checked;},
 };
 let notes=[];
+
+/* ---- region model (the authoring socket; see tabota_region_model.md) -------------
+   For now: one active region whose MAIN coordinate system mirrors the live frame
+   controls (bpm / time-sig / a4). Notes carry a region id and the id of the system
+   they hang on (= main, in the present model). The live draw/MIDI path is unchanged,
+   so with a single region the Roll behaves exactly as before (#10 parity); the region
+   model is the identity + serialization layer that tabs / merge / tempo-track build on. */
+let REGID=1; let tabsInit=false;
+function newRegionId(){ return 'r'+(REGID++); }
+function makeRegion(){            // built from the current live frame controls
+  return { id:newRegionId(), name:null, notes:[], main:'m', systems:[ { id:'m', kind:'metered',
+           bpm:settings.bpm, sigNum:settings.sigNum, sigDen:settings.sigDen,
+           a4:settings.a4, bars:settings.bars, offset:0, axis:'frequency' } ] };
+}
+let regions=[], activeRegionId=null;
+function ensureRegions(){ if(!regions.length){ const r=makeRegion(); r.name='Region 1'; regions=[r]; activeRegionId=r.id; } }
+function activeRegion(){ ensureRegions(); return regions.find(r=>r.id===activeRegionId)||regions[0]; }
+function mainSystem(r){ r=r||activeRegion(); return r.systems.find(s=>s.id===r.main)||r.systems[0]; }
+function syncRegionFromControls(){          // DOM -> active region's main system
+  const m=mainSystem(); if(!m) return;
+  m.bpm=settings.bpm; m.sigNum=settings.sigNum; m.sigDen=settings.sigDen; m.a4=settings.a4; m.bars=settings.bars;
+}
+function applyRegionToControls(r){          // active region's main -> DOM (import / tab switch)
+  const m=mainSystem(r); if(!m) return;
+  bpm.value=Math.round(m.bpm); sigNum.value=m.sigNum||4; sigDen.value=m.sigDen||4; a4.value=m.a4||440;
+  if(m.bars) bars.value=m.bars;
+}
+function normalizeNotes(){                   // every note belongs to the active region & hangs on its main
+  const r=activeRegion(); const mid=r.main;
+  for(const n of notes){ if(n.region==null) n.region=r.id; if(n.hangsOn==null) n.hangsOn=mid; }
+}
+
+/* ---- regions are charts over one global notes array; focusing one only changes whose looks the controls show ---- */
+function focusRegion(id){
+  if(!regions.find(r=>r.id===id)) return;
+  syncRegionFromControls();                 // save the looks of the region we're leaving
+  activeRegionId=id;
+  applyRegionToControls(activeRegion());
+  updateRegionIndicator();
+  if(typeof draw==='function') draw();
+}
+function switchRegion(id){ focusRegion(id); }   // back-compat
+function addRegion(){
+  syncRegionFromControls();
+  const r=makeRegion(); r.name='Region '+(regions.length+1); regions.push(r);
+  focusRegion(r.id); flash('added '+r.name);
+}
+function deleteRegion(id){
+  if(regions.length<=1){ flash('need at least one region'); return; }
+  const i=regions.findIndex(r=>r.id===id); if(i<0) return;
+  notes=notes.filter(n=>n.region!==id);     // global notes: this region's notes go with it
+  regions.splice(i,1);
+  if(activeRegionId===id) activeRegionId=regions[Math.max(0,i-1)].id;
+  applyRegionToControls(activeRegion()); changed();
+}
+function renameRegion(id){ const r=regions.find(x=>x.id===id); if(!r) return; const n=prompt('Region name:', r.name||r.id); if(n!=null && n.trim()){ r.name=n.trim(); if(typeof draw==='function') draw(); updateRegionIndicator(); } }
+function updateRegionIndicator(){ const el=document.getElementById('activeRegionName'); if(el){ const r=activeRegion(), m=mainSystem(r);
+  el.textContent = (r.name||r.id) + (m? ('  \u2669'+Math.round(m.bpm)+' '+(m.sigNum||4)+'/'+(m.sigDen||4)) : ''); } }
+function renderRegionTabs(){ updateRegionIndicator(); }   // tab strip removed — on-canvas region labels are the tabs
+function splitRegionAt(r, cutBeat){
+  const m=mainSystem(r);
+  const lenBeats = m.kind==='chronological' ? (m.bars||settings.bars) : (m.bars||settings.bars)*(m.sigNum||4);
+  if(cutBeat<=1e-6 || cutBeat>=lenBeats-1e-6){ flash('click inside a region to slice it'); return; }
+  pushHistory();
+  const i=regions.findIndex(x=>x.id===r.id);
+  const r2={ id:newRegionId(), name:'Region '+(regions.length+1), main:r.main, systems:r.systems.map(s=>Object.assign({},s)) };
+  const cutUnits = (m.kind==='chronological') ? cutBeat : cutBeat/(m.sigNum||4);   // seconds or bars
+  const totalUnits = (m.bars||settings.bars);
+  m.bars = cutUnits;
+  mainSystem(r2).bars = totalUnits - cutUnits;
+  regions.splice(i+1,0,r2);
+  for(const n of notes){ if(n.region===r.id && n.start>=cutBeat-1e-9){ n.region=r2.id; n.start-=cutBeat; } }   // later notes -> new region, seconds conserved
+  focusRegion(r.id); changed(); flash('sliced into 2 regions');
+}
 let selection=new Set();
 let clipboard=null;                 // {notes:[...deep clones with absolute start]}
 const lastMouse={x:0,y:0,inside:false};
@@ -580,6 +677,7 @@ function ptSelHas(note,idx){ const s=ptSel.get(note); return !!s && s.has(idx); 
 function granCount(){ let c=0; for(const s of ptSel.values()) c+=s.size; for(const id of selection){ const n=notes.find(x=>x.id===id); if(n) c+=n.pts.length; } return c; }
 function clearGran(){ selection.clear(); ptSel=new Map(); segSel=null; pointSel=null; }
 let selMode='replace';              // 'replace' | 'include' | 'exclude' — how clicks & marquees combine
+let selBand='box';                  // 'box' | 'vertical' (time span, all pitches) | 'horizontal' (pitch span, all time)
 // merge a per-note set of point indices into selection/ptSel
 function mergeSel(note, idxSet, op){ // op: 'add' | 'sub'
   let cur = selection.has(note.id) ? new Set(note.pts.map((_,i)=>i)) : (ptSel.get(note)? new Set(ptSel.get(note)) : new Set());
@@ -597,14 +695,16 @@ function entityIndices(h){           // the point indices a hit entity represent
 
 /* ---- undo / redo history ---- */
 const HMAX=120; let undoStack=[], redoStack=[], dragHist=null;
-function histSnapshot(){ return JSON.stringify(notes); }
+function histSnapshot(){ return JSON.stringify({n:notes, r:regions, a:activeRegionId}); }
 function pushUndo(snap){ undoStack.push(snap); if(undoStack.length>HMAX) undoStack.shift(); }
 function pushHistory(){ pushUndo(histSnapshot()); redoStack=[]; refreshHistBtns(); }   // call BEFORE a mutation
 function commitDragHist(){ if(dragHist!=null){ if(dragHist!==histSnapshot()){ pushUndo(dragHist); redoStack=[]; } dragHist=null; refreshHistBtns(); } }
 function restoreHist(json){
-  notes=JSON.parse(json);
+  const o=JSON.parse(json);
+  if(Array.isArray(o)){ notes=o; } else { notes=o.n||[]; if(o.r){ regions=o.r; activeRegionId=o.a; } }
   selection.clear(); ptSel=new Map(); segSel=null; pointSel=null;
   NID=Math.max(0, ...notes.map(n=>n.id))+1;
+  applyRegionToControls(activeRegion());
   clampScroll(); changed();
 }
 function undo(){ if(!undoStack.length){ flash('nothing to undo'); return; } redoStack.push(histSnapshot()); restoreHist(undoStack.pop()); refreshHistBtns(); flash('undo'); }
@@ -690,11 +790,25 @@ const bpm=document.getElementById('bpm'), sigNum=document.getElementById('sigNum
  status=document.getElementById('status');
 
 /* ---- geometry helpers ---- */
-function contentW(){ return totalBeats()*view.pxPerBeat; }
+function contentW(){ ensureRegions(); return regions.reduce((s,r)=>s+regionSecLen(r),0)*view.pxPerSec; }
 function contentH(){ return (view.midiMax-view.midiMin)*view.pxPerSemi; }
 function totalBeats(){ return settings.bars*settings.sigNum; }
-function beatToX(b){ return GUT_L - view.scrollX + b*view.pxPerBeat; }
-function xToBeat(x){ return (x - GUT_L + view.scrollX)/view.pxPerBeat; }
+/* seconds primitives — the global clock the canvas scales to */
+function secToX(sec){ return GUT_L - view.scrollX + sec*view.pxPerSec; }
+function xToSec(x){ return (x - GUT_L + view.scrollX)/view.pxPerSec; }
+/* region tiling on the global clock */
+function regionSecLen(r){ const m=mainSystem(r); const beats=(m.bars||settings.bars)*(m.sigNum||4);
+  return m.kind==='chronological' ? (m.bars||settings.bars) : beats*60/(m.bpm||120); }
+function regionStartSec(r){ let s=0; for(const x of regions){ if(x.id===r.id) break; s+=regionSecLen(x); } return s; }
+function regionAtSec(sec){ let s=0; for(const r of regions){ const len=regionSecLen(r); if(sec<s+len) return r; s+=len; } return regions[regions.length-1]||activeRegion(); }
+function regionAtX(x){ return regionAtSec(xToSec(x)); }
+/* a region-local beat -> x, for any region (the backdrop uses this; the active region is the default) */
+let _ctxRegion=null;   // drawing/hit-test context: which region's coordinates beatToX uses (null = active)
+function regionById(id){ return regions.find(r=>r.id===id)||activeRegion(); }
+function beatToSecIn(b,r){ const m=mainSystem(r); return regionStartSec(r) + (m.kind==='chronological'? b : b*60/(m.bpm||120)); }
+function beatToXin(b,r){ return secToX(beatToSecIn(b,r)); }
+function beatToX(b){ return beatToXin(b, _ctxRegion||activeRegion()); }
+function xToBeat(x){ const r=activeRegion(); const m=mainSystem(r); const sec=xToSec(x)-regionStartSec(r); return m.kind==='chronological'? sec : sec*(m.bpm||120)/60; }
 function midiToY(m){ return GUT_T - view.scrollY + (view.midiMax-m)*view.pxPerSemi; }
 function yToMidi(y){ return view.midiMax - (y - GUT_T + view.scrollY)/view.pxPerSemi; }
 function hzToY(hz){ return midiToY(freqToMidi(hz,settings.a4)); }
@@ -709,6 +823,7 @@ function clampScroll(){
 /* ---- snapping ---- */
 function snapBeat(b){
   if(!settings.snapTime) return b;
+  if(mainSystem().kind==='chronological') return Math.round(b);   // free time: snap to whole seconds, never a 4/4
   if(view.timeRegime==='meter' && activeCycle && !activeCycle.isEven){   // snap to cycle phases (per bar)
     const bpb=settings.sigNum;
     const bar=Math.floor(b/bpb), frac=(b/bpb)-bar;                       // phase within the bar/cycle
@@ -785,8 +900,9 @@ function draw(){
   ctx.fillStyle=col('--note-bg'); ctx.fillRect(GUT_L,GUT_T,W-GUT_L,H-GUT_T);
 
   drawPitchGrid(W,H);
-  drawTimeGrid(W,H);
+  drawAllGrids(W,H);
   drawNotes(W,H);
+  drawRegionFrames(W,H);
   drawPlayhead(W,H);
 
   // gutters cover spill
@@ -883,10 +999,61 @@ function drawTimeGrid(W,H){
   ctx.restore();
 }
 
+function drawAllGrids(W,H){
+  ensureRegions();
+  for(const r of regions){
+    const m=mainSystem(r); const s0=regionStartSec(r), len=regionSecLen(r);
+    const x0=secToX(s0), x1=secToX(s0+len);
+    if(x1<GUT_L||x0>W) continue;
+    _ctxRegion=r;
+    ctx.save(); const cx0=Math.max(GUT_L,x0), cx1=Math.min(W,x1);
+    ctx.beginPath(); ctx.rect(cx0,GUT_T,Math.max(0,cx1-cx0),H-GUT_T); ctx.clip();
+    if(m.kind==='chronological'){
+      // free time: ONE seconds grid, no subdivisions — visually and functionally not a 4/4
+      const pps=view.pxPerSec; let step=1; if(pps<40) step=Math.pow(10,Math.ceil(Math.log10(40/pps)));
+      ctx.strokeStyle='rgba(17,137,126,0.30)'; ctx.lineWidth=1;
+      for(let s=0;s<=len+1e-6;s+=step){ const x=secToX(s0+s); ctx.beginPath(); ctx.moveTo(Math.round(x)+.5,GUT_T); ctx.lineTo(Math.round(x)+.5,H); ctx.stroke(); }
+    } else {
+      const sig=m.sigNum||4; const rbeats=(m.bars||settings.bars)*sig; const sub=settings.grid||4;
+      if(view.pxPerBeat/sub>=6){ ctx.strokeStyle='rgba(40,82,76,0.07)'; ctx.lineWidth=1;
+        for(let b=0;b<=rbeats+1e-6;b+=1/sub){ const x=beatToX(b); ctx.beginPath(); ctx.moveTo(Math.round(x)+.5,GUT_T); ctx.lineTo(Math.round(x)+.5,H); ctx.stroke(); } }
+      for(let b=0;b<=rbeats+1e-6;b++){ const x=beatToX(b); const bar=(b%sig===0);
+        ctx.strokeStyle = bar?'rgba(17,137,126,0.40)':'rgba(40,82,76,0.16)'; ctx.lineWidth=bar?1.4:1;
+        ctx.beginPath(); ctx.moveTo(Math.round(x)+.5,GUT_T); ctx.lineTo(Math.round(x)+.5,H); ctx.stroke(); }
+    }
+    ctx.restore();
+  }
+  _ctxRegion=null;
+}
+function drawRegionFrames(W,H){
+  ensureRegions();
+  ctx.save(); ctx.beginPath(); ctx.rect(GUT_L,GUT_T,W-GUT_L,H-GUT_T); ctx.clip();
+  for(const r of regions){
+    const s0=regionStartSec(r), x0=secToX(s0); const active=(r.id===activeRegionId);
+    if(s0>0 && x0>=GUT_L-1 && x0<=W){ ctx.strokeStyle='rgba(106,71,216,0.6)'; ctx.lineWidth=1.6; ctx.setLineDash([5,3]);
+      ctx.beginPath(); ctx.moveTo(Math.round(x0)+.5,GUT_T); ctx.lineTo(Math.round(x0)+.5,H); ctx.stroke(); ctx.setLineDash([]); }
+    const m=mainSystem(r);
+    const label=(r.name||r.id)+'  \u2669'+Math.round(m.bpm)+' '+(m.sigNum||4)+'/'+(m.sigDen||4)+(m.kind==='chronological'?' sec':'');
+    ctx.font='10px ui-monospace, Menlo, monospace';
+    const lx=Math.min(W-4, Math.max(GUT_L+4, x0+6)); const tw=ctx.measureText(label).width+10;
+    ctx.fillStyle = active ? 'rgba(17,137,126,0.16)' : 'rgba(231,223,238,0.66)';
+    ctx.fillRect(lx-5, GUT_T+3, tw, 15);
+    ctx.fillStyle = active ? col('--tide') : 'rgba(40,82,76,0.62)';
+    ctx.fillText(label, lx, GUT_T+14);
+  }
+  // tuning track — its own sticky flag (one for now: the score is 12-TET; per-region tuning later)
+  { const tn=(typeof activeScale!=='undefined' && activeScale && activeScale.name)?activeScale.name:'12-TET';
+    ctx.font='10px ui-monospace, Menlo, monospace'; const tw=ctx.measureText(tn).width+10;
+    ctx.fillStyle='rgba(106,71,216,0.14)'; ctx.fillRect(GUT_L+1, GUT_T+20, tw, 14);
+    ctx.fillStyle='rgba(106,71,216,0.92)'; ctx.fillText(tn, GUT_L+6, GUT_T+30); }
+  ctx.restore();
+}
+
 function drawNotes(W,H){
   ctx.save(); ctx.beginPath(); ctx.rect(GUT_L,GUT_T,W-GUT_L,H-GUT_T); ctx.clip();
   ctx.lineCap='round'; ctx.lineJoin='round';
   for(const n of notes){
+    _ctxRegion=regionById(n.region);
     const x0=beatToX(n.start), x1=beatToX(n.start+Math.max(n.dur,0.0001));
     if(x1<GUT_L||x0>W) continue;
     const sel=selection.has(n.id);
@@ -919,6 +1086,7 @@ function drawNotes(W,H){
       }
     }
   }
+  _ctxRegion=null;
   ctx.restore();
 }
 function strokeContour(n,x0,x1){
@@ -1020,13 +1188,15 @@ function drawPlayhead(W,H){
    HIT TESTING
    ============================================================ */
 function noteAt(px,py){
-  for(let i=notes.length-1;i>=0;i--){ const n=notes[i];
+  try{
+  for(let i=notes.length-1;i>=0;i--){ const n=notes[i]; _ctxRegion=regionById(n.region);
     const x0=beatToX(n.start), x1=beatToX(n.start+n.dur);
     if(px<x0-6||px>x1+6) continue;
     if(n.type==='hold'){ const y=hzToY(pitchAt(n,0)); if(Math.abs(py-y)<=Math.max(6,view.pxPerSemi*0.5)) return n; }
     else { const f=Math.max(0,Math.min(1,(px-x0)/Math.max(1,x1-x0))); const y=hzToY(pitchAt(n,f)); if(Math.abs(py-y)<=7) return n; }
   }
   return null;
+  } finally { _ctxRegion=null; }
 }
 function pointHitIndex(n,px,py){      // index of the breakpoint under cursor, or -1
   for(let i=0;i<n.pts.length;i++){
@@ -1089,6 +1259,11 @@ cv.addEventListener('pointerdown',e=>{
   }
   const t=view.tool;
   if(t==='pan'||e.button===1||spaceDown){ drag={mode:'pan',sx:p.x,sy:p.y,ox:view.scrollX,oy:view.scrollY}; stage.classList.add('tool-pan'); return; }
+
+  // contiguous canvas: clicking into a region focuses it (its looks show); editing continues in it
+  { const r=regionAtX(p.x); if(r && r.id!==activeRegionId) focusRegion(r.id); }
+
+  if(t==='slice'){ const r=regionAtX(p.x); if(r) splitRegionAt(r, snapBeat(xToBeat(p.x))); return; }
 
   // PEN: click to place successive points (double-click / Enter / Esc to finish)
   if(t==='pen'){
@@ -1154,7 +1329,7 @@ cv.addEventListener('pointerdown',e=>{
     } else {
       const marqMode = (mode==='exclude') ? 'subtract' : (mode==='include' ? 'add' : 'replace');
       if(marqMode==='replace') clearGran();
-      drag={mode:'marquee',sx:p.x,sy:p.y,x2:p.x,y2:p.y,marqMode};
+      drag={mode:'marquee',sx:p.x,sy:p.y,x2:p.x,y2:p.y,marqMode,band:selBand};
     }
     changed(); return;
   }
@@ -1221,7 +1396,7 @@ function deleteSelection(){
   for(const [n,set] of ptSel){ if(!notes.includes(n)) continue; if(!removePoints(n,set)) notes=notes.filter(x=>x!==n); }
   clearGran();
 }
-function clampBeatToContent(b){ return Math.max(0,Math.min(totalBeats(),b)); }
+function clampBeatToContent(b){ const m=mainSystem(); const len = m.kind==='chronological' ? (m.bars||settings.bars) : (m.bars||settings.bars)*(m.sigNum||4); return Math.max(0,Math.min(len,b)); }
 // voice = lowest positive integer whose notes don't overlap this one's time-span ("y-axis intersection")
 function overlap(aS,aE,bS,bE){ return aS < bE-1e-9 && bS < aE-1e-9; }
 function autoVoice(note){
@@ -1393,14 +1568,27 @@ cv.addEventListener('dblclick',e=>{
   changed();
 });
 
+function marqueeRect(d, forDraw){
+  let x=Math.min(d.sx,d.x2), y=Math.min(d.sy,d.y2), w=Math.abs(d.x2-d.sx), h=Math.abs(d.y2-d.sy);
+  const band=d.band||'box';
+  if(band==='vertical'){          // time span — pin pitch axis to full extent
+    if(forDraw){ y=GUT_T; h=Math.max(0,cv.clientHeight-GUT_T); } else { y=-1e6; h=2e6; }
+  } else if(band==='horizontal'){ // pitch span — pin time axis to full extent
+    if(forDraw){ x=GUT_L; w=Math.max(0,cv.clientWidth-GUT_L); } else { x=-1e6; w=2e6; }
+  }
+  return {x,y,w,h};
+}
 function drawMarquee(d){
-  const x=Math.min(d.sx,d.x2), y=Math.min(d.sy,d.y2), w=Math.abs(d.x2-d.sx), h=Math.abs(d.y2-d.sy);
+  const {x,y,w,h}=marqueeRect(d,true);
   ctx.save(); ctx.strokeStyle=col('--tide'); ctx.fillStyle='rgba(17,137,126,0.08)'; ctx.lineWidth=1;
   ctx.fillRect(x,y,w,h); ctx.strokeRect(x+.5,y+.5,w,h); ctx.restore();
 }
 function commitMarquee(d){
-  const x=Math.min(d.sx,d.x2), y=Math.min(d.sy,d.y2), w=Math.abs(d.x2-d.sx), h=Math.abs(d.y2-d.sy);
-  if(w<3&&h<3) return;
+  const {x,y,w,h}=marqueeRect(d,false);
+  const band=d.band||'box', sweptW=Math.abs(d.x2-d.sx), sweptH=Math.abs(d.y2-d.sy);
+  if(band==='box'   && sweptW<3 && sweptH<3) return;   // require a real sweep on the active axis
+  if(band==='vertical'   && sweptW<3) return;
+  if(band==='horizontal' && sweptH<3) return;
   const mode=d.marqMode||'replace';
   if(mode==='replace'){ selection.clear(); ptSel=new Map(); }
   segSel=null; pointSel=null;
@@ -1424,7 +1612,7 @@ cv.addEventListener('wheel',e=>{
     const p=evtPos(e); const f=e.deltaY<0?1.12:1/1.12;
     // zoom both, keep cursor anchored
     const beatAt=xToBeat(p.x), midiAt=yToMidi(p.y);
-    view.pxPerBeat=clamp(view.pxPerBeat*f,8,400);
+    view.pxPerSec=clamp(view.pxPerSec*f,16,4000);
     view.pxPerSemi=clamp(view.pxPerSemi*f,3,60);
     view.scrollX = (beatAt*view.pxPerBeat) - (p.x-GUT_L);
     view.scrollY = (view.midiMax-midiAt)*view.pxPerSemi - (p.y-GUT_T);
@@ -1687,23 +1875,24 @@ document.getElementById('cutBtn').onclick=doCut;
 document.getElementById('copyBtn').onclick=doCopy;
 document.getElementById('pasteBtn').onclick=doPaste;
 
-document.getElementById('zxIn').onclick =()=>{view.pxPerBeat=clamp(view.pxPerBeat*1.25,8,400);clampScroll();draw();};
-document.getElementById('zxOut').onclick=()=>{view.pxPerBeat=clamp(view.pxPerBeat/1.25,8,400);clampScroll();draw();};
+document.getElementById('zxIn').onclick =()=>{view.pxPerSec=clamp(view.pxPerSec*1.25,16,4000);clampScroll();draw();};
+document.getElementById('zxOut').onclick=()=>{view.pxPerSec=clamp(view.pxPerSec/1.25,16,4000);clampScroll();draw();};
 document.getElementById('zyIn').onclick =()=>{view.pxPerSemi=clamp(view.pxPerSemi*1.25,3,60);clampScroll();draw();};
 document.getElementById('zyOut').onclick=()=>{view.pxPerSemi=clamp(view.pxPerSemi/1.25,3,60);clampScroll();draw();};
 document.getElementById('zFit').onclick=fitContent;
 function fitContent(){
-  if(notes.length){ let lo=Infinity,hi=-Infinity,maxB=0;
-    notes.forEach(n=>{ const[a,b]=noteMinMaxHz(n); lo=Math.min(lo,a); hi=Math.max(hi,b); maxB=Math.max(maxB,n.start+n.dur); });
+  if(notes.length){ let lo=Infinity,hi=-Infinity;
+    notes.forEach(n=>{ const[a,b]=noteMinMaxHz(n); lo=Math.min(lo,a); hi=Math.max(hi,b); });
     const mLo=freqToMidi(lo,settings.a4)-2, mHi=freqToMidi(hi,settings.a4)+2;
     view.pxPerSemi=clamp((cv.clientHeight-GUT_T)/(mHi-mLo),3,40);
-    view.pxPerBeat=clamp((cv.clientWidth-GUT_L)/(maxB+1),8,200);
+    const totalSec=regions.reduce((s,r)=>s+regionSecLen(r),0)||1;
+    view.pxPerSec=clamp((cv.clientWidth-GUT_L)/(totalSec*1.05),16,4000);
     view.scrollY=(view.midiMax-mHi)*view.pxPerSemi; view.scrollX=0;
   } else { view.scrollY=(view.midiMax-72)*view.pxPerSemi-(cv.clientHeight-GUT_T)/2; view.scrollX=0; }
   clampScroll(); draw();
 }
 
-[bpm,sigNum,sigDen,a4,bars].forEach(el=>el.addEventListener('change',()=>{clampScroll();draw();}));
+[bpm,sigNum,sigDen,a4,bars].forEach(el=>el.addEventListener('change',()=>{syncRegionFromControls();clampScroll();draw();}));
 bendRange.addEventListener('input',()=>{document.getElementById('pillRange').textContent='±'+settings.range;});
 
 /* ---- voice manual control ---- */
@@ -1788,6 +1977,10 @@ document.querySelectorAll('#selModeSeg button').forEach(b=>b.addEventListener('c
   selMode=b.dataset.m;
   document.querySelectorAll('#selModeSeg button').forEach(x=>x.classList.toggle('on',x===b));
 }));
+document.querySelectorAll('#selBandSeg button').forEach(b=>b.addEventListener('click',()=>{
+  selBand=b.dataset.b;
+  document.querySelectorAll('#selBandSeg button').forEach(x=>x.classList.toggle('on',x===b));
+}));
 document.getElementById('undoBtn').onclick=undo;
 document.getElementById('redoBtn').onclick=redo;
 
@@ -1844,6 +2037,7 @@ function renderVoiceUI(){
    STATUS + LIFECYCLE
    ============================================================ */
 function changed(){
+  ensureRegions(); syncRegionFromControls(); normalizeNotes(); updateRegionIndicator();
   if(segSel && !notes.includes(segSel.note)) segSel=null;
   if(pointSel && !notes.includes(pointSel.note)) pointSel=null;
   if(ptSel.size){ for(const n of [...ptSel.keys()]) if(!notes.includes(n)) ptSel.delete(n); }
@@ -2012,38 +2206,36 @@ document.getElementById('report').onclick=()=>{
    relations, landmarks, ranges, or the recursion. */
 document.getElementById('expJson').onclick=()=>{
   if(!notes.length){ flash('nothing to export'); return; }
-  const ns=notes.slice().sort((a,b)=>(a.voice||1)-(b.voice||1)||a.start-b.start);
-  const events=ns.map(n=>{
+  ensureRegions(); activeRegion().notes=notes; syncRegionFromControls(); normalizeNotes();
+  const noteEvent=n=>{
     const ev={ position:{ at:+n.start.toFixed(4) }, extent:{ duration:+n.dur.toFixed(4) },
                payload:{ voice:n.voice||1, velocity:n.vel } };
     if(n.type==='hold'){ ev.value={ pitch:{ hz:+pitchAt(n,0).toFixed(3) } }; }
     else if(n.type==='glide' && n.pts.length===2){
       ev.value={ pitch:{ from:+pitchAt(n,0).toFixed(3), to:+pitchAt(n,1).toFixed(3) } };
       const c=segCurve(n,0); if(c && c!=='linear') ev.payload.curve=c;
-    } else { // multi-point / freehand: determinate envelope in value, full contour in payload
+    } else {
       ev.value={ pitch:{ from:+pitchAt(n,0).toFixed(3), to:+pitchAt(n,1).toFixed(3) } };
       ev.payload.contour = n.pts.map((p,i)=>{ const o={pos:+p.t.toFixed(4), hz:+p.hz.toFixed(3)}; if(n.type==='glide' && i<n.pts.length-1) o.curve=segCurve(n,i); return o; });
     }
     return ev;
-  });
-  const voices=[...new Set(ns.map(n=>n.voice||1))].sort((a,b)=>a-b);
-  const doc={
-    projectName:'TabotaRoll',
-    languageVersion:'2.0',
-    metadata:{ profile:'determinate' },
-    score:[{
-      id:'TabotaRoll', role:'regime',
-      frame:{
-        temporal:'metered',
-        temporalSettings:{ beats:totalBeats(), bpm:settings.bpm, timeSignature:settings.sigNum+'/'+settings.sigDen },
-        axis:'frequency', axisSettings:{ a4:settings.a4 }
-      },
-      payload:{ voices, midiExport:{ rule:'monophonic-per-voice', voiceToChannel:'voice N → base channel + (N-1)', bendRange:settings.range } },
-      events
-    }]
   };
+  const score = regions.map(r=>{
+    const m=mainSystem(r);
+    const rNotes=(r.notes||[]).slice().sort((a,b)=>(a.voice||1)-(b.voice||1)||a.start-b.start);
+    const voices=[...new Set(rNotes.map(n=>n.voice||1))].sort((a,b)=>a-b);
+    const beats=Math.max(1, Math.ceil(Math.max(0,...rNotes.map(n=>n.start+n.dur))));
+    const frame={ temporal:'metered',
+      temporalSettings:{ beats, bpm:m.bpm, timeSignature:(m.sigNum||4)+'/'+(m.sigDen||4) },
+      axis:'frequency', axisSettings:{ a4:m.a4 } };
+    if(m.offset) frame.temporalSettings.offset=m.offset;
+    return { id:r.id, role:'regime', frame,
+      payload:{ voices, midiExport:{ rule:'monophonic-per-voice', voiceToChannel:'voice N → base channel + (N-1)', bendRange:settings.range } },
+      events: rNotes.map(noteEvent) };
+  }).filter(s=>s.events.length || regions.length===1);
+  const doc={ projectName:'TabotaRoll', languageVersion:'2.0', metadata:{ profile:'determinate' }, score };
   download(new Blob([JSON.stringify(doc,null,2)],{type:'application/json'}),'tabota-roll.json');
-  flash('exported Tabota v2 JSON ('+voices.length+' voice'+(voices.length!==1?'s':'')+')');
+  flash('exported Tabota v2 JSON ('+regions.length+' region'+(regions.length!==1?'s':'')+')');
 };
 
 /* Tabota JSON import — reconstruct notes/voices/curves. Reads v2 (the format the
@@ -2181,6 +2373,7 @@ impJsonFile.onchange=async()=>{
   bpm.value=Math.round(res.bpm);
   if(res.sig){ sigNum.value=res.sig[0]||4; sigDen.value=res.sig[1]||4; }
   a4.value=res.a4; if(res.bend){ bendRange.value=res.bend; document.getElementById('pillRange').textContent='±'+res.bend; }
+  regions=[makeRegion()]; regions[0].name='Imported'; activeRegionId=regions[0].id; renderRegionTabs();   // fresh region from the imported frame; notes tag to it via normalizeNotes
   NID=Math.max(NID,0,...notes.map(n=>n.id))+1;
   const maxB=Math.max(0,...notes.map(n=>n.start+n.dur));
   bars.value=Math.max(1, Math.ceil((maxB+0.5)/Math.max(1,settings.sigNum)));
@@ -2199,15 +2392,27 @@ function flash(msg){ status.innerHTML=`<span style="color:var(--tide)">${msg}</s
    SEED + BOOT
    ============================================================ */
 function seed(){
-  // demo polyphony + a drawn multi-point glide that rises and falls across several notes
-  const a=settings.a4;
+  const a=settings.a4; const semis=x=>a*Math.pow(2,x/12);
+  REGID=1;
+  const A={id:newRegionId(), name:'Intro', main:'m', systems:[{id:'m',kind:'metered',     bpm:120,sigNum:4,sigDen:4,a4:a,bars:2,offset:0,axis:'frequency'}]};   // 4 bars, cut to 2 (measures 3-4 removed)
+  const B={id:newRegionId(), name:'Free',  main:'m', systems:[{id:'m',kind:'chronological',bpm:120,sigNum:4,sigDen:4,a4:a,bars:4,offset:0,axis:'frequency'}]};
+  const C={id:newRegionId(), name:'Coda',  main:'m', systems:[{id:'m',kind:'metered',     bpm:90, sigNum:3,sigDen:4,a4:a,bars:4,offset:0,axis:'frequency'}]};
+  regions=[A,B,C]; activeRegionId=A.id;
   notes=[
-    {id:NID++, start:0, dur:6, type:'hold',  vel:80, voice:1, pts:[{t:0,hz:a/2}]},                         // A3 drone (voice 1)
-    {id:NID++, start:0, dur:1, type:'hold',  vel:100,voice:2, pts:[{t:0,hz:a}]},                            // A4 exact
-    {id:NID++, start:1, dur:1, type:'hold',  vel:100,voice:2, pts:[{t:0,hz:a*Math.pow(2,3.5/12)}]},         // +350¢ neutral third
-    {id:NID++, start:2, dur:2, type:'glide', curve:'smooth', vel:100,voice:2, pts:[{t:0,hz:a},{t:1,hz:a*Math.pow(2,7/12)}]}, // eased glide A4->E5
-    {id:NID++, start:4, dur:2, type:'glide', vel:100,voice:2, pts:[                          // multi-point glide, per-segment curves
-       {t:0,hz:a,curve:'exp'},{t:.25,hz:a*Math.pow(2,4/12),curve:'log'},{t:.5,hz:a*Math.pow(2,-2/12),curve:'smooth'},{t:.75,hz:a*Math.pow(2,5/12),curve:'linear'},{t:1,hz:a}]},
+    // A — metered 4/4 @120 (start/dur in beats)
+    {id:NID++,region:A.id,start:0,dur:8,type:'hold', vel:70, voice:2,pts:[{t:0,hz:a/2}]},                                  // drone
+    {id:NID++,region:A.id,start:0,dur:1,type:'hold', vel:100,voice:1,pts:[{t:0,hz:a}]},
+    {id:NID++,region:A.id,start:1,dur:1,type:'hold', vel:100,voice:1,pts:[{t:0,hz:semis(3.5)}]},                            // neutral third
+    {id:NID++,region:A.id,start:2,dur:2,type:'glide',vel:100,voice:1,pts:[{t:0,hz:semis(7)},{t:1,hz:semis(12)}]},
+    // B — chronological @4s (start/dur in SECONDS)
+    {id:NID++,region:B.id,start:0,  dur:1.2,type:'glide',vel:100,voice:1,pts:[{t:0,hz:semis(12)},{t:1,hz:semis(5)}]},
+    {id:NID++,region:B.id,start:1.6,dur:0.6,type:'hold', vel:90, voice:1,pts:[{t:0,hz:semis(9)}]},
+    {id:NID++,region:B.id,start:2.6,dur:1.4,type:'glide',vel:90, voice:1,pts:[{t:0,hz:semis(2)},{t:1,hz:semis(14)}]},
+    // C — metered 3/4 @90 (a slower waltz close)
+    {id:NID++,region:C.id,start:0,dur:1,type:'hold',vel:100,voice:1,pts:[{t:0,hz:semis(12)}]},
+    {id:NID++,region:C.id,start:1,dur:1,type:'hold',vel:90, voice:1,pts:[{t:0,hz:semis(16)}]},
+    {id:NID++,region:C.id,start:2,dur:1,type:'hold',vel:90, voice:1,pts:[{t:0,hz:semis(19)}]},
+    {id:NID++,region:C.id,start:3,dur:3,type:'hold',vel:100,voice:1,pts:[{t:0,hz:semis(24)}]},
   ];
 }
 populateRoot(); populateScaleSelect(); loadManifest();

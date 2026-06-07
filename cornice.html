@@ -74,7 +74,124 @@ Performance goals:
       --mouse-x: 50%;
       --mouse-y: 50%;
     }
+	
+	body.theme-day {
+  --bg-deep: #e9f0c8;
+  --bg-mid: #d8e7d0;
+  --mold: #13e84f;
+  --petal: #d65fa8;
+  --acid: #c4c900;
+  --frost: #18bfc4;
+  --bruise: #634ce1;
+  --ink: #26351f;
+
+  color: var(--ink);
+
+  background:
+    radial-gradient(ellipse at 8% 12%, rgba(232,229,47,.35), transparent 24rem),
+    radial-gradient(ellipse at 88% 6%, rgba(240,184,222,.35), transparent 28rem),
+    radial-gradient(ellipse at 76% 88%, rgba(45,255,110,.22), transparent 24rem),
+    radial-gradient(ellipse at 48% 54%, rgba(99,76,225,.12), transparent 34rem),
+    linear-gradient(145deg, #f2eec8, #cfe8df 48%, #dfc7e6);
+}
+	
+	body.theme-day header,
+body.theme-day .world-wrap,
+body.theme-day .panel,
+body.theme-day footer {
+  background:
+    linear-gradient(152deg,
+      rgba(255,249,204,.68),
+      rgba(207,232,223,.66),
+      rgba(240,184,222,.42)
+    );
+  border-color: rgba(38,53,31,.18);
+  box-shadow:
+    0 20px 70px rgba(99,76,225,.13),
+    inset 0 0 50px rgba(255,255,210,.24);
+}
+
+body.theme-day #world {
+  color: #26351f;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255,255,210,.45), transparent 14rem),
+    rgba(239,238,194,.62);
+  box-shadow:
+    inset 0 0 0 1px rgba(38,53,31,.13),
+    inset 0 0 90px color-mix(in srgb, var(--weather-tint) 12%, transparent);
+}
+
+body.theme-day .scan-card, 
+body.theme-day .specimen-log {
+  background:
+    linear-gradient(160deg,
+      rgba(255,255,210,.48),
+      rgba(207,232,223,.42),
+      rgba(240,184,222,.28)
+    );
+  border-color: rgba(38,53,31,.16);
+}
+body.theme-day .ghost-button,
+body.theme-day .subtitle,
+body.theme-day footer,
+body.theme-day .vol-label,
+body.theme-day .vol-val,
+body.theme-day .specimen-count {
+  color: rgba(38,53,31,.62);
+}
+
+body.theme-day #scanText,
+body.theme-day .specimen-name {
+  color: #33492c;
+}
+
+body.theme-day .pill,
+body.theme-day .tag {
+  background: rgba(255,255,210,.42);
+  border-color: rgba(38,53,31,.18);
+  color: #33492c;
+}
+
+body.theme-day code {
+  color: #550d79;
+  background: rgba(214,95,168,.14);
+}
+	body.theme-day::before {
+  opacity: .18;
+  mix-blend-mode: multiply;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(99,76,225,.06) 0,
+      rgba(99,76,225,.06) 1px,
+      transparent 1px,
+      transparent 6px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(19,232,79,.05) 0,
+      rgba(19,232,79,.05) 1px,
+      transparent 1px,
+      transparent 14px
+    );
+}
+
+body.theme-day::after {
+  opacity: .26;
+  mix-blend-mode: screen;
+  background:
+    radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(255,250,154,.55), transparent 12rem),
+    linear-gradient(90deg, transparent, rgba(255,192,230,.22), transparent);
+  filter: blur(8px);
+}
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
+body.theme-day #themeBtn {
+  color: #26351f;
+  background:
+    linear-gradient(98deg, rgba(255,250,154,.72), rgba(240,184,222,.62), rgba(45,255,110,.48));
+  border-color: rgba(38,53,31,.22);
+}
 
 /* Prevent touch delay and accidental selection zooming */
 .cell, button, input[type=range] {
@@ -226,6 +343,24 @@ h1 {
       border-radius: 4px;
       backdrop-filter: blur(14px);
     }
+
+.world-wrap,
+.panel,
+.scan-card,
+.specimen-log {
+  border-radius: 3px 18px 5px 29px;
+}
+
+.panel {
+  clip-path: polygon(
+    0 0,
+    calc(100% - 18px) 0,
+    100% 28px,
+    100% 100%,
+    16px 100%,
+    0 calc(100% - 22px)
+  );
+}
 
     /* ── World wrap — specimen case ── */
     .world-wrap {
@@ -527,9 +662,65 @@ h1 {
   .dpad-btn.down  { grid-area: down; }
   .dpad-btn.right { grid-area: right; }
 }
+
+#themeFade {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 9999;
+  transition: opacity 1400ms ease;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(255,245,170,.28), transparent 28rem),
+    linear-gradient(145deg, rgba(255,245,190,.22), rgba(240,184,222,.18), rgba(99,76,225,.16));
+  mix-blend-mode: screen;
+  filter: blur(6px);
+}
+
+#themeFade.active {
+  opacity: 1;
+}
+
+/* Smooth out the theme-changing surfaces too */
+body,
+header,
+.world-wrap,
+.panel,
+footer,
+#world,
+.scan-card,
+.specimen-log,
+.pill,
+.tag,
+button,
+body::before,
+body::after {
+  transition:
+    background 1.4s ease,
+    color 1.4s ease,
+    border-color 1.4s ease,
+    box-shadow 1.4s ease,
+    opacity 1.4s ease,
+    filter 1.4s ease;
+}
+
+#themeFade.to-day {
+  background:
+    radial-gradient(circle at 50% 45%, rgba(255,250,180,.45), transparent 24rem),
+    linear-gradient(145deg, rgba(255,248,210,.35), rgba(207,232,223,.22), rgba(240,184,222,.18));
+  mix-blend-mode: screen;
+}
+
+#themeFade.to-night {
+  background:
+    radial-gradient(circle at 50% 45%, rgba(144,85,255,.18), transparent 24rem),
+    linear-gradient(145deg, rgba(6,3,15,.45), rgba(18,5,24,.35), rgba(45,255,110,.08));
+  mix-blend-mode: multiply;
+}
   </style>
 </head>
 <body>
+<div id="themeFade" aria-hidden="true"></div>
   <div class="shell">
     <header>
       <div>
@@ -576,7 +767,11 @@ h1 {
         </section>
         <div class="controls">
 		<button id="rerollBtn" >Shuffle</button>
+		<button id="transferBtn" class="ghost-button" style="border-color: var(--petal);">Transfer Movement</button>
           <button id="sceneBtn" class="ghost-button">Shuffle Vista</button>
+		  <button class="ghost-button" id="themeBtn" type="button" aria-pressed="false">
+  Day Mode
+</button>
           
           <button class="ghost-button" id="soundBtn">Sound On</button>
         </div>
@@ -624,7 +819,7 @@ function getQuantizedFreq(idx) { return PITCH_SCALE[Math.max(0, Math.min(Math.ro
 // ═══════════════════════════════════════════════════════════════════
 const BASE_TILE_DB = {
   damp_soil: {
-    id:"damp_soil", glyphs:[".","\u00b7","`","\u02d9"],
+    id:"damp_soil", glyphs:[".","\u00b7","`","\u02d9"," "],
     name:"damp soil", type:"terrain", zLayer:"floor", solid:false,
     color:"#b7c5ad", fx:"", windResponsive:false,
     blobChance:null, spawnWeight:0,
@@ -1477,6 +1672,7 @@ function generateWorld() {
   freezeTerrainGlyphs();
   placeEntities();
   placePlayer();
+  state.controlTarget = { type: 'player', ref: state.player };
   applyWeatherTint();
   updateDronePitch();
   updateVistaPill();
@@ -1521,17 +1717,36 @@ function refreshCell(x, y) {
 
   if (state.player.x===x && state.player.y===y) { span.textContent="@"; span.classList.add("player"); return; }
 
-  const ent=state.entities.find(e=>e.x===x&&e.y===y);
-  if (ent) {
-    const spec=ENTITY_DB[ent.id]||ENTITY_DB.party_ghost;
-    let glyph;
-    if (spec.glyphCycleSpeed && spec.glyphs.length>1) {
-      const idx=Math.floor(Math.abs(state.animTick*spec.glyphCycleSpeed+ent.phase*spec.glyphs.length*7))%spec.glyphs.length;
-      glyph=spec.glyphs[idx];
-    } else { glyph=spec.glyphs[ent.glyphIndex||0]; }
-    if (spec.windResponsive&&windTouches(x,y)) glyph=pickNative(spec.glyphs);
-    span.textContent=glyph; span.className+=` entity ${spec.fx||""}`; span.style.color=spec.color; return;
+const ent = state.entities.find(e => e.x === x && e.y === y);
+if (ent) {
+  // IF THIS IS A CONTROLLED TILE PROXIE CONSTRUCT: Use its unique visual state profile data directly
+  if (ent.isTileClone) {
+    span.textContent = ent.glyph;
+    span.className += " entity fx-drift"; // Visual sparkle highlighting control status
+    span.style.color = ent.color;
+    
+    // Add a structural visual outline if this phantom copy is currently selected under direct control
+    if (state.controlTarget.ref === ent) {
+      span.style.textShadow = "0 0 6px currentColor";
+    }
+    return;
   }
+
+  // Otherwise, default back to standard organic script rendering calculations...
+  const spec = ENTITY_DB[ent.id] || ENTITY_DB.party_ghost;
+  let glyph;
+  if (spec.glyphCycleSpeed && spec.glyphs.length > 1) {
+    const idx = Math.floor(Math.abs(state.animTick * spec.glyphCycleSpeed + ent.phase * spec.glyphs.length * 7)) % spec.glyphs.length;
+    glyph = spec.glyphs[idx];
+  } else { 
+    glyph = spec.glyphs[ent.glyphIndex || 0]; 
+  }
+  if (spec.windResponsive && windTouches(x, y)) glyph = pickNative(spec.glyphs);
+  span.textContent = glyph; 
+  span.className += ` entity ${spec.fx || ""}`; 
+  span.style.color = spec.color; 
+  return;
+}
 
   const cell=state.terrain[y][x];
   if (cell.id==="sky_tier") {
@@ -1690,16 +1905,60 @@ function updateDronePitch() {
 // INTERACTION
 // ═══════════════════════════════════════════════════════════════════
 function move(dx, dy) {
-  const nx=state.player.x+dx, ny=state.player.y+dy;
-  if (!inBounds(nx,ny)) return;
-  const cell=state.terrain[ny][nx];
-  if (cell.id==="sky_tier"||isSky(nx,ny)||isRail(nx,ny)) return;
-  if (TILE_DB[cell.id]?.solid) { if(state.soundOn) playTone({sound:{scaleIndex:1,type:"square"}},0.22); return; }
-  const ent=state.entities.find(e=>e.x===nx&&e.y===ny);
-  if (ent&&ENTITY_DB[ent.id]?.solid) { if(state.soundOn) playTone({sound:{scaleIndex:1,type:"square"}},0.22); return; }
-  const old={...state.player}; state.player={x:nx,y:ny};
-  refreshCell(old.x,old.y); refreshCell(nx,ny);
-  window.onTerrainStep?.(nx, ny, cell.id, !!ent, state.soundOn, state.weather?.droneFreq);
+  const target = state.controlTarget.ref;
+  if (!target) return;
+
+  const nx = target.x + dx;
+  const ny = target.y + dy;
+  
+  // Hard screen frame boundary validation
+  if (!inBounds(nx, ny)) return;
+
+  const cell = state.terrain[ny][nx];
+
+  // --- LAYER CONDITIONALS ---
+  
+  if (state.controlTarget.type === 'cloud') {
+    // CLOUD RULE: Must remain strictly on the Vista landscape tier
+    const targetIsSky = (cell.id === "sky_tier" || isSky(nx, ny));
+    if (!targetIsSky) {
+      if (state.soundOn) playTone({ sound: { scaleIndex: 2, type: "sine" } }, 0.15); // Soft boundary warning chime
+      return; 
+    }
+  } 
+  else if (state.controlTarget.type === 'tile') {
+    // TILE CLONE RULE: Ignores physical solids entirely, but let's keep it on the screen map frame
+    if (nx < 0 || nx >= COLS || ny < 0 || ny >= ROWS) return;
+  } 
+  else {
+    // PLAYER & ENTITY RULE: Standard constraints on the terrarium deck
+    if (cell.id === "sky_tier" || isSky(nx, ny) || isRail(nx, ny)) return;
+    
+    if (TILE_DB[cell.id]?.solid) {
+      if (state.soundOn) playTone({ sound: { scaleIndex: 1, type: "square" } }, 0.22);
+      return;
+    }
+    
+    const ent = state.entities.find(e => e.x === nx && e.y === ny);
+    if (ent && ENTITY_DB[ent.id]?.solid) {
+      if (state.soundOn) playTone({ sound: { scaleIndex: 1, type: "square" } }, 0.22);
+      return;
+    }
+  }
+
+  // --- EXECUTE COORDINATE SHIFT ---
+  const oldX = target.x;
+  const oldY = target.y;
+  target.x = nx;
+  target.y = ny;
+
+  // Refresh visual state maps immediately
+  refreshCell(oldX, oldY);
+  refreshCell(nx, ny);
+
+  // Trigger step audio synthesis based on background overlaps
+  const standingOnEntity = state.entities.some(e => e !== target && e.x === nx && e.y === ny);
+  window.onTerrainStep?.(nx, ny, cell.id, standingOnEntity, state.soundOn, state.weather?.droneFreq);
 }
 
 function inspectAt(x, y) {
@@ -1812,6 +2071,160 @@ function shiftScene() {
   refreshAllCells();
   updateVistaPill();
 }
+// ═══════════════════════════════════════════════════════════════════
+// TRANSFER MOVEMENT EXTENSION STATE & LOGIC
+// ═══════════════════════════════════════════════════════════════════
+state.transferPrimed = false;
+state.controlTarget = { type: 'player', ref: state.player }; // Options: 'player', 'entity', 'tile'
+
+const transferBtn = document.getElementById("transferBtn");
+
+transferBtn.addEventListener("click", () => {
+  state.transferPrimed = !state.transferPrimed;
+  if (state.transferPrimed) {
+    transferBtn.textContent = "Click Target...";
+    transferBtn.style.background = "linear-gradient(98deg, var(--petal), var(--bruise))";
+    transferBtn.style.color = "#fff";
+  } else {
+    resetTransferButtonUI();
+  }
+});
+
+function finalizeTransferSelection(previousControl = null) {
+  // When control leaves a captured procedural cloud, remove the artificial proxy.
+  // The underlying cloud engine can keep drifting underneath if that cloud layer still exists;
+  // otherwise the proxy simply dissolves instead of freezing in the sky.
+  if (previousControl?.type === "cloud" && previousControl.ref !== state.controlTarget.ref) {
+    const releasedCloud = previousControl.ref;
+    if (releasedCloud) {
+      state.entities = state.entities.filter(ent => ent !== releasedCloud);
+      refreshCell(releasedCloud.x, releasedCloud.y);
+    }
+  }
+
+  // Safety pass: only the actively-controlled cloud proxy may remain in state.entities.
+  // This prevents old cloud bodies from accumulating as frozen tile-clones.
+  state.entities = state.entities.filter(ent => {
+    if (ent.id !== "drifting_cloud") return true;
+    if (state.controlTarget.type === "cloud" && state.controlTarget.ref === ent) return true;
+    refreshCell(ent.x, ent.y);
+    return false;
+  });
+
+  // Clear the priming state flag safely
+  state.transferPrimed = false;
+  
+  // Re-evaluate and reset the button's text and background styles
+  resetTransferButtonUI();
+  
+  // Force refresh the full grid layout to display the new control indicators
+  refreshAllCells();
+}
+
+function resetTransferButtonUI() {
+  state.transferPrimed = false;
+  if (state.controlTarget.type === 'player') {
+    transferBtn.textContent = "Transfer Movement";
+    transferBtn.style.background = "";
+    transferBtn.style.color = "";
+  } else {
+    // Adapts label to display 'Cloud' vs 'Entity' vs 'Tile' target profiles
+    transferBtn.textContent = `Transfer Movement`;
+    transferBtn.style.background = "rgba(240,184,222,.15)";
+    transferBtn.style.color = "var(--petal)";
+  }
+}
+
+// Intercept clicks on the map before they fall back to the information standard inspector
+const originalInspectAt = window.inspectAt;
+window.inspectAt = function(x, y) {
+  if (!inBounds(x, y)) return;
+
+  if (state.transferPrimed) {
+    handleTransferTargetSelection(x, y);
+    return;
+  }
+
+  // If the user isn't trying to transfer control, maintain original information display
+  originalInspectAt(x, y);
+};
+
+function handleTransferTargetSelection(x, y) {
+  const previousControl = state.controlTarget;
+
+  // Rule 5: Return control back to player
+  if (x === state.player.x && y === state.player.y) {
+    state.controlTarget = { type: 'player', ref: state.player };
+    addSpecimen("control returned", "@", "#fff26e", false, "System focus bound back to player body.");
+    finalizeTransferSelection(previousControl);
+    return;
+  }
+
+  // Check if a cloud is present at the clicked cell location
+  const span = cellEls[y]?.[x];
+  const isCloudGlyph = span && (span.textContent === "\u2591" || span.textContent === "\u2592" || span.textContent === "\u25cc" || span.textContent === "\u25cb");
+
+  // Rule 4: If a cloud is clicked, initialize it with a distinct 'cloud' control type
+  if (isCloudGlyph) {
+    const cloneEntity = {
+      uid: state.uidCounter++,
+      id: "drifting_cloud",
+      x: x,
+      y: y,
+      glyphIndex: 0,
+      phase: Math.random(),
+      isTileClone: true, // Reuses renderer overlay bypass
+      color: "#cfe8d2",
+      glyph: span.textContent
+    };
+
+    state.entities.push(cloneEntity);
+    state.controlTarget = { type: 'cloud', ref: cloneEntity }; // Explicit cloud type
+    
+    addSpecimen("captured vapor", cloneEntity.glyph, "#4dfff0", false, "Possessed drifting mist. Bound strictly to scenic vista layer.");
+    finalizeTransferSelection(previousControl);
+    return;
+  }
+
+  // Rule 3: Reject non-cloud distant scene landscape clicks
+  if (state.terrain[y][x].id === "sky_tier" || isSky(x, y)) {
+    addSpecimen("transfer failure", "\u22e0", "#ff42a0", false, "Cannot shift control to raw background space. Target a cloud layer.");
+    finalizeTransferSelection();
+    return;
+  }
+
+  // Rule 1: Handle standard Entity selection
+  const targetEntity = state.entities.find(e => e.x === x && e.y === y);
+  if (targetEntity) {
+    state.controlTarget = { type: 'entity', ref: targetEntity };
+    const spec = ENTITY_DB[targetEntity.id];
+    addSpecimen("possessed entity", spec.glyphs[0], spec.color, false, `Now driving ${spec.name}.`);
+    finalizeTransferSelection(previousControl);
+    return;
+  }
+
+  // Rule 2: Handle standard Tile Cloning creation
+  const underlyingTile = state.terrain[y][x];
+  const tileSpec = TILE_DB[underlyingTile.id] || TILE_DB.damp_soil;
+  
+  const cloneEntity = {
+    uid: state.uidCounter++,
+    id: underlyingTile.id,
+    x: x,
+    y: y,
+    glyphIndex: 0,
+    phase: Math.random(),
+    isTileClone: true,
+    color: tileSpec.color || "#cfe8d2",
+    glyph: tileSpec.glyphs[0]
+  };
+
+  state.entities.push(cloneEntity);
+  state.controlTarget = { type: 'tile', ref: cloneEntity };
+  
+  addSpecimen("cloned phantom tile", cloneEntity.glyph, cloneEntity.color, false, `Constructed floating tile proxy.`);
+  finalizeTransferSelection(previousControl);
+}
 
 // ═══════════════════════════════════════════════════════════════════
 // EVENT LISTENERS
@@ -1886,6 +2299,60 @@ document.getElementById("soundBtn").addEventListener("click", async e => {
   if (state.soundOn) startAmbientDrone(); else stopAmbientDrone();
 });
 
+const themeBtn = document.getElementById("themeBtn");
+const themeFade = document.getElementById("themeFade");
+const THEME_KEY = "cornice-theme";
+
+function saveThemePreference(theme) {
+  try {
+    localStorage.setItem(THEME_KEY, theme);
+  } catch (err) {}
+}
+
+function loadThemePreference() {
+  try {
+    return localStorage.getItem(THEME_KEY);
+  } catch (err) {
+    return null;
+  }
+}
+
+function applyTheme(theme) {
+  const isDay = theme === "day";
+
+  document.body.classList.toggle("theme-day", isDay);
+
+  themeBtn.textContent = isDay ? "Night Mode" : "Day Mode";
+  themeBtn.setAttribute("aria-pressed", String(isDay));
+  saveThemePreference(isDay ? "day" : "night");
+}
+
+async function fadeThemeTo(theme) {
+  themeBtn.disabled = true;
+
+  themeFade.classList.remove("to-day", "to-night");
+  themeFade.classList.add(theme === "day" ? "to-day" : "to-night");
+  themeFade.classList.add("active");
+
+await new Promise(resolve => setTimeout(resolve, 1200));
+
+applyTheme(theme);
+
+await new Promise(resolve => setTimeout(resolve, 300));
+
+themeFade.classList.remove("active");
+
+await new Promise(resolve => setTimeout(resolve, 1800));
+
+  themeBtn.disabled = false;
+}
+
+applyTheme(loadThemePreference() === "day" ? "day" : "night");
+
+themeBtn.addEventListener("click", () => {
+  const nextTheme = document.body.classList.contains("theme-day") ? "night" : "day";
+  fadeThemeTo(nextTheme);
+});
 // ═══════════════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════════════
