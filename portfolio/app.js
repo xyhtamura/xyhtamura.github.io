@@ -91,17 +91,38 @@ function renderLinks(links, fontSize = "0.85rem") {
     <ul style="list-style:none; display:flex; flex-direction:column; gap:.4rem;">${items}</ul>
   </div>`;
 }
-
 function renderExhibitions(exhibitions, fontSize = "0.75rem", gap = "0.3rem") {
   if (!exhibitions || exhibitions.length === 0) return "";
   return `<div style="margin-top:.8rem; display:flex; flex-direction:column; gap:${gap};">
-    ${exhibitions.map(ex => `
-      <div style="font-family:'Averia Sans Libre',sans-serif; font-size:${fontSize}; color:var(--text-dim); line-height:1.35;">
-        Presented at <strong>${ex.venue || ""}</strong> for <em>${ex.event || ""}</em> (${ex.year || ""})
-      </div>`).join("")}
+    ${exhibitions.map(ex => {
+      let content = "";
+      // Use custom type capitalized nicely, or fallback to "Presented at"
+      const prefix = ex.type ? ex.type : "Presented at";
+      
+      if (!ex.venue && ex.event) {
+        // Condition 1: No venue, but event exists
+        content = `${prefix} <em>${ex.event}</em>`;
+      } else if (ex.venue && !ex.event) {
+        // Condition 2: FIXED — Now properly includes the prefix type before the venue!
+        content = `${prefix} <strong>${ex.venue}</strong>`;
+      } else if (ex.venue && ex.event) {
+        // Standard layout fallback
+        content = `${prefix} <strong>${ex.venue}</strong> <em>${ex.event}</em>`;
+      }
+
+      // Append custom details text and/or the year if present
+      const detailsHTML = ex.details ? `<span class="ex-details" style="margin-left:.25rem; margin-right:.25rem;">${ex.details}</span>` : "";
+      const yearHTML = ex.year ? `(${ex.year})` : "";
+      
+      if (!content && !detailsHTML && !yearHTML) return "";
+
+      return `
+        <div style="font-family:'Averia Sans Libre',sans-serif; font-size:${fontSize}; color:var(--text-dim); line-height:1.35;">
+          ${content}${detailsHTML}${yearHTML}
+        </div>`;
+    }).join("")}
   </div>`;
 }
-
 function renderTags(tags) {
   return (tags || []).map(t => `<span class="tag">${t}</span>`).join("");
 }
