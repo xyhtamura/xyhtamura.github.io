@@ -509,7 +509,7 @@ const slides = [
     pieces: [
       {
         title: "Cytophone",
-        year: "2025→",
+        year: "2026",
         tags: ["web audio", "modal synthesis", "physical modeling", "generative instrument"],
         blurb: "A browser-based modal-synthesis instrument in which drifting cell-like bodies ring when struck, their timbre derived from physical resonance models (membrane, plate, bell) pushed into impossible hybrids. Visual properties map directly to sound, so the colony is played by setting it in motion and letting bodies collide.",
         links: [
@@ -518,7 +518,7 @@ const slides = [
       },
       {
         title: "Glossolalia",
-        year: "2025→",
+        year: "2026",
         tags: ["formant synthesis", "vocal tract model", "experimental interface", "web art"],
         blurb: "A browser-based formant-synthesis instrument in which drifting IPA glyphs act as sounding bodies, generating speech-like syllables from a vocal-tract model so that the output only ever seems to be language. The vowel space serves as the interface, sitting at the boundary of instrument, speaking toy, and writing machine.",
         links: [
@@ -564,7 +564,7 @@ const slides = [
       },
       {
         title: "Electropond",
-        year: "2025",
+        year: "2026",
         tags: ["FM synthesis", "physics engine", "microtonal", "visual music"],
         blurb: "A browser-based visual-physics instrument where FM-synthesis plankton generate complex sound layers through physical motion, color properties, collision dynamics, and rippling microtonal fields.",
         links: [
@@ -578,6 +578,15 @@ const slides = [
         blurb: "A procedural creature-sound engine and browser toy. It generates chirps, murmurs, droplets, and filtered grains for imaginary digital critters. Functions as an interaction-audio module for a robot-toy to convey systemic states (thinking, transcribing, crafting) and standalone as a playable web interface to modulate garbage-bot vocalizations.",
         links: [
           { label: "Launch App", url: "https://xyhtamura.github.io/critterances/" }
+        ]
+      },
+	  {
+        title: "Ganymede",
+        year: "2026",
+        tags: ["WebGL", "image processing", "audio reactive", "web tool", "noise field"],
+        blurb: "A browser-based WebGL image-warping tool that subjects any uploaded photograph or graphic to a continuously animated noise field, featuring layered controls for lens distortion, chromatic aberration, seamless tiling, hue and saturation shifting, and real-time audio reactivity via live microphone input.",
+        links: [
+          { label: "Launch App", url: "https://xyhtamura.github.io/ganymede" }
         ]
       }
 
