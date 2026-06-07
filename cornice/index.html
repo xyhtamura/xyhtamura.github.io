@@ -2571,8 +2571,8 @@ function move(dx, dy) {
     }
   } 
   else if (state.controlTarget.type === 'tile') {
-    // TILE CLONE RULE: Ignores physical solids entirely, but let's keep it on the screen map frame
-    if (nx < 0 || nx >= COLS || ny < 0 || ny >= ROWS) return;
+    // TILE CLONE RULE: Ignores physical solids, but must stay within the garden deck — no sky, no rail
+    if (isSky(nx, ny) || isRail(nx, ny)) return;
   } 
   else {
     // PLAYER & ENTITY RULE: Standard constraints on the terrarium deck
@@ -2716,7 +2716,7 @@ function shiftScene() {
     }
   }
   refreshAllCells();
-  updateVistaPill();
+  // updateVistaPill is currently disabled; no call needed here
 }
 // ═══════════════════════════════════════════════════════════════════
 // TRANSFER MOVEMENT EXTENSION STATE & LOGIC
@@ -2822,12 +2822,17 @@ function handleTransferTargetSelection(x, y) {
     return;
   }
 
-  // Check if a cloud is present at the clicked cell location
   const span = cellEls[y]?.[x];
-  const isCloudGlyph = span && (span.textContent === "\u2591" || span.textContent === "\u2592" || span.textContent === "\u25cc" || span.textContent === "\u25cb");
 
-  // Rule 4: If a cloud is clicked, initialize it with a distinct 'cloud' control type
-  if (isCloudGlyph) {
+  // Cloud detection: cell must be in the sky zone AND have the cloud engine's background tint active.
+  // The cloud engine sets span.style.background to a color-mix() value on cloud cells and resets it
+  // to "" on clear sky cells — this is the reliable indicator. Glyph matching is NOT used because
+  // the cloud engine never changes textContent (it only modifies color/opacity/background), and
+  // several ground tiles (lost_pavement: ░ ▒) share codepoints that were previously being matched.
+  const isCloudCell = isSky(x, y) && span && span.style.background !== "";
+
+  // Rule 4: If a cloud cell is clicked, initialize it with a distinct 'cloud' control type
+  if (isCloudCell) {
     const cloneEntity = {
       uid: state.uidCounter++,
       id: "drifting_cloud",
