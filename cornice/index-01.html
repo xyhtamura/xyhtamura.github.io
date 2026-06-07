@@ -29,8 +29,8 @@ This single-file build is an early prototype for a browser-based navigable terra
 
 Core concept:
 - A small nocturnal terrarium at the edge of an impossible city.
-- The world is currently rendered through ASCII/glyph characters, but these glyphs should be treated as temporary visual skins for semantic world-objects.
-- Each tile/object should ideally have an identity, type, tags, behavior, and future sprite/texture slots. The character displayed on screen is not the object itself; it is only the current glyph representation of that object.
+- The world is currently rendered through ASCII/glyph characters, but we keep the engine open for possible later renderings or reskinnings using other textures such as *.png and renderers.
+- Each tile/object should ideally have an identity, type, tags, behavior, and future sprite/texture slots.
 
 Aesthetic / vibe:
 - Terminal ecology, haunted garden, fungal interface, night-party ruin, tiny ecumenopolis understory.
@@ -435,13 +435,15 @@ h1 {
     }
 
     /* ── Cells ── */
-    .cell { display: inline-grid; place-items: center; width: 1ch; height: calc(var(--cell) * var(--line)); cursor: crosshair; }
+    .cell { position: relative; display: inline-grid; place-items: center; width: 1ch; height: calc(var(--cell) * var(--line)); cursor: crosshair; }
+    /* Overhead layer — canopy_mesh, wire_vine rendered above all entities */
+    .has-overhead::after { content: attr(data-ovg); position: absolute; inset: 0; display: grid; place-items: center; color: var(--ov-color, #f5d97a); opacity: 0.68; z-index: 6; pointer-events: none; }
     .cell:hover { background: rgba(240,184,222,.1); outline: 1px solid rgba(232,229,47,.2); position: relative; z-index: 3; }
     .selected { text-shadow: 0 0 .6em currentColor; background: rgba(232,229,47,.12); outline: 1px solid rgba(232,229,47,.4); position: relative; z-index: 3; }
     .terrain  { opacity: .8; }
     .entity   { opacity: .98; font-weight: 700; text-shadow: 0 0 .5em currentColor; }
     .solid    { filter: contrast(1.06) saturate(1.12); }
-    .sky-tier { opacity: .55; font-weight: 300; }
+    .sky-tier { opacity: .10; font-weight: 300; }
     .player   { color: #fff26e; text-shadow: 0 0 4px #e5e32f, 0 0 14px #ff65d8, 0 0 28px #2dff6e; animation: playerPulse .88s ease-in-out infinite alternate; z-index: 4; }
 
     .fx-glow    { animation: glow    1.7s ease-in-out infinite alternate; }
@@ -746,7 +748,7 @@ body::after {
       </div>
       <div class="status-strip">
         <div class="pill-row">
-          <span class="pill" id="vistaPill">vista: —</span>
+          <!--<span class="pill" id="vistaPill">vista: —</span>-->
           <span class="pill" id="weatherPill">weather: —</span>
           <span class="pill" id="seedPill">seed: —</span>
         </div>
@@ -911,6 +913,150 @@ const BASE_TILE_DB = {
     color:"#bd93f9", fx:"fx-breathe", rare:true,
     tags:["rare","void","unknown-substrate","permeable"],
     whispers:["The floor here has been slightly replaced. The original material is no longer available for loading.","A patch of non-canonical surface. Walking on it feels like a minor licensing violation.","This area was last updated in a cycle that does not appear in the changelog.","Substrate origin: unknown. Substrate state: [weather]. Notes: \u2014"]
+  },
+  lost_pavement: {
+    id:"lost_pavement", glyphs:["░","▒","─","┄"],
+    name:"lost pavement", type:"terrain", zLayer:"floor", solid:false,
+    color:"#9ba8b5", fx:"", windResponsive:false,
+    blobChance:0.12, blobCount:4, blobRadius:5, blobRadiusY:2,
+    tags:["walkable","urban","palimpsest","old-city"],
+    whispers:[
+      "it got here somehow",
+      "pavement from a prior period",
+      "the fingerprint of a street",
+      "it could be the interior or exterior of something"
+    ]
+  },
+  spore_bloom: {
+    id:"spore_bloom", glyphs:["°","·","˚","∘"],
+    name:"spore bloom", type:"terrain", zLayer:"floor", solid:false,
+    color:"#78ffda", fx:"", animated:true, windResponsive:true,
+    blobChance:0.18, blobCount:4, blobRadius:3, blobRadiusY:2,
+    tags:["walkable","fungal","bioluminescent","wind-responsive","soft"],
+    sound:{ scaleIndex:9, type:"sine" },
+    whispers:[
+      "without an agenda",
+      "an announcement with no sender",
+      "soft enough to be a question",
+      "sentence as a punctuation mark"
+    ]
+  },
+  ferrofluid_pool: {
+    id:"ferrofluid_pool", glyphs:["▓","∿","∽","▄"],
+    name:"ferrofluid pool", type:"terrain", zLayer:"floor", solid:false,
+    color:"#c084fc", fx:"fx-breathe", animated:true, windResponsive:false, rare:true,
+    blobChance:0.06, blobCount:2, blobRadius:2, blobRadiusY:1,
+    tags:["walkable","liquid","magnetic","rare","responsive"],
+    sound:{ scaleIndex:11, type:"sawtooth" },
+    whispers:[
+      "meeting the locals field",
+      "a liquid with strong opinions about adjacency",
+      "ferrofluid does not relax",
+      "the surface pattern updates"
+    ]
+  },
+  scaffold_remnant: {
+    id:"scaffold_remnant", glyphs:["┤","├","┼","╋","┊"],
+    name:"scaffold remnant", type:"structure", zLayer:"wall", solid:true,
+    color:"#c17b3f", fx:"solid", windResponsive:false,
+    tags:["boundary","urban","ruin","industrial","architecture"],
+    whispers:[
+      "the scaffolding was not briefed",
+      "a frame for a work that has since been completed elsewhere",
+      "still waiting to be dismantled on a day",
+      "load-bearing by habit, not by current specification"
+    ]
+  },
+  canopy_mesh: {
+    id:"canopy_mesh", glyphs:["≈","∽","≋","≊"],
+    name:"canopy mesh", type:"terrain", zLayer:"overhead", solid:false,
+    color:"#f5d97a", fx:"", windResponsive:true,
+    tags:["overhead","fabric","architecture","permeable","wind-responsive"],
+    whispers:[
+      "something's under construction",
+      "shades from fluorescent sun",
+      "weather arrives here",
+      "a fabric decision between tiers"
+    ]
+  },
+  thermal_vent: {
+    id:"thermal_vent", glyphs:["^","˄","⌃","ʌ"],
+    name:"thermal vent", type:"structure", zLayer:"floor", solid:false,
+    color:"#ff9f5b", fx:"fx-breathe", animated:true, windResponsive:false,
+    tags:["walkable","urban","heat","infrastructure","sound-source"],
+    sound:{ scaleIndex:2, type:"triangle" },
+    whispers:[
+      "the city exhales here without a face to exhale from",
+      "warm in a way that is not personal",
+      "heat as a kind of municipal honesty",
+      "exhaust from an A/C unit, maybe"
+    ]
+  },
+  signal_moss: {
+    id:"signal_moss", glyphs:["%","∷","⁘","⁙"],
+    name:"signal moss", type:"terrain", zLayer:"floor", solid:false,
+    color:"#5effb1", fx:"", windResponsive:false,
+    blobChance:0.14, blobCount:3, blobRadius:3, blobRadiusY:2,
+    tags:["walkable","moss","conductive","bioluminescent","receptive"],
+    sound:{ scaleIndex:7, type:"sine" },
+    whispers:[
+      "the moss has reception",
+      "indeterminate bandwidth",
+      "whatever is broadcasting, this receives it",
+      "colonies forming around a signal"
+    ]
+  },
+  leaking_conduit: {
+    id:"leaking_conduit", glyphs:["‖","╎","¦","|"],
+    name:"leaking conduit", type:"structure", zLayer:"wall", solid:true,
+    color:"#7ec8e3", fx:"solid", animated:true, windResponsive:false,
+    tags:["boundary","urban","infrastructure","wet","sound-source"],
+    sound:{ scaleIndex:4, type:"sine" },
+    whispers:[
+      "the pipe was not designed",
+      "a slow announcement of structural candor",
+      "liquid finds the disagreement",
+      "a thin seam between what was planned and what now is"
+    ]
+  },
+  sand_drift: {
+    id:"sand_drift", glyphs:["'","\u00b7","\u22c5"," "],
+    name:"sand drift", type:"terrain", zLayer:"floor", solid:false,
+    color:"#c8a870", fx:"", windResponsive:true,
+    blobChance:0.20, blobCount:4, blobRadius:5, blobRadiusY:2,
+    tags:["walkable","mineral","arid","wind-responsive","particulate"],
+    whispers:[
+      "wind-sorted by weight before it lost interest",
+      "sand from a construction site three blocks over",
+      "particulate residue of a distant region",
+      "it crossed multiple jurisdictions to get here"
+    ]
+  },
+  frost_crust: {
+    id:"frost_crust", glyphs:["*","\u22c6","\u2217"," "],
+    name:"frost crust", type:"terrain", zLayer:"floor", solid:false,
+    color:"#c4dff0", fx:"", windResponsive:false,
+    blobChance:0.10, blobCount:3, blobRadius:3, blobRadiusY:2,
+    tags:["walkable","frozen","mineral","cold","crystalline"],
+    whispers:[
+      "structural deposition",
+      "cold sweats in the early hours",
+      "an overnight administrative decision about water",
+      "leaking climate control"
+    ]
+  },
+  gravel_bed: {
+    id:"gravel_bed", glyphs:[".",",",";","\u00b7"],
+    name:"gravel bed", type:"terrain", zLayer:"floor", solid:false,
+    color:"#8a7e70", fx:"", windResponsive:false,
+    blobChance:0.14, blobCount:4, blobRadius:4, blobRadiusY:2,
+    tags:["walkable","mineral","rough","aggregate","urban"],
+    whispers:[
+      "crushed stone from a building",
+      "aggregate without attribution",
+      "each piece has been somewhere else first",
+      "the texture of an unfinished decision"
+    ]
   }
 };
 
@@ -1266,6 +1412,86 @@ const BASE_BIOME_TEMPLATES = [
       api.blob(cx, cy, 2, 1, "city_debris", 0.15);
       api.blob(cx - 2, cy, 3, 1, "neon_fuzz", 0.35);
     }
+  },
+
+  {
+    id: "scaffold_corner",
+    name: "Scaffold Corner",
+    paint(cx, cy, api) {
+      // Abandoned construction frame, debris pooling underneath
+      api.blob(cx, cy, 3, 2, "scaffold_remnant", 0.12);
+      api.blob(cx + 1, cy + 1, 3, 1, "city_debris", 0.20);
+      if (api.chance(0.5)) api.blob(cx - 1, cy, 2, 1, "gravel_bed", 0.16);
+    }
+  },
+
+  {
+    id: "dripping_wall",
+    name: "Dripping Wall",
+    paint(cx, cy, api) {
+      // Leaking conduit with a pool forming below
+      api.blob(cx, cy, 2, 3, "leaking_conduit", 0.10);
+      api.blob(cx, cy + 2, 4, 1, "black_water", 0.08);
+      if (api.chance(0.6)) api.blob(cx + 1, cy, 1, 2, "leaking_conduit", 0.08);
+    }
+  },
+
+  {
+    id: "canopy_drape",
+    name: "Canopy Drape",
+    paint(cx, cy, api) {
+      // Wide overhead mesh spanning past the rail into the sky
+      api.blob(cx, cy, 7, 1, "canopy_mesh", 0.12);
+      if (api.chance(0.55)) {
+        const shift = Math.floor((api.rand() - 0.5) * 8);
+        api.blob(cx + shift, cy + 1, 5, 1, "canopy_mesh", 0.14);
+      }
+    }
+  },
+
+  {
+    id: "sand_drift_patch",
+    name: "Sand Drift",
+    paint(cx, cy, api) {
+      // Windblown urban grit pooling in a low corner
+      api.blob(cx, cy, 5, 2, "sand_drift", 0.22);
+      api.blob(cx + 2, cy, 3, 1, "gravel_bed", 0.14);
+      if (api.chance(0.4)) api.blob(cx - 1, cy + 1, 2, 1, "city_debris", 0.18);
+    }
+  },
+
+  {
+    id: "frost_pocket",
+    name: "Frost Pocket",
+    paint(cx, cy, api) {
+      // Cold accumulation in a sheltered alcove
+      api.blob(cx, cy, 4, 2, "frost_crust", 0.10);
+      if (api.chance(0.5)) api.blob(cx, cy, 2, 1, "lost_pavement", 0.06);
+      if (api.chance(0.4)) api.blob(cx + 2, cy - 1, 2, 1, "gravel_bed", 0.12);
+    }
+  },
+
+  {
+    id: "vent_cluster",
+    name: "Vent Cluster",
+    paint(cx, cy, api) {
+      // Urban heat exhaust points scattered across debris
+      api.blob(cx, cy, 4, 2, "city_debris", 0.16);
+      api.blob(cx, cy, 1, 1, "thermal_vent", 0.04);
+      if (api.chance(0.6)) api.blob(cx + 2, cy - 1, 1, 1, "thermal_vent", 0.04);
+      if (api.chance(0.35)) api.blob(cx - 2, cy + 1, 1, 1, "thermal_vent", 0.04);
+    }
+  },
+
+  {
+    id: "gravel_scar",
+    name: "Gravel Scar",
+    paint(cx, cy, api) {
+      // Raw aggregate exposed where the surface broke open
+      api.blob(cx, cy, 5, 2, "gravel_bed", 0.16);
+      api.blob(cx, cy, 2, 1, "bruised_stone", 0.10);
+      if (api.chance(0.45)) api.blob(cx + 3, cy, 2, 1, "sand_drift", 0.18);
+    }
   }
   
 ];
@@ -1300,16 +1526,18 @@ function buildDB() {
 // ═══════════════════════════════════════════════════════════════════
 const state = {
   seed:0, rng:null, weather:null,
-  orientation: "bottom", 
-  vistaBlend:[],   // [{sceneIdx, weight}, ...]  — replaces single currentSceneIndex
-  skyVista:[],     // 2D array: blend-index assigned to each sky cell
+  vistaBlend:[],         // alias to vistaRegionBlends[0] for backward compat
+  vistaRegionBlends:[],  // one vistaBlend per vista biome region
+  vistaCuts:[],          // angled sine-wave dividers inside sky zone
+  gardenCuts:[],         // angled sine-wave dividers inside garden zone
+  skyVista:[],           // 2D: raw random float per sky cell, resolved at render time
   terrain:[], terrainGlyphs:[], entities:[],
   player:{ x:26, y:14 }, selected:null,
   uidCounter:1, animTick:0,
   wind:{ active:false, front:-99, width:3.5, dir:1 },
   audio:null, soundOn:false, droneNodes:null,
   specimenTotal:0,
-  railParams:{ a:0, b:1, c:-8, amp:2, waveLength:40, phase:0 }
+  railParams:{ angle:0, offset:-3, amp:2, waveLength:40, phase:0 }
 };
 
 // ═══════════════════════════════════════════════════════════════════
@@ -1324,7 +1552,7 @@ const specimenLog    = document.getElementById("specimenLog");
 const specimenCountEl= document.getElementById("specimenCount");
 const seedPill       = document.getElementById("seedPill");
 const weatherPill    = document.getElementById("weatherPill");
-const vistaPill      = document.getElementById("vistaPill");
+<!--const vistaPill      = document.getElementById("vistaPill");-->
 const walkVolumeSlider = document.getElementById("walkVolumeSlider");
 const walkVolVal       = document.getElementById("walkVolVal");
 const droneVolumeSlider = document.getElementById("droneVolumeSlider");
@@ -1351,160 +1579,263 @@ function clamp(v,lo,hi)   { return Math.max(lo, Math.min(hi, v)); }
 function inBounds(x,y)    { return x>=0 && x<COLS && y>=0 && y<ROWS; }
 
 // ═══════════════════════════════════════════════════════════════════
-// ORIENTATION-AWARE SPATIAL ENGINE
+// ANGLE-BASED SPATIAL ENGINE
+// Rail can now sit at any angle. isSky / isRail use the signed
+// perpendicular distance from a sine-modulated dividing line.
+// Negative dist = sky side, positive = garden side, ~0 = rail.
 // ═══════════════════════════════════════════════════════════════════
-function getRailLine(coordinate) {
-  const { amp, waveLength, phase, c } = state.railParams;
-  // c handles the depth thickness, amp creates a organic wavy texture across the axis
-  return Math.floor(-c + amp * Math.sin(2 * Math.PI * coordinate / waveLength + phase));
+function getPerpDistFromLine(x, y, params) {
+  const { angle, offset, amp, waveLength, phase } = params;
+  const cx = COLS / 2, cy = ROWS / 2;
+  const u =  Math.cos(angle) * (x - cx) + Math.sin(angle) * (y - cy); // along rail
+  const v = -Math.sin(angle) * (x - cx) + Math.cos(angle) * (y - cy); // across rail
+  return v - offset - amp * Math.sin(2 * Math.PI * u / waveLength + phase);
 }
 
-function isSky(x, y) {
-  const line = getRailLine(state.orientation === "left" || state.orientation === "right" ? y : x);
-  switch (state.orientation) {
-    case "bottom": return y < line;          // Sky is at the top half
-    case "top":    return y > line + 8;      // Sky is at the bottom half
-    case "left":   return x > line + 12;     // Sky is on the right side
-    case "right":  return x < line;          // Sky is on the left side
-    default:       return y < line;
-  }
-}
+function isSky(x, y)  { return getPerpDistFromLine(x, y, state.railParams) < -0.5; }
+function isRail(x, y) { return Math.abs(getPerpDistFromLine(x, y, state.railParams)) <= 0.5; }
 
-function isRail(x, y) {
-  const line = getRailLine(state.orientation === "left" || state.orientation === "right" ? y : x);
-  switch (state.orientation) {
-    case "bottom": return y === line;
-    case "top":    return y === line + 8;
-    case "left":   return x === line + 12;
-    case "right":  return x === line;
-    default:       return y === line;
-  }
-}
-
-// Validate rail generates enough walkable deck — up to 15 attempts
 function randomizeRailingStructure() {
-  // Randomly assign the structural orientation of the entire balcony grid
-  state.orientation = pick(["bottom", "bottom", "top", "left", "right"]);
+  // Angle selection: biased toward legible orientations but allows any angle
+  // including classic horizontal/vertical and intermediates (30°, 45°, 50°…)
+  const r = rand();
+  let angle;
+  if      (r < 0.30) angle = (rand() - 0.5) * 0.62;                // near-horizontal, sky top
+  else if (r < 0.42) angle = Math.PI + (rand() - 0.5) * 0.62;      // near-horizontal, sky bottom
+  else if (r < 0.52) angle = Math.PI / 2 + (rand() - 0.5) * 0.62;  // near-vertical
+  else               angle = rand() * Math.PI * 2;                   // truly arbitrary angle
 
   for (let attempt = 0; attempt < 25; attempt++) {
-    const amp = 1.0 + rand() * 2.5;
-    const waveLength = 25 + rand() * 30;
-    const phase = rand() * Math.PI * 2;
-    let c;
+    const amp        = 1.0 + rand() * 2.5;
+    const waveLength = 22 + rand() * 32;
+    const phase      = rand() * Math.PI * 2;
+    const offset     = (rand() - 0.5) * 14; // ±7 grid-cells from centre
 
-    // Tune specific axis offsets based on direction parameters
-    if (state.orientation === "bottom") c = -(5 + rand() * 4);
-    else if (state.orientation === "top") c = -(4 + rand() * 4);
-    else if (state.orientation === "left") c = -(4 + rand() * 5);
-    else c = -(14 + rand() * 6); // right side
+    state.railParams = { angle, offset, amp, waveLength, phase };
 
-    state.railParams = { a: 0, b: 1, c, amp, waveLength, phase };
-
-    // Verify structural capacity (Ensure we have enough walkable deck surface)
     let ground = 0;
-    for (let y = 1; y < ROWS - 1; y++) {
-      for (let x = 1; x < COLS - 1; x++) {
+    for (let y = 1; y < ROWS - 1; y++)
+      for (let x = 1; x < COLS - 1; x++)
         if (!isSky(x, y) && !isRail(x, y)) ground++;
-      }
-    }
-    if (ground >= 60) return; // Grid layout meets minimum spacing specifications
-  }
-  // Fallback structural constants
-  state.orientation = "bottom";
-  state.railParams = { a: 0, b: 1, c: -8, amp: 1.5, waveLength: 40, phase: 0 };
-}
 
+    if (ground >= 60) return;
+  }
+  // Safe horizontal fallback
+  state.railParams = { angle: 0, offset: -3, amp: 1.5, waveLength: 40, phase: 0 };
+}
 // ═══════════════════════════════════════════════════════════════════
-// VISTA BLEND  (replaces single currentSceneIndex)
+// VISTA & GARDEN BIOMES — multi-region angled cuts + per-region blends
 // ═══════════════════════════════════════════════════════════════════
-function buildVistaBlend() {
+
+// Build one vistaBlend array (1–3 scenes with weights) using seeded RNG.
+function buildVistaBlendSingle() {
   const n = DISTANT_SCENES.length;
-  // Fisher-Yates with seeded RNG to pick unique indices
   const avail = [...Array(n).keys()];
-  for (let i = n-1; i > 0; i--) {
-    const j = Math.floor(rand() * (i+1));
+  for (let i = n - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
     [avail[i], avail[j]] = [avail[j], avail[i]];
   }
   const count = chance(0.12) ? 3 : (chance(0.44) ? 2 : 1);
-  const sel   = avail.slice(0, count);
-
-  if (count === 1) {
-    state.vistaBlend = [{ sceneIdx: sel[0], weight: 1.0 }];
-  } else if (count === 2) {
+  const sel = avail.slice(0, count);
+  if (count === 1) return [{ sceneIdx: sel[0], weight: 1.0 }];
+  if (count === 2) {
     const w = 0.52 + rand() * 0.34;
-    state.vistaBlend = [{ sceneIdx:sel[0], weight:w }, { sceneIdx:sel[1], weight:1-w }];
-  } else {
-    const w1 = 0.36 + rand() * 0.28;
-    const w2 = (1-w1) * (0.38 + rand() * 0.34);
-    state.vistaBlend = [
-      { sceneIdx:sel[0], weight:w1 },
-      { sceneIdx:sel[1], weight:w2 },
-      { sceneIdx:sel[2], weight:1-w1-w2 }
-    ];
+    return [{ sceneIdx: sel[0], weight: w }, { sceneIdx: sel[1], weight: 1 - w }];
   }
+  const w1 = 0.36 + rand() * 0.28, w2 = (1 - w1) * (0.38 + rand() * 0.34);
+  return [
+    { sceneIdx: sel[0], weight: w1 },
+    { sceneIdx: sel[1], weight: w2 },
+    { sceneIdx: sel[2], weight: 1 - w1 - w2 }
+  ];
 }
 
-// Assign blend index to every sky cell (seeded version for world generation)
+// Generate one angled sine-wave cut that meaningfully divides zoneFilter cells.
+// Returns null if no valid cut found within 12 attempts.
+function generateZoneCut(zoneFilter) {
+  for (let att = 0; att < 12; att++) {
+    const cut = {
+      angle:      rand() * Math.PI * 2,
+      offset:     (rand() - 0.5) * 20,
+      amp:        0.4 + rand() * 2.0,
+      waveLength: 12 + rand() * 28,
+      phase:      rand() * Math.PI * 2
+    };
+    let neg = 0, pos = 0;
+    for (let y = 0; y < ROWS; y++)
+      for (let x = 0; x < COLS; x++) {
+        if (!zoneFilter(x, y)) continue;
+        getPerpDistFromLine(x, y, cut) < 0 ? neg++ : pos++;
+      }
+    if (neg >= 8 && pos >= 8) return cut;
+  }
+  return null;
+}
+
+// Which vista sub-region does this sky cell belong to? (0, 1, or 2)
+// Sequential: cut[0] splits 0→1, cut[1] splits 1→2.
+function getVistaBiomeRegion(x, y) {
+  if (!state.vistaCuts.length) return 0;
+  if (getPerpDistFromLine(x, y, state.vistaCuts[0]) <= 0) return 0;
+  if (state.vistaCuts.length < 2) return 1;
+  return getPerpDistFromLine(x, y, state.vistaCuts[1]) <= 0 ? 1 : 2;
+}
+
+// Which garden sub-region does this ground cell belong to? (0, 1, or 2)
+function getGardenBiomeRegion(x, y) {
+  if (!state.gardenCuts.length) return 0;
+  if (getPerpDistFromLine(x, y, state.gardenCuts[0]) <= 0) return 0;
+  if (state.gardenCuts.length < 2) return 1;
+  return getPerpDistFromLine(x, y, state.gardenCuts[1]) <= 0 ? 1 : 2;
+}
+
+// Build all biome cuts and per-region vista blends.
+// Called after randomizeRailingStructure(), which establishes isSky / isRail.
+function buildBiomeCuts() {
+  const p1 = 0.42, p2 = 0.18; // P(1st cut), P(2nd cut | 1st cut exists)
+
+  // Vista (sky) cuts — each creates a new horizon band with its own scene blend
+  let nVista = 0;
+  if (chance(p1)) { nVista = 1; if (chance(p2)) nVista = 2; }
+  state.vistaCuts = [];
+  for (let i = 0; i < nVista; i++) {
+    const cut = generateZoneCut((x, y) => isSky(x, y));
+    if (cut) state.vistaCuts.push(cut);
+  }
+
+  // Garden cuts — each creates a different tile-palette biome on the deck
+  let nGarden = 0;
+  if (chance(p1)) { nGarden = 1; if (chance(p2)) nGarden = 2; }
+  state.gardenCuts = [];
+  for (let i = 0; i < nGarden; i++) {
+    const cut = generateZoneCut((x, y) => !isSky(x, y) && !isRail(x, y));
+    if (cut) state.gardenCuts.push(cut);
+  }
+
+  // Per-region vista blends; vistaBlend aliased to region 0 for backward compat
+  const numVistaRegions = state.vistaCuts.length + 1;
+  state.vistaRegionBlends = [];
+  for (let r = 0; r < numVistaRegions; r++)
+    state.vistaRegionBlends.push(buildVistaBlendSingle());
+  state.vistaBlend = state.vistaRegionBlends[0];
+}
+
+// Store a raw random float [0,1) per sky cell — scene resolved at render time.
 function buildSkyVistaSeeded() {
   state.skyVista = [];
-  for (let y=0; y<ROWS; y++) {
+  for (let y = 0; y < ROWS; y++) {
     state.skyVista[y] = [];
-    for (let x=0; x<COLS; x++) {
-      if (!isSky(x,y)) { state.skyVista[y][x] = -1; continue; }
-      const r = rand(); let acc=0, vIdx=0;
-      for (let v=0; v<state.vistaBlend.length; v++) {
-        acc += state.vistaBlend[v].weight;
-        if (r < acc) { vIdx=v; break; }
-      }
-      state.skyVista[y][x] = vIdx;
-    }
+    for (let x = 0; x < COLS; x++)
+      state.skyVista[y][x] = isSky(x, y) ? rand() : -1;
   }
 }
 
-// Re-assign sky cells with Math.random (for interactive shiftScene)
+// Re-seed sky cells with Math.random for interactive shiftScene.
 function rebuildSkyVista() {
   state.skyVista = [];
-  for (let y=0; y<ROWS; y++) {
+  for (let y = 0; y < ROWS; y++) {
     state.skyVista[y] = [];
-    for (let x=0; x<COLS; x++) {
-      if (!isSky(x,y)) { state.skyVista[y][x] = -1; continue; }
-      const r = Math.random(); let acc=0, vIdx=0;
-      for (let v=0; v<state.vistaBlend.length; v++) {
-        acc += state.vistaBlend[v].weight;
-        if (r < acc) { vIdx=v; break; }
-      }
-      state.skyVista[y][x] = vIdx;
-    }
+    for (let x = 0; x < COLS; x++)
+      state.skyVista[y][x] = isSky(x, y) ? Math.random() : -1;
   }
 }
 
+// Resolve scene for a sky cell, respecting its vista biome region.
 function getSceneForCell(x, y) {
-  const vIdx = state.skyVista[y]?.[x] ?? 0;
-  return DISTANT_SCENES[state.vistaBlend[vIdx]?.sceneIdx ?? 0];
+  const r = state.skyVista[y]?.[x] ?? 0;
+  if (r < 0) return DISTANT_SCENES[0];
+  const region = getVistaBiomeRegion(x, y);
+  const blend  = state.vistaRegionBlends?.[region]
+              ?? state.vistaRegionBlends?.[0]
+              ?? state.vistaBlend;
+  let acc = 0;
+  for (let v = 0; v < blend.length; v++) {
+    acc += blend[v].weight;
+    if (r < acc) return DISTANT_SCENES[blend[v].sceneIdx];
+  }
+  return DISTANT_SCENES[blend[blend.length - 1].sceneIdx];
 }
 
-function updateVistaPill() {
-  if (!state.vistaBlend.length) return;
-  if (state.vistaBlend.length === 1) {
-    vistaPill.textContent = `vista: ${DISTANT_SCENES[state.vistaBlend[0].sceneIdx].name.toLowerCase()}`;
+/* function updateVistaPill() {
+  const blends = state.vistaRegionBlends?.length
+    ? state.vistaRegionBlends
+    : (state.vistaBlend.length ? [state.vistaBlend] : null);
+  if (!blends) return;
+
+  if (blends.length === 1) {
+    const b = blends[0];
+    vistaPill.textContent = b.length === 1
+      ? `vista: ${DISTANT_SCENES[b[0].sceneIdx].name.toLowerCase()}`
+      : `vista: ${b.map(v => `${DISTANT_SCENES[v.sceneIdx].name.toLowerCase()} ${Math.round(v.weight * 100)}%`).join(' \u2215 ')}`;
     return;
   }
-  const parts = state.vistaBlend.map(v =>
-    `${DISTANT_SCENES[v.sceneIdx].name.toLowerCase()} ${Math.round(v.weight*100)}%`
-  );
-  vistaPill.textContent = `vista: ${parts.join(' \u2215 ')}`;
-}
+  // Multiple vista biome regions — show primary scene per region
+  vistaPill.textContent = `vista: ${blends.map(b => DISTANT_SCENES[b[0].sceneIdx].name.toLowerCase()).join(' \u2298 ')}`;
+}*/
 
 // ═══════════════════════════════════════════════════════════════════
 // WORLD GENERATION
 // ═══════════════════════════════════════════════════════════════════
 function blob(cx, cy, rx, ry, tileId, raggedness) {
+  const isOverhead = TILE_DB[tileId]?.zLayer === 'overhead';
   for (let y=cy-ry-1; y<=cy+ry+1; y++) {
     for (let x=cx-rx-1; x<=cx+rx+1; x++) {
-      if (!inBounds(x,y) || isSky(x,y) || isRail(x,y)) continue;
-      if (x===0 || y===ROWS-1 || x===COLS-1) continue;
+      if (!inBounds(x,y)) continue;
+      if (!isOverhead) {
+        if (isSky(x,y) || isRail(x,y)) continue;
+        if (x===0 || y===ROWS-1 || x===COLS-1) continue;
+      }
       const dx=(x-cx)/rx, dy=(y-cy)/ry;
-      if (dx*dx+dy*dy < 1+(rand()-.5)*raggedness*3) state.terrain[y][x].id = tileId;
+      if (dx*dx+dy*dy < 1+(rand()-.5)*raggedness*3) {
+        if (isOverhead) {
+          if (state.overheadTerrain) state.overheadTerrain[y][x] = { id: tileId };
+        } else {
+          state.terrain[y][x].id = tileId;
+        }
+      }
+    }
+  }
+}
+
+// Secondary terrain pass: apply tile-palette bias per garden biome region.
+// Only fires if gardenCuts exist; leaves region 0 untouched.
+function applyGardenBiomeCuts() {
+  if (!state.gardenCuts.length) return;
+  // Multiple palette flavors per region; one picked per world via seeded RNG
+  const PALETTE_OPTIONS = [
+    // region 0 — base, always untouched
+    [[]],
+    // region 1 — wet / lush / organic flavors
+    [
+      ["black_water","black_water","neon_fuzz","neon_fuzz","signal_moss","wire_vine"],
+      ["neon_fuzz","neon_fuzz","spore_bloom","spore_bloom","signal_moss","black_water"],
+      ["spore_bloom","spore_bloom","neon_fuzz","signal_moss","black_water","damp_soil"],
+      ["signal_moss","signal_moss","neon_fuzz","black_water","spore_bloom","wire_vine"],
+    ],
+    // region 2 — arid / industrial / urban flavors
+    [
+      ["city_debris","city_debris","gravel_bed","gravel_bed","sand_drift","damp_soil"],
+      ["lost_pavement","lost_pavement","city_debris","gravel_bed","sand_drift","damp_soil"],
+      ["gravel_bed","gravel_bed","city_debris","lost_pavement","frost_crust","damp_soil"],
+      ["sand_drift","sand_drift","gravel_bed","city_debris","lost_pavement","damp_soil"],
+      ["frost_crust","frost_crust","gravel_bed","lost_pavement","city_debris","damp_soil"],
+    ],
+  ];
+  const palettes = [
+    [],
+    pick(PALETTE_OPTIONS[1]),
+    pick(PALETTE_OPTIONS[2]),
+  ];
+  for (let y = 1; y < ROWS - 1; y++) {
+    for (let x = 1; x < COLS - 1; x++) {
+      if (isSky(x, y) || isRail(x, y)) continue;
+      const region = getGardenBiomeRegion(x, y);
+      if (region === 0) continue;
+      const bias = palettes[region] || palettes[1];
+      if (!bias.length) continue;
+      if (chance(0.17) && !TILE_DB[state.terrain[y][x].id]?.solid) {
+        state.terrain[y][x].id = pick(bias);
+      }
     }
   }
 }
@@ -1537,7 +1868,7 @@ function placeVines() {
         const nx=x+dx, ny=y+dy;
         return inBounds(nx,ny)&&!isSky(nx,ny)&&(TILE_DB[state.terrain[ny][nx].id]?.solid??false);
       });
-      if (adj && chance(0.20)) state.terrain[y][x].id = "wire_vine";
+      if (adj && chance(0.20)) state.overheadTerrain[y][x] = { id: "wire_vine" };
     }
   }
 }
@@ -1655,11 +1986,14 @@ function generateWorld() {
   state.uidCounter  = 1;
 
   randomizeRailingStructure();
-  buildVistaBlend();
-
+ randomizeRailingStructure();
+  buildBiomeCuts();   // ← was buildVistaBlend()
   // Init terrain
   state.terrain = Array.from({length:ROWS}, () =>
     Array.from({length:COLS}, () => ({id:"damp_soil", historyTags:[]}))
+  );
+  state.overheadTerrain = Array.from({length:ROWS}, () =>
+    Array.from({length:COLS}, () => null)
   );
   state.entities = [];
 
@@ -1684,6 +2018,7 @@ function generateWorld() {
   placeBiomes();
   placeBlobTerrain();
   placeVines();
+   applyGardenBiomeCuts(); 
   placeRareTiles();
   buildSkyVistaSeeded();     // must precede freezeTerrainGlyphs
   freezeTerrainGlyphs();
@@ -1692,7 +2027,7 @@ function generateWorld() {
   state.controlTarget = { type: 'player', ref: state.player };
   applyWeatherTint();
   updateDronePitch();
-  updateVistaPill();
+  //updateVistaPill();
 
   if (state.specimenTotal > 0) {
     const d = document.createElement("div");
@@ -1724,32 +2059,55 @@ function buildGrid() {
   }
   world.appendChild(frag); refreshAllCells();
 }
+// Overhead layer overlay — applied on top of player/entity/terrain
+function applyOverheadOverlay(span, x, y) {
+  const ov = state.overheadTerrain?.[y]?.[x];
+  if (!ov) return;
+  const ovSpec = TILE_DB[ov.id];
+  if (!ovSpec) return;
+  let g;
+  if (ovSpec.windResponsive && windTouches(x, y))
+    g = ovSpec.glyphs[(state.animTick + x) % ovSpec.glyphs.length];
+  else if (ovSpec.animated)
+    g = ovSpec.glyphs[(state.animTick + x + y) % ovSpec.glyphs.length];
+  else
+    g = ovSpec.glyphs[Math.floor((x * 7 + y * 13) % ovSpec.glyphs.length)];
+  span.dataset.ovg = g;
+  span.style.setProperty('--ov-color', ovSpec.color);
+  span.classList.add('has-overhead');
+}
+
 function render()          { if (!cellEls.length) buildGrid(); else refreshAllCells(); }
 function refreshAllCells() { for (let y=0;y<ROWS;y++) for (let x=0;x<COLS;x++) refreshCell(x,y); }
 
 function refreshCell(x, y) {
-  const span=cellEls[y]?.[x]; if (!span) return;
-  span.className="cell"; span.style.color="";
+  const span = cellEls[y]?.[x]; 
+  if (!span) return;
+
+  span.className = "cell";
+  span.style.color = "";
+  span.style.opacity = "";
   if (state.selected?.x===x && state.selected?.y===y) span.classList.add("selected");
 
-  if (state.player.x===x && state.player.y===y) { span.textContent="@"; span.classList.add("player"); return; }
-
-const ent = state.entities.find(e => e.x === x && e.y === y);
-if (ent) {
-  // IF THIS IS A CONTROLLED TILE PROXIE CONSTRUCT: Use its unique visual state profile data directly
-  if (ent.isTileClone) {
-    span.textContent = ent.glyph;
-    span.className += " entity fx-drift"; // Visual sparkle highlighting control status
-    span.style.color = ent.color;
-    
-    // Add a structural visual outline if this phantom copy is currently selected under direct control
-    if (state.controlTarget.ref === ent) {
-      span.style.textShadow = "0 0 6px currentColor";
-    }
+  if (state.player.x===x && state.player.y===y) {
+    span.textContent="@"; span.classList.add("player");
+    applyOverheadOverlay(span, x, y);
     return;
   }
 
-  // Otherwise, default back to standard organic script rendering calculations...
+const ent = state.entities.find(e => e.x === x && e.y === y);
+if (ent) {
+  if (ent.isTileClone) {
+    span.textContent = ent.glyph;
+    span.className += " entity fx-drift";
+    span.style.color = ent.color;
+    if (state.controlTarget.ref === ent) {
+      span.style.textShadow = "0 0 6px currentColor";
+    }
+    applyOverheadOverlay(span, x, y);
+    return;
+  }
+
   const spec = ENTITY_DB[ent.id] || ENTITY_DB.party_ghost;
   let glyph;
   if (spec.glyphCycleSpeed && spec.glyphs.length > 1) {
@@ -1761,23 +2119,49 @@ if (ent) {
   if (spec.windResponsive && windTouches(x, y)) glyph = pickNative(spec.glyphs);
   span.textContent = glyph; 
   span.className += ` entity ${spec.fx || ""}`; 
-  span.style.color = spec.color; 
+  span.style.color = spec.color;
+  applyOverheadOverlay(span, x, y);
   return;
 }
 
   const cell=state.terrain[y][x];
-  if (cell.id==="sky_tier") {
-    const scene=getSceneForCell(x,y);
-    span.classList.add("sky-tier"); span.style.color=scene.color;
-    if (state.animTick%4===0 && Math.random()<0.008) state.terrainGlyphs[y][x]=pickNative(scene.glyphs);
-    span.textContent=state.terrainGlyphs[y][x]; return;
+if (cell.id === "sky_tier") {
+  const scene = getSceneForCell(x, y);
+
+  span.classList.add("sky-tier");
+  span.style.color = scene.color;
+
+  if (state.animTick % 4 === 0 && Math.random() < 0.008) {
+    state.terrainGlyphs[y][x] = pickNative(scene.glyphs);
   }
 
+  span.textContent = state.terrainGlyphs[y][x];
+
+const rawSeed = state.skyVista?.[y]?.[x] ?? 0.5;
+const VISTA_MIN = 0.10;
+const VISTA_MAX = 0.58;
+
+// ~15% of tiles (rawSeed > 0.85) get a slow breath; the rest are stable
+const breathes = rawSeed > 0.85;
+let perTileOpacity;
+if (breathes) {
+  const base  = VISTA_MIN + rawSeed * (VISTA_MAX - VISTA_MIN) * 0.72;
+  const pulse = Math.sin(state.animTick * 0.045 + rawSeed * Math.PI * 4) * 0.09;
+  perTileOpacity = clamp(base + pulse, VISTA_MIN, VISTA_MAX);
+} else {
+  perTileOpacity = VISTA_MIN + rawSeed * (VISTA_MAX - VISTA_MIN);
+}
+span.style.opacity = String(perTileOpacity.toFixed(3));
+
+  applyOverheadOverlay(span, x, y);
+  return;
+}
   const spec=TILE_DB[cell.id]||TILE_DB.damp_soil;
   if (cell.id==="black_water") span.textContent=spec.glyphs[(state.animTick+x+y)%spec.glyphs.length];
   else if (spec.windResponsive&&windTouches(x,y)) span.textContent=spec.glyphs[(state.animTick+x)%spec.glyphs.length];
   else span.textContent=state.terrainGlyphs[y][x];
   span.className+=` terrain ${spec.fx||""}`; span.style.color=spec.color;
+  applyOverheadOverlay(span, x, y);
 }
 
 function applyWeatherTint() {
@@ -1837,7 +2221,8 @@ function animateLoops() {
   // Refresh animated cells
   for (let y=0;y<ROWS;y++) for (let x=0;x<COLS;x++) {
     const id=state.terrain[y][x].id, spec=TILE_DB[id];
-    if (id==="black_water"||id==="sky_tier"||(spec?.windResponsive&&state.wind.active)) refreshCell(x,y);
+    const ovId=state.overheadTerrain?.[y]?.[x]?.id, ovSpec=ovId?TILE_DB[ovId]:null;
+    if (id==="black_water"||id==="sky_tier"||(spec?.windResponsive&&state.wind.active)||(ovSpec?.windResponsive&&state.wind.active)) refreshCell(x,y);
   }
 }
 
@@ -2061,10 +2446,13 @@ function addSpecimen(name, glyph, color, isRevisit=false, autoNote=null) {
 }
 
 function resetInspector() {
-  scanName.textContent = `panoramic perspective balcony [${state.orientation}]`;
+  const deg     = Math.round(((state.railParams.angle ?? 0) * 180 / Math.PI + 360) % 360);
+  const cuts    = (state.vistaCuts?.length || 0) + (state.gardenCuts?.length || 0);
+  const cutNote = cuts ? ` · ${cuts} biome cut${cuts > 1 ? 's' : ''}` : '';
+  scanName.textContent = `panoramic balcony [${deg}°${cutNote}]`;
   scanText.textContent = "Click any tile or entity to inspect. The balcony railing separates the scenic backdrop from the garden deck.";
   scanMeta.innerHTML = "";
-  [`balcony-tier-${state.orientation}`, "scenic-vista", "read-intentional"].forEach(t => {
+  [`rail-${deg}deg`, "scenic-vista", "read-intentional"].forEach(t => {
     const s = document.createElement("span"); s.className = "tag"; s.textContent = t; scanMeta.appendChild(s);
   });
 }
@@ -2108,24 +2496,40 @@ transferBtn.addEventListener("click", () => {
 });
 
 function finalizeTransferSelection(previousControl = null) {
-  // When control leaves a captured procedural cloud, remove the artificial proxy.
-  // The underlying cloud engine can keep drifting underneath if that cloud layer still exists;
-  // otherwise the proxy simply dissolves instead of freezing in the sky.
-  if (previousControl?.type === "cloud" && previousControl.ref !== state.controlTarget.ref) {
-    const releasedCloud = previousControl.ref;
-    if (releasedCloud) {
-      state.entities = state.entities.filter(ent => ent !== releasedCloud);
-      refreshCell(releasedCloud.x, releasedCloud.y);
+  // If control left a captured procedural cloud or a cloned phantom tile...
+  if (previousControl && previousControl.type !== 'player') {
+    const releasedObj = previousControl.ref;
+    if (releasedObj) {
+      if (previousControl.type === 'tile') {
+        // OVERWRITE RULE: Commit the proxy's real underlying tile ID to the map data grid
+        if (inBounds(releasedObj.x, releasedObj.y)) {
+          state.terrain[releasedObj.y][releasedObj.x].id = releasedObj.id;
+          
+          // Clear history markers so the user can re-inspect the newly stamped tile raw
+          state.terrain[releasedObj.y][releasedObj.x].historyTags = [];
+          
+          // Freeze the structural graphic character skin in place matching the new tile template
+          const tileSpec = TILE_DB[releasedObj.id] || TILE_DB.damp_soil;
+          state.terrainGlyphs[releasedObj.y][releasedObj.x] = tileSpec.glyphs[0] || ".";
+        }
+      }
+      
+      // Strip the proxy instance out of the active creatures array completely
+      state.entities = state.entities.filter(ent => ent !== releasedObj);
+      refreshCell(releasedObj.x, releasedObj.y);
     }
   }
 
-  // Safety pass: only the actively-controlled cloud proxy may remain in state.entities.
-  // This prevents old cloud bodies from accumulating as frozen tile-clones.
+  // Safety pass: Ensure no standalone drifting cloud or tile proxies linger in the entity pool
   state.entities = state.entities.filter(ent => {
-    if (ent.id !== "drifting_cloud") return true;
-    if (state.controlTarget.type === "cloud" && state.controlTarget.ref === ent) return true;
-    refreshCell(ent.x, ent.y);
-    return false;
+    if (ent.id === "drifting_cloud" && state.controlTarget.type === "cloud" && state.controlTarget.ref === ent) return true;
+    if (ent.isTileClone && state.controlTarget.type === "tile" && state.controlTarget.ref === ent) return true;
+    
+    if (ent.isTileClone || ent.id === "drifting_cloud") {
+      refreshCell(ent.x, ent.y);
+      return false;
+    }
+    return true;
   });
 
   // Clear the priming state flag safely
@@ -2134,10 +2538,9 @@ function finalizeTransferSelection(previousControl = null) {
   // Re-evaluate and reset the button's text and background styles
   resetTransferButtonUI();
   
-  // Force refresh the full grid layout to display the new control indicators
+  // Force refresh the full grid layout to display the committed transformations permanently
   refreshAllCells();
 }
-
 function resetTransferButtonUI() {
   state.transferPrimed = false;
   if (state.controlTarget.type === 'player') {
@@ -2656,8 +3059,8 @@ setInterval(animateLoops, 380);
 
 <script>
 // ═══════════════════════════════════════════════════════════════════════
-// CORNICE — CLOUD ENGINE
-// Procedural, low-opacity vapor drifting through the distant skyline.
+// CORNICE — CLOUD ENGINE (TRANSPARENT VISTA OVERLAY UPDATE)
+// Procedural, alpha-blended vapor drifting through the distant skyline.
 // ═══════════════════════════════════════════════════════════════════════
 (function () {
   'use strict';
@@ -2683,17 +3086,11 @@ setInterval(animateLoops, 380);
     const width = 6 + Math.floor(Math.random() * 12);
     const height = 2 + Math.floor(Math.random() * 3);
     
-    // Choose varying glyph representations for soft, textual density
-    const vaporGlyphs = Math.random() > 0.5 
-      ? ["\u2591", "\u2592", " ", "\u00b7"] 
-      : ["\u25cc", "\u25cb", " ", "."];
-
     clouds.layers.push({
       x: -width, // Begin just off-screen left
       y: startY,
       width,
       height,
-      glyphs: vaporGlyphs,
       speed: 0.4 + Math.random() * 0.6, // Moves across columns per tick step
       phase: Math.random() * Math.PI
     });
@@ -2705,7 +3102,6 @@ setInterval(animateLoops, 380);
    */
   function getCloudDensityAt(x, y) {
     let highestDensity = 0;
-    let fallbackGlyph = " ";
 
     for (const cloud of clouds.layers) {
       if (x >= cloud.x && x < cloud.x + cloud.width && y >= cloud.y && y < cloud.y + cloud.height) {
@@ -2718,15 +3114,12 @@ setInterval(animateLoops, 380);
           const density = (1.15 - dist) * (0.7 + 0.3 * Math.sin(clouds.tickCounter * 0.1 + cloud.phase));
           if (density > highestDensity) {
             highestDensity = density;
-            // Map distance to glyph variety
-            const gIdx = Math.floor(Math.min(1, dist) * (cloud.glyphs.length - 1));
-            fallbackGlyph = cloud.glyphs[gIdx];
           }
         }
       }
     }
 
-    return highestDensity > 0.15 ? { density: highestDensity, glyph: fallbackGlyph } : null;
+    return highestDensity > 0.15 ? highestDensity : null;
   }
 
   /**
@@ -2738,29 +3131,31 @@ setInterval(animateLoops, 380);
     if (!originalRefreshCell) return;
 
 window.refreshCell = function (x, y) {
+  // 1. Run the real refreshCell — this sets span.style.opacity to per-tile value
   originalRefreshCell(x, y);
 
   const span = window.cellEls?.[y]?.[x];
   if (!span) return;
 
-  // reset cloud styling before deciding whether to reapply it
-  span.style.opacity = "";
+  // Only reset background — leave per-tile opacity intact
+  span.style.background = "";
 
   if (!window.isSky || !window.isSky(x, y)) return;
   if (window.state?.player?.x === x && window.state?.player?.y === y) return;
+  if (window.state?.entities?.some(e => e.x === x && e.y === y)) return;
 
-  const cloudMarker = getCloudDensityAt(x, y);
-  if (!cloudMarker) return;
+  // 2. Check cloud density — non-cloud cells keep their per-tile opacity unchanged
+  const density = getCloudDensityAt(x, y);
+  if (!density) return;
 
+  // 3. For cloud cells: tint color and boost opacity above the per-tile base
   const environmentTint = window.state?.weather?.tint || "#2dff6e";
+  span.style.color = `color-mix(in srgb, #cfe8d2 ${Math.round(density * 100)}%, ${environmentTint})`;
+  span.style.background = `color-mix(in srgb, #cfe8d2 ${Math.round(density * 15)}%, transparent)`;
 
-  if (Math.random() < cloudMarker.density * 0.75) {
-    span.textContent = cloudMarker.glyph;
-  }
-
-  span.style.color =
-    `color-mix(in srgb, #cfe8d2 ${Math.round(cloudMarker.density * 100)}%, ${environmentTint})`;
-  span.style.opacity = clouds.baseOpacity + cloudMarker.density * 0.3;
+  // Additive lift: reads what refreshCell already wrote, boosts toward 0.82 max
+  const baseTileOp = parseFloat(span.style.opacity) || 0.10;
+  span.style.opacity = String(Math.min(baseTileOp + density * 0.38, 0.82).toFixed(3));
 };
   }
 
