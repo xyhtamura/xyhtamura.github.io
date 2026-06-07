@@ -2464,7 +2464,7 @@ function animateLoops() {
   for (let y=0;y<ROWS;y++) for (let x=0;x<COLS;x++) {
     const id=state.terrain[y][x].id, spec=TILE_DB[id];
     const ovId=state.overheadTerrain?.[y]?.[x]?.id, ovSpec=ovId?TILE_DB[ovId]:null;
-    if (id==="black_water"||id==="sky_tier"||(spec?.windResponsive&&state.wind.active)||(ovSpec?.windResponsive&&state.wind.active)) refreshCell(x,y);
+    if ((id==="black_water" && state.animTick%2===0)||id==="sky_tier"||(spec?.windResponsive&&state.wind.active)||(ovSpec?.windResponsive&&state.wind.active)) refreshCell(x,y);
   }
 }
 
