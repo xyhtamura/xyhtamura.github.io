@@ -271,7 +271,7 @@ body.theme-day #themeBtn {
 	@media (max-width: 840px) {
   :root {
     /* Dynamically distribute 52 characters perfectly inside 95% of any mobile viewport */
-    --cell: calc(95vw / var(--mobile-cols, 52));
+    --cell: calc(95vw / 52); 
     --line: 1.1;
   }
   
@@ -1086,7 +1086,6 @@ body::after {
         </section>
         <div class="controls">
 		<button id="rerollBtn" >Shuffle</button>
-		<button id="miniBtn" class="ghost-button">Shuffle Mini</button>
 		<button id="transferBtn" class="ghost-button" style="border-color: var(--petal);">Transfer Movement</button>
           <button id="sceneBtn" class="ghost-button">Shuffle Vista</button>
 		  <button class="ghost-button" id="themeBtn" type="button" aria-pressed="false">
@@ -1129,32 +1128,8 @@ window.NightTerrarium = window.NightTerrarium || {
 // ═══════════════════════════════════════════════════════════════════
 // CONSTANTS
 // ═══════════════════════════════════════════════════════════════════
-let COLS = 52;
-let ROWS = 22;
-
-const WORLD_SIZES = {
-  full: { cols: 52, rows: 22, label: "Cornice" },
-  mini: { cols: 32, rows: 12, label: "Mini Cornice" }
-};
-
-const FULL_AREA = WORLD_SIZES.full.cols * WORLD_SIZES.full.rows;
-
-function areaScale() {
-  return (COLS * ROWS) / FULL_AREA;
-}
-
-function lenScale() {
-  return Math.sqrt(areaScale());
-}
-
-function scaledCount(n, min = 0) {
-  const raw = n * areaScale();
-  return Math.max(min, Math.floor(raw) + (rand() < raw % 1 ? 1 : 0));
-}
-
-function scaledLen(n, min = 1) {
-  return Math.max(min, Math.round(n * lenScale()));
-}
+const COLS = 52;
+const ROWS = 22;
 const PITCH_SCALE = [82.41,87.31,98.00,110.00,123.47,130.81,146.83,164.81,185.00,196.00,220.00,246.94,261.63,293.66,329.63,392.00,440.00];
 function getQuantizedFreq(idx) { return PITCH_SCALE[Math.max(0, Math.min(Math.round(idx), PITCH_SCALE.length-1))]; }
 
@@ -2268,20 +2243,9 @@ function placeBiomes() {
 function placeBlobTerrain() {
   for (const spec of Object.values(TILE_DB)) {
     if (!spec.blobChance) continue;
-    const count = scaledCount(spec.blobCount || 4, state.worldMode === "mini" ? 0 : 1);
-const rx = scaledLen(spec.blobRadius || 3, 1);
-const ry = scaledLen(spec.blobRadiusY || 2, 1);
-
-for (let i = 0; i < count; i++) {
-  blob(
-    3 + Math.floor(rand() * Math.max(1, COLS - 6)),
-    3 + Math.floor(rand() * Math.max(1, ROWS - 6)),
-    rx,
-    ry,
-    spec.id,
-    spec.blobChance
-  );
-}
+    const count=spec.blobCount||4, rx=spec.blobRadius||3, ry=spec.blobRadiusY||2;
+    for (let i=0; i<count; i++)
+      blob(3+Math.floor(rand()*(COLS-6)), 3+Math.floor(rand()*(ROWS-6)), rx, ry, spec.id, spec.blobChance);
   }
 }
 
@@ -2328,10 +2292,7 @@ function freezeTerrainGlyphs() {
 
 function placeEntities() {
   if (!ENTITY_POOL.length) return;
-  const fullTotal = 18 + Math.floor(rand() * 10);
-const total = state.worldMode === "mini"
-  ? scaledCount(fullTotal, 5)
-  : fullTotal;
+  const total = 18+Math.floor(rand()*10);
   let count=0, att=0;
   while (count<total && att<2000) {
     att++;
@@ -2457,8 +2418,6 @@ function generateWorld() {
   updateDronePitch();
   buildAnimatedCellSets(); // must come after terrain + overhead are final
   //updateVistaPill();
-  
-  seedPill.textContent = `${state.worldMode === "mini" ? "mini " : ""}seed: ${state.seed}`;
 
   if (state.specimenTotal > 0) {
     const d = document.createElement("div");
@@ -2527,14 +2486,7 @@ function applyOverheadOverlay(span, x, y) {
   span.classList.add('has-overhead');
 }
 
-function gridMatchesWorldSize() {
-  return cellEls.length === ROWS && cellEls[0]?.length === COLS;
-}
-
-function render() {
-  if (!gridMatchesWorldSize()) buildGrid();
-  else refreshAllCells();
-}
+function render()          { if (!cellEls.length) buildGrid(); else refreshAllCells(); }
 function refreshAllCells() { for (let y=0;y<ROWS;y++) for (let x=0;x<COLS;x++) refreshCell(x,y); }
 
 function refreshCell(x, y) {
@@ -3331,15 +3283,7 @@ walkVolumeSlider.style.setProperty("--pct", walkVolumeSlider.value);
 droneVolumeSlider.style.setProperty("--pct", droneVolumeSlider.value);
 
 document.getElementById("sceneBtn").addEventListener("click", shiftScene);
-document.getElementById("rerollBtn").addEventListener("click", () => {
-  setWorldSize("full");
-  generateWorld();
-});
-
-document.getElementById("miniBtn").addEventListener("click", () => {
-  setWorldSize("mini");
-  generateWorld();
-});
+document.getElementById("rerollBtn").addEventListener("click", generateWorld);
 document.getElementById("soundBtn").addEventListener("click", async e => {
   const audio=ensureAudio();
   if (audio?.ctx.state==="suspended") await audio.ctx.resume();
@@ -3415,26 +3359,6 @@ window.isSky = isSky;
 window.refreshCell = refreshCell;
 generateWorld();
 setInterval(animateLoops, 380);
-
-function setWorldSize(mode = "full") {
-  const size = WORLD_SIZES[mode] || WORLD_SIZES.full;
-
-  COLS = size.cols;
-  ROWS = size.rows;
-
-  state.worldMode = mode;
-
-  window.COLS = COLS;
-  window.ROWS = ROWS;
-
-  // Force visual grid rebuild on next render.
-  cellEls.length = 0;
-  world.textContent = "";
-  world.style.setProperty("--cols", COLS);
-
-  // Lets mobile CSS fit either full or mini grid.
-  document.documentElement.style.setProperty("--mobile-cols", COLS);
-}
 
 
 </script>

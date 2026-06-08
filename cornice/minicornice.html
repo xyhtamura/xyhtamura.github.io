@@ -271,7 +271,7 @@ body.theme-day #themeBtn {
 	@media (max-width: 840px) {
   :root {
     /* Dynamically distribute 52 characters perfectly inside 95% of any mobile viewport */
-    --cell: calc(95vw / var(--mobile-cols, 52));
+    --cell: calc(95vw / 32); 
     --line: 1.1;
   }
   
@@ -416,7 +416,7 @@ h1 {
 
     /* ── World grid ── */
     #world {
-      --cols: 52;
+      --cols: 32;
       position: relative; z-index: 1;
       display: grid;
       grid-template-columns: repeat(var(--cols), 1ch);
@@ -1086,7 +1086,6 @@ body::after {
         </section>
         <div class="controls">
 		<button id="rerollBtn" >Shuffle</button>
-		<button id="miniBtn" class="ghost-button">Shuffle Mini</button>
 		<button id="transferBtn" class="ghost-button" style="border-color: var(--petal);">Transfer Movement</button>
           <button id="sceneBtn" class="ghost-button">Shuffle Vista</button>
 		  <button class="ghost-button" id="themeBtn" type="button" aria-pressed="false">
@@ -1129,31 +1128,21 @@ window.NightTerrarium = window.NightTerrarium || {
 // ═══════════════════════════════════════════════════════════════════
 // CONSTANTS
 // ═══════════════════════════════════════════════════════════════════
-let COLS = 52;
-let ROWS = 22;
+const COLS = 32;
+const ROWS = 12;
 
-const WORLD_SIZES = {
-  full: { cols: 52, rows: 22, label: "Cornice" },
-  mini: { cols: 32, rows: 12, label: "Mini Cornice" }
-};
-
-const FULL_AREA = WORLD_SIZES.full.cols * WORLD_SIZES.full.rows;
-
-function areaScale() {
-  return (COLS * ROWS) / FULL_AREA;
-}
-
-function lenScale() {
-  return Math.sqrt(areaScale());
-}
+const BASE_COLS = 52;
+const BASE_ROWS = 22;
+const AREA_SCALE = (COLS * ROWS) / (BASE_COLS * BASE_ROWS); // ~0.336
+const LEN_SCALE = Math.sqrt(AREA_SCALE); // ~0.58
 
 function scaledCount(n, min = 0) {
-  const raw = n * areaScale();
+  const raw = n * AREA_SCALE;
   return Math.max(min, Math.floor(raw) + (rand() < raw % 1 ? 1 : 0));
 }
 
 function scaledLen(n, min = 1) {
-  return Math.max(min, Math.round(n * lenScale()));
+  return Math.max(min, Math.round(n * LEN_SCALE));
 }
 const PITCH_SCALE = [82.41,87.31,98.00,110.00,123.47,130.81,146.83,164.81,185.00,196.00,220.00,246.94,261.63,293.66,329.63,392.00,440.00];
 function getQuantizedFreq(idx) { return PITCH_SCALE[Math.max(0, Math.min(Math.round(idx), PITCH_SCALE.length-1))]; }
@@ -1990,20 +1979,21 @@ function isSky(x, y)  { return getPerpDistFromLine(x, y, state.railParams) < -0.
 function isRail(x, y) { return Math.abs(getPerpDistFromLine(x, y, state.railParams)) <= 0.5; }
 
 function randomizeRailingStructure() {
-  // Angle selection: biased toward legible orientations but allows any angle
-  // including classic horizontal/vertical and intermediates (30°, 45°, 50°…)
   const r = rand();
   let angle;
-  if      (r < 0.30) angle = (rand() - 0.5) * 0.62;                // near-horizontal, sky top
-  else if (r < 0.42) angle = Math.PI + (rand() - 0.5) * 0.62;      // near-horizontal, sky bottom
-  else if (r < 0.52) angle = Math.PI / 2 + (rand() - 0.5) * 0.62;  // near-vertical
-  else               angle = rand() * Math.PI * 2;                   // truly arbitrary angle
+
+  // Mini Cornice: mostly horizon, sometimes shallow diagonal.
+  if      (r < 0.70) angle = (rand() - 0.5) * 0.42;
+  else if (r < 0.88) angle = Math.PI + (rand() - 0.5) * 0.42;
+  else               angle = (rand() < 0.5 ? 0.45 : -0.45) + (rand() - 0.5) * 0.25;
+
+  const minGround = Math.max(28, Math.floor(COLS * ROWS * 0.18));
 
   for (let attempt = 0; attempt < 25; attempt++) {
-    const amp        = 1.0 + rand() * 2.5;
-    const waveLength = 22 + rand() * 32;
+    const amp        = 0.6 + rand() * 1.4;
+    const waveLength = COLS * (0.55 + rand() * 0.75);
     const phase      = rand() * Math.PI * 2;
-    const offset     = (rand() - 0.5) * 14; // ±7 grid-cells from centre
+    const offset     = (rand() - 0.5) * ROWS * 0.45;
 
     state.railParams = { angle, offset, amp, waveLength, phase };
 
@@ -2012,10 +2002,16 @@ function randomizeRailingStructure() {
       for (let x = 1; x < COLS - 1; x++)
         if (!isSky(x, y) && !isRail(x, y)) ground++;
 
-    if (ground >= 60) return;
+    if (ground >= minGround) return;
   }
-  // Safe horizontal fallback
-  state.railParams = { angle: 0, offset: -3, amp: 1.5, waveLength: 40, phase: 0 };
+
+  state.railParams = {
+    angle: 0,
+    offset: -Math.max(2, Math.floor(ROWS * 0.2)),
+    amp: 1.0,
+    waveLength: COLS * 0.9,
+    phase: 0
+  };
 }
 // ═══════════════════════════════════════════════════════════════════
 // VISTA & GARDEN BIOMES — multi-region angled cuts + per-region blends
@@ -2256,19 +2252,20 @@ function applyGardenBiomeCuts() {
 
 function placeBiomes() {
   const api = { blob, rand, chance, pick, inBounds, isSky };
-  for (let i=0, att=0; i<3 && att<60; att++) {
-    const cx = 5 + Math.floor(rand()*(COLS-10));
-    const cy = 4 + Math.floor(rand()*(ROWS-8));
-    if (isSky(cx,cy)) continue;
+  const total = 1 + (chance(0.35) ? 1 : 0);
+
+  for (let i = 0, att = 0; i < total && att < 60; att++) {
+    const cx = 4 + Math.floor(rand() * Math.max(1, COLS - 8));
+    const cy = 3 + Math.floor(rand() * Math.max(1, ROWS - 6));
+    if (isSky(cx, cy)) continue;
     pick(BIOME_TEMPLATES).paint(cx, cy, api);
     i++;
   }
 }
-
 function placeBlobTerrain() {
   for (const spec of Object.values(TILE_DB)) {
     if (!spec.blobChance) continue;
-    const count = scaledCount(spec.blobCount || 4, state.worldMode === "mini" ? 0 : 1);
+    const count = scaledCount(spec.blobCount || 4, 0);
 const rx = scaledLen(spec.blobRadius || 3, 1);
 const ry = scaledLen(spec.blobRadiusY || 2, 1);
 
@@ -2328,10 +2325,7 @@ function freezeTerrainGlyphs() {
 
 function placeEntities() {
   if (!ENTITY_POOL.length) return;
-  const fullTotal = 18 + Math.floor(rand() * 10);
-const total = state.worldMode === "mini"
-  ? scaledCount(fullTotal, 5)
-  : fullTotal;
+  const total = 6 + Math.floor(rand() * 4); // 6–9 entities
   let count=0, att=0;
   while (count<total && att<2000) {
     att++;
@@ -2457,8 +2451,6 @@ function generateWorld() {
   updateDronePitch();
   buildAnimatedCellSets(); // must come after terrain + overhead are final
   //updateVistaPill();
-  
-  seedPill.textContent = `${state.worldMode === "mini" ? "mini " : ""}seed: ${state.seed}`;
 
   if (state.specimenTotal > 0) {
     const d = document.createElement("div");
@@ -2527,14 +2519,7 @@ function applyOverheadOverlay(span, x, y) {
   span.classList.add('has-overhead');
 }
 
-function gridMatchesWorldSize() {
-  return cellEls.length === ROWS && cellEls[0]?.length === COLS;
-}
-
-function render() {
-  if (!gridMatchesWorldSize()) buildGrid();
-  else refreshAllCells();
-}
+function render()          { if (!cellEls.length) buildGrid(); else refreshAllCells(); }
 function refreshAllCells() { for (let y=0;y<ROWS;y++) for (let x=0;x<COLS;x++) refreshCell(x,y); }
 
 function refreshCell(x, y) {
@@ -3331,15 +3316,7 @@ walkVolumeSlider.style.setProperty("--pct", walkVolumeSlider.value);
 droneVolumeSlider.style.setProperty("--pct", droneVolumeSlider.value);
 
 document.getElementById("sceneBtn").addEventListener("click", shiftScene);
-document.getElementById("rerollBtn").addEventListener("click", () => {
-  setWorldSize("full");
-  generateWorld();
-});
-
-document.getElementById("miniBtn").addEventListener("click", () => {
-  setWorldSize("mini");
-  generateWorld();
-});
+document.getElementById("rerollBtn").addEventListener("click", generateWorld);
 document.getElementById("soundBtn").addEventListener("click", async e => {
   const audio=ensureAudio();
   if (audio?.ctx.state==="suspended") await audio.ctx.resume();
@@ -3415,26 +3392,6 @@ window.isSky = isSky;
 window.refreshCell = refreshCell;
 generateWorld();
 setInterval(animateLoops, 380);
-
-function setWorldSize(mode = "full") {
-  const size = WORLD_SIZES[mode] || WORLD_SIZES.full;
-
-  COLS = size.cols;
-  ROWS = size.rows;
-
-  state.worldMode = mode;
-
-  window.COLS = COLS;
-  window.ROWS = ROWS;
-
-  // Force visual grid rebuild on next render.
-  cellEls.length = 0;
-  world.textContent = "";
-  world.style.setProperty("--cols", COLS);
-
-  // Lets mobile CSS fit either full or mini grid.
-  document.documentElement.style.setProperty("--mobile-cols", COLS);
-}
 
 
 </script>
