@@ -302,7 +302,6 @@ body.theme-day #themeBtn {
         rgba(45,255,110,.05) 0%,
         rgba(25,8,32,.5) 50%,
         rgba(90,20,120,.08) 100%);
-      backdrop-filter: blur(14px);
       box-shadow: 0 10px 50px rgba(4,1,12,.4), inset 0 0 30px rgba(232,229,47,.025);
     }
 
@@ -358,7 +357,6 @@ h1 {
       border: 1px solid rgba(207,232,210,.1);
       background: linear-gradient(152deg, rgba(5,10,18,.65), rgba(22,6,30,.68), rgba(5,25,16,.58));
       border-radius: 4px;
-      backdrop-filter: blur(14px);
     }
 
 .world-wrap,
@@ -452,7 +450,7 @@ h1 {
     .fx-ripple  { animation: ripple  1.4s ease-in-out infinite alternate; }
     .fx-drift   { animation: drift   3.7s ease-in-out infinite alternate; }
     .fx-wire    { animation: wire    2.3s linear infinite; }
-    .fx-rare    { animation: rare    3.8s ease-in-out infinite alternate; }
+    .fx-rare    { animation: rare    2.4s ease-in-out infinite alternate; }
 
     /* ── Panel ── */
     .panel {
@@ -597,13 +595,13 @@ h1 {
     code   { color: var(--petal); background: rgba(240,184,222,.07); border-radius: 2px; padding: 1px 4px; }
 
     /* ── Keyframes ── */
-    @keyframes glow      { from{filter:brightness(.9) saturate(1.05);transform:scale(.98)} to{filter:brightness(1.35) saturate(1.4);transform:scale(1.04)} }
-    @keyframes flicker   { 0%,100%{opacity:.95} 50%{opacity:.4} }
-    @keyframes breathe   { from{opacity:.65;filter:blur(.04px)} to{opacity:1;filter:blur(.26px)} }
-    @keyframes ripple    { from{transform:translateY(0);opacity:.65} to{transform:translateY(-1px);opacity:.95} }
-    @keyframes drift     { from{transform:translateX(-.7px)} to{transform:translateX(.7px)} }
-    @keyframes wire      { from{filter:hue-rotate(0deg) brightness(.88)} to{filter:hue-rotate(38deg) brightness(1.24)} }
-    @keyframes rare      { from{filter:brightness(1) hue-rotate(0deg);transform:scale(.96)} to{filter:brightness(1.7) hue-rotate(50deg);transform:scale(1.06)} }
+    @keyframes glow    { from{opacity:.58} to{opacity:1} }
+    @keyframes flicker { 0%,100%{opacity:.95} 50%{opacity:.4} }
+    @keyframes breathe { from{opacity:.65;filter:blur(.04px)} to{opacity:1;filter:blur(.26px)} }
+    @keyframes ripple  { from{transform:translateY(0);opacity:.65} to{transform:translateY(-1px);opacity:.95} }
+    @keyframes drift   { from{transform:translateX(-.7px)} to{transform:translateX(.7px)} }
+    @keyframes wire    { from{filter:hue-rotate(0deg) brightness(.88)} to{filter:hue-rotate(38deg) brightness(1.24)} }
+    @keyframes rare    { from{opacity:.42} to{opacity:1} }
     @keyframes playerPulse { from{transform:scale(.92)} to{transform:scale(1.08)} }
     @keyframes scanDrift { from{background-position:0 0,0 0} to{background-position:0 5px,0 0} }
     @keyframes scanFlash {
@@ -2418,6 +2416,7 @@ function generateWorld() {
   state.controlTarget = { type: 'player', ref: state.player };
   applyWeatherTint();
   updateDronePitch();
+  buildAnimatedCellSets(); // must come after terrain + overhead are final
   //updateVistaPill();
 
   if (state.specimenTotal > 0) {
@@ -2450,7 +2449,26 @@ function buildGrid() {
   }
   world.appendChild(frag); refreshAllCells();
 }
-// Overhead layer overlay — applied on top of player/entity/terrain
+// Build pre-computed sets of cells that actually need per-tick animation.
+// Called once after generateWorld (and after any Transfer that stamps terrain).
+// Sky and water sets are always valid; wind sets are checked only when wind.active.
+function buildAnimatedCellSets() {
+  state.skySet          = new Set(); // sky_tier — always refresh
+  state.waterSet        = new Set(); // black_water — refresh every 2 ticks
+  state.windSet         = new Set(); // wind-responsive terrain
+  state.windOverheadSet = new Set(); // wind-responsive overhead layer
+  for (let y = 0; y < ROWS; y++) {
+    for (let x = 0; x < COLS; x++) {
+      const key = y * COLS + x;
+      const id  = state.terrain[y][x].id;
+      if (id === "sky_tier")    state.skySet.add(key);
+      if (id === "black_water") state.waterSet.add(key);
+      if (TILE_DB[id]?.windResponsive) state.windSet.add(key);
+      const ovId = state.overheadTerrain?.[y]?.[x]?.id;
+      if (ovId && TILE_DB[ovId]?.windResponsive) state.windOverheadSet.add(key);
+    }
+  }
+}
 function applyOverheadOverlay(span, x, y) {
   const ov = state.overheadTerrain?.[y]?.[x];
   if (!ov) return;
@@ -2615,11 +2633,24 @@ function animateLoops() {
       addSpecimen(spec.name, spec.glyphs[0], spec.color, false, w);
     }
   }
-  // Refresh animated cells
-  for (let y=0;y<ROWS;y++) for (let x=0;x<COLS;x++) {
-    const id=state.terrain[y][x].id, spec=TILE_DB[id];
-    const ovId=state.overheadTerrain?.[y]?.[x]?.id, ovSpec=ovId?TILE_DB[ovId]:null;
-    if ((id==="black_water" && state.animTick%2===0)||id==="sky_tier"||(spec?.windResponsive&&state.wind.active)||(ovSpec?.windResponsive&&state.wind.active)) refreshCell(x,y);
+  // Refresh only cells that actually animate — sky always, water every 2 ticks, wind-responsive only during wind
+  for (const key of (state.skySet || [])) {
+    refreshCell(key % COLS, (key / COLS) | 0);
+  }
+  if (state.animTick % 2 === 0) {
+    for (const key of (state.waterSet || [])) {
+      refreshCell(key % COLS, (key / COLS) | 0);
+    }
+  }
+  if (state.wind.active) {
+    for (const key of (state.windSet || [])) {
+      const x = key % COLS, y = (key / COLS) | 0;
+      if (windTouches(x, y)) refreshCell(x, y);
+    }
+    for (const key of (state.windOverheadSet || [])) {
+      const x = key % COLS, y = (key / COLS) | 0;
+      if (windTouches(x, y)) refreshCell(x, y);
+    }
   }
 }
 
@@ -3185,19 +3216,38 @@ document.querySelectorAll('.dpad-btn').forEach(btn => {
   });
 });
 
+// ── Movement via rAF — eliminates the skip caused by keydown + free-running setInterval colliding ──
+const MOVE_DIRS = {
+  w:[0,-1], s:[0,1], a:[-1,0], d:[1,0],
+  arrowup:[0,-1], arrowdown:[0,1], arrowleft:[-1,0], arrowright:[1,0]
+};
+let lastMoveTs = 0;
+const MOVE_MS  = 95; // ms between repeated moves while held
+
 document.addEventListener("keydown", e => {
-  const k=e.key.toLowerCase();
-  const dirs={w:[0,-1],s:[0,1],a:[-1,0],d:[1,0],arrowup:[0,-1],arrowdown:[0,1],arrowleft:[-1,0],arrowright:[1,0]};
-  if (!dirs[k]) return; e.preventDefault();
-  if (!pressedKeys.has(k)) { pressedKeys.add(k); move(...dirs[k]); }
+  const k = e.key.toLowerCase();
+  if (!MOVE_DIRS[k]) return;
+  e.preventDefault();
+  const fresh = !pressedKeys.has(k);
+  pressedKeys.add(k);
+  if (fresh) {                         // first physical press only — not OS key-repeat
+    move(...MOVE_DIRS[k]);
+    lastMoveTs = performance.now();
+  }
 });
 document.addEventListener("keyup", e => pressedKeys.delete(e.key.toLowerCase()));
-setInterval(() => {
-  if (!pressedKeys.size) return;
-  const active=[...pressedKeys].at(-1);
-  const dirs={w:[0,-1],s:[0,1],a:[-1,0],d:[1,0],arrowup:[0,-1],arrowdown:[0,1],arrowleft:[-1,0],arrowright:[1,0]};
-  if (dirs[active]) move(...dirs[active]);
-}, 90);
+
+function movementLoop(ts) {
+  if (pressedKeys.size > 0 && ts - lastMoveTs >= MOVE_MS) {
+    const active = [...pressedKeys].at(-1);
+    if (MOVE_DIRS[active]) {
+      move(...MOVE_DIRS[active]);
+      lastMoveTs = ts;
+    }
+  }
+  requestAnimationFrame(movementLoop);
+}
+requestAnimationFrame(movementLoop);
 
 // Replace or upgrade the raw "click" event to listen to touch-safe clicks
 world.addEventListener("click", e => {
@@ -3683,33 +3733,24 @@ window.refreshCell = function (x, y) {
   }
 
   /**
-   * Main lifecycle loop runner integrated with state timelines
+   * Main lifecycle loop runner — state only.
+   * Cell rendering is handled by animateLoops which refreshes all sky cells
+   * every tick; the patched window.refreshCell applies cloud density there.
    */
   function updateCloudEngine() {
     clouds.tickCounter++;
 
-    // Increment drift across grid vectors
+    // Advance cloud positions
     clouds.layers.forEach(cloud => {
       cloud.x += cloud.speed;
     });
 
-    // Garbage collect off-screen artifacts
+    // Garbage-collect clouds that have drifted fully off-screen
     clouds.layers = clouds.layers.filter(cloud => cloud.x < (window.COLS || 52) + 2);
 
-    // Roll odds to introduce new drafts
+    // Roll for new cloud spawn
     if (Math.random() < clouds.spawnChance) {
       spawnCloud();
-    }
-
-    // Force updates over the sky coordinates explicitly
-    if (window.refreshCell && window.ROWS && window.COLS) {
-      for (let y = 0; y < window.ROWS; y++) {
-        for (let x = 0; x < window.COLS; x++) {
-          if (window.isSky && window.isSky(x, y)) {
-            window.refreshCell(x, y);
-          }
-        }
-      }
     }
   }
 
@@ -3724,8 +3765,8 @@ window.refreshCell = function (x, y) {
       clouds.layers[prewarm].x = Math.floor(Math.random() * 40); // Scatter across screen
     }
 
-    // Tie tracking updates alongside original loop rates
-    setInterval(updateCloudEngine, 450);
+    // Cloud state ticks at 650 ms — rendering is driven by animateLoops, not here
+    setInterval(updateCloudEngine, 650);
   }
 
   // Safe bootstrap anchor point checking if DOM structural hooks have mapped out
