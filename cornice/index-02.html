@@ -72,7 +72,7 @@ Performance goals:
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Neonderthaw&family=Noto+Sans+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Neonderthaw&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-deep:   #06030f;
@@ -85,8 +85,8 @@ Performance goals:
       --ink:       #cfe8d2;
       --cell:      clamp(12px, 1.5vw, 16px);
       --line:      1.06;
-      --font-mono: "Noto Sans Mono","Cascadia Code","JetBrains Mono","Iosevka Term",
-                   "Space Mono",SFMono-Regular,Consolas,monospace;
+      --font-mono: "Cascadia Code","JetBrains Mono","Iosevka Term","Victor Mono",
+                   "Space Mono","SFMono-Regular",Consolas,monospace;
       --weather-tint:  #2dff6e;
       --mouse-x: 50%;
       --mouse-y: 50%;
@@ -849,72 +849,6 @@ h1 {
       transform: scaleX(0.9);
     }
 
-    /* ─ shallow_pool: surface-tension shimmer ─ */
-    .cell[data-tile="shallow_pool"]::before {
-      content: "˙";
-      position: absolute;
-      font-size: 0.36em;
-      color: #aaf5ff;
-      opacity: 0.35;
-      top: 3%;
-      left: 0; right: 0;
-      text-align: center;
-      transform: scaleX(0.75);
-      mix-blend-mode: screen;
-    }
-
-    /* ─ brine_puddle: salt-crust mineral accent ─ */
-    .cell[data-tile="brine_puddle"]::before {
-      content: "·";
-      position: absolute;
-      font-size: 0.32em;
-      color: #d8e8f2;
-      opacity: 0.45;
-      bottom: 4%;
-      right: 7%;
-    }
-
-    /* ─ oil_slick: iridescent duplicate, screen-blended ─ */
-    .cell[data-tile="oil_slick"]::before {
-      content: attr(data-glyph);
-      position: absolute;
-      inset: 0;
-      display: grid;
-      place-items: center;
-      color: #00ffcc;
-      opacity: 0.32;
-      transform: translate(1px, -1px) scaleX(0.88);
-      mix-blend-mode: screen;
-      animation: rare 3.8s ease-in-out infinite alternate;
-    }
-
-    /* ─ glass_shard: specular glint + screen-composited glyph ─ */
-    .cell[data-tile="glass_shard"] {
-      mix-blend-mode: screen;
-    }
-    .cell[data-tile="glass_shard"]::before {
-      content: "·";
-      position: absolute;
-      font-size: 0.34em;
-      color: #ffffff;
-      opacity: 0.55;
-      top: 4%;
-      right: 7%;
-    }
-
-    /* ─ low_cloud: diffuse halo above glyph ─ */
-    .cell[data-tile="low_cloud"]::before {
-      content: "∘";
-      position: absolute;
-      font-size: 0.42em;
-      color: #dde8f8;
-      opacity: 0.28;
-      top: 0;
-      left: 0; right: 0;
-      text-align: center;
-      transform: translateY(-1px) scaleX(1.25);
-    }
-
     @media (max-width: 840px) {
       header { grid-template-columns: 1fr; }
       .status-strip { justify-items: start; text-align: left; min-width: 0; }
@@ -1046,7 +980,7 @@ body::after {
     <header>
       <div>
         <h1>Cornice</h1>
-        <p class="subtitle">Nocturnal balcony at the edge of an impossible city. Click any cell to inspect; click again to cycle layers. WASD or arrows to traverse.</p>
+        <p class="subtitle">Nocturnal balcony at the edge of an impossible city. Click any glyph to parse. WASD or arrows to traverse.</p>
       </div>
       <div class="status-strip">
         <div class="pill-row">
@@ -1195,7 +1129,7 @@ const BASE_TILE_DB = {
     whispers:["voltage by rumor","a grid-tendril","this is not a cable exactly","root system of a machine"]
   },
   balcony_rail: {
-    id:"balcony_rail", glyphs:["\u2550","\u2566","\u2569","\u256c","\u2561"],
+    id:"balcony_rail", glyphs:["\u2550","\u2566","\u2569","\u256c","\u2e1c"],
     name:"balcony railing", type:"structure", zLayer:"wall", solid:true,
     color:"#e8b7da", fx:"solid fx-breathe", windResponsive:false,
     tags:["boundary","architecture","protective","ironwork"],
@@ -1358,75 +1292,6 @@ const BASE_TILE_DB = {
       "aggregate without attribution",
       "each piece has been somewhere else first",
       "the texture of an unfinished decision"
-    ]
-  },
-  shallow_pool: {
-    id:"shallow_pool", glyphs:["·","˙","⋅","∘"],
-    name:"shallow pool", type:"terrain", zLayer:"floor", solid:false,
-    color:"#7eefff", fx:"", animated:true, windResponsive:false,
-    blobChance:0.08, blobCount:3, blobRadius:3, blobRadiusY:2,
-    tags:["walkable","liquid","reflection","thin"],
-    sound:{ scaleIndex:4, type:"sine" },
-    whispers:[
-      "thin as a decision",
-      "the city's surface tension",
-      "barely water, mostly memory of water",
-      "a puddle with depth issues"
-    ]
-  },
-  brine_puddle: {
-    id:"brine_puddle", glyphs:["≈","≋","~","-"],
-    name:"brine puddle", type:"terrain", zLayer:"floor", solid:false,
-    color:"#8faabc", fx:"", animated:true, windResponsive:false,
-    blobChance:0.06, blobCount:2, blobRadius:3, blobRadiusY:1,
-    tags:["walkable","liquid","mineral","saline","crusted"],
-    sound:{ scaleIndex:2, type:"sine" },
-    whispers:[
-      "salt remembers an ocean",
-      "mineral residue of a distant body of water",
-      "evaporating into its own record",
-      "the floor tastes of infrastructure"
-    ]
-  },
-  oil_slick: {
-    id:"oil_slick", glyphs:["\u25ca","\u25c7","\u29eb","\u25c8"],
-    name:"oil slick", type:"terrain", zLayer:"floor", solid:false,
-    color:"#b060ff", fx:"fx-breathe", animated:true, windResponsive:false, rare:true,
-    blobChance:0.04, blobCount:2, blobRadius:2, blobRadiusY:1,
-    tags:["walkable","liquid","iridescent","rare","petroleum"],
-    sound:{ scaleIndex:10, type:"sawtooth" },
-    whispers:[
-      "iridescence as industrial confession",
-      "the substrate leaked, briefly",
-      "every color present but none dominant",
-      "a thin agreement between chemistry and light"
-    ]
-  },
-  glass_shard: {
-    id:"glass_shard", glyphs:["\u25c7","\u25ca","\u25b1","\u2662"],
-    name:"glass shard", type:"terrain", zLayer:"floor", solid:false,
-    color:"#c8ecff", fx:"", windResponsive:false,
-    blobChance:0.05, blobCount:2, blobRadius:2, blobRadiusY:1,
-    tags:["walkable","mineral","transparent","fragile","reflective","urban"],
-    whispers:[
-      "broken clarity",
-      "a window's former jurisdiction",
-      "transparent even in pieces",
-      "the light bends around the argument"
-    ]
-  },
-  low_cloud: {
-    id:"low_cloud", glyphs:["\u2591","\u25cb","\u25cc","\u25e6"],
-    name:"low cloud", type:"terrain", zLayer:"floor", solid:false,
-    color:"#c8d8f0", fx:"fx-drift", windResponsive:true, animated:true,
-    blobChance:0.05, blobCount:2, blobRadius:5, blobRadiusY:2,
-    tags:["walkable","atmospheric","weather-bound","soft","wind-responsive"],
-    sound:{ scaleIndex:7, type:"sine" },
-    whispers:[
-      "weather that missed its altitude",
-      "a cloud practicing ground-level",
-      "mist with structural aspirations",
-      "the forecast descended entirely"
     ]
   }
 };
@@ -2172,60 +2037,40 @@ function blob(cx, cy, rx, ry, tileId, raggedness) {
 // Only fires if gardenCuts exist; leaves region 0 untouched.
 function applyGardenBiomeCuts() {
   if (!state.gardenCuts.length) return;
-
-  // Each entry: { density, tiles, rare? }
-  // density  — probability of overriding any given non-solid cell
-  // rare     — if true, only selected ~22% of the time
+  // Multiple palette flavors per region; one picked per world via seeded RNG
   const PALETTE_OPTIONS = [
     // region 0 — base, always untouched
-    [{ density:0, tiles:[] }],
-
-    // region 1 — wet / lush / organic (normal + rare extremes)
+    [[]],
+    // region 1 — wet / lush / organic flavors
     [
-      { density:0.17, tiles:["black_water","black_water","neon_fuzz","neon_fuzz","signal_moss","wire_vine"] },
-      { density:0.17, tiles:["neon_fuzz","neon_fuzz","spore_bloom","spore_bloom","signal_moss","black_water"] },
-      { density:0.17, tiles:["spore_bloom","spore_bloom","neon_fuzz","signal_moss","black_water","damp_soil"] },
-      { density:0.17, tiles:["signal_moss","signal_moss","neon_fuzz","black_water","spore_bloom","wire_vine"] },
-      // rare extremes ─────────────────────────────────────────────
-      { density:0.58, rare:true, tiles:["black_water","black_water","black_water","shallow_pool","shallow_pool","brine_puddle"] },
-      { density:0.55, rare:true, tiles:["neon_fuzz","neon_fuzz","neon_fuzz","spore_bloom","spore_bloom","spore_bloom"] },
-      { density:0.50, rare:true, tiles:["low_cloud","low_cloud","spore_bloom","neon_fuzz","signal_moss","damp_soil"] },
-      { density:0.48, rare:true, tiles:["signal_moss","signal_moss","signal_moss","wire_vine","spore_bloom","low_cloud"] },
+      ["black_water","black_water","neon_fuzz","neon_fuzz","signal_moss","wire_vine"],
+      ["neon_fuzz","neon_fuzz","spore_bloom","spore_bloom","signal_moss","black_water"],
+      ["spore_bloom","spore_bloom","neon_fuzz","signal_moss","black_water","damp_soil"],
+      ["signal_moss","signal_moss","neon_fuzz","black_water","spore_bloom","wire_vine"],
     ],
-
-    // region 2 — arid / industrial / urban (normal + rare extremes)
+    // region 2 — arid / industrial / urban flavors
     [
-      { density:0.17, tiles:["city_debris","city_debris","gravel_bed","gravel_bed","sand_drift","damp_soil"] },
-      { density:0.17, tiles:["lost_pavement","lost_pavement","city_debris","gravel_bed","sand_drift","damp_soil"] },
-      { density:0.17, tiles:["gravel_bed","gravel_bed","city_debris","lost_pavement","frost_crust","damp_soil"] },
-      { density:0.17, tiles:["sand_drift","sand_drift","gravel_bed","city_debris","lost_pavement","damp_soil"] },
-      { density:0.17, tiles:["frost_crust","frost_crust","gravel_bed","lost_pavement","city_debris","damp_soil"] },
-      // rare extremes ─────────────────────────────────────────────
-      { density:0.62, rare:true, tiles:["lost_pavement","lost_pavement","lost_pavement","city_debris","city_debris","gravel_bed"] },
-      { density:0.55, rare:true, tiles:["glass_shard","glass_shard","lost_pavement","city_debris","brine_puddle","gravel_bed"] },
-      { density:0.45, rare:true, tiles:["oil_slick","oil_slick","city_debris","lost_pavement","brine_puddle","gravel_bed"] },
-      { density:0.50, rare:true, tiles:["sand_drift","sand_drift","sand_drift","gravel_bed","city_debris","frost_crust"] },
+      ["city_debris","city_debris","gravel_bed","gravel_bed","sand_drift","damp_soil"],
+      ["lost_pavement","lost_pavement","city_debris","gravel_bed","sand_drift","damp_soil"],
+      ["gravel_bed","gravel_bed","city_debris","lost_pavement","frost_crust","damp_soil"],
+      ["sand_drift","sand_drift","gravel_bed","city_debris","lost_pavement","damp_soil"],
+      ["frost_crust","frost_crust","gravel_bed","lost_pavement","city_debris","damp_soil"],
     ],
   ];
-
-  function pickPalette(opts) {
-    const normal  = opts.filter(o => !o.rare && o.tiles?.length);
-    const extreme = opts.filter(o =>  o.rare);
-    if (extreme.length && chance(0.22)) return pick(extreme);
-    return pick(normal.length ? normal : opts.filter(o => o.tiles?.length));
-  }
-
-  const palettes = [null, pickPalette(PALETTE_OPTIONS[1]), pickPalette(PALETTE_OPTIONS[2])];
-
+  const palettes = [
+    [],
+    pick(PALETTE_OPTIONS[1]),
+    pick(PALETTE_OPTIONS[2]),
+  ];
   for (let y = 1; y < ROWS - 1; y++) {
     for (let x = 1; x < COLS - 1; x++) {
       if (isSky(x, y) || isRail(x, y)) continue;
       const region = getGardenBiomeRegion(x, y);
       if (region === 0) continue;
-      const pal = palettes[region] || palettes[1];
-      if (!pal?.tiles?.length) continue;
-      if (chance(pal.density) && !TILE_DB[state.terrain[y][x].id]?.solid) {
-        state.terrain[y][x].id = pick(pal.tiles);
+      const bias = palettes[region] || palettes[1];
+      if (!bias.length) continue;
+      if (chance(0.17) && !TILE_DB[state.terrain[y][x].id]?.solid) {
+        state.terrain[y][x].id = pick(bias);
       }
     }
   }
@@ -2556,7 +2401,7 @@ span.style.opacity = String(perTileOpacity.toFixed(3));
   else span.textContent=state.terrainGlyphs[y][x];
   span.className+=` terrain ${spec.fx||""}`;
   span.dataset.tile = cell.id;
-  if (cell.id === "void_patch" || cell.id === "ferrofluid_pool" || cell.id === "oil_slick") span.dataset.glyph = span.textContent;
+  if (cell.id === "void_patch" || cell.id === "ferrofluid_pool") span.dataset.glyph = span.textContent;
   span.style.color=spec.color;
   applyOverheadOverlay(span, x, y);
 }
@@ -2726,8 +2571,8 @@ function move(dx, dy) {
     }
   } 
   else if (state.controlTarget.type === 'tile') {
-    // TILE CLONE RULE: Ignores physical solids entirely, but let's keep it on the screen map frame
-    if (nx < 0 || nx >= COLS || ny < 0 || ny >= ROWS) return;
+    // TILE CLONE RULE: Ignores physical solids, but must stay within the garden deck — no sky, no rail
+    if (isSky(nx, ny) || isRail(nx, ny)) return;
   } 
   else {
     // PLAYER & ENTITY RULE: Standard constraints on the terrarium deck
@@ -2760,112 +2605,69 @@ function move(dx, dy) {
   window.onTerrainStep?.(nx, ny, cell.id, standingOnEntity, state.soundOn, state.weather?.droneFreq);
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// LAYER INSPECTION — click cycles entity → overhead → terrain
-// ═══════════════════════════════════════════════════════════════════
-
-function getInspectLayers(x, y) {
-  const layers = [];
-  if (x === state.player.x && y === state.player.y)
-    layers.push({ type:'player' });
-  const ent = state.entities.find(e => e.x === x && e.y === y);
-  if (ent) layers.push({ type:'entity', ent });
-  if (state.terrain[y][x].id === 'sky_tier') {
-    if (!layers.length) layers.push({ type:'sky' });
-    return layers;
-  }
-  const ov = state.overheadTerrain?.[y]?.[x];
-  if (ov) layers.push({ type:'overhead', ov });
-  layers.push({ type:'terrain' });
-  return layers;
-}
-
-function renderScannerLayer(layer, x, y) {
-  scanCard.classList.remove("scan-active"); void scanCard.offsetWidth; scanCard.classList.add("scan-active");
-  setTimeout(() => scanCard.classList.remove("scan-active"), 480);
-
-  if (layer.type === 'player') {
-    scanName.textContent = PLAYER_SPEC.name;
-    scanText.textContent = pickNative(PLAYER_SPEC.whispers);
-    scanMeta.innerHTML = "";
-    PLAYER_SPEC.tags.forEach(t => { const s = document.createElement("span"); s.className = "tag"; s.textContent = t; scanMeta.appendChild(s); });
-    addSpecimen(PLAYER_SPEC.name, "@", "#fff26e");
-    if (state.soundOn) playTone({ sound:{ scaleIndex:6, type:"sine" } }, 0.4);
-    return;
-  }
-  if (layer.type === 'sky') {
-    const scene = getSceneForCell(x, y);
-    scanName.textContent = scene.name;
-    scanText.textContent = pickNative(scene.whispers);
-    scanMeta.innerHTML = "";
-    scene.tags.forEach(t => { const s = document.createElement("span"); s.className = "tag"; s.textContent = t; scanMeta.appendChild(s); });
-    addSpecimen(scene.name, pickNative(scene.glyphs), scene.color);
-    if (state.soundOn) playTone({ sound:{ scaleIndex:12, type:"sine" } }, 0.4);
-    return;
-  }
-  if (layer.type === 'overhead') {
-    const ovSpec = TILE_DB[layer.ov.id] || TILE_DB.damp_soil;
-    let whisper = pickNative(ovSpec.whispers || ["Quiet canopy."]);
-    whisper = whisper.replace("[weather]", state.weather?.name ?? "\u2014");
-    scanName.textContent = `\u2191 ${ovSpec.name}`;
-    scanText.textContent = whisper;
-    scanMeta.innerHTML = "";
-    (ovSpec.tags || []).forEach(t => { const s = document.createElement("span"); s.className = "tag"; s.textContent = t; scanMeta.appendChild(s); });
-    addSpecimen(ovSpec.name, ovSpec.glyphs[0], ovSpec.color || "#f5d97a");
-    if (state.soundOn) playTone({ sound: ovSpec.sound || { scaleIndex:8, type:"triangle" } }, 0.5);
-    return;
-  }
-  if (layer.type === 'entity') {
-    const ent = layer.ent;
-    const spec = ENTITY_DB[ent.id] || ENTITY_DB.party_ghost;
-    ent.inspectCount = (ent.inspectCount || 0) + 1;
-    const isRevisit = ent.inspectCount > 1;
-    let whisper = spec.whispers?.length > 1
-      ? spec.whispers[(ent.inspectCount - 1) % spec.whispers.length]
-      : pickNative(spec.whispers || ["\u2014"]);
-    whisper = whisper.replace("[weather]", state.weather?.name ?? "\u2014");
-    scanName.textContent = isRevisit ? `${spec.name} \u21a9` : spec.name;
-    scanText.textContent = whisper;
-    scanMeta.innerHTML = "";
-    (spec.tags || []).forEach(t => { const s = document.createElement("span"); s.className = "tag"; s.textContent = t; scanMeta.appendChild(s); });
-    addSpecimen(spec.name, spec.glyphs[0], spec.color || "#c2dcc5", isRevisit);
-    if (state.soundOn) playTone({ sound: spec.sound || { scaleIndex:4, type:"sine" } }, 0.65);
-    return;
-  }
-  if (layer.type === 'terrain') {
-    const cell = state.terrain[y][x];
-    const spec = TILE_DB[cell.id] || TILE_DB.damp_soil;
-    const isRevisit = cell.historyTags.length > 0;
-    cell.historyTags.push(state.animTick);
-    let whisper = pickNative(spec.whispers || ["Quiet architecture."]);
-    whisper = whisper.replace("[weather]", state.weather?.name ?? "\u2014");
-    scanName.textContent = (isRevisit ? `${spec.name} \u21a9` : spec.name) + `\u00a0[${x},${y}]`;
-    scanText.textContent = whisper;
-    scanMeta.innerHTML = "";
-    (spec.tags || []).forEach(t => { const s = document.createElement("span"); s.className = "tag"; s.textContent = t; scanMeta.appendChild(s); });
-    if (cell.id === "ancient_node") {
-      document.body.classList.add("node-activated");
-      setTimeout(() => document.body.classList.remove("node-activated"), 1200);
-      if (state.soundOn) playTone({ sound:{ scaleIndex:16, type:"sine" } }, 1.2);
-    } else {
-      if (state.soundOn) playTone({ sound: spec.sound || { scaleIndex:4, type:"sine" } }, 0.65);
-    }
-    addSpecimen(spec.name, spec.glyphs[0] || ".", spec.color || "#c2dcc5", isRevisit);
-    return;
-  }
-}
-
 function inspectAt(x, y) {
-  if (!inBounds(x, y)) return;
-  const oldSel = state.selected ? { ...state.selected } : null;
-  const layers = getInspectLayers(x, y);
-  let layerIdx = 0;
-  if (oldSel && oldSel.x === x && oldSel.y === y && layers.length > 1)
-    layerIdx = ((oldSel.layerIdx ?? 0) + 1) % layers.length;
-  state.selected = { x, y, layerIdx };
-  if (oldSel && !(oldSel.x === x && oldSel.y === y)) refreshCell(oldSel.x, oldSel.y);
-  refreshCell(x, y);
-  renderScannerLayer(layers[layerIdx], x, y);
+  if (!inBounds(x,y)) return;
+  const oldSel=state.selected?{...state.selected}:null;
+  state.selected={x,y};
+  if (oldSel) refreshCell(oldSel.x,oldSel.y);
+  refreshCell(x,y);
+  
+  // Scan flash
+  scanCard.classList.remove("scan-active"); void scanCard.offsetWidth; scanCard.classList.add("scan-active");
+  setTimeout(()=>scanCard.classList.remove("scan-active"), 480);
+
+  // Player self-inspect
+  if (x===state.player.x&&y===state.player.y) {
+    scanName.textContent=PLAYER_SPEC.name;
+    scanText.textContent=pickNative(PLAYER_SPEC.whispers);
+    scanMeta.innerHTML="";
+    PLAYER_SPEC.tags.forEach(t=>{const s=document.createElement("span");s.className="tag";s.textContent=t;scanMeta.appendChild(s);});
+    addSpecimen(PLAYER_SPEC.name,"@","#fff26e");
+    if(state.soundOn) playTone({sound:{scaleIndex:6,type:"sine"}},0.4);
+    return;
+  }
+
+  // Sky
+  if (state.terrain[y][x].id==="sky_tier") {
+    const scene=getSceneForCell(x,y);
+    scanName.textContent=scene.name;
+    scanText.textContent=pickNative(scene.whispers);
+    scanMeta.innerHTML="";
+    scene.tags.forEach(t=>{const s=document.createElement("span");s.className="tag";s.textContent=t;scanMeta.appendChild(s);});
+    addSpecimen(scene.name, pickNative(scene.glyphs), scene.color);
+    if(state.soundOn) playTone({sound:{scaleIndex:12,type:"sine"}},0.4);
+    return;
+  }
+
+  // Entity or terrain
+  const ent=state.entities.find(e=>e.x===x&&e.y===y);
+  const cell=state.terrain[y][x];
+  const spec=ent?(ENTITY_DB[ent.id]||ENTITY_DB.party_ghost):(TILE_DB[cell.id]||TILE_DB.damp_soil);
+
+  let isRevisit=false;
+  if (ent) { ent.inspectCount=(ent.inspectCount||0)+1; isRevisit=ent.inspectCount>1; }
+  else { isRevisit=cell.historyTags.length>0; cell.historyTags.push(state.animTick); }
+
+  let whisper;
+  if (ent&&spec.whispers?.length>1) whisper=spec.whispers[(ent.inspectCount-1)%spec.whispers.length];
+  else whisper=pickNative(spec.whispers||["Quiet architecture."]);
+  whisper=whisper.replace("[weather]",state.weather?.name??"\u2014");
+
+  scanName.textContent=(isRevisit?`${spec.name} \u21a9`:spec.name)+(ent?"":`\u00a0[${x},${y}]`);
+  scanText.textContent=whisper;
+  scanMeta.innerHTML="";
+  (spec.tags||[]).forEach(t=>{const s=document.createElement("span");s.className="tag";s.textContent=t;scanMeta.appendChild(s);});
+
+  if (!ent&&cell.id==="ancient_node") {
+    document.body.classList.add("node-activated");
+    setTimeout(()=>document.body.classList.remove("node-activated"),1200);
+    if(state.soundOn) playTone({sound:{scaleIndex:16,type:"sine"}},1.2);
+  } else {
+    if(state.soundOn) playTone({sound:spec.sound||{scaleIndex:4,type:"sine"}},0.65);
+  }
+
+  const glyph=ent?(ENTITY_DB[ent.id]?.glyphs[0]||"?"):(TILE_DB[cell.id]?.glyphs[0]||".");
+  addSpecimen(spec.name, glyph, spec.color||"#c2dcc5", isRevisit);
 }
 
 function addSpecimen(name, glyph, color, isRevisit=false, autoNote=null) {
@@ -2914,33 +2716,20 @@ function shiftScene() {
     }
   }
   refreshAllCells();
-  updateVistaPill();
+  // updateVistaPill is currently disabled; no call needed here
 }
 // ═══════════════════════════════════════════════════════════════════
 // TRANSFER MOVEMENT EXTENSION STATE & LOGIC
 // ═══════════════════════════════════════════════════════════════════
 state.transferPrimed = false;
-state.transferConfirmReady = false;
-state.controlTarget = { type: 'player', ref: state.player }; // Options: 'player', 'entity', 'tile', 'cloud'
+state.controlTarget = { type: 'player', ref: state.player }; // Options: 'player', 'entity', 'tile'
 
 const transferBtn = document.getElementById("transferBtn");
 
 transferBtn.addEventListener("click", () => {
-  // If a confirm is pending, execute the transfer on the currently-scanned layer
-  if (state.transferConfirmReady && state.transferPrimed) {
-    if (state.selected) {
-      const layers = getInspectLayers(state.selected.x, state.selected.y);
-      const current = layers[state.selected.layerIdx ?? 0];
-      executeTransferFor(state.selected.x, state.selected.y, current);
-    }
-    state.transferConfirmReady = false;
-    return;
-  }
-  // Toggle primed state
   state.transferPrimed = !state.transferPrimed;
-  state.transferConfirmReady = false;
   if (state.transferPrimed) {
-    transferBtn.textContent = "Click target\u2026";
+    transferBtn.textContent = "Click Target...";
     transferBtn.style.background = "linear-gradient(98deg, var(--petal), var(--bruise))";
     transferBtn.style.color = "#fff";
   } else {
@@ -2996,101 +2785,31 @@ function finalizeTransferSelection(previousControl = null) {
 }
 function resetTransferButtonUI() {
   state.transferPrimed = false;
-  state.transferConfirmReady = false;
   if (state.controlTarget.type === 'player') {
     transferBtn.textContent = "Transfer Movement";
     transferBtn.style.background = "";
     transferBtn.style.color = "";
   } else {
-    transferBtn.textContent = "Transfer Movement";
+    // Adapts label to display 'Cloud' vs 'Entity' vs 'Tile' target profiles
+    transferBtn.textContent = `Transfer Movement`;
     transferBtn.style.background = "rgba(240,184,222,.15)";
     transferBtn.style.color = "var(--petal)";
   }
 }
 
-// ─ Transfer-aware inspect wrapper ────────────────────────────────
-// Clicking always runs layer cycling via the base inspectAt.
-// When transfer is primed the button updates to show a pending Confirm.
+// Intercept clicks on the map before they fall back to the information standard inspector
 const originalInspectAt = window.inspectAt;
 window.inspectAt = function(x, y) {
   if (!inBounds(x, y)) return;
-  originalInspectAt(x, y);
+
   if (state.transferPrimed) {
-    const layers = getInspectLayers(x, y);
-    const current = layers[state.selected?.layerIdx ?? 0];
-    const name = getLayerDisplayName(current, x, y);
-    transferBtn.textContent = `Confirm \u2192 ${name}`;
-    transferBtn.style.background = "linear-gradient(98deg, var(--acid), var(--mold))";
-    transferBtn.style.color = "#120820";
-    state.transferConfirmReady = true;
+    handleTransferTargetSelection(x, y);
+    return;
   }
+
+  // If the user isn't trying to transfer control, maintain original information display
+  originalInspectAt(x, y);
 };
-
-function getLayerDisplayName(layer, x, y) {
-  if (!layer) return "?";
-  if (layer.type === 'player')   return "player";
-  if (layer.type === 'sky')      return getSceneForCell(x, y)?.name?.toLowerCase() ?? "vista";
-  if (layer.type === 'overhead') return (TILE_DB[layer.ov.id]?.name ?? "overhead") + " \u2191";
-  if (layer.type === 'entity')   return ENTITY_DB[layer.ent.id]?.name ?? "entity";
-  if (layer.type === 'terrain')  return TILE_DB[state.terrain[y]?.[x]?.id]?.name ?? "terrain";
-  return "?";
-}
-
-function executeTransferFor(x, y, layer) {
-  const previousControl = state.controlTarget;
-  if (!layer) return;
-
-  if (layer.type === 'player' || (x === state.player.x && y === state.player.y)) {
-    state.controlTarget = { type:'player', ref:state.player };
-    addSpecimen("control returned", "@", "#fff26e", false, "System focus bound back to player body.");
-    finalizeTransferSelection(previousControl);
-    return;
-  }
-  if (layer.type === 'sky') {
-    const span = cellEls[y]?.[x];
-    const cloudGlyphs = ["\u2591","\u2592","\u25cc","\u25cb","\u25e6"];
-    if (span && cloudGlyphs.includes(span.textContent)) {
-      const clone = { uid:state.uidCounter++, id:"drifting_cloud", x, y, glyphIndex:0,
-        phase:Math.random(), isTileClone:true, color:"#cfe8d2", glyph:span.textContent };
-      state.entities.push(clone);
-      state.controlTarget = { type:'cloud', ref:clone };
-      addSpecimen("captured vapor", clone.glyph, "#4dfff0", false, "Possessed drifting mist. Bound to scenic vista layer.");
-      finalizeTransferSelection(previousControl);
-      return;
-    }
-    addSpecimen("transfer failure", "\u22e0", "#ff42a0", false, "Cannot shift control to raw background space. Target a cloud layer.");
-    finalizeTransferSelection();
-    return;
-  }
-  if (layer.type === 'entity') {
-    const spec = ENTITY_DB[layer.ent.id];
-    state.controlTarget = { type:'entity', ref:layer.ent };
-    addSpecimen("possessed entity", spec.glyphs[0], spec.color, false, `Now driving ${spec.name}.`);
-    finalizeTransferSelection(previousControl);
-    return;
-  }
-  if (layer.type === 'overhead') {
-    const ovSpec = TILE_DB[layer.ov.id] || TILE_DB.wire_vine;
-    const clone = { uid:state.uidCounter++, id:layer.ov.id, x, y, glyphIndex:0,
-      phase:Math.random(), isTileClone:true, color:ovSpec.color||"#f5d97a", glyph:ovSpec.glyphs[0] };
-    state.entities.push(clone);
-    state.controlTarget = { type:'tile', ref:clone };
-    addSpecimen("overhead clone", clone.glyph, clone.color, false, `Proxy of ${ovSpec.name} (overhead layer).`);
-    finalizeTransferSelection(previousControl);
-    return;
-  }
-  if (layer.type === 'terrain') {
-    const underlyingTile = state.terrain[y][x];
-    const tileSpec = TILE_DB[underlyingTile.id] || TILE_DB.damp_soil;
-    const clone = { uid:state.uidCounter++, id:underlyingTile.id, x, y, glyphIndex:0,
-      phase:Math.random(), isTileClone:true, color:tileSpec.color||"#cfe8d2", glyph:tileSpec.glyphs[0] };
-    state.entities.push(clone);
-    state.controlTarget = { type:'tile', ref:clone };
-    addSpecimen("cloned phantom tile", clone.glyph, clone.color, false, "Constructed floating tile proxy.");
-    finalizeTransferSelection(previousControl);
-    return;
-  }
-}
 
 function handleTransferTargetSelection(x, y) {
   const previousControl = state.controlTarget;
@@ -3103,12 +2822,17 @@ function handleTransferTargetSelection(x, y) {
     return;
   }
 
-  // Check if a cloud is present at the clicked cell location
   const span = cellEls[y]?.[x];
-  const isCloudGlyph = span && (span.textContent === "\u2591" || span.textContent === "\u2592" || span.textContent === "\u25cc" || span.textContent === "\u25cb");
 
-  // Rule 4: If a cloud is clicked, initialize it with a distinct 'cloud' control type
-  if (isCloudGlyph) {
+  // Cloud detection: cell must be in the sky zone AND have the cloud engine's background tint active.
+  // The cloud engine sets span.style.background to a color-mix() value on cloud cells and resets it
+  // to "" on clear sky cells — this is the reliable indicator. Glyph matching is NOT used because
+  // the cloud engine never changes textContent (it only modifies color/opacity/background), and
+  // several ground tiles (lost_pavement: ░ ▒) share codepoints that were previously being matched.
+  const isCloudCell = isSky(x, y) && span && span.style.background !== "";
+
+  // Rule 4: If a cloud cell is clicked, initialize it with a distinct 'cloud' control type
+  if (isCloudCell) {
     const cloneEntity = {
       uid: state.uidCounter++,
       id: "drifting_cloud",
