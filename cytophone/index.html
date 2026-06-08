@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..500;1,9..144,300..500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2032%2032%22%3E%3Crect%20width=%2232%22%20height=%2232%22%20rx=%227%22%20fill=%22%23070710%22/%3E%3Cpath%20d=%22M10%2017L16%209L23%2020%22%20fill=%22none%22%20stroke=%22%237a839c%22%20stroke-width=%222%22%20stroke-linecap=%22round%22/%3E%3Ccircle%20cx=%2210%22%20cy=%2217%22%20r=%224%22%20fill=%22%23d57732%22/%3E%3Ccircle%20cx=%2216%22%20cy=%229%22%20r=%224%22%20fill=%22%239fd9c8%22/%3E%3Ccircle%20cx=%2223%22%20cy=%2220%22%20r=%224%22%20fill=%22%23cfe3ec%22/%3E%3C/svg%3E">
 <style>
   :root{
     --ground:#070710;
@@ -49,8 +50,13 @@
   .sub{margin-top:18px;font-size:clamp(13px,1.6vw,15px);line-height:1.75;color:var(--faint);max-width:61ch}
   .sub em{font-family:"Fraunces",serif;font-style:italic;color:var(--ink)}
 
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px}
-  @media(max-width:760px){.grid{grid-template-columns:1fr;gap:14px}}
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(250px,280px));
+    justify-content:center;
+    gap:18px;
+  }
+  @media(max-width:760px){.grid{grid-template-columns:minmax(0,280px);gap:14px}}
 
   .tile{position:relative;display:block;text-decoration:none;color:inherit;
     border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden;
@@ -163,8 +169,8 @@
       <canvas data-piece="stomata"></canvas>
       <div class="meta">
         <div class="nm">stomata</div>
-        <div class="rg">pore · pressure · breath noise</div>
-        <div class="ds">Breathing noise puff apertures. Press to build pressure, drag to open, and release spore-like puffs.</div>
+        <div class="rg">pore · pressure · exhale aerophones</div>
+        <div class="ds">Organic breathing apertures. Press to build pressure, drag to open, and release a varied mix of breathy puffs and pitched aerophone tones.</div>
       </div>
     </a>
   </div>
