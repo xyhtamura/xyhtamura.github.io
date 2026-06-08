@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>cytophone: murmuration</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,300..400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ground-0:#fcfdfd;
+    --ground-1:#eef1f3;
+    --ink:#0a1114;
+    --faint:#8a9ba3;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;overflow:hidden;background:var(--ground-0)}
+  body{font-family:"DM Mono",monospace;color:var(--ink);-webkit-tap-highlight-color:transparent;touch-action:none;cursor:crosshair}
+  #stage{display:block;width:100vw;height:100vh;mix-blend-mode:multiply;}
+  #title{position:fixed;top:max(20px,env(safe-area-inset-top));left:22px;font-family:"Fraunces",serif;font-style:italic;font-weight:300;font-size:17px;letter-spacing:.01em;color:var(--faint);pointer-events:none;user-select:none;transition:opacity 2s ease}
+  #title.dim{opacity:.35}
+  body.hide-ui #title, body.hide-ui #hint, body.hide-ui #fx { opacity: 0 !important; pointer-events: none !important; }
+  #hint{position:fixed;left:0;right:0;bottom:max(64px,calc(env(safe-area-inset-bottom) + 44px));text-align:center;pointer-events:none;font-size:13px;letter-spacing:.02em;color:var(--faint);transition:opacity 1.6s ease;opacity:1;}
+  #hint em{font-family:"Fraunces",serif;font-style:italic;color:var(--ink);font-weight:400}
+  #hint.gone{opacity:0}
+  #fx{position:fixed;left:50%;bottom:max(22px,env(safe-area-inset-bottom));transform:translateX(-50%); display:flex;align-items:center;gap:11px;opacity:.4;transition:opacity .5s ease;z-index:5;user-select:none}
+  #fx:hover{opacity:1}
+  #fx .lbl{font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+  #wet{-webkit-appearance:none;appearance:none;width:168px;height:2px;background:#c0c9cd;border-radius:2px;outline:none;cursor:pointer}
+  #wet::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:#0a1114;box-shadow:0 0 10px rgba(0,0,0,.1);cursor:pointer}
+  #wet::-moz-range-thumb{width:13px;height:13px;border:none;border-radius:50%;background:#0a1114;box-shadow:0 0 10px rgba(0,0,0,.1);cursor:pointer}
+  #gate{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 120% at 50% 40%, #eef1f3 0%, #fcfdfd 70%);z-index:10;transition:opacity .9s ease}
+  #gate.gone{opacity:0;pointer-events:none}
+  #gate .gi{text-align:center;max-width:360px;padding:0 24px;animation:rise 1.4s cubic-bezier(.2,.8,.2,1) both}
+  #gate h1{font-family:"Fraunces",serif;font-style:italic;font-weight:300;font-size:34px;color:var(--ink);margin-bottom:14px}
+  #gate p{font-size:13px;line-height:1.7;color:var(--faint)}
+  #gate .pulse{margin:30px auto 0;width:60px;height:60px;border-radius:50%; background:radial-gradient(circle at 38% 34%, #ffffff 0%, #d8e1e5 40%, #8a9ba3 100%); box-shadow:0 0 40px rgba(10,17,20,.08);animation:breathe 2.8s ease-in-out infinite}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  @keyframes breathe{0%,100%{transform:scale(.95);opacity:.6}50%{transform:scale(1.05);opacity:1}}
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<div id="title">cytophone: murmuration</div>
+<div id="hint"><em>move</em> to carve through the network · <em>tap</em> to scatter</div>
+<div id="fx"><span class="lbl">dry</span><input id="wet" type="range" min="0" max="100" value="40"><span class="lbl">wet</span></div>
+
+<div id="gate">
+  <div class="gi">
+    <h1>cytophone: murmuration</h1>
+    <p>chirping small percussives</p>
+    <div class="pulse"></div>
+    <p style="margin-top:24px;font-size:11px;letter-spacing:.06em;opacity:.7">TOUCH TO ENTER · SOUND ON</p>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const clamp=(v,a,b)=>v<a?a:v>b?b:v;
+const lerp=(a,b,t)=>a+(b-a)*t;
+const TAU=Math.PI*2;
+
+/* AUDIO ENGINE */
+const Sound={
+  ctx:null, bus:null, dry:null, wet:null, comp:null, out:null, wetAmt:0.40, noiseBuffer: null, windFilter: null, windGain: null, voices: 0, MAX_VOICES: 24, 
+  start(){
+    if(this.ctx) return;
+    const AC=window.AudioContext||window.webkitAudioContext; const ctx=new AC(); this.ctx=ctx;
+    const comp=ctx.createDynamicsCompressor();
+    comp.threshold.value=-20; comp.knee.value=12; comp.ratio.value=8; comp.attack.value=0.002; comp.release.value=0.15;
+    const out=ctx.createGain(); out.gain.value=0.0;
+    const bus=ctx.createGain(); const dry=ctx.createGain();
+    const conv=ctx.createConvolver(); conv.buffer=this._shimmer(3.2);
+    const wet=ctx.createGain();
+    bus.connect(dry).connect(comp); bus.connect(conv).connect(wet).connect(comp); comp.connect(out).connect(ctx.destination);
+    this.bus=bus; this.dry=dry; this.wet=wet; this.comp=comp; this.out=out;
+    this.setWet(this.wetAmt);
+    out.gain.linearRampToValueAtTime(1.2, ctx.currentTime+1.0);
+    const n = ctx.sampleRate * 4.0; this.noiseBuffer = ctx.createBuffer(1, n, ctx.sampleRate);
+    const d = this.noiseBuffer.getChannelData(0); for(let i=0; i<n; i++) d[i] = Math.random() * 2 - 1;
+    const windSource = ctx.createBufferSource(); windSource.buffer = this.noiseBuffer; windSource.loop = true;
+    this.windFilter = ctx.createBiquadFilter(); this.windFilter.type = 'bandpass'; this.windFilter.frequency.value = 1200; this.windFilter.Q.value = 0.8;
+    this.windGain = ctx.createGain(); this.windGain.gain.value = 0.01; 
+    windSource.connect(this.windFilter).connect(this.windGain).connect(this.bus); windSource.start();
+  },
+  setWet(w){ this.wetAmt=w; if(!this.ctx)return; this.dry.gain.value = lerp(1.0, 0.4, w); this.wet.gain.value = w * 1.6; },
+  _shimmer(dur){
+    const ctx=this.ctx, n=Math.floor(ctx.sampleRate*dur), b=ctx.createBuffer(2,n,ctx.sampleRate);
+    for(let c=0;c<2;c++){
+      const d=b.getChannelData(c); let prev=0;
+      for(let i=0;i<n;i++){ const t=i/n; const white=(Math.random()*2-1)*Math.pow(1-t,2.2); const hp = white - prev; prev = white * 0.9; d[i] = hp * 0.8; }
+    }
+    return b;
+  },
+  updateWind(intensity) {
+      if(!this.ctx) return; const now = this.ctx.currentTime;
+      this.windFilter.frequency.setTargetAtTime(lerp(800, 3500, intensity), now, 0.2);
+      this.windGain.gain.setTargetAtTime(lerp(0.01, 0.15, intensity), now, 0.2);
+  },
+  triggerPing(xNorm, force) {
+      if(!this.ctx || this.voices >= this.MAX_VOICES) return;
+      const ctx = this.ctx; const now = ctx.currentTime; this.voices++;
+      const osc = ctx.createOscillator(); osc.type = Math.random() > 0.5 ? 'sine' : 'triangle';
+      const freq = rnd(3000, 8000); osc.frequency.setValueAtTime(freq, now); osc.frequency.exponentialRampToValueAtTime(freq * 0.8, now + 0.1);
+      const env = ctx.createGain(); const attack = 0.005; const decay = rnd(0.05, 0.15); const amp = force * rnd(0.05, 0.12);
+      env.gain.setValueAtTime(0, now); env.gain.linearRampToValueAtTime(amp, now + attack); env.gain.exponentialRampToValueAtTime(0.0001, now + attack + decay);
+      const panner = ctx.createStereoPanner ? ctx.createStereoPanner() : ctx.createGain(); if(panner.pan) panner.pan.value = (xNorm * 2) - 1;
+      osc.connect(env).connect(panner).connect(this.bus); osc.start(now); osc.stop(now + attack + decay + 0.1);
+      setTimeout(() => { this.voices=Math.max(0,this.voices-1); }, (attack + decay + 0.1) * 1000);
+  }
+};
+
+/* FIELD */
+const cv=document.getElementById('stage'); const g=cv.getContext('2d',{alpha:false});
+let W=0,H=0,DPR=1;
+function resize(){DPR=Math.min(2,window.devicePixelRatio||1);W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;cv.style.width=W+'px';cv.style.height=H+'px';g.setTransform(DPR,0,0,DPR,0,0);}
+addEventListener('resize',resize); resize();
+
+class Spore {
+  constructor(x,y){
+    this.x=x; this.y=y; this.vx=rnd(-2,2); this.vy=rnd(-2,2); this.ax=0; this.ay=0;
+    this.maxSpeed = rnd(3, 7); this.maxForce = rnd(0.1, 0.4); this.r = rnd(1, 3); this.phase = rnd(0, TAU); 
+    this.hue = rnd(0, 360); // Random tint for each spore
+  }
+  applyForce(fx, fy) { this.ax += fx; this.ay += fy; }
+  flock(spores, dt, pointerX, pointerY, isScattering) {
+      let sepX=0, sepY=0, sepCount=0; let aliX=0, aliY=0, aliCount=0; let cohX=0, cohY=0, cohCount=0;
+      const sepDist = 35; const neighborDist = 100;
+      for(const other of spores) {
+          if(other === this) continue; const dx = this.x - other.x; const dy = this.y - other.y; const dSq = dx*dx + dy*dy;
+          if(dSq > 0 && dSq < sepDist*sepDist) { const d = Math.sqrt(dSq); sepX += (dx/d)/d; sepY += (dy/d)/d; sepCount++; }
+          if(dSq > 0 && dSq < neighborDist*neighborDist) { aliX += other.vx; aliY += other.vy; cohX += other.x; cohY += other.y; aliCount++; }
+      }
+      if(sepCount > 0) { sepX /= sepCount; sepY /= sepCount; const mag = Math.hypot(sepX, sepY); if(mag > 0) { sepX = (sepX/mag)*this.maxSpeed - this.vx; sepY = (sepY/mag)*this.maxSpeed - this.vy; } }
+      if(aliCount > 0) {
+          aliX /= aliCount; aliY /= aliCount; const mag = Math.hypot(aliX, aliY); if(mag > 0) { aliX = (aliX/mag)*this.maxSpeed - this.vx; aliY = (aliY/mag)*this.maxSpeed - this.vy; }
+          cohX /= aliCount; cohY /= aliCount; const cdx = cohX - this.x, cdy = cohY - this.y; const cmag = Math.hypot(cdx, cdy);
+          if(cmag > 0) { cohX = (cdx/cmag)*this.maxSpeed - this.vx; cohY = (cdy/cmag)*this.maxSpeed - this.vy; }
+      }
+      this.applyForce(sepX * 2.0, sepY * 2.0); this.applyForce(aliX * 1.0, aliY * 1.0); this.applyForce(cohX * 0.8, cohY * 0.8);
+      const edgeDist = 150; let edgeFx=0, edgeFy=0;
+      if(this.x < edgeDist) edgeFx = -0.5 * (edgeDist-this.x)/edgeDist; if(this.x > W-edgeDist) edgeFx = 0.5 * (this.x-(W-edgeDist))/edgeDist;
+      if(this.y < edgeDist) edgeFy = -0.5 * (edgeDist-this.y)/edgeDist; if(this.y > H-edgeDist) edgeFy = 0.5 * (this.y-(H-edgeDist))/edgeDist;
+      this.applyForce(edgeFx, edgeFy);
+      const pdx = this.x - pointerX, pdy = this.y - pointerY; const pd = Math.hypot(pdx, pdy);
+      if(pd < 200 && !isScattering) { const repelMag = (200 - pd) * 0.05; this.applyForce((pdx/pd)*repelMag, (pdy/pd)*repelMag); } 
+      else if (isScattering && pd < 400) { const burstMag = (400 - pd) * 0.5; this.applyForce((pdx/pd)*burstMag, (pdy/pd)*burstMag); }
+      this.phase += dt * 20; this.applyForce(Math.sin(this.phase)*0.5, Math.cos(this.phase*1.3)*0.5);
+  }
+  update(dt) {
+      const amag = Math.hypot(this.ax, this.ay); if(amag > this.maxForce) { this.ax = (this.ax/amag)*this.maxForce; this.ay = (this.ay/amag)*this.maxForce; }
+      this.vx += this.ax; this.vy += this.ay;
+      const vmag = Math.hypot(this.vx, this.vy); if(vmag > this.maxSpeed) { this.vx = (this.vx/vmag)*this.maxSpeed; this.vy = (this.vy/vmag)*this.maxSpeed; }
+      this.x += this.vx * (dt*60); this.y += this.vy * (dt*60);
+      const pad = 10; if(this.x < -pad) this.vx *= -1; if(this.x > W+pad) this.vx *= -1; if(this.y < -pad) this.vy *= -1; if(this.y > H+pad) this.vy *= -1;
+      this.ax = 0; this.ay = 0;
+  }
+}
+
+const spores = []; const NUM_SPORES = 180; 
+let pointerX = -1000, pointerY = -1000; let isScattering = false; let scatterTimer = 0;
+
+cv.addEventListener('pointermove', e => { pointerX = e.clientX; pointerY = e.clientY; });
+cv.addEventListener('pointerdown', e => { pointerX = e.clientX; pointerY = e.clientY; isScattering = true; scatterTimer = 0.2; });
+cv.addEventListener('pointerleave', () => { pointerX = -1000; pointerY = -1000; });
+
+const wetEl=document.getElementById('wet'); wetEl.addEventListener('input',()=>Sound.setWet(wetEl.value/100));
+const gate=document.getElementById('gate'),hint=document.getElementById('hint'),titleEl=document.getElementById('title');
+let started=false;
+function begin(){
+    if(started)return;started=true;Sound.start();gate.classList.add('gone');
+    for(let i=0;i<NUM_SPORES;i++) spores.push(new Spore(rnd(0,W), rnd(0,H)));
+    setTimeout(()=>hint.classList.add('gone'),7000); setTimeout(()=>titleEl.classList.add('dim'),4000);
+}
+gate.addEventListener('pointerdown',e=>{e.preventDefault();begin();},{passive:false});
+
+let last=performance.now();
+function frame(now){
+  let dt=Math.min((now-last)/1000,0.05);last=now;
+  g.fillStyle='#fcfdfd'; g.fillRect(0,0,W,H);
+  const vg=g.createRadialGradient(W*0.5,H*0.5,0,W*0.5,H*0.5,Math.max(W,H)*0.6);
+  vg.addColorStop(0,'rgba(255,255,255,1)'); vg.addColorStop(1,'rgba(238,241,243,0)');
+  g.fillStyle=vg; g.fillRect(0,0,W,H);
+
+  if(started){
+      if(scatterTimer > 0) { scatterTimer -= dt; if(scatterTimer <= 0) isScattering = false; }
+      let totalSpeed = 0;
+      for(const s of spores) { s.flock(spores, dt, pointerX, pointerY, isScattering); s.update(dt); totalSpeed += Math.hypot(s.vx, s.vy); }
+      const avgSpeed = totalSpeed / NUM_SPORES; const windIntensity = clamp((avgSpeed - 2) / 5, 0, 1);
+      Sound.updateWind(windIntensity);
+      
+      g.lineWidth = 0.5; const webDist = 45; let pingsThisFrame = 0;
+      for(let i=0; i<spores.length; i++) {
+          for(let j=i+1; j<spores.length; j++) {
+              const a = spores[i], b = spores[j]; const dx = a.x - b.x, dy = a.y - b.y; const dSq = dx*dx + dy*dy;
+              if(dSq < webDist*webDist) {
+                  const d = Math.sqrt(dSq); const opacity = 1 - (d/webDist);
+                  
+                  // Tinted webbing using the hue of spore 'a'
+                  g.strokeStyle = `hsla(${a.hue}, 40%, 15%, ${opacity * 0.4})`;
+                  g.beginPath(); g.moveTo(a.x, a.y); g.lineTo(b.x, b.y); g.stroke();
+
+                  if(pingsThisFrame < 2 && Math.random() < 0.02 * opacity) {
+                      const relVx = a.vx - b.vx; const relVy = a.vy - b.vy; const impact = Math.hypot(relVx, relVy);
+                      if(impact > 2.0) { Sound.triggerPing(a.x / W, clamp(impact/10, 0, 1)); pingsThisFrame++; }
+                  }
+              }
+          }
+      }
+      for(const s of spores) {
+          // Tinted spore
+          g.fillStyle = `hsl(${s.hue}, 50%, 12%)`;
+          g.beginPath(); g.arc(s.x, s.y, s.r, 0, TAU); g.fill();
+      }
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+window.addEventListener('keydown', (e) => { if(e.key.toLowerCase()==='h') document.body.classList.toggle('hide-ui'); });
+</script>
+</body>
+</html>

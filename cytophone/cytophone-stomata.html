@@ -1,0 +1,638 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>cytophone: stomata</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,300..500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* porous membrane — humid, vegetal, bruised, slightly clinical */
+    --ground-0:#17141d;
+    --ground-1:#1f2d27;
+    --ink:#dff2c6;
+    --faint:#7c857a;
+    --guard:#88c7b4;
+    --mucosa:#d590b7;
+    --spore:#d8ef73;
+    --bruise:#7261a6;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;overflow:hidden;background:var(--ground-0)}
+  body{
+    font-family:"DM Mono",monospace;
+    color:var(--ink);
+    -webkit-tap-highlight-color:transparent;
+    touch-action:none;
+    cursor:crosshair;
+  }
+  #stage{display:block;width:100vw;height:100vh}
+
+  body.hide-ui #title,
+  body.hide-ui #hint,
+  body.hide-ui #fx {
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  #title{
+    position:fixed;top:max(20px,env(safe-area-inset-top));left:22px;
+    font-family:"Fraunces",serif;font-style:italic;font-weight:300;
+    font-size:17px;letter-spacing:.01em;color:var(--faint);
+    pointer-events:none;user-select:none;transition:opacity 2s ease;
+  }
+  #title.dim{opacity:.35}
+
+  #hint{
+    position:fixed;left:0;right:0;bottom:max(64px,calc(env(safe-area-inset-bottom) + 44px));
+    text-align:center;pointer-events:none;
+    font-size:13px;letter-spacing:.02em;color:var(--faint);
+    transition:opacity 1.6s ease;opacity:1;
+    text-shadow:0 1px 14px rgba(14,12,18,.55);
+  }
+  #hint em{font-family:"Fraunces",serif;font-style:italic;color:var(--ink);font-weight:400}
+  #hint.gone{opacity:0}
+
+  #fx{
+    position:fixed;left:50%;bottom:max(22px,env(safe-area-inset-bottom));transform:translateX(-50%);
+    display:flex;align-items:center;gap:11px;opacity:.34;transition:opacity .5s ease;z-index:5;user-select:none;
+  }
+  #fx:hover{opacity:.95}
+  #fx .lbl{font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+  #wet{-webkit-appearance:none;appearance:none;width:168px;height:2px;background:#435450;border-radius:2px;outline:none;cursor:pointer}
+  #wet::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:#d8ef73;box-shadow:0 0 10px rgba(216,239,115,.45);cursor:pointer}
+  #wet::-moz-range-thumb{width:13px;height:13px;border:none;border-radius:50%;background:#d8ef73;box-shadow:0 0 10px rgba(216,239,115,.45);cursor:pointer}
+
+  #gate{
+    position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+    background:
+      radial-gradient(85% 70% at 52% 44%, rgba(112,195,175,.12) 0%, transparent 52%),
+      radial-gradient(55% 40% at 50% 40%, rgba(215,144,183,.10) 0%, transparent 65%),
+      radial-gradient(120% 120% at 50% 40%, #2a3830 0%, #17141d 72%);
+    z-index:10;transition:opacity .9s ease;
+  }
+  #gate.gone{opacity:0;pointer-events:none}
+  #gate .g-inner{text-align:center;max-width:360px;padding:0 24px;animation:rise 1.4s cubic-bezier(.2,.8,.2,1) both}
+  #gate h1{font-family:"Fraunces",serif;font-style:italic;font-weight:300;font-size:34px;color:var(--ink);margin-bottom:14px}
+  #gate p{font-size:13px;line-height:1.7;color:var(--faint)}
+  #gate .pulse{
+    margin:30px auto 0;width:68px;height:68px;border-radius:44% 56% 48% 52% / 56% 43% 57% 44%;
+    background:
+      radial-gradient(circle at 38% 34%, #eef8cf 0%, #85c7b3 32%, #cf86b2 60%, #705ea8 78%, #18201d 100%);
+    box-shadow:
+      0 0 34px rgba(130,200,180,.28),
+      0 0 72px rgba(207,134,178,.14),
+      inset 0 0 18px rgba(240,248,216,.14);
+    animation:breathe 3.6s ease-in-out infinite;
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  @keyframes breathe{0%,100%{transform:scale(.92) rotate(-2deg);opacity:.8}50%{transform:scale(1.08) rotate(3deg);opacity:1}}
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<div id="title">cytophone: stomata</div>
+<div id="hint"><em>press</em> to build pressure · <em>drag</em> to open · <em>right-click / double-tap</em> to erase</div>
+<div id="fx"><span class="lbl">dry</span><input id="wet" type="range" min="0" max="100" value="36"><span class="lbl">wet</span></div>
+
+<div id="gate">
+  <div class="g-inner">
+    <h1>cytophone: stomata</h1>
+    <p>noise puffs based on breath and pressure</p>
+    <div class="pulse"></div>
+    <p style="margin-top:24px;font-size:11px;letter-spacing:.06em;opacity:.7">TOUCH TO ENTER · SOUND ON</p>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const clamp=(v,a,b)=>v<a?a:v>b?b:v;
+const lerp=(a,b,t)=>a+(b-a)*t;
+const TAU=Math.PI*2;
+
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const COLORS={
+  ink:css('--ink'),
+  faint:css('--faint'),
+  guard:css('--guard'),
+  mucosa:css('--mucosa'),
+  spore:css('--spore'),
+  bruise:css('--bruise')
+};
+
+function hexToRgb(hex){
+  const h=hex.replace('#','');
+  const s=h.length===3 ? h.split('').map(c=>c+c).join('') : h;
+  return {r:parseInt(s.slice(0,2),16),g:parseInt(s.slice(2,4),16),b:parseInt(s.slice(4,6),16)};
+}
+function rgba(hex,a){ const c=hexToRgb(hex); return `rgba(${c.r},${c.g},${c.b},${a})`; }
+
+const Sound={
+  ctx:null, master:null, dry:null, wet:null, wetAmt:0.36, noiseBuffer:null,
+  start(){
+    if(this.ctx) return;
+    const AC=window.AudioContext||window.webkitAudioContext;
+    const ctx=new AC(); this.ctx=ctx;
+
+    const master=ctx.createGain();
+    const dry=ctx.createGain();
+    const wet=ctx.createGain();
+    const conv=ctx.createConvolver(); conv.buffer=this._plate(4.1);
+    const comp=ctx.createDynamicsCompressor();
+    comp.threshold.value=-22; comp.knee.value=20; comp.ratio.value=8;
+    comp.attack.value=0.005; comp.release.value=0.22;
+    const out=ctx.createGain(); out.gain.value=0.0;
+
+    master.connect(dry).connect(comp);
+    master.connect(conv).connect(wet).connect(comp);
+    comp.connect(out).connect(ctx.destination);
+
+    this.master=master; this.dry=dry; this.wet=wet; this.out=out;
+    this.setWet(this.wetAmt);
+    out.gain.linearRampToValueAtTime(1.0, ctx.currentTime+1.0);
+
+    const n=ctx.sampleRate*3.2;
+    const buf=ctx.createBuffer(1,n,ctx.sampleRate);
+    const d=buf.getChannelData(0);
+    for(let i=0;i<n;i++) d[i]=Math.random()*2-1;
+    this.noiseBuffer=buf;
+  },
+  setWet(w){
+    this.wetAmt=w;
+    if(!this.ctx) return;
+    this.dry.gain.value=lerp(1.0,0.60,w);
+    this.wet.gain.value=w*0.95;
+  },
+  _plate(dur){
+    const ctx=this.ctx, n=Math.floor(ctx.sampleRate*dur), b=ctx.createBuffer(2,n,ctx.sampleRate);
+    for(let c=0;c<2;c++){
+      const d=b.getChannelData(c); let lp=0;
+      for(let i=0;i<n;i++){
+        const t=i/n;
+        const white=(Math.random()*2-1)*Math.pow(1-t,2.2);
+        lp=lp*0.38+white*0.62;
+        d[i]=lp*(0.82+0.18*Math.sin(i*0.00017+(c*0.7)));
+      }
+    }
+    return b;
+  },
+  exhale(pore, pressure=0.8){
+    const ctx=this.ctx; if(!ctx || !this.noiseBuffer) return;
+    const now=ctx.currentTime+0.003;
+    const f0=clamp(1200/pore.r, 120, 680);
+    const ap=clamp(pore.aperture,0,1);
+    const amp=(0.02 + ap*0.055 + pressure*0.05) * (0.9 + pore.bias*0.45);
+    const dur=0.28 + ap*0.9 + pressure*0.55;
+
+    const src=ctx.createBufferSource();
+    src.buffer=this.noiseBuffer;
+
+    const hp=ctx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=clamp(f0*0.7,80,900);
+    const bp1=ctx.createBiquadFilter(); bp1.type='bandpass'; bp1.frequency.value=f0; bp1.Q.value=lerp(0.8,5.0,ap);
+    const bp2=ctx.createBiquadFilter(); bp2.type='bandpass'; bp2.frequency.value=f0*lerp(1.6,2.45,pore.tint); bp2.Q.value=lerp(1.1,6.5,ap*0.8+pressure*0.2);
+    const lp=ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=lerp(900,5200,ap*0.7+pressure*0.3);
+
+    const mix=ctx.createGain();
+    const env=ctx.createGain();
+    env.gain.setValueAtTime(0.0001,now);
+    env.gain.linearRampToValueAtTime(amp,now+0.08);
+    env.gain.exponentialRampToValueAtTime(Math.max(0.0001,amp*0.55),now+dur*0.28);
+    env.gain.exponentialRampToValueAtTime(0.0001,now+dur);
+
+    const pan=ctx.createStereoPanner();
+    pan.pan.value=clamp((pore.x/W)*2-1,-1,1)*0.55;
+
+    src.connect(hp);
+    hp.connect(bp1); hp.connect(bp2);
+    bp1.connect(mix); bp2.connect(mix);
+
+const osc=ctx.createOscillator(); 
+    
+    if (pore.isFlute) {
+      // Flute Mode: Manipulated Square Wave
+      osc.type = 'square';
+      
+      // Flutes typically hold pitch or raise slightly with pressure
+      osc.frequency.setValueAtTime(f0, now);
+      osc.frequency.linearRampToValueAtTime(f0 * (1 + 0.02 * pressure), now + dur * 0.5);
+
+      // Lowpass filter to hollow out the square wave into a warm flute tone
+      const fluteLp = ctx.createBiquadFilter();
+      fluteLp.type = 'lowpass';
+      fluteLp.frequency.value = f0 * 1.8; // Cuts off harsh odd harmonics early
+      fluteLp.Q.value = 2; // Slight resonance for a breathy edge
+
+      // Add vibrato (LFO on the frequency) for wind-instrument character
+      const lfo = ctx.createOscillator();
+      lfo.type = 'sine';
+      lfo.frequency.value = 5.5 + rnd(-0.5, 0.5); // Natural vibrato rate (~5.5Hz)
+      const lfoGain = ctx.createGain();
+      lfoGain.gain.value = f0 * 0.012; // Subtle pitch wiggle depth
+      lfo.connect(lfoGain).connect(osc.frequency);
+      lfo.start(now); 
+      lfo.stop(now + dur + 0.05);
+
+      const og = ctx.createGain();
+      og.gain.setValueAtTime(0.0001, now);
+      og.gain.linearRampToValueAtTime(amp * 0.12, now + 0.08); // Slightly slower attack for wind
+      og.gain.exponentialRampToValueAtTime(0.0001, now + dur * 0.9);
+      
+      osc.connect(fluteLp).connect(og).connect(mix);
+    } else {
+      // Standard Mode: Original Triangle Wave
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(f0*(1+0.005*rnd(-1,1)),now);
+      osc.frequency.exponentialRampToValueAtTime(f0*lerp(0.97,0.92,pressure),now+dur*0.45);
+      
+      const og = ctx.createGain();
+      og.gain.setValueAtTime(0.0001,now);
+      og.gain.linearRampToValueAtTime(amp*0.30,now+0.04);
+      og.gain.exponentialRampToValueAtTime(0.0001,now+dur*0.85);
+      
+      osc.connect(og).connect(mix);
+    }
+    const wob=ctx.createOscillator(); wob.type='sine'; wob.frequency.value=lerp(2.0,7.8,pore.bias);
+    const wobG=ctx.createGain(); wobG.gain.value=amp*0.08*(0.5+ap*0.8);
+    wob.connect(wobG).connect(env.gain);
+
+    mix.connect(lp).connect(env).connect(pan).connect(this.master);
+    src.start(now); src.stop(now+dur+0.05);
+    osc.start(now); osc.stop(now+dur+0.05);
+    wob.start(now); wob.stop(now+dur+0.05);
+  }
+};
+
+const cv=document.getElementById('stage');
+const g=cv.getContext('2d');
+let W=0,H=0,DPR=Math.max(1,Math.min(2,window.devicePixelRatio||1));
+
+function resize(){
+  W=window.innerWidth; H=window.innerHeight;
+  cv.width=Math.floor(W*DPR); cv.height=Math.floor(H*DPR);
+  cv.style.width=W+'px'; cv.style.height=H+'px';
+  g.setTransform(DPR,0,0,DPR,0,0);
+}
+window.addEventListener('resize',resize,{passive:true}); resize();
+
+const pores=[];
+let lastT=0;
+let idleClock=0;
+let pointer={down:false,id:-1,x:0,y:0,lastX:0,lastY:0,moved:false};
+let pressure=0;
+let pressurePeak=0;
+let holdTime=0;
+let nextIdleBreath=1.4;
+let lastTapTime=0; // Added for double-tap detection
+
+function seedPore(x,y,r){
+  pores.push({
+    x,y,r,
+    aperture:rnd(0.06,0.22),
+    target:rnd(0.08,0.18),
+    pulse:rnd(0,TAU),
+    bias:rnd(0,1),
+    tint:rnd(0,1),
+    wet:rnd(0.4,1),
+    flash:0,
+    phase:rnd(0,TAU),
+    // 40% chance for a pore to have the flute characteristic
+    isFlute: Math.random() > 0.6 
+  });
+}
+
+for(let i=0;i<10;i++) seedPore(rnd(90,Math.max(90,W-90)), rnd(110,Math.max(110,H-120)), rnd(18,42));
+
+function poreAt(x,y){
+  for(let i=pores.length-1;i>=0;i--){
+    const p=pores[i], dx=x-p.x, dy=y-p.y;
+    if(dx*dx+dy*dy < (p.r*1.5)*(p.r*1.5)) return p;
+  }
+  return null;
+}
+
+function erasePoreAt(x, y) {
+  const p = poreAt(x, y);
+  if (p) {
+    const idx = pores.indexOf(p);
+    if (idx !== -1) {
+      pores.splice(idx, 1);
+      return true;
+    }
+  }
+  return false;
+}
+
+function openAround(x,y,amount=0.07){
+  for(const p of pores){
+    const dx=x-p.x, dy=y-p.y;
+    const d=Math.hypot(dx,dy);
+    const reach=p.r*2.3 + 30;
+    if(d<reach){
+      const a=(1-d/reach)*amount;
+      p.target=clamp(p.target+a,0.02,1);
+      p.flash=Math.max(p.flash,a*2.2);
+    }
+  }
+}
+
+function closeSome(){
+  for(const p of pores){
+    p.target=clamp(p.target-rnd(0.02,0.08),0.02,1);
+  }
+}
+
+function exhaleAll(force=1){
+  let active=0;
+  for(const p of pores){
+    const ap=(p.aperture*0.65 + p.target*0.35);
+    if(ap>0.09){
+      const local=clamp(force*(0.6+ap*0.8),0,1.4);
+      Sound.exhale(p, local);
+      p.flash=Math.max(p.flash,0.6*local);
+      p.target=clamp(p.target*lerp(0.78,0.55,local),0.02,1);
+      active++;
+    }
+  }
+  if(active===0 && pores.length){
+    const p=pores[(Math.random()*pores.length)|0];
+    p.target=clamp(p.target+0.18,0.02,1);
+    Sound.exhale(p,0.45*force);
+    p.flash=Math.max(p.flash,0.3);
+  }
+}
+
+function randomIdleBreath() {
+  const modeRoll = Math.random();
+  let participants = [];
+  
+  if (modeRoll < 0.35) {
+    participants.push(pores[Math.floor(Math.random() * pores.length)]);
+  } else if (modeRoll < 0.70) {
+    const count = Math.floor(rnd(2, 5));
+    const shuffled = [...pores].sort(() => 0.5 - Math.random());
+    participants = shuffled.slice(0, count);
+  } else if (modeRoll < 0.90) {
+    const count = Math.floor(pores.length * 0.6);
+    const shuffled = [...pores].sort(() => 0.5 - Math.random());
+    participants = shuffled.slice(0, count);
+  } else {
+    participants = [...pores];
+  }
+
+  const intensityRoll = Math.random();
+  let force, targetBoost;
+  
+  if (intensityRoll < 0.4) {
+    force = rnd(0.1, 0.4);
+    targetBoost = rnd(0.1, 0.3);
+  } else if (intensityRoll < 0.85) {
+    force = rnd(0.4, 0.85);
+    targetBoost = rnd(0.3, 0.6);
+  } else {
+    force = rnd(0.9, 1.5);
+    targetBoost = rnd(0.6, 1.0);
+  }
+
+  for (const p of participants) {
+    if (!p) continue;
+    p.target = clamp(p.target + targetBoost, 0.02, 1);
+    p.flash = Math.max(p.flash, force * 0.5);
+    Sound.exhale(p, force);
+  }
+  
+  for (const p of pores) {
+    if (!participants.includes(p)) {
+      p.target = clamp(p.target - rnd(0.02, 0.1), 0.02, 1);
+    }
+  }
+}
+
+function bgField(t){
+  const grad=g.createLinearGradient(0,0,0,H);
+  grad.addColorStop(0,'#1b1a21');
+  grad.addColorStop(0.55,'#1f2d27');
+  grad.addColorStop(1,'#191820');
+  g.fillStyle=grad;
+  g.fillRect(0,0,W,H);
+
+  for(let i=0;i<6;i++){
+    const cx=W*(0.15 + i*0.16) + Math.sin(t*0.00016 + i*1.7)*30;
+    const cy=H*(0.2 + ((i%3)*0.22)) + Math.cos(t*0.00012 + i)*25;
+    const r=120 + (i%3)*80;
+    const rg=g.createRadialGradient(cx,cy,0,cx,cy,r);
+    const a=0.04 + 0.015*Math.sin(t*0.0005+i);
+    rg.addColorStop(0, rgba(i%2?COLORS.guard:COLORS.mucosa,a));
+    rg.addColorStop(1, rgba(COLORS.bruise,0));
+    g.fillStyle=rg;
+    g.beginPath(); g.arc(cx,cy,r,0,TAU); g.fill();
+  }
+
+  if(pressure>0.01){
+    g.fillStyle=rgba(COLORS.spore, 0.03 + pressure*0.04);
+    g.fillRect(0,0,W,H);
+  }
+}
+
+function drawPore(p,t){
+  const ap=clamp(p.aperture,0,1);
+  const slitH=lerp(2,p.r*0.95,ap);
+  const guardOffset=lerp(p.r*0.2,p.r*0.62,ap);
+  const guardW=lerp(p.r*0.95,p.r*0.8,ap);
+  const guardH=lerp(p.r*0.55,p.r*0.95,ap);
+  const glow=(0.07 + ap*0.08 + p.flash*0.14)*(0.9+p.wet*0.25);
+
+  const aura=g.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*2.4);
+  aura.addColorStop(0, rgba(COLORS.guard, glow));
+  aura.addColorStop(0.45, rgba(COLORS.mucosa, glow*0.7));
+  aura.addColorStop(1, rgba(COLORS.bruise, 0));
+  g.fillStyle=aura;
+  g.beginPath(); g.arc(p.x,p.y,p.r*2.4,0,TAU); g.fill();
+
+  g.save();
+  g.translate(p.x,p.y);
+  g.rotate(Math.sin(p.phase + t*0.00022)*0.12);
+
+  g.fillStyle=rgba(COLORS.guard, 0.24 + ap*0.18 + p.flash*0.12);
+  g.strokeStyle=rgba(COLORS.ink, 0.20 + ap*0.12);
+  g.lineWidth=1.1;
+
+  g.beginPath();
+  g.ellipse(-guardOffset,0,guardW,guardH,0,0,TAU); g.fill(); g.stroke();
+  g.beginPath();
+  g.ellipse(guardOffset,0,guardW,guardH,0,0,TAU); g.fill(); g.stroke();
+
+  g.fillStyle=rgba(COLORS.mucosa, 0.10 + ap*0.16);
+  g.beginPath(); g.ellipse(-guardOffset*0.8,0,guardW*0.72,guardH*0.74,0,0,TAU); g.fill();
+  g.beginPath(); g.ellipse( guardOffset*0.8,0,guardW*0.72,guardH*0.74,0,0,TAU); g.fill();
+
+  const slitGrad=g.createLinearGradient(0,-slitH,0,slitH);
+  slitGrad.addColorStop(0, rgba(COLORS.ink, 0.55+ap*0.16));
+  slitGrad.addColorStop(0.4, rgba(COLORS.spore, 0.85));
+  slitGrad.addColorStop(0.6, rgba(COLORS.spore, 0.85));
+  slitGrad.addColorStop(1, rgba(COLORS.ink, 0.55+ap*0.16));
+  g.fillStyle=slitGrad;
+  const slitW=lerp(p.r*0.18,p.r*0.46,ap);
+  g.beginPath();
+  g.ellipse(0,0,slitW,slitH,0,0,TAU);
+  g.fill();
+
+  g.strokeStyle=rgba(COLORS.spore, 0.3 + ap*0.35 + p.flash*0.25);
+  g.lineWidth=1;
+  g.stroke();
+
+  g.fillStyle=rgba(COLORS.ink,0.08+ap*0.08);
+  for(let i=0;i<5;i++){
+    const sx=(i<3?-1:1)*rnd(guardOffset*0.35, guardOffset*1.08) + rnd(-3,3);
+    const sy=rnd(-guardH*0.45,guardH*0.45);
+    g.beginPath(); g.arc(sx,sy,0.8+rnd(0,0.9),0,TAU); g.fill();
+  }
+  g.restore();
+
+  if(p.flash>0.01){
+    g.strokeStyle=rgba(COLORS.spore, p.flash*0.22);
+    g.lineWidth=1.5;
+    g.beginPath(); g.arc(p.x,p.y,p.r*(1.9+p.flash),0,TAU); g.stroke();
+  }
+}
+
+function update(dt,t){
+  idleClock+=dt;
+  if(pointer.down){
+    holdTime+=dt;
+    pressure=clamp(pressure + dt*0.24, 0, 1.2);
+    pressurePeak=Math.max(pressurePeak,pressure);
+    openAround(pointer.x,pointer.y, dt*0.55 + 0.03);
+  }else{
+    pressure=clamp(pressure - dt*0.42, 0, 1.2);
+  }
+
+  for(const p of pores){
+    const auto=0.12 + 0.08*Math.sin(t*0.0005 + p.pulse) + 0.06*Math.sin(t*0.00018 + p.phase*2.1);
+    if(!pointer.down && Math.random()<dt*0.3) p.target=clamp(auto + rnd(-0.1, 0.2), 0.02, 0.7);
+    
+    p.aperture=lerp(p.aperture,p.target,dt*2.6);
+    p.flash=Math.max(0,p.flash-dt*0.9);
+    p.phase += dt*(0.15 + p.bias*0.22);
+  }
+
+  if(!pointer.down && idleClock>nextIdleBreath){
+    randomIdleBreath();
+    idleClock=0;
+    nextIdleBreath=rnd(0.8, 3.8);
+  }
+}
+
+function draw(t){
+  bgField(t);
+
+  for(const p of pores) drawPore(p,t);
+
+  if(pointer.down){
+    g.strokeStyle=rgba(COLORS.spore,0.20+pressure*0.18);
+    g.lineWidth=1.25;
+    g.beginPath(); g.arc(pointer.x,pointer.y,24+pressure*26,0,TAU); g.stroke();
+    g.beginPath(); g.arc(pointer.x,pointer.y,46+pressure*38,0,TAU); g.stroke();
+  }
+}
+
+function loop(ts){
+  if(!lastT) lastT=ts;
+  const dt=Math.min(0.033,(ts-lastT)/1000); lastT=ts;
+  update(dt,ts);
+  draw(ts);
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+function pt(e){
+  const r=cv.getBoundingClientRect();
+  if(e.touches && e.touches.length) return {x:e.touches[0].clientX-r.left, y:e.touches[0].clientY-r.top};
+  return {x:e.clientX-r.left, y:e.clientY-r.top};
+}
+
+function begin(x,y){
+  pointer.down=true; pointer.x=pointer.lastX=x; pointer.y=pointer.lastY=y; pointer.moved=false; holdTime=0; pressurePeak=0; idleClock=0;
+  const p=poreAt(x,y);
+  if(!p){
+    seedPore(x,y,rnd(18,40));
+  }else{
+    p.target=clamp(p.target+0.18,0.02,1);
+    p.flash=Math.max(p.flash,0.25);
+  }
+}
+
+function move(x,y){
+  if(!pointer.down) return;
+  const dx=x-pointer.lastX, dy=y-pointer.lastY;
+  if(dx*dx+dy*dy>16) pointer.moved=true;
+  pointer.x=x; pointer.y=y; pointer.lastX=x; pointer.lastY=y;
+  openAround(x,y,0.055);
+}
+
+function end(){
+  if(!pointer.down) return;
+  const force=clamp(0.25 + pressurePeak*0.9 + Math.min(holdTime,1.2)*0.25, 0.2, 1.2);
+  exhaleAll(force); 
+  pointer.down=false; holdTime=0; pressurePeak=0; pressure=0;
+}
+
+cv.addEventListener('pointerdown', e=>{
+  e.preventDefault();
+  const pos = pt(e);
+  const now = Date.now();
+  
+  // Right-click or Shift+Click erases instantly
+  if (e.button === 2 || e.shiftKey) {
+    erasePoreAt(pos.x, pos.y);
+    return;
+  }
+
+  // Double-tap / double-click erases instantly
+  if (now - lastTapTime < 300) {
+    if (erasePoreAt(pos.x, pos.y)) {
+      lastTapTime = 0; // Reset
+      pointer.down = false; // Stop pressure building from the first tap
+      return; 
+    }
+  }
+  lastTapTime = now;
+
+  begin(pos.x, pos.y);
+}, {passive:false});
+
+// Prevent standard context menu when right-clicking to erase
+cv.addEventListener('contextmenu', e => e.preventDefault());
+
+window.addEventListener('pointermove', e=>{ if(pointer.down) move(pt(e).x, pt(e).y); }, {passive:true});
+window.addEventListener('pointerup', end, {passive:true});
+window.addEventListener('pointercancel', end, {passive:true});
+
+const wet=document.getElementById('wet');
+wet.addEventListener('input', ()=>Sound.setWet(wet.value/100));
+
+const gate=document.getElementById('gate');
+const hint=document.getElementById('hint');
+const title=document.getElementById('title');
+let entered=false;
+function enter(){
+  if(entered) return;
+  entered=true;
+  Sound.start();
+  Sound.setWet(wet.value/100);
+  gate.classList.add('gone');
+  setTimeout(()=>hint.classList.add('gone'),3500); // Leave hint up a tiny bit longer
+  setTimeout(()=>title.classList.add('dim'),2000);
+}
+gate.addEventListener('pointerdown', e=>{ e.preventDefault(); enter(); }, {passive:false});
+window.addEventListener('keydown', e=>{ if(e.key===' '||e.key==='Enter') enter(); });
+
+window.addEventListener('keydown', (e) => {
+  if (e.key.toLowerCase() === 'h') document.body.classList.toggle('hide-ui');
+});
+</script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>cytophone — a collection of three</title>
+<title>cytophone — a collection of seven</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..500;1,9..144,300..500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
@@ -15,6 +15,10 @@
     --bronze:#d57732;
     --saline:#6fb6d6;
     --teal:#9fd9c8;
+    --steel:#8c9296;
+    --bone:#f2f5f6;
+    --spore:#d8ef73;
+    --mucosa:#d590b7;
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{min-height:100%;background:var(--ground)}
@@ -23,55 +27,64 @@
     min-height:100svh;overflow-x:hidden;position:relative;
     -webkit-font-smoothing:antialiased;
   }
-  /* triadic atmosphere: bronze · teal · indigo poles of the three pieces */
+  /* ensemble atmosphere: seven chromatic organs in one dark medium */
   .mesh{position:fixed;inset:0;z-index:0;pointer-events:none;
     background:
-      radial-gradient(60% 50% at 12% 8%, rgba(213,119,50,.16) 0%, transparent 60%),
-      radial-gradient(55% 55% at 92% 26%, rgba(110,200,180,.14) 0%, transparent 62%),
-      radial-gradient(70% 60% at 50% 108%, rgba(70,90,180,.20) 0%, transparent 66%),
-      radial-gradient(120% 120% at 50% 40%, #0c0c1c 0%, #070710 78%);
+      radial-gradient(52% 44% at 9% 8%, rgba(213,119,50,.16) 0%, transparent 60%),
+      radial-gradient(50% 46% at 92% 19%, rgba(110,200,180,.13) 0%, transparent 62%),
+      radial-gradient(48% 42% at 15% 92%, rgba(216,239,115,.10) 0%, transparent 64%),
+      radial-gradient(52% 48% at 85% 84%, rgba(213,144,183,.12) 0%, transparent 64%),
+      radial-gradient(64% 54% at 50% 110%, rgba(70,90,180,.20) 0%, transparent 66%),
+      radial-gradient(110% 120% at 50% 40%, #0c0c1c 0%, #070710 78%);
   }
-  /* grain */
   .grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
 
-  .wrap{position:relative;z-index:2;max-width:1080px;margin:0 auto;padding:clamp(48px,9vh,110px) 26px 80px;}
+  .wrap{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:clamp(48px,9vh,110px) 26px 80px;}
 
-  header{margin-bottom:clamp(40px,7vh,76px);max-width:680px}
+  header{margin-bottom:clamp(40px,7vh,76px);max-width:760px}
   .word{font-family:"Fraunces",serif;font-style:italic;font-weight:300;
     font-size:clamp(44px,9vw,88px);line-height:.96;letter-spacing:-.01em;color:var(--ink)}
   .word b{font-weight:500;font-style:italic}
-  .sub{margin-top:18px;font-size:clamp(13px,1.6vw,15px);line-height:1.75;color:var(--faint);max-width:54ch}
+  .sub{margin-top:18px;font-size:clamp(13px,1.6vw,15px);line-height:1.75;color:var(--faint);max-width:61ch}
   .sub em{font-family:"Fraunces",serif;font-style:italic;color:var(--ink)}
 
-  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px}
   @media(max-width:760px){.grid{grid-template-columns:1fr;gap:14px}}
 
   .tile{position:relative;display:block;text-decoration:none;color:inherit;
     border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden;
     background:rgba(255,255,255,.012);
-    transition:transform .5s cubic-bezier(.2,.8,.2,1),border-color .5s ease,box-shadow .5s ease;
+    transition:transform .5s cubic-bezier(.2,.8,.2,1),border-color .5s ease,box-shadow .5s ease,background .5s ease;
     isolation:isolate}
-  .tile:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.16)}
+  .tile:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.16);background:rgba(255,255,255,.025)}
   .tile canvas{display:block;width:100%;height:200px;background:#05050c}
   .tile .meta{padding:16px 18px 20px}
   .tile .nm{font-family:"Fraunces",serif;font-style:italic;font-weight:400;font-size:23px;letter-spacing:.01em}
   .tile .rg{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);margin-top:7px}
-  .tile .ds{font-size:12.5px;line-height:1.6;color:var(--faint);margin-top:11px;min-height:3.2em}
+  .tile .ds{font-size:12.5px;line-height:1.6;color:var(--faint);margin-top:11px;min-height:4.8em}
   .tile.understory:hover{box-shadow:0 18px 50px -28px rgba(213,119,50,.55)}
   .tile.halocline:hover{box-shadow:0 18px 50px -28px rgba(70,110,200,.6)}
   .tile.xenolith:hover{box-shadow:0 18px 50px -28px rgba(110,200,180,.5)}
+  .tile.cambium:hover{box-shadow:0 18px 50px -28px rgba(207,155,104,.58)}
+  .tile.ectoplasm:hover{box-shadow:0 18px 50px -28px rgba(220,230,235,.38)}
+  .tile.murmuration:hover{box-shadow:0 18px 50px -28px rgba(252,253,253,.32)}
+  .tile.stomata:hover{box-shadow:0 18px 50px -28px rgba(216,239,115,.42)}
   .tile.understory .nm{color:#f0d79a}
   .tile.halocline .nm{color:#cfe3ec}
   .tile.xenolith .nm{color:#b8cfc9}
-  .arrow{position:absolute;top:14px;right:16px;font-size:13px;color:var(--faint);opacity:0;transform:translateX(-4px);transition:.4s ease}
+  .tile.cambium .nm{color:#cf9b68}
+  .tile.ectoplasm .nm{color:#f2f5f6}
+  .tile.murmuration .nm{color:#e7eef1}
+  .tile.stomata .nm{color:#dff2c6}
+  .arrow{position:absolute;top:14px;right:16px;font-size:13px;color:var(--faint);opacity:0;transform:translateX(-4px);transition:.4s ease;z-index:2}
   .tile:hover .arrow{opacity:.9;transform:none}
 
   footer{margin-top:clamp(34px,6vh,60px);display:flex;flex-wrap:wrap;align-items:baseline;gap:22px}
   .ens{font-family:"Fraunces",serif;font-style:italic;font-size:18px;color:var(--ink);
     text-decoration:none;border-bottom:1px solid rgba(255,255,255,.18);padding-bottom:2px;transition:.4s ease}
   .ens:hover{border-color:var(--ink);letter-spacing:.01em}
-  .note{font-size:11px;line-height:1.7;color:var(--faint);max-width:46ch}
+  .note{font-size:11px;line-height:1.7;color:var(--faint);max-width:58ch}
 </style>
 </head>
 <body>
@@ -81,7 +94,7 @@
 <div class="wrap">
   <header>
     <div class="word">cyto<b>phone</b></div>
-    <p class="sub">Three resonant colonies — small fields of ringing bodies you seed, strike, and let collide. Each is the same instrument read by a different physics. Two of them <em>strike</em>; one <em>holds</em>. Run together, they fall into register and become one body of water.</p>
+    <p class="sub">Seven irregular playable body generators: cells, fibers, ghosts, pores, flocks, boundary layers, and impossible stones. Each cytophone turns a small 2D ecology into sound through gesture, physics, modal synthesis, pressure, scrape, breath, and drift. Play alone or as a messy ensemble.</p>
   </header>
 
   <div class="grid">
@@ -91,32 +104,74 @@
       <div class="meta">
         <div class="nm">understory</div>
         <div class="rg">low · struck · 58–360 hz</div>
-        <div class="ds">Circular-membrane gongs on a real drumhead spectrum — bronze, inharmonic, long-decaying. The floor.</div>
+        <div class="ds">Membrane-gongs using a drumhead spectrum. Bronze, inharmonic, long-decaying.</div>
       </div>
     </a>
+
     <a class="tile halocline" href="cytophone-halocline.html">
       <span class="arrow">↗</span>
       <canvas data-piece="halocline"></canvas>
       <div class="meta">
         <div class="nm">halocline</div>
         <div class="rg">mid · bowed · 140–520 hz</div>
-        <div class="ds">A boundary layer that sings. Bodies swell into held tones that breathe on a slow current and beat against themselves. The bed.</div>
+        <div class="ds">A sustained saline boundary layer. Held tones swell, beat, and pull against each other.</div>
       </div>
     </a>
+
     <a class="tile xenolith" href="cytophone-xenolith.html">
       <span class="arrow">↗</span>
       <canvas data-piece="xenolith"></canvas>
       <div class="meta">
         <div class="nm">xenolith</div>
         <div class="rg">high · struck · 78–1020 hz</div>
-        <div class="ds">Decoupled modal synthesis — bell-glass, clangorous, oil-slick. Impossible materials by geometry × substance. The sparkle.</div>
+        <div class="ds">Modal synthesis, bell-glass clangor, and hybrid materials.</div>
+      </div>
+    </a>
+
+    <a class="tile cambium" href="cytophone-cambium.html">
+      <span class="arrow">↗</span>
+      <canvas data-piece="cambium"></canvas>
+      <div class="meta">
+        <div class="nm">cambium</div>
+        <div class="rg">fiber · plucked · friction/reed</div>
+        <div class="ds">Interconnected cells that can be plucked. Connected cells ring on their own.</div>
+      </div>
+    </a>
+
+    <a class="tile ectoplasm" href="cytophone-ectoplasm.html">
+      <span class="arrow">↗</span>
+      <canvas data-piece="ectoplasm"></canvas>
+      <div class="meta">
+        <div class="nm">ectoplasm</div>
+        <div class="rg">motor · scraped · nudge clock</div>
+        <div class="ds">Draggable ghost motors that twitch. Scrapes, subharmonic groans, and crackles.</div>
+      </div>
+    </a>
+
+    <a class="tile murmuration" href="cytophone-murmuration.html">
+      <span class="arrow">↗</span>
+      <canvas data-piece="murmuration"></canvas>
+      <div class="meta">
+        <div class="nm">murmuration</div>
+        <div class="rg">flock · chirp · scatter</div>
+        <div class="ds">A cloud of small chirpy percussives.</div>
+      </div>
+    </a>
+
+    <a class="tile stomata" href="cytophone-stomata.html">
+      <span class="arrow">↗</span>
+      <canvas data-piece="stomata"></canvas>
+      <div class="meta">
+        <div class="nm">stomata</div>
+        <div class="rg">pore · pressure · breath noise</div>
+        <div class="ds">Breathing noise puff apertures. Press to build pressure, drag to open, and release spore-like puffs.</div>
       </div>
     </a>
   </div>
 
   <footer>
-    <a class="ens" href="#" id="ensemble">open all three →</a>
-    <p class="note">Opens each in its own window so the three layer live. Touch each to enter (browsers start audio on tap). A shared dry/wet sits at the foot of every piece.</p>
+    <a class="ens" href="#" id="ensemble">open all seven →</a>
+    <p class="note">Browsers may ask for permission to open multiple tabs. For deployment, keep this page beside the seven cytophone HTML files using the canonical filenames linked here.</p>
   </footer>
 </div>
 
@@ -124,11 +179,15 @@
 "use strict";
 const TAU=Math.PI*2, rnd=(a,b)=>a+Math.random()*(b-a), clamp=(v,a,b)=>v<a?a:v>b?b:v;
 
-// per-piece signature: palette + gesture (how the portal blob behaves)
+// per-piece signature: palette + gesture + miniature ecology
 const PIECES={
-  understory:{ground:'#0b0805',base:34,base2:44,rim:168,sat:60,gesture:'strike',rate:2.6,decay:3.4},
-  halocline :{ground:'#070a16',base:226,base2:252,rim:192,sat:62,gesture:'hold',  rate:0,  decay:0},
-  xenolith  :{ground:'#05100f',base:170,base2:150,rim:300,sat:48,gesture:'strike',rate:1.1,decay:6.0}
+  understory :{ground:'#0b0805',base:34, base2:44, rim:168,sat:60,gesture:'strike',rate:2.6,decay:3.4,mode:'cell'},
+  halocline  :{ground:'#070a16',base:226,base2:252,rim:192,sat:62,gesture:'hold',  rate:0,  decay:0,  mode:'cell'},
+  xenolith   :{ground:'#05100f',base:170,base2:150,rim:300,sat:48,gesture:'strike',rate:1.1,decay:6.0,mode:'cell'},
+  cambium    :{ground:'#7f878c',base:32, base2:110,rim:318,sat:34,gesture:'grow',  rate:1.7,decay:2.8,mode:'fiber'},
+  ectoplasm  :{ground:'#020304',base:196,base2:210,rim:0,  sat:10,gesture:'nudge', rate:1.0,decay:4.2,mode:'ghost'},
+  murmuration:{ground:'#fcfdfd',base:196,base2:205,rim:12, sat:18,gesture:'scatter',rate:2.2,decay:1.2,mode:'flock'},
+  stomata    :{ground:'#17141d',base:160,base2:323,rim:72, sat:48,gesture:'breath', rate:1.3,decay:2.1,mode:'pore'}
 };
 
 function portal(cv){
@@ -138,76 +197,196 @@ function portal(cv){
   function size(){DPR=Math.min(2,devicePixelRatio||1);const r=cv.getBoundingClientRect();W=r.width;H=r.height||200;cv.width=W*DPR;cv.height=H*DPR;g.setTransform(DPR,0,0,DPR,0,0);}
   size(); addEventListener('resize',size);
 
-  const lobes=Array.from({length:4},()=>({k:2+(Math.random()*4|0),amp:rnd(0.05,0.14),ph:rnd(0,TAU),sp:rnd(-0.2,0.2)}));
+  const lobes=Array.from({length:p.mode==='pore'?6:4},()=>({k:2+(Math.random()*5|0),amp:rnd(0.04,0.14),ph:rnd(0,TAU),sp:rnd(-0.23,0.23)}));
+  const strands=Array.from({length:18},()=>({a:rnd(0,TAU),b:rnd(0,TAU),ph:rnd(0,TAU),w:rnd(.35,1.05)}));
+  const motes=Array.from({length:p.mode==='flock'?52:18},()=>({x:rnd(-.48,.48),y:rnd(-.38,.38),vx:rnd(-.025,.025),vy:rnd(-.018,.018),r:rnd(1.2,3.7),ph:rnd(0,TAU)}));
+  const ghosts=Array.from({length:5},()=>({x:rnd(-.34,.34),y:rnd(-.26,.26),r:rnd(16,34),ph:rnd(0,TAU),sp:rnd(.45,1.1)}));
   let rot=rnd(0,TAU), hue=p.base, hue2=p.rim, ex=0, nextStrike=rnd(0.4,1.4), band=rnd(0,TAU), t0=performance.now();
 
   function outline(a){let m=1;for(const l of lobes)m+=l.amp*Math.sin(l.k*a+l.ph);return m;}
+  function hsl(h,s,l,a=1){return `hsla(${h},${s}%,${l}%,${a})`;}
 
-  function frame(now){
-    const t=(now-t0)/1000, dt=1/60;
+  function background(t){
     g.globalCompositeOperation='source-over';
-    g.fillStyle='rgba('+0+',0,0,0)'; // clear via ground fill below
-    g.fillStyle=p.ground; g.fillRect(0,0,W,H);
-    // soft vignette
-    const vg=g.createRadialGradient(W*0.5,H*0.45,8,W*0.5,H*0.5,Math.max(W,H)*0.7);
-    vg.addColorStop(0,'rgba(255,255,255,0.03)');vg.addColorStop(1,'rgba(0,0,0,0.25)');
+    g.fillStyle=p.ground;g.fillRect(0,0,W,H);
+    const vg=g.createRadialGradient(W*0.5,H*0.45,8,W*0.5,H*0.5,Math.max(W,H)*0.72);
+    const light = p.mode==='flock';
+    vg.addColorStop(0,light?'rgba(0,0,0,0.015)':'rgba(255,255,255,0.035)');
+    vg.addColorStop(1,light?'rgba(0,0,0,0.05)':'rgba(0,0,0,0.28)');
     g.fillStyle=vg;g.fillRect(0,0,W,H);
-
-    // gesture: strike pieces pulse; hold piece breathes steadily
-    if(p.gesture==='strike'){
-      nextStrike-=dt*p.rate; if(nextStrike<=0){ex=Math.min(1.4,ex+rnd(0.6,1.1));nextStrike=rnd(0.6,2.0)/p.rate;}
-      ex*=Math.pow(0.0016*(7-p.decay/1.2+1),dt); // quick-ish decay
-      ex=Math.max(ex- dt*(2.4/p.decay),0);
-    }else{
-      ex=0.55+0.35*Math.sin(t*0.9); // sustained breathing
+    if(p.mode==='cambium' || p.mode==='pore'){
+      g.globalAlpha=.10;
+      g.strokeStyle=hsl(p.base2,p.sat,light?30:74,.6);
+      for(let i=0;i<9;i++){
+        const y=(i/8)*H + Math.sin(t*.45+i)*5;
+        g.beginPath();g.moveTo(0,y);
+        for(let x=0;x<=W;x+=24)g.lineTo(x,y+Math.sin(x*.022+t+i)*7);
+        g.stroke();
+      }
+      g.globalAlpha=1;
     }
-    for(const l of lobes)l.ph+=l.sp*dt;
-    rot+=0.25*dt; band+=0.7*dt;
-    hue=(p.base+ (p.base2-p.base)*(0.5+0.5*Math.sin(t*0.25)) )%360;
+  }
 
+  function updateGesture(dt,t){
+    if(p.gesture==='strike' || p.gesture==='scatter'){
+      nextStrike-=dt*p.rate;
+      if(nextStrike<=0){ex=Math.min(1.4,ex+rnd(0.55,1.1));nextStrike=rnd(0.65,2.0)/p.rate;}
+      ex*=Math.pow(0.0016*(7-p.decay/1.2+1),dt);
+      ex=Math.max(ex-dt*(2.4/p.decay),0);
+    }else if(p.gesture==='hold'){
+      ex=0.55+0.35*Math.sin(t*0.9);
+    }else if(p.gesture==='grow'){
+      ex=0.42+0.22*Math.sin(t*1.2)+0.12*Math.sin(t*2.7);
+    }else if(p.gesture==='nudge'){
+      nextStrike-=dt;
+      if(nextStrike<=0){ex=1;nextStrike=rnd(1.3,3.0);}
+      ex=Math.max(ex-dt*.9,0);
+    }else if(p.gesture==='breath'){
+      ex=Math.pow(0.5+0.5*Math.sin(t*1.1),1.7);
+    }
+  }
+
+  function drawCell(t){
     const cx=W/2, cy=H/2, R=Math.min(W,H)*0.30*(1+ex*0.05);
-    g.save(); g.translate(cx,cy);
+    g.save();g.translate(cx,cy);
     const steps=72, pts=[];
     g.beginPath();
     for(let i=0;i<=steps;i++){const a=i/steps*TAU;const rad=R*outline(a)*(1+ex*0.05);const x=Math.cos(a)*rad,y=Math.sin(a)*rad;pts.push([x,y]);i?g.lineTo(x,y):g.moveTo(x,y);}
     g.closePath();
-    g.save(); g.clip();
+    g.save();g.clip();
     const L=clamp(22+ex*26,8,72);
     const core=g.createRadialGradient(-R*0.3,-R*0.35,R*0.1,0,0,R*1.3);
-    core.addColorStop(0,`hsl(${hue},${p.sat}%,${clamp(L+22,6,84)}%)`);
-    core.addColorStop(0.55,`hsl(${hue},${p.sat}%,${L}%)`);
-    core.addColorStop(1,`hsl(${(hue+20)%360},${p.sat}%,${clamp(L-14,3,44)}%)`);
+    core.addColorStop(0,hsl(hue,p.sat,clamp(L+22,6,84)));
+    core.addColorStop(0.55,hsl(hue,p.sat,L));
+    core.addColorStop(1,hsl((hue+20)%360,p.sat,clamp(L-14,3,44)));
     g.fillStyle=core;g.fillRect(-R*2,-R*2,R*4,R*4);
 
-    // halocline gets its drifting stratum band
     if(cv.dataset.piece==='halocline'){
       const by=Math.sin(band)*R*0.4, bh=R*0.36;
       g.globalCompositeOperation='lighter';
       const bd=g.createLinearGradient(0,by-bh,0,by+bh);
-      bd.addColorStop(0,`hsla(${hue2},80%,60%,0)`);bd.addColorStop(0.5,`hsla(${hue2},88%,66%,.4)`);bd.addColorStop(1,`hsla(${hue2},80%,58%,0)`);
+      bd.addColorStop(0,hsl(hue2,80,60,0));bd.addColorStop(0.5,hsl(hue2,88,66,.4));bd.addColorStop(1,hsl(hue2,80,58,0));
       g.fillStyle=bd;g.fillRect(-R*2,by-bh,R*4,bh*2);
     }
-    // iridescent conic shimmer
+
     const con=g.createConicGradient?g.createConicGradient(rot,0,0):null;
     if(con){g.globalCompositeOperation='overlay';
-      con.addColorStop(0,`hsla(${(hue+60)%360},75%,62%,0)`);
-      con.addColorStop(0.18,`hsla(${(hue+60)%360},82%,66%,.5)`);
-      con.addColorStop(0.4,`hsla(${(hue+200)%360},72%,56%,0)`);
-      con.addColorStop(0.62,`hsla(${hue2},80%,62%,.42)`);
-      con.addColorStop(0.82,`hsla(${(hue+120)%360},70%,58%,0)`);
-      con.addColorStop(1,`hsla(${(hue+60)%360},75%,62%,0)`);
-      g.fillStyle=con;g.fillRect(-R*2,-R*2,R*4,R*4);}
-    // strike flare
+      con.addColorStop(0,hsl((hue+60)%360,75,62,0));
+      con.addColorStop(0.18,hsl((hue+60)%360,82,66,.5));
+      con.addColorStop(0.4,hsl((hue+200)%360,72,56,0));
+      con.addColorStop(0.62,hsl(hue2,80,62,.42));
+      con.addColorStop(0.82,hsl((hue+120)%360,70,58,0));
+      con.addColorStop(1,hsl((hue+60)%360,75,62,0));
+      g.fillStyle=con;g.fillRect(-R*2,-R*2,R*4,R*4);
+    }
     if(ex>0.02){g.globalCompositeOperation='lighter';g.globalAlpha=clamp(ex*0.5,0,0.8);
       const nu=g.createRadialGradient(0,0,0,0,0,R*0.7);
-      nu.addColorStop(0,`hsla(${(hue+40)%360},90%,82%,1)`);nu.addColorStop(0.5,`hsla(${hue},80%,58%,.5)`);nu.addColorStop(1,`hsla(${hue2},78%,54%,0)`);
+      nu.addColorStop(0,hsl((hue+40)%360,90,82,1));nu.addColorStop(0.5,hsl(hue,80,58,.5));nu.addColorStop(1,hsl(hue2,78,54,0));
       g.fillStyle=nu;g.fillRect(-R,-R,R*2,R*2);g.globalAlpha=1;}
     g.restore();
-    // rim
     g.globalCompositeOperation='lighter';g.globalAlpha=0.55+ex*0.35;g.lineWidth=1.1;
-    g.strokeStyle=`hsla(${hue2},78%,${60+ex*16}%,.6)`;
+    g.strokeStyle=hsl(hue2,78,60+ex*16,.6);
     g.beginPath();pts.forEach((q,i)=>i?g.lineTo(q[0],q[1]):g.moveTo(q[0],q[1]));g.closePath();g.stroke();
     g.restore();g.globalCompositeOperation='source-over';g.globalAlpha=1;
+  }
+
+  function drawFiber(t){
+    const cx=W/2,cy=H/2,R=Math.min(W,H)*.35;
+    g.save();g.translate(cx,cy);
+    g.lineCap='round';
+    for(const s of strands){
+      const a=s.a+Math.sin(t*.35+s.ph)*.22, b=s.b+Math.cos(t*.28+s.ph)*.28;
+      const x1=Math.cos(a)*R*outline(a), y1=Math.sin(a)*R*.72*outline(a);
+      const x2=Math.cos(b)*R*outline(b), y2=Math.sin(b)*R*.72*outline(b);
+      const mx=Math.sin(t+s.ph)*R*.12, my=Math.cos(t*.8+s.ph)*R*.10;
+      g.globalAlpha=.22+s.w*.18;g.strokeStyle=hsl((p.base+s.w*80)%360,42,48+s.w*18,.8);g.lineWidth=s.w;
+      g.beginPath();g.moveTo(x1,y1);g.quadraticCurveTo(mx,my,x2,y2);g.stroke();
+    }
+    for(const s of strands.slice(0,9)){
+      const a=s.a+Math.sin(t*.35+s.ph)*.22;
+      const x=Math.cos(a)*R*outline(a), y=Math.sin(a)*R*.72*outline(a);
+      g.globalAlpha=.6;g.fillStyle=hsl(p.base,46,64,.9);g.beginPath();g.arc(x,y,2.2+s.w,0,TAU);g.fill();
+    }
+    g.globalAlpha=.24+.18*ex;g.fillStyle=hsl(p.rim,48,56,.35);
+    g.beginPath();g.ellipse(0,0,R*.52*(1+ex*.15),R*.31*(1+ex*.05),Math.sin(t*.3)*.3,0,TAU);g.fill();
+    g.restore();g.globalAlpha=1;
+  }
+
+  function drawGhost(t){
+    const light=220;
+    g.save();g.globalCompositeOperation='lighter';
+    for(const q of ghosts){
+      const x=W*(.5+q.x)+Math.sin(t*q.sp+q.ph)*28*(.35+ex);
+      const y=H*(.5+q.y)+Math.cos(t*(q.sp*.8)+q.ph)*18*(.35+ex);
+      const r=q.r*(1+.12*Math.sin(t*1.3+q.ph));
+      const gr=g.createRadialGradient(x-r*.25,y-r*.3,1,x,y,r*1.5);
+      gr.addColorStop(0,`rgba(${light},${light+6},${light+10},${.46+.22*ex})`);
+      gr.addColorStop(.46,`rgba(120,132,138,${.20+.12*ex})`);
+      gr.addColorStop(1,'rgba(5,7,9,0)');
+      g.fillStyle=gr;g.beginPath();g.ellipse(x,y,r*.86,r*1.12,Math.sin(t+q.ph)*.22,0,TAU);g.fill();
+      g.globalAlpha=.28+.25*ex;g.strokeStyle='rgba(242,245,246,.55)';g.lineWidth=.8;
+      g.beginPath();g.arc(x,y,r*.45,0,TAU);g.stroke();g.globalAlpha=1;
+    }
+    g.restore();
+  }
+
+  function drawFlock(t,dt){
+    g.save();
+    for(const m of motes){
+      m.x+=m.vx*(1+ex*5)+Math.sin(t+m.ph)*.0009;
+      m.y+=m.vy*(1+ex*5)+Math.cos(t*.9+m.ph)*.0007;
+      if(m.x>.55)m.x=-.55;if(m.x<-.55)m.x=.55;if(m.y>.42)m.y=-.42;if(m.y<-.42)m.y=.42;
+    }
+    for(let i=0;i<motes.length;i++){
+      const a=motes[i], x=W*(.5+a.x), y=H*(.5+a.y);
+      g.fillStyle=`rgba(10,17,20,${.36+.32*Math.sin(t*2+a.ph)})`;
+      g.beginPath();g.ellipse(x,y,a.r*(1+ex*.2),a.r*.62,Math.atan2(a.vy,a.vx),0,TAU);g.fill();
+      if(i%6===0){g.strokeStyle='rgba(138,155,163,.18)';g.beginPath();g.moveTo(x,y);g.lineTo(x-a.vx*900,y-a.vy*900);g.stroke();}
+    }
+    if(ex>.06){g.globalAlpha=ex*.16;g.strokeStyle='rgba(10,17,20,.65)';
+      g.beginPath();g.arc(W*.5,H*.5,Math.min(W,H)*(.22+ex*.18),0,TAU);g.stroke();}
+    g.restore();g.globalAlpha=1;
+  }
+
+  function drawPore(t){
+    const cx=W/2,cy=H/2,R=Math.min(W,H)*.32;
+    const open=.18+.62*ex;
+    g.save();g.translate(cx,cy);
+    g.globalCompositeOperation='lighter';
+    const gr=g.createRadialGradient(0,0,R*.1,0,0,R*1.25);
+    gr.addColorStop(0,hsl(p.rim,72,68,.22+.24*open));
+    gr.addColorStop(.48,hsl(p.base,42,48,.24));
+    gr.addColorStop(1,hsl(p.base2,46,38,0));
+    g.fillStyle=gr;g.beginPath();g.ellipse(0,0,R*1.06,R*.68,Math.sin(t*.4)*.25,0,TAU);g.fill();
+    ['left','right'].forEach((side,idx)=>{
+      const s=idx?1:-1;
+      g.fillStyle=hsl(idx?p.base2:p.base,52,58,.55);
+      g.beginPath();
+      g.ellipse(s*R*.27*open,0,R*.22,R*.74,Math.sin(t*.7)*.18+s*.22,0,TAU);g.fill();
+      g.strokeStyle=hsl(p.rim,74,70,.45);g.lineWidth=1.2;g.stroke();
+    });
+    g.globalAlpha=.26+.38*open;g.strokeStyle=hsl(p.rim,80,68,.7);
+    g.beginPath();g.ellipse(0,0,R*(.18+.32*open),R*(.11+.12*open),0,0,TAU);g.stroke();
+    for(let i=0;i<12;i++){
+      const a=i/12*TAU+t*.35, rr=R*(.2+open*.55+rnd(0,.02));
+      const x=Math.cos(a)*rr, y=Math.sin(a)*rr*.75;
+      g.fillStyle=hsl(p.rim,80,70,.25+.35*open);g.beginPath();g.arc(x,y,1.1+open*1.6,0,TAU);g.fill();
+    }
+    g.restore();g.globalAlpha=1;g.globalCompositeOperation='source-over';
+  }
+
+  function frame(now){
+    const t=(now-t0)/1000, dt=1/60;
+    updateGesture(dt,t);
+    for(const l of lobes)l.ph+=l.sp*dt;
+    rot+=0.25*dt;band+=0.7*dt;
+    hue=(p.base+(p.base2-p.base)*(0.5+0.5*Math.sin(t*0.25)))%360;
+    background(t);
+    if(p.mode==='fiber')drawFiber(t);
+    else if(p.mode==='ghost')drawGhost(t);
+    else if(p.mode==='flock')drawFlock(t,dt);
+    else if(p.mode==='pore')drawPore(t);
+    else drawCell(t);
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
@@ -216,8 +395,15 @@ document.querySelectorAll('canvas[data-piece]').forEach(portal);
 
 document.getElementById('ensemble').addEventListener('click',e=>{
   e.preventDefault();
-  ['cytophone-understory.html','cytophone-halocline.html','cytophone-xenolith.html']
-    .forEach((u,i)=>setTimeout(()=>window.open(u,'_blank'),i*120));
+  [
+    'cytophone-understory.html',
+    'cytophone-halocline.html',
+    'cytophone-xenolith.html',
+    'cytophone-cambium.html',
+    'cytophone-ectoplasm.html',
+    'cytophone-murmuration.html',
+    'cytophone-stomata.html'
+  ].forEach((u,i)=>setTimeout(()=>window.open(u,'_blank'),i*120));
 });
 </script>
 </body>

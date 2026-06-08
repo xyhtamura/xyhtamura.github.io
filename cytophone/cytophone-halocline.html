@@ -76,12 +76,8 @@
 <body>
 <canvas id="stage"></canvas>
 <div id="title">cytophone: halocline</div>
-<nav id="coll">
-  <a href="cytophone-understory.html">understory</a><span class="sep">·</span>
-  <a href="cytophone-halocline.html" class="on">halocline</a><span class="sep">·</span>
-  <a href="cytophone-xenolith.html">xenolith</a>
-</nav>
-<div id="hint"><em>tap</em> to seed a body · <em>tap a body</em> to bow it · hold the tone, they pull each other</div>
+
+<div id="hint"><em>tap</em> to seed a body · <em>tap a body</em> to bow it · hold the tone, they pull each other · <em>right-click / double-tap</em> to erase</div>
 <div id="fx"><span class="lbl">dry</span><input id="wet" type="range" min="0" max="100" value="42"><span class="lbl">wet</span></div>
 
 <div id="gate">
@@ -209,7 +205,11 @@ const Sound={
     const geom=cell.geom;                          // 0 round .. 1 lobed
     const env=ctx.createGain(); env.gain.value=0.0001;
     const lp=ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=520; lp.Q.value=0.6;
+    const shelf = ctx.createBiquadFilter(); 
+    shelf.type = 'highshelf'; 
+    shelf.frequency.value = 400; // Frequencies above 1.2kHz will be boosted/dampened
     const trem=ctx.createGain(); trem.gain.value=0.86; // intrinsic; LFO sums on top
+	
 
     // slow "current" tremolo — rate set by hue (salinity gradient)
     const lfo=ctx.createOscillator(); lfo.type='sine';
@@ -217,7 +217,7 @@ const Sound={
     const lfoDepth=ctx.createGain(); lfoDepth.gain.value=0.16;
     lfo.connect(lfoDepth).connect(trem.gain); lfo.start(now);
 
-    trem.connect(env).connect(lp).connect(this.master);
+    trem.connect(env).connect(lp).connect(shelf).connect(this.master);
 
     const oscs=[];
     const beatHz = lerp(0.7, 3.6, u(cell.hue/360*TAU+1.3)); // beating rate from hue
@@ -236,7 +236,7 @@ const Sound={
         o2.connect(og2).connect(trem); o2.start(now); oscs.push(o2);
       }
     }
-    return { env, lp, trem, lfo, oscs, release: lerp(2.2, 5.2, cell.sizeN), timer:null, deadline:0 };
+    return { env, lp, shelf, trem, lfo, oscs, release: lerp(2.2, 5.2, cell.sizeN), timer:null, deadline:0 };
   },
 
   _reap(cell){
@@ -249,7 +249,7 @@ const Sound={
     }
     try{ V.lfo.stop(); }catch(e){}
     for(const o of V.oscs){ try{o.stop()}catch(e){} }
-    try{ V.lp.disconnect(); V.env.disconnect(); V.trem.disconnect(); }catch(e){}
+    try{ V.lp.disconnect(); V.shelf.disconnect(); V.env.disconnect(); V.trem.disconnect(); }catch(e){}
     cell._voice=null; this.voices=Math.max(0,this.voices-1);
   }
 };
@@ -333,6 +333,24 @@ class Cell{
 
     for(const rp of this.ripples){rp.r+=90*dt;rp.a-=0.6*dt;}
     this.ripples=this.ripples.filter(rp=>rp.a>0);
+	
+	for(const rp of this.ripples){rp.r+=90*dt;rp.a-=0.6*dt;}
+    this.ripples=this.ripples.filter(rp=>rp.a>0);
+
+    // NEW: The Halocline boundary logic
+    if (this._voice && Sound.ctx) {
+      // Normalize Y position relative to the center (-1 at top, 1 at bottom)
+      const relY = (this.y - H * 0.5) / (H * 0.5);
+      
+      // Multiply by 3 and clamp to create a sharper "stratum" transition at the center
+      const boundary = Math.max(-1, Math.min(1, relY * 3)); 
+      
+      // Top gets +15dB of high frequencies, Bottom gets -15dB (muffled)
+      const shelfGain = -boundary * 10; 
+      
+      // Smooth the parameter update to avoid audio clipping/zippering
+      this._voice.shelf.gain.setTargetAtTime(shelfGain, Sound.ctx.currentTime, 0.1);
+    }
   }
   draw(){
     const R=this.rr*this.born, ex=this.glow;
@@ -417,11 +435,38 @@ function collide(dt){
 /* interaction: tap empty = seed; tap body = bow + drift */
 let lastInteract=performance.now();
 function hit(x,y){for(let i=cells.length-1;i>=0;i--){const c=cells[i];if(Math.hypot(x-c.x,y-c.y)<Math.max(c.rr,26)*1.08)return c;}return null;}
+function eraseCellAt(x,y){
+  const c=hit(x,y);
+  if(!c) return false;
+  const idx=cells.indexOf(c);
+  if(idx===-1) return false;
+  if(c._voice) Sound._reap(c);
+  cells.splice(idx,1);
+  return true;
+}
+let lastTapTime=0;
 function pointer(x,y){lastInteract=performance.now();const c=hit(x,y);
   if(c){c.cool=0;c.excite(0.9,0.1);const ang=rnd(0,TAU);c.vx+=Math.cos(ang)*46;c.vy+=Math.sin(ang)*46;}
   else seed(x,y);
 }
-cv.addEventListener('pointerdown',e=>{e.preventDefault();pointer(e.clientX,e.clientY);},{passive:false});
+cv.addEventListener('pointerdown',e=>{
+  e.preventDefault();
+  const x=e.clientX, y=e.clientY;
+  const now=Date.now();
+  if(e.button===2||e.shiftKey){
+    eraseCellAt(x,y);
+    return;
+  }
+  if(now-lastTapTime<300){
+    if(eraseCellAt(x,y)){
+      lastTapTime=0;
+      return;
+    }
+  }
+  lastTapTime=now;
+  pointer(x,y);
+},{passive:false});
+cv.addEventListener('contextmenu',e=>e.preventDefault());
 
 const wetEl=document.getElementById('wet');
 wetEl.addEventListener('input',()=>Sound.setWet(wetEl.value/100));

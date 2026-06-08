@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>cytophone: ectoplasm</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,300..400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root{
+
+    --ground-0:#020304;
+    --ground-1:#05070a;
+    --ink:#f2f5f6;       /* bleached bone white */
+    --faint:#5a6369;     /* clinical gray */
+    --void:#14171a;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;overflow:hidden;background:var(--ground-0)}
+  body{font-family:"DM Mono",monospace;color:var(--ink);-webkit-tap-highlight-color:transparent;touch-action:none;cursor:grab}
+  body:active {cursor:grabbing}
+  #stage{display:block;width:100vw;height:100vh}
+
+  #title{position:fixed;top:max(20px,env(safe-area-inset-top));left:22px;font-family:"Fraunces",serif;font-style:italic;font-weight:300;font-size:17px;letter-spacing:.01em;color:var(--faint);pointer-events:none;user-select:none;transition:opacity 2s ease}
+  #title.dim{opacity:.35}
+
+  body.hide-ui #title, body.hide-ui #hint, body.hide-ui #fx {
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  #hint{position:fixed;left:0;right:0;bottom:max(64px,calc(env(safe-area-inset-bottom) + 44px));text-align:center;pointer-events:none;font-size:13px;letter-spacing:.02em;color:var(--faint);transition:opacity 1.6s ease;opacity:1;text-shadow:0 1px 12px rgba(0,0,0,.9)}
+  #hint em{font-family:"Fraunces",serif;font-style:italic;color:var(--ink);font-weight:400}
+  #hint.gone{opacity:0}
+
+  #fx{position:fixed;left:50%;bottom:max(22px,env(safe-area-inset-bottom));transform:translateX(-50%);
+      display:flex;align-items:center;gap:11px;opacity:.32;transition:opacity .5s ease;z-index:5;user-select:none}
+  #fx:hover{opacity:.95}
+  #fx .lbl{font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+  #wet{-webkit-appearance:none;appearance:none;width:168px;height:2px;background:#1a2026;border-radius:2px;outline:none;cursor:pointer}
+  #wet::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:#ffffff;box-shadow:0 0 10px rgba(255,255,255,.3);cursor:pointer}
+  #wet::-moz-range-thumb{width:13px;height:13px;border:none;border-radius:50%;background:#ffffff;box-shadow:0 0 10px rgba(255,255,255,.3);cursor:pointer}
+
+  #gate{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 120% at 50% 40%, #05070a 0%, #020304 70%);z-index:10;transition:opacity .9s ease}
+  #gate.gone{opacity:0;pointer-events:none}
+  #gate .gi{text-align:center;max-width:360px;padding:0 24px;animation:rise 1.4s cubic-bezier(.2,.8,.2,1) both}
+  #gate h1{font-family:"Fraunces",serif;font-style:italic;font-weight:300;font-size:34px;color:var(--ink);margin-bottom:14px}
+  #gate p{font-size:13px;line-height:1.7;color:var(--faint)}
+  #gate .pulse{margin:30px auto 0;width:60px;height:60px;border-radius:50%;
+    background:radial-gradient(circle at 38% 34%, #ffffff 0%, #8a969e 40%, #15191c 100%);
+    box-shadow:0 0 40px rgba(200,210,220,.15);animation:breathe 4.2s ease-in-out infinite}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  @keyframes breathe{0%,100%{transform:scale(.95);opacity:.6}50%{transform:scale(1.05);opacity:1}}
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<div id="title">cytophone: ectoplasm</div>
+<div id="hint"><em>drag</em> a body, or wait for the nudge clock · <em>right-click / double-tap</em> to erase</div>
+<div id="fx"><span class="lbl">dry</span><input id="wet" type="range" min="0" max="100" value="35"><span class="lbl">wet</span></div>
+
+<div id="gate">
+  <div class="gi">
+    <h1>cytophone: ectoplasm</h1>
+    <p>draggable ghost motors, moving unexpectedly</p>
+    <div class="pulse"></div>
+    <p style="margin-top:24px;font-size:11px;letter-spacing:.06em;opacity:.7">TOUCH TO ENTER · SOUND ON</p>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const clamp=(v,a,b)=>v<a?a:v>b?b:v;
+const lerp=(a,b,t)=>a+(b-a)*t;
+const TAU=Math.PI*2;
+
+/* ============================================================
+   AUDIO — Friction, Sub-harmonics & Crackle
+   ============================================================ */
+const Sound={
+  ctx:null, bus:null, dry:null, wet:null, comp:null, out:null, wetAmt:0.35,
+  noiseBuffer: null,
+
+  start(){
+    if(this.ctx) return;
+    const AC=window.AudioContext||window.webkitAudioContext; const ctx=new AC(); this.ctx=ctx;
+    
+    const comp=ctx.createDynamicsCompressor();
+    comp.threshold.value=-16; comp.knee.value=20; comp.ratio.value=8; comp.attack.value=0.01; comp.release.value=0.3;
+    
+    const out=ctx.createGain(); out.gain.value=0.0;
+    const bus=ctx.createGain(); 
+    const dry=ctx.createGain();
+    const conv=ctx.createConvolver(); conv.buffer=this._plate(2.5); // longer, deeper plate
+    const wet=ctx.createGain();
+
+    bus.connect(dry).connect(comp);
+    bus.connect(conv).connect(wet).connect(comp);
+    comp.connect(out).connect(ctx.destination);
+    
+    this.bus=bus; this.dry=dry; this.wet=wet; this.comp=comp; this.out=out;
+    this.setWet(this.wetAmt);
+    out.gain.linearRampToValueAtTime(0.4, ctx.currentTime+1.0);
+
+    // Pre-compute 3 seconds of white noise
+    const n = ctx.sampleRate * 3.0;
+    this.noiseBuffer = ctx.createBuffer(1, n, ctx.sampleRate);
+    const d = this.noiseBuffer.getChannelData(0);
+    for(let i=0; i<n; i++) d[i] = Math.random() * 2 - 1;
+  },
+
+  setWet(w){ this.wetAmt=w; if(!this.ctx)return;
+    this.dry.gain.value = lerp(1.0, 0.5, w);
+    this.wet.gain.value = w * 1.2;
+  },
+
+  _plate(dur){
+    const ctx=this.ctx, n=Math.floor(ctx.sampleRate*dur), b=ctx.createBuffer(2,n,ctx.sampleRate);
+    for(let c=0;c<2;c++){const d=b.getChannelData(c); let prev=0;
+      for(let i=0;i<n;i++){const t=i/n; const white=(Math.random()*2-1)*Math.pow(1-t,3.0); prev=prev*0.3+white*0.7; d[i]=prev;}}
+    return b;
+  },
+
+  createScrapeVoice(size){
+    const ctx = this.ctx; if(!ctx) return null;
+    
+    // Base resonant frequency mapped to size (bigger = deeper groan)
+    const baseFreq = clamp(8000 / size, 60, 250);
+
+    // 1. NOISE LAYER (The scrape)
+    const noise = ctx.createBufferSource();
+    noise.buffer = this.noiseBuffer;
+    noise.loop = true;
+
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.value = baseFreq; 
+    filter.Q.value = rnd(2.0, 6.0);
+
+    // 2. SUB LAYER (The tectonic groan)
+    const subOsc = ctx.createOscillator();
+    subOsc.type = 'triangle';
+    subOsc.frequency.value = baseFreq * 0.5; // one octave down
+    const subGain = ctx.createGain();
+    subGain.gain.value = 1.2;
+
+    // Mix them together
+    const mixNode = ctx.createGain();
+    mixNode.gain.value = 1.0;
+    noise.connect(filter).connect(mixNode);
+    subOsc.connect(subGain).connect(mixNode);
+
+    // 3. GATING (The fry/crackle)
+    const gateGain = ctx.createGain();
+    gateGain.gain.value = 0;
+
+    const crackleLfo = ctx.createOscillator();
+    crackleLfo.type = 'sawtooth'; 
+    crackleLfo.frequency.value = 8.0; 
+    
+    const curve = new Float32Array(256);
+    for(let i=0; i<256; i++) {
+        let x = (i/255) * 2 - 1;
+        curve[i] = x > 0.75 ? 1.0 : 0.0;
+    }
+    const shaper = ctx.createWaveShaper();
+    shaper.curve = curve;
+
+    crackleLfo.connect(shaper).connect(gateGain.gain);
+
+    // Master envelope for this voice
+    const env = ctx.createGain();
+    env.gain.value = 0;
+
+    mixNode.connect(gateGain).connect(env).connect(this.bus);
+    
+    noise.start();
+    subOsc.start();
+    crackleLfo.start();
+
+    return {
+        env, 
+        filter,
+        subOsc,
+        crackleLfo,
+        baseFreq,
+        update: (speed, pressure) => {
+            const now = ctx.currentTime;
+            
+            // LFO rate: Slow ticks when idle, tearing scrape when fast/pressurized
+            const targetRate = lerp(6.0, 80.0, clamp(speed + pressure*0.5, 0, 1));
+            crackleLfo.frequency.setTargetAtTime(targetRate, now, 0.15);
+            
+            // Filter opens up slightly under pressure
+            filter.frequency.setTargetAtTime(lerp(baseFreq, baseFreq * 2.5, pressure), now, 0.15);
+            
+            // Audio envelope: Sounds when either moving OR under tectonic pressure
+            const activity = clamp(speed * 2.0 + pressure * 0.8, 0, 0.9);
+            env.gain.setTargetAtTime(activity, now, 0.1);
+        },
+        destroy: () => {
+            const now = ctx.currentTime;
+            env.gain.cancelScheduledValues(now);
+            env.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+            setTimeout(() => {
+                noise.stop(); subOsc.stop(); crackleLfo.stop(); noise.disconnect();
+            }, 600);
+        }
+    };
+  }
+};
+
+/* ============================================================
+   FIELD
+   ============================================================ */
+const cv=document.getElementById('stage'); const g=cv.getContext('2d',{alpha:false});
+let W=0,H=0,DPR=1;
+function resize(){DPR=Math.min(2,window.devicePixelRatio||1);W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;cv.style.width=W+'px';cv.style.height=H+'px';g.setTransform(DPR,0,0,DPR,0,0);}
+addEventListener('resize',resize); resize();
+
+const cells=[]; const MAX_CELLS=7; // Slightly more for better autonomous crowding
+let NEXT_CELL_ID = 1;
+
+// Subtle per-body color identities: still bone-white, but not uniformly white.
+// h/s values are deliberately restrained so the piece stays clinical/bathyal.
+const CELL_TINTS = [
+  { h:200, s:10, tag:"bleached" },
+  { h:178, s:18, tag:"green-glass" },
+  { h:218, s:18, tag:"cold-blue" },
+  { h:258, s:16, tag:"violet-cartilage" },
+  { h:318, s:14, tag:"bruise-pearl" },
+  { h:72,  s:13, tag:"sallow-mineral" },
+  { h:28,  s:12, tag:"ivory-rust" }
+];
+
+function pickTint(){
+  const base = CELL_TINTS[(Math.random()*CELL_TINTS.length)|0];
+  return {
+    h: (base.h + rnd(-7, 7) + 360) % 360,
+    s: clamp(base.s * rnd(0.82, 1.28), 7, 28),
+    tag: base.tag
+  };
+}
+
+const contacts = new Map();
+function contactKey(a,b){ return a.id < b.id ? `${a.id}:${b.id}` : `${b.id}:${a.id}`; }
+function contactEnvelope(age){
+  // Fresh overlaps speak; stale overlaps fall silent instead of groaning forever.
+  const fadeStart = 0.55;
+  const fadeEnd = 2.15;
+  if(age <= fadeStart) return 1;
+  if(age >= fadeEnd) return 0;
+  const u = (age - fadeStart) / (fadeEnd - fadeStart);
+  return 1 - (u*u*(3 - 2*u));
+}
+
+class Cell{
+  constructor(x,y){
+    this.id = NEXT_CELL_ID++;
+    this.x=x;this.y=y;this.vx=0;this.vy=0;
+    this.size=rnd(45, 95); // Slightly larger
+    this.tint = pickTint();
+    this.lobes=Array.from({length:5},()=>({k:2+(Math.random()*4|0),ph:rnd(0,TAU),sp:rnd(-0.04,0.04),amp:rnd(0.06,0.18)}));
+    
+    this.voice = Sound.createScrapeVoice(this.size);
+    this.dragSpeed = 0;
+    this.pressure = 0;
+    this.nudgeFlash = 0;
+  }
+  
+  outline(a){let m=1;for(const l of this.lobes)m+=l.amp*Math.sin(l.k*a+l.ph);return m;}
+
+  nudge(angle, strength, pressureBoost=0.18){
+    // A bathyal clock-tick: not animation for its own sake, but an impulse
+    // that becomes audible through the same movement/friction system as dragging.
+    this.vx += Math.cos(angle) * strength;
+    this.vy += Math.sin(angle) * strength;
+    this.pressure = Math.min(1.0, this.pressure + pressureBoost);
+    this.nudgeFlash = Math.min(1.0, this.nudgeFlash + 0.9);
+
+    // Small membrane twitch so autonomous motion also slightly changes the body.
+    for(const l of this.lobes){
+      l.ph += rnd(-0.18, 0.18);
+      l.sp = clamp(l.sp + rnd(-0.012, 0.012), -0.08, 0.08);
+    }
+  }
+  
+  step(dt, t){
+    for(const l of this.lobes) l.ph+=l.sp*dt;
+    this.nudgeFlash *= Math.pow(0.88, dt * 60.0);
+    
+    // Autonomous Deep Convection Current
+    const fx = Math.sin(this.y * 0.003 + t * 0.08) + Math.cos(this.x * 0.002 - t * 0.05);
+    const fy = Math.cos(this.x * 0.003 - t * 0.06) + Math.sin(this.y * 0.002 + t * 0.07);
+    this.vx += fx * 4.0 * dt; 
+    this.vy += fy * 4.0 * dt;
+
+    // Extreme Viscosity Drag
+    this.vx *= 0.82; 
+    this.vy *= 0.82; 
+    
+    this.x += this.vx * dt; 
+    this.y += this.vy * dt;
+
+    // Boundary constraints
+    const R = this.size;
+    if(this.x<R){this.x=R; this.vx*=-0.2; this.pressure += 0.1;}
+    if(this.x>W-R){this.x=W-R; this.vx*=-0.2; this.pressure += 0.1;}
+    if(this.y<R){this.y=R; this.vy*=-0.2; this.pressure += 0.1;}
+    if(this.y>H-R){this.y=H-R; this.vy*=-0.2; this.pressure += 0.1;}
+
+    // Update audio based on movement
+    this.dragSpeed = Math.hypot(this.vx, this.vy) / 250.0; // Scaled to make autonomous drift audible
+    this.pressure *= 0.92; // Slower pressure decay for sustained groans
+    
+    if(this.voice) {
+        this.voice.update(this.dragSpeed, this.pressure);
+    }
+  }
+
+  draw(){
+    const R=this.size;
+    const h=this.tint.h, s=this.tint.s;
+    g.save(); g.translate(this.x,this.y);
+
+    const steps=64; const pathPts=[];
+    g.beginPath();
+    for(let i=0;i<=steps;i++){
+        const a=i/steps*TAU;
+        // Shape elongates based on speed
+        const defX = 1 + (Math.abs(this.vx)/800);
+        const defY = 1 + (Math.abs(this.vy)/800);
+        const rad=R*this.outline(a);
+        const px=Math.cos(a)*rad*defX, py=Math.sin(a)*rad*defY;
+        pathPts.push([px,py]);
+        i?g.lineTo(px,py):g.moveTo(px,py);
+    }
+    g.closePath();
+
+    g.save(); g.clip();
+    
+    // Clinical, translucent bone-white core, slightly contaminated by a cell-specific tint.
+    const core=g.createRadialGradient(-R*0.2,-R*0.2,R*0.05,0,0,R*1.1);
+    core.addColorStop(0, `hsla(${h}, ${s}%, 95%, 0.86)`);
+    core.addColorStop(0.45, `hsla(${h}, ${Math.max(5, s*0.72)}%, 82%, 0.42)`);
+    core.addColorStop(1, `hsla(${h}, ${Math.max(4, s*0.45)}%, 50%, 0.0)`);
+    g.fillStyle=core; g.fillRect(-R*2,-R*2,R*4,R*4);
+
+    // Internal clinical structures (cartilage/alien)
+    g.globalCompositeOperation = 'screen';
+    g.lineWidth = 1.5;
+    g.strokeStyle = `hsla(${h}, ${s}%, 90%, 0.25)`;
+    for(let j=1; j<4; j++) {
+        g.beginPath();
+        for(let i=0;i<=steps;i++) {
+            const a=i/steps*TAU;
+            const px=Math.cos(a)*R*(0.2*j)*this.outline(a+j), py=Math.sin(a)*R*(0.2*j)*this.outline(a+j);
+            i?g.lineTo(px,py):g.moveTo(px,py);
+        }
+        g.closePath(); g.stroke();
+    }
+    
+    // Glow when under pressure
+    if(this.pressure > 0.05) {
+        g.globalCompositeOperation = 'lighter';
+        const pGlow = g.createRadialGradient(0,0,0,0,0,R);
+        pGlow.addColorStop(0, `hsla(${h}, ${Math.max(22, s+14)}%, 80%, ${clamp(this.pressure*0.5, 0, 0.5)})`);
+        pGlow.addColorStop(1, `hsla(${h}, ${Math.max(18, s+10)}%, 80%, 0)`);
+        g.fillStyle = pGlow; g.fillRect(-R,-R,R*2,R*2);
+    }
+
+    if(this.nudgeFlash > 0.01) {
+        // A faint synaptic flare only on clock-ticks / autonomous impulses.
+        g.globalCompositeOperation = 'lighter';
+        const nGlow = g.createRadialGradient(0,0,R*0.1,0,0,R*1.15);
+        nGlow.addColorStop(0, `hsla(${h}, ${Math.max(18, s+8)}%, 92%, ${0.18 * this.nudgeFlash})`);
+        nGlow.addColorStop(0.7, `hsla(${(h+18)%360}, ${Math.max(22, s+12)}%, 78%, ${0.14 * this.nudgeFlash})`);
+        nGlow.addColorStop(1, `hsla(${(h+18)%360}, ${Math.max(22, s+12)}%, 78%, 0)`);
+        g.fillStyle = nGlow; g.fillRect(-R*1.3,-R*1.3,R*2.6,R*2.6);
+    }
+    
+    g.restore(); 
+
+    // Rim
+    g.globalCompositeOperation='lighter'; 
+    g.lineWidth=1.5;
+    g.strokeStyle=`hsla(${h}, ${Math.max(10, s)}%, 86%, 0.66)`;
+    g.beginPath(); pathPts.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1])); g.closePath(); g.stroke();
+    
+    g.restore(); 
+  }
+}
+
+function seed(x,y){ 
+    if(cells.length>=MAX_CELLS) {
+        const old = cells.shift();
+        if(old.voice) old.voice.destroy();
+    }
+    cells.push(new Cell(x,y)); 
+}
+
+function collide(dt){
+  const seen = new Set();
+
+  for(let i=0;i<cells.length;i++)for(let j=i+1;j<cells.length;j++){
+    const a=cells[i],b=cells[j],dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||0.001,min=a.size+b.size;
+    if(d<min){
+      const key = contactKey(a,b);
+      seen.add(key);
+
+      let st = contacts.get(key);
+      if(!st){
+        st = { age:0, released:false };
+        contacts.set(key, st);
+      }
+      st.age += dt;
+
+      const nx=dx/d,ny=dy/d,ov=min-d;
+      // High friction sticking, but resolve overlap every frame.
+      a.x-=nx*ov*0.5; a.y-=ny*ov*0.5;
+      b.x+=nx*ov*0.5; b.y+=ny*ov*0.5;
+      
+      const vdx = b.vx - a.vx;
+      const vdy = b.vy - a.vy;
+      const life = contactEnvelope(st.age);
+      
+      // Transfer momentum sluggishly at first, then let stale contacts go limp.
+      const lock = lerp(0.025, 0.15, life);
+      a.vx += vdx * lock; a.vy += vdy * lock;
+      b.vx -= vdx * lock; b.vy -= vdy * lock;
+
+      // Increase audio pressure only while the overlap is fresh.
+      // This prevents a long stuck intersection from becoming an endless drone.
+      if(life > 0){
+        const scrapeForce = clamp(Math.hypot(vdx, vdy) * 0.05 + 0.1, 0.08, 0.8) * life;
+        a.pressure = Math.min(1.0, a.pressure + scrapeForce);
+        b.pressure = Math.min(1.0, b.pressure + scrapeForce);
+      }
+
+      // If a pair has been intersecting too long, peel them apart once.
+      if(st.age > 2.2 && !st.released){
+        const peel = clamp(ov * 1.1 + 36, 36, 130);
+        const tang = Math.random() < 0.5 ? -1 : 1;
+        a.vx -= nx*peel + (-ny)*peel*0.22*tang;
+        a.vy -= ny*peel + ( nx)*peel*0.22*tang;
+        b.vx += nx*peel + (-ny)*peel*0.22*tang;
+        b.vy += ny*peel + ( nx)*peel*0.22*tang;
+        a.nudgeFlash = Math.max(a.nudgeFlash, 0.32);
+        b.nudgeFlash = Math.max(b.nudgeFlash, 0.32);
+        st.released = true;
+      }
+    }
+  }
+
+  // Clear pair history once bodies separate, so a later collision can speak again.
+  for(const key of contacts.keys()){
+    if(!seen.has(key)) contacts.delete(key);
+  }
+}
+
+/* ============================================================
+   AUTONOMY — Nudge Clock / involuntary movement source
+   ============================================================ */
+const Autonomy={
+  enabled:true,
+  nextNudge:0,
+  quietTime:0,
+
+  activity(){
+    if(!cells.length) return 0;
+    return cells.reduce((sum,c)=>sum+Math.hypot(c.vx,c.vy),0) / cells.length;
+  },
+
+  schedule(t){
+    // The quieter the chamber becomes, the sooner the next clock-tick arrives.
+    const quietBias = clamp(this.quietTime / 8.0, 0, 1);
+    const minGap = lerp(4.0, 1.15, quietBias);
+    const maxGap = lerp(9.5, 4.2, quietBias);
+    this.nextNudge = t + rnd(minGap, maxGap);
+  },
+
+  randomCell(exclude=null){
+    if(!cells.length) return null;
+    if(cells.length === 1) return cells[0];
+    for(let tries=0; tries<12; tries++){
+      const c = cells[(Math.random()*cells.length)|0];
+      if(c !== exclude) return c;
+    }
+    return cells[(Math.random()*cells.length)|0];
+  },
+
+  trigger(boost=0){
+    if(!this.enabled || !cells.length) return;
+    const mode = Math.random();
+
+    if(mode < 0.62 || cells.length < 2){
+      // Single involuntary twitch.
+      const c = this.randomCell(activeCell);
+      if(!c) return;
+      c.nudge(rnd(0, TAU), rnd(90, 320) * (1 + boost*0.75), rnd(0.16, 0.36));
+    } else if(mode < 0.88){
+      // Two bodies pull against each other so collisions become more likely.
+      const a = this.randomCell(activeCell);
+      const b = this.randomCell(a);
+      if(!a || !b) return;
+      const angle = Math.atan2(b.y-a.y, b.x-a.x) + rnd(-0.75, 0.75);
+      const strength = rnd(75, 240) * (1 + boost*0.85);
+      a.nudge(angle, strength, rnd(0.18, 0.34));
+      b.nudge(angle + Math.PI + rnd(-0.35, 0.35), strength*rnd(0.45, 0.9), rnd(0.14, 0.3));
+    } else {
+      // Rare chamber shudder: everyone is disturbed, but not in a tidy rhythm.
+      const base = rnd(0, TAU);
+      for(const c of cells){
+        if(c === activeCell) continue;
+        c.nudge(base + rnd(-1.4, 1.4), rnd(35, 130) * (1 + boost*0.65), rnd(0.06, 0.2));
+      }
+    }
+  },
+
+  step(dt, t){
+    if(!started || !this.enabled || !cells.length) return;
+
+    const act = this.activity();
+    this.quietTime = act < 26 ? this.quietTime + dt : Math.max(0, this.quietTime - dt*2.5);
+
+    if(!this.nextNudge) this.schedule(t);
+    if(t >= this.nextNudge){
+      const boost = clamp(this.quietTime / 8.0, 0, 1);
+      this.trigger(boost);
+      this.schedule(t);
+    }
+  }
+};
+
+/* Interaction: Dragging through high viscosity */
+let activeCell = null;
+let lastX = 0, lastY = 0;
+
+function hit(x,y){for(let i=cells.length-1;i>=0;i--){const c=cells[i];if(Math.hypot(x-c.x,y-c.y)<c.size*1.2)return c;}return null;}
+
+function eraseCellAt(x,y){
+  const c=hit(x,y);
+  if(!c) return false;
+  const idx=cells.indexOf(c);
+  if(idx===-1) return false;
+  if(c.voice) c.voice.destroy();
+  cells.splice(idx,1);
+  for(const key of contacts.keys()){
+    const [idA,idB]=key.split(':').map(Number);
+    if(idA===c.id||idB===c.id) contacts.delete(key);
+  }
+  if(activeCell===c) activeCell=null;
+  return true;
+}
+
+let lastTapTime=0;
+
+cv.addEventListener('pointerdown',e=>{
+    e.preventDefault();
+    const x=e.clientX, y=e.clientY;
+    const now=Date.now();
+    if(e.button===2||e.shiftKey){
+      eraseCellAt(x,y);
+      return;
+    }
+    if(now-lastTapTime<300){
+      if(eraseCellAt(x,y)){
+        lastTapTime=0;
+        activeCell=null;
+        return;
+      }
+    }
+    lastTapTime=now;
+    activeCell=hit(x,y);
+    if(!activeCell) seed(x,y);
+    lastX=x; lastY=y;
+},{passive:false});
+cv.addEventListener('contextmenu',e=>e.preventDefault());
+
+cv.addEventListener('pointermove',e=>{
+    if(activeCell) {
+        const dx = e.clientX - lastX;
+        const dy = e.clientY - lastY;
+        // Direct velocity injection (pulling through thick fluid)
+        activeCell.vx += dx * 6.0; 
+        activeCell.vy += dy * 6.0;
+        activeCell.pressure = Math.min(1.0, activeCell.pressure + 0.1);
+    }
+    lastX = e.clientX; lastY = e.clientY;
+},{passive:false});
+
+window.addEventListener('pointerup',() => { activeCell = null; });
+
+const wetEl=document.getElementById('wet');
+wetEl.addEventListener('input',()=>Sound.setWet(wetEl.value/100));
+
+const gate=document.getElementById('gate'),hint=document.getElementById('hint'),titleEl=document.getElementById('title');
+let started=false;
+function begin(){
+    if(started)return;started=true;Sound.start();gate.classList.add('gone');
+    // Seed them tightly clustered so they immediately start grinding autonomously
+    const cx = W*0.5, cy = H*0.5;
+    for(let i=0;i<4;i++) seed(cx + rnd(-100, 100), cy + rnd(-100, 100));
+    Autonomy.quietTime = 0;
+    Autonomy.schedule(performance.now()/1000);
+    setTimeout(()=>hint.classList.add('gone'),7000); setTimeout(()=>titleEl.classList.add('dim'),4000);
+}
+gate.addEventListener('pointerdown',e=>{e.preventDefault();begin();},{passive:false});
+
+let last=performance.now();
+function frame(now){
+  let dt=Math.min((now-last)/1000,0.05);last=now;
+  const t = now/1000;
+  
+  g.globalCompositeOperation='source-over';
+  g.fillStyle='rgba(2,3,4,0.4)'; g.fillRect(0,0,W,H);
+  
+  const vg=g.createRadialGradient(W*0.5,H*0.5,0,W*0.5,H*0.5,Math.max(W,H)*0.8);
+  vg.addColorStop(0,'rgba(10,12,15,0.05)'); vg.addColorStop(1,'rgba(0,0,0,0.4)');
+  g.fillStyle=vg; g.fillRect(0,0,W,H);
+
+  if(started){
+    Autonomy.step(dt, t);
+    for(const c of cells) c.step(dt, t);
+    collide(dt);
+    for(const c of cells) c.draw();
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+window.addEventListener('keydown', (e) => {
+  const k=e.key.toLowerCase();
+  if(k==='h') document.body.classList.toggle('hide-ui');
+  if(k==='n') Autonomy.enabled = !Autonomy.enabled;
+  if(k===' ' && started){ e.preventDefault(); Autonomy.trigger(0.6); }
+});
+</script>
+</body>
+</html>

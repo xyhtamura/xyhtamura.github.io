@@ -68,12 +68,8 @@
 <body>
 <canvas id="stage"></canvas>
 <div id="title">cytophone: xenolith</div>
-<nav id="coll">
-  <a href="cytophone-understory.html">understory</a><span class="sep">·</span>
-  <a href="cytophone-halocline.html">halocline</a><span class="sep">·</span>
-  <a href="cytophone-xenolith.html" class="on">xenolith</a>
-</nav>
-<div id="hint"><em>tap</em> to seed a body · <em>tap a body</em> to strike it · they ring each other</div>
+
+<div id="hint"><em>tap</em> to seed a body · <em>tap a body</em> to strike it · they ring each other · <em>right-click / double-tap</em> to erase</div>
 <div id="fx"><span class="lbl">dry</span><input id="wet" type="range" min="0" max="100" value="12"><span class="lbl">wet</span></div>
 
 <div id="gate">
@@ -342,11 +338,36 @@ function collide(dt){
 /* interaction: tap empty = seed; tap body = strike + nudge. small bodies still tappable. */
 let lastInteract=performance.now();
 function hit(x,y){for(let i=cells.length-1;i>=0;i--){const c=cells[i];if(Math.hypot(x-c.x,y-c.y)<Math.max(c.size,26)*1.1)return c;}return null;}
+function eraseCellAt(x,y){
+  const c=hit(x,y);
+  if(!c) return false;
+  const idx=cells.indexOf(c);
+  if(idx!==-1) cells.splice(idx,1);
+  return idx!==-1;
+}
+let lastTapTime=0;
 function pointer(x,y){lastInteract=performance.now();const c=hit(x,y);
   if(c){c.cool=0;c.strike(0.9,0.1);const ang=rnd(0,TAU);c.vx+=Math.cos(ang)*55;c.vy+=Math.sin(ang)*55;}
   else seed(x,y);
 }
-cv.addEventListener('pointerdown',e=>{e.preventDefault();pointer(e.clientX,e.clientY);},{passive:false});
+cv.addEventListener('pointerdown',e=>{
+  e.preventDefault();
+  const x=e.clientX, y=e.clientY;
+  const now=Date.now();
+  if(e.button===2||e.shiftKey){
+    eraseCellAt(x,y);
+    return;
+  }
+  if(now-lastTapTime<300){
+    if(eraseCellAt(x,y)){
+      lastTapTime=0;
+      return;
+    }
+  }
+  lastTapTime=now;
+  pointer(x,y);
+},{passive:false});
+cv.addEventListener('contextmenu',e=>e.preventDefault());
 
 const wetEl=document.getElementById('wet');
 wetEl.addEventListener('input',()=>Sound.setWet(wetEl.value/100));

@@ -103,12 +103,8 @@
 <body>
 <canvas id="stage"></canvas>
 <div id="title">cytophone: understory</div>
-<nav id="coll">
-  <a href="cytophone-understory.html" class="on">understory</a><span class="sep">·</span>
-  <a href="cytophone-halocline.html">halocline</a><span class="sep">·</span>
-  <a href="cytophone-xenolith.html">xenolith</a>
-</nav>
-<div id="hint"><em>tap</em> to seed a cell · <em>tap a cell</em> to wake it</div>
+
+<div id="hint"><em>tap</em> to seed a cell · <em>tap a cell</em> to wake it · <em>right-click / double-tap</em> to erase</div>
 <div id="fx"><span class="lbl">dry</span><input id="wet" type="range" min="0" max="100" value="35"><span class="lbl">wet</span></div>
 
 <div id="gate">
@@ -526,7 +522,15 @@ function hitTest(x,y){
   }
   return null;
 }
+function eraseCellAt(x,y){
+  const c=hitTest(x,y);
+  if(!c) return false;
+  const idx=cells.indexOf(c);
+  if(idx!==-1) cells.splice(idx,1);
+  return idx!==-1;
+}
 let lastInteract=performance.now();
+let lastTapTime=0;
 function pointer(x,y){
   lastInteract=performance.now();
   const c=hitTest(x,y);
@@ -540,8 +544,22 @@ function pointer(x,y){
 }
 cv.addEventListener('pointerdown', e=>{
   e.preventDefault();
-  pointer(e.clientX, e.clientY);
+  const x=e.clientX, y=e.clientY;
+  const now=Date.now();
+  if(e.button===2||e.shiftKey){
+    eraseCellAt(x,y);
+    return;
+  }
+  if(now-lastTapTime<300){
+    if(eraseCellAt(x,y)){
+      lastTapTime=0;
+      return;
+    }
+  }
+  lastTapTime=now;
+  pointer(x,y);
 }, {passive:false});
+cv.addEventListener('contextmenu', e=>e.preventDefault());
 
 /* ---------- gate / start ---------- */
 const gate=document.getElementById('gate');
