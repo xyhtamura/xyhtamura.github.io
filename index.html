@@ -59,7 +59,7 @@
   --category-music-color:#ff66d4;
   --category-score-color:#cee8f2;
   --category-writing-color:#f0dfa1;
-  --category-performance-color:#5fe25f;
+  --category-theater-color:#5fe25f;
   --category-tech-color:#0aaff0;
   --category-visual-color:#ab00ff;
   --category-participatory-color:#ffb400;
@@ -68,6 +68,7 @@
   --category-artistic-research-color:#1ad9c9;
   --category-fashion-color:#e6a3b1;
   --category-dot-color:#c3c6d6;
+  --category-games-color: #ff7f50;
 
   --btn-lavender:rgba(62,56,89,0.6);
   --btn-amber:rgba(46,43,40,0.6);
@@ -104,7 +105,7 @@
   --category-music-color:#1e7a4e;
   --category-score-color:#a64625;
   --category-writing-color:#2e57a1;
-  --category-performance-color:#731d73;
+  --category-theater-color:#731d73;
   --category-tech-color:#2e72b5;
   --category-visual-color:#8b3ebd;
   --category-participatory-color:#d49a00;
@@ -117,6 +118,7 @@
   --btn-amber:rgba(255,217,120,0.3);
   --btn-glass-shine:rgba(191,218,245,0.35);
   --btn-glass-shadow:rgba(6,4,36,0.4);
+  --category-games-color: #cc4714;
 }
 }
 
@@ -241,7 +243,7 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2rem,6vw,3rem
 .fbtn[data-cat="music"].on{background:var(--category-music-color);}
 .fbtn[data-cat="score"].on{background:var(--category-score-color);}
 .fbtn[data-cat="writing"].on{background:var(--category-writing-color);}
-.fbtn[data-cat="performance"].on{background:var(--category-performance-color);}
+.fbtn[data-cat="theater"].on{background:var(--category-theater-color);}
 .fbtn[data-cat="tech"].on{background:var(--category-tech-color);}
 .fbtn[data-cat="visuals"].on{background:var(--category-visual-color);color:#fff;}
 .fbtn[data-cat="participatory"].on{background:var(--category-participatory-color);}
@@ -249,6 +251,8 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2rem,6vw,3rem
 .fbtn[data-cat="sci-comm"].on{background:var(--category-sci-comm-color);}
 .fbtn[data-cat="artistic-research"].on{background:var(--category-artistic-research-color);}
 .fbtn[data-cat="fashion"].on{background:var(--category-fashion-color);}
+.fbtn[data-cat="games"].on{background:var(--category-games-color);}
+}
 
 /* ── INDEX ── */
 .index{list-style:none;margin:0;padding:0;}
@@ -277,7 +281,7 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2rem,6vw,3rem
 .chip.music{background:var(--category-music-color);}
 .chip.score{background:var(--category-score-color);}
 .chip.writing{background:var(--category-writing-color);}
-.chip.performance{background:var(--category-performance-color);}
+.chip.theater{background:var(--category-theater-color);}
 .chip.tech{background:var(--category-tech-color);}
 .chip.visuals{background:var(--category-visual-color);color:#fff;text-shadow:none;}
 .chip.participatory{background:var(--category-participatory-color);}
@@ -285,6 +289,11 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2rem,6vw,3rem
 .chip.sci-comm{background:var(--category-sci-comm-color);}
 .chip.artistic-research{background:var(--category-artistic-research-color);}
 .chip.fashion{background:var(--category-fashion-color);}
+.chip.games {
+  background: var(--category-games-color);
+  color: #15131f; 
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.2);
+}
 
 .chip{color:#f5f2ff;text-shadow:0 1px 2px rgba(0,0,0,.35);}
 .chip.score{color:#15131f;text-shadow:0 1px 1px rgba(255,255,255,.2);}
@@ -507,12 +516,13 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
 <button class="fbtn on" data-cat="all">all</button>
 <button class="fbtn" data-cat="intermedia" data-tooltip="works transcending disciplines and combining multiple media forms">intermedia</button>
 <button class="fbtn" data-cat="research" data-tooltip="academic and para-academic work">research</button>
-<button class="fbtn" data-cat="music" data-tooltip="works relating to being a recording artist">music</button>
+<button class="fbtn" data-cat="music" data-tooltip="works within music cultures">music</button>
 <button class="fbtn" data-cat="tech" data-tooltip="software & hardware">tech</button>
 <button class="fbtn" data-cat="score" data-tooltip="as a composer, scoring for video, film, & stage">score</button>
 <button class="fbtn" data-cat="artistic-research" data-tooltip="works hybridizing research and making">research-art</button>
 <button class="fbtn" data-cat="writing" data-tooltip="mostly pure text and literature">writing</button>
-<button class="fbtn" data-cat="performance" data-tooltip="acting, performance, and playwriting">performance</button>
+<button class="fbtn" data-cat="theater" data-tooltip="theater, acting, performance, playwriting, and dramaturgical work">theater</button>
+<button class="fbtn" data-cat="games" data-tooltip="games and ludic work">games</button>
 <button class="fbtn" data-cat="visuals" data-tooltip="pure visual and graphic work">visual</button>
 <button class="fbtn" data-cat="virtual" data-tooltip="virtual spaces and communities">virtual</button>
 <button class="fbtn" data-cat="fashion" data-tooltip="fashion & worn art, digital and physical">fashion</button>
@@ -524,11 +534,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
 <main class="index">
 
 
-<details class="entry" data-cats="intermedia tech music virtual" id="cornice">
+<details class="entry" data-cats="intermedia games" id="cornice">
   <summary>
     <span class="year">2026</span>
     <span class="title">Cornice</span>
-    <span class="chips"><span class="chip intermedia">intermedia</span><span class="chip tech">tech</span></span>
+    <span class="chips"><span class="chip intermedia">intermedia</span><span class="chip games">games</span></span>
   </summary>
   <div class="body">
     <p>A browser-based poetic art game and ASCII terrarium, modeling a nocturnal balcony at the edge of an impossible post-cyberpunk city. The work combines WASD traversal, click-to-inspect textual specimens, movable world elements, randomized distant vistas, changing weather states, and an interactive sound engine to create a compact, living ecology of terminal life.</p>
@@ -539,11 +549,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
 </details>
 
 
-<details class="entry" data-cats="performance writing" id="biopsy">
+<details class="entry" data-cats="theater writing" id="biopsy">
   <summary>
     <span class="year">2026</span>
     <span class="title">Biopsy</span>
-    <span class="chips"><span class="chip performance">performance</span><span class="chip writing">writing</span></span>
+    <span class="chips"><span class="chip theater">theater</span><span class="chip writing">writing</span></span>
   </summary>
   <div class="body">
     <p>An experimental play set in a pandemic-era hospital biopsy room, where three forgotten tumors (Glioblastoma, Meningioma, and Hematoma) become conscious and begin performing the roles of doctors, patients, administrators, and hospital staff. As their abandoned biomass grows into a living hospital of flesh, wires, mold, and paperwork, the play moves through medical realism, absurd bureaucracy, and body horror to explore how individuals become locked into social roles inside complex systems of care, debt, migration, and public health.</p>
@@ -551,11 +561,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
 </details>
 
 
-<details class="entry minor" data-cats="tech music" id="cytophone">
+<details class="entry" data-cats="tech music games intermedia" id="cytophone">
   <summary>
     <span class="year">2026</span>
     <span class="title">Cytophone</span>
-    <span class="chips"><span class="chip tech">tech</span><span class="chip music">music</span><span class="chip intermedia">intermedia</span></span>
+    <span class="chips"><span class="chip tech">tech</span><span class="chip music">music</span><span class="chip intermedia">intermedia</span><span class="chip games">games</span></span>
   </summary>
   <div class="body">
     <p>Seven browser-based generative sound environments where continuous 2D physics drive dynamic audio synthesis. The collection allows users to pluck, strike, and drag procedural cells, while autonomous behaviors like drifting, flocking, and fluid viscosity continuously modulate the resulting synthesis parameters.</p>
@@ -565,11 +575,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   </div>
 </details>
 
-<details class="entry minor" data-cats="tech intermedia writing" id="glossolalia">
+<details class="entry minor" data-cats="tech intermedia writing games" id="glossolalia">
   <summary>
     <span class="year">2026</span>
     <span class="title">Glossolalia</span>
-    <span class="chips"><span class="chip tech">tech</span><span class="chip intermedia">intermedia</span><span class="chip writing">writing</span></span>
+    <span class="chips"><span class="chip tech">tech</span><span class="chip intermedia">intermedia</span><span class="chip writing">writing</span><span class="chip games">games</span></span>
   </summary>
   <div class="body">
     <p>A browser-based formant-synthesis instrument in which drifting IPA glyphs act as sounding bodies, generating speech-like syllables from a vocal-tract model so that the output only ever seems to be language. The vowel space serves as the interface, sitting at the boundary of instrument, speaking toy, and writing machine.</p>
@@ -580,11 +590,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   </div>
 </details>
 
-<details class="entry minor" data-cats="tech visuals" id="framesmear">
+<details class="entry minor" data-cats="tech" id="framesmear">
   <summary>
     <span class="year">2026</span>
     <span class="title">FrameSmear</span>
-    <span class="chips"><span class="chip tech">tech</span><span class="chip visuals">visual</span></span>
+    <span class="chips"><span class="chip tech">tech</span></span>
   </summary>
   <div class="body">
     <p>A browser-based video feedback processor for creating frame-accumulation, motion-smear, and video-reverb effects from uploaded footage. It utilizes adjustable parameters for memory decay, frame opacity, drift, zoom, rotation, chromatic split, edge inscription, brightness persistence, and softening, with options to preview, snapshot, and export.</p>
@@ -594,11 +604,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   </div>
 </details>
 
-<details class="entry minor" data-cats="music tech" id="xyhnthesizer">
+<details class="entry minor" data-cats="tech" id="xyhnthesizer">
   <summary>
     <span class="year">2026</span>
     <span class="title">xyhnthesizer</span>
-    <span class="chips"><span class="chip music">music</span><span class="chip tech">tech</span></span>
+    <span class="chips"><span class="chip tech">tech</span></span>
   </summary>
   <div class="body">
     <p>A specialized Kontakt vocal-organ virtual instrument built entirely from custom, self-recorded vocal samples and custom script controls.</p>
@@ -608,11 +618,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   </div>
 </details>
 
-<details class="entry minor" data-cats="tech music intermedia" id="electropond">
+<details class="entry minor" data-cats="tech music intermedia games" id="electropond">
   <summary>
     <span class="year">2026</span>
     <span class="title">Electropond</span>
-    <span class="chips"><span class="chip tech">tech</span><span class="chip music">music</span><span class="chip intermedia">intermedia</span></span>
+    <span class="chips"><span class="chip tech">tech</span><span class="chip music">music</span><span class="chip intermedia">intermedia</span><span class="chip games">games</span></span>
   </summary>
   <div class="body">
     <p>A browser-based visual-physics instrument where FM-synthesis plankton generate complex sound layers through physical motion, color properties, collision dynamics, and rippling microtonal fields.</p>
@@ -622,11 +632,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   </div>
 </details>
 
-<details class="entry minor" data-cats="tech visuals" id="ganymede">
+<details class="entry minor" data-cats="tech" id="ganymede">
   <summary>
     <span class="year">2026</span>
     <span class="title">Ganymede</span>
-    <span class="chips"><span class="chip tech">tech</span><span class="chip visuals">visual</span></span>
+    <span class="chips"><span class="chip tech">tech</span></span>
   </summary>
   <div class="body">
     <p>A browser-based WebGL image-warping tool that subjects any uploaded photograph or graphic to a continuously animated noise field, featuring layered controls for lens distortion, chromatic aberration, seamless tiling, hue and saturation shifting, and real-time audio reactivity via live microphone input.</p>
@@ -1372,11 +1382,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   </div>
 </details>
 
-<details class="entry" data-cats="virtual performance visuals" id="dice-cult">
+<details class="entry" data-cats="virtual theater visuals games" id="dice-cult">
   <summary>
     <span class="year">2020→</span>
     <span class="title"><em>The Dice Cult</em></span>
-    <span class="chips"><span class="chip virtual">virtual</span><span class="chip performance">performance</span><span class="chip visuals">visual</span></span>
+    <span class="chips"><span class="chip virtual">virtual</span><span class="chip theater">theater</span><span class="chip visuals">visual</span><span class="chip games">games</span></span>
   </summary>
   <div class="body">
     <p class="ctx">streamer, video and audio editor, music composer, social media assets · actual play TTRPG group</p>
@@ -1727,11 +1737,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   </div>
 </details>
 
-<details class="entry" data-cats="performance music writing" id="magic-staff">
+<details class="entry" data-cats="theater music writing" id="magic-staff">
   <summary>
     <span class="year">1999</span>
     <span class="title">The Magic Staff <span class="artist-tag">as Cy Tamura</span></span>
-    <span class="chips"><span class="chip performance">performance</span><span class="chip music">music</span><span class="chip writing">writing</span></span>
+    <span class="chips"><span class="chip theater">theater</span><span class="chip music">music</span><span class="chip writing">writing</span></span>
   </summary>
   <div class="body">
     <p class="ctx">Meralco Theatre · librettist, songwriter, lead actor</p>
