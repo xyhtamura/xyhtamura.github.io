@@ -9,14 +9,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,300..500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ground-0:#17141d;
-    --ground-1:#1f2d27;
-    --ink:#dff2c6;
-    --faint:#7c857a;
-    --guard:#88c7b4;
-    --mucosa:#d590b7;
-    --spore:#d8ef73;
-    --bruise:#7261a6;
+    /* Light Mode Palette */
+    --ground-0:#f0f2eb;
+    --ground-1:#e2ebd8;
+    --ink:#202b23;
+    --faint:#6d8071;
+    --guard:#388c6e;
+    --mucosa:#b85882;
+    --spore:#8ba32e;
+    --bruise:#5a4882;
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{height:100%;overflow:hidden;background:var(--ground-0)}
@@ -31,10 +32,37 @@
 
   body.hide-ui #title,
   body.hide-ui #hint,
-  body.hide-ui #fx {
+  body.hide-ui #fx,
+  body.hide-ui #weather-ui {
     opacity: 0 !important;
     pointer-events: none !important;
   }
+  
+  /* weather ui — top-right container */
+  #weather-ui{
+    position:fixed;top:max(20px,env(safe-area-inset-top));right:22px;
+    display:flex;flex-direction:column;align-items:flex-end;gap:6px;
+    z-index:20;transition:opacity 0.5s ease;
+  }
+  
+  /* city input */
+  #city-input{
+    font-family:"DM Mono",monospace;font-size:10px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--ink);background:transparent;
+    border:1px solid rgba(109,128,113,0.3);border-radius:4px;padding:4px 8px;
+    outline:none;width:130px;text-align:right;opacity:0.5;
+    transition:all 0.3s ease;
+  }
+  #city-input:focus, #city-input:hover { opacity:1; border-color:var(--faint); }
+  #city-input::placeholder { color:var(--faint); }
+
+  #weather-tag{
+    font-family:"DM Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--faint);pointer-events:none;user-select:none;
+    opacity:0;transition:opacity 2.5s ease;
+    text-shadow:0 1px 8px rgba(240,242,235,.6);
+  }
+  #weather-tag.visible{opacity:.8}
 
   #title{
     position:fixed;top:max(20px,env(safe-area-inset-top));left:22px;
@@ -42,34 +70,34 @@
     font-size:17px;letter-spacing:.01em;color:var(--faint);
     pointer-events:none;user-select:none;transition:opacity 2s ease;
   }
-  #title.dim{opacity:.35}
+  #title.dim{opacity:.6}
 
   #hint{
     position:fixed;left:0;right:0;bottom:max(64px,calc(env(safe-area-inset-bottom) + 44px));
     text-align:center;pointer-events:none;
     font-size:13px;letter-spacing:.02em;color:var(--faint);
     transition:opacity 1.6s ease;opacity:1;
-    text-shadow:0 1px 14px rgba(14,12,18,.55);
+    text-shadow:0 1px 14px rgba(240,242,235,.8);
   }
   #hint em{font-family:"Fraunces",serif;font-style:italic;color:var(--ink);font-weight:400}
   #hint.gone{opacity:0}
 
   #fx{
     position:fixed;left:50%;bottom:max(22px,env(safe-area-inset-bottom));transform:translateX(-50%);
-    display:flex;align-items:center;gap:11px;opacity:.34;transition:opacity .5s ease;z-index:5;user-select:none;
+    display:flex;align-items:center;gap:11px;opacity:.6;transition:opacity .5s ease;z-index:5;user-select:none;
   }
-  #fx:hover{opacity:.95}
+  #fx:hover{opacity:1}
   #fx .lbl{font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
-  #wet{-webkit-appearance:none;appearance:none;width:168px;height:2px;background:#435450;border-radius:2px;outline:none;cursor:pointer}
-  #wet::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:#d8ef73;box-shadow:0 0 10px rgba(216,239,115,.45);cursor:pointer}
-  #wet::-moz-range-thumb{width:13px;height:13px;border:none;border-radius:50%;background:#d8ef73;box-shadow:0 0 10px rgba(216,239,115,.45);cursor:pointer}
+  #wet{-webkit-appearance:none;appearance:none;width:168px;height:2px;background:#b0c2b8;border-radius:2px;outline:none;cursor:pointer}
+  #wet::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:#8ba32e;box-shadow:0 0 10px rgba(139,163,46,.45);cursor:pointer}
+  #wet::-moz-range-thumb{width:13px;height:13px;border:none;border-radius:50%;background:#8ba32e;box-shadow:0 0 10px rgba(139,163,46,.45);cursor:pointer}
 
   #gate{
     position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
     background:
-      radial-gradient(85% 70% at 52% 44%, rgba(112,195,175,.12) 0%, transparent 52%),
-      radial-gradient(55% 40% at 50% 40%, rgba(215,144,183,.10) 0%, transparent 65%),
-      radial-gradient(120% 120% at 50% 40%, #2a3830 0%, #17141d 72%);
+      radial-gradient(85% 70% at 52% 44%, rgba(56,140,110,.12) 0%, transparent 52%),
+      radial-gradient(55% 40% at 50% 40%, rgba(184,88,130,.10) 0%, transparent 65%),
+      radial-gradient(120% 120% at 50% 40%, #e2ebd8 0%, #f0f2eb 72%);
     z-index:10;transition:opacity .9s ease;
   }
   #gate.gone{opacity:0;pointer-events:none}
@@ -79,11 +107,11 @@
   #gate .pulse{
     margin:30px auto 0;width:68px;height:68px;border-radius:44% 56% 48% 52% / 56% 43% 57% 44%;
     background:
-      radial-gradient(circle at 38% 34%, #eef8cf 0%, #85c7b3 32%, #cf86b2 60%, #705ea8 78%, #18201d 100%);
+      radial-gradient(circle at 38% 34%, #ffffff 0%, #7db8a4 32%, #cc81a6 60%, #8777b5 78%, #f0f2eb 100%);
     box-shadow:
-      0 0 34px rgba(130,200,180,.28),
-      0 0 72px rgba(207,134,178,.14),
-      inset 0 0 18px rgba(240,248,216,.14);
+      0 0 34px rgba(56,140,110,.28),
+      0 0 72px rgba(184,88,130,.14),
+      inset 0 0 18px rgba(255,255,255,.5);
     animation:breathe 3.6s ease-in-out infinite;
   }
   @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
@@ -93,13 +121,19 @@
 <body>
 <canvas id="stage"></canvas>
 <div id="title">cytophone: stomata</div>
+
+<div id="weather-ui">
+  <input type="text" id="city-input" placeholder="MANILA, PH" autocomplete="off" spellcheck="false" />
+  <div id="weather-tag"></div>
+</div>
+
 <div id="hint"><em>press</em> to build pressure · <em>drag</em> to open · <em>right-click / double-tap</em> to erase</div>
 <div id="fx"><span class="lbl">dry</span><input id="wet" type="range" min="0" max="100" value="36"><span class="lbl">wet</span></div>
 
 <div id="gate">
   <div class="g-inner">
     <h1>cytophone: stomata</h1>
-    <p>aerophonic puffs based on breath and pressure</p>
+    <p>aerophone puffs based on breath and pressure</p>
     <div class="pulse"></div>
     <p style="margin-top:24px;font-size:11px;letter-spacing:.06em;opacity:.7">TOUCH TO ENTER · SOUND ON</p>
   </div>
@@ -132,7 +166,18 @@ function rgba(hex,a){ const c=hexToRgb(hex); return `rgba(${c.r},${c.g},${c.b},$
 
 const Sound={
   ctx:null, master:null, dry:null, wet:null, wetAmt:0.36, noiseBuffer:null,
-  start(){
+  ambGain:null, ambFilter:null,
+  inFilter:null, fryFilter:null, fryOsc:null, inhaleGain:null,
+  _inhaleCenterFreq: 200, _fryBaseFreq: 41,
+
+  /* weather-driven parameters — defaults are neutral Manila baseline */
+  pitchMult:        1.0,   /* temperature → f0 scale for exhales          */
+  durMult:          1.0,   /* humidity    → duration scale for exhales     */
+  idleIntervalMult: 1.0,   /* wind speed  → idle breath frequency          */
+  condAmpMult:      1.0,   /* condition   → amplitude modifier             */
+  condDurMult:      1.0,   /* condition   → duration modifier              */
+
+start(){
     if(this.ctx) return;
     const AC=window.AudioContext||window.webkitAudioContext;
     const ctx=new AC(); this.ctx=ctx;
@@ -159,13 +204,78 @@ const Sound={
     const d=buf.getChannelData(0);
     for(let i=0;i<n;i++) d[i]=Math.random()*2-1;
     this.noiseBuffer=buf;
+
+    /* ambient presence — very quiet continuous breath, fills the silence */
+    const ambNoise=ctx.createBufferSource(); ambNoise.buffer=this.noiseBuffer; ambNoise.loop=true;
+    const ambFilter=ctx.createBiquadFilter(); ambFilter.type='bandpass'; ambFilter.frequency.value=260; ambFilter.Q.value=0.55;
+    const ambGain=ctx.createGain(); ambGain.gain.value=0.005;
+    ambNoise.connect(ambFilter).connect(ambGain).connect(this.master); ambNoise.start();
+    this.ambGain=ambGain; this.ambFilter=ambFilter;
+
+    /* inhale synth — continuous, gated by inhaleGain */
+    const inhaleGain=ctx.createGain(); inhaleGain.gain.value=0;
+
+    const inNoise=ctx.createBufferSource(); inNoise.buffer=this.noiseBuffer; inNoise.loop=true;
+    const inFilter=ctx.createBiquadFilter(); inFilter.type='bandpass'; inFilter.frequency.value=200; inFilter.Q.value=1.5;
+    inNoise.connect(inFilter).connect(inhaleGain); inNoise.start();
+
+    /* triangle is softer than sawtooth — less harsh on sustained hold */
+    const fryOsc=ctx.createOscillator(); fryOsc.type='triangle'; fryOsc.frequency.value=41.2;
+    const fryFilter=ctx.createBiquadFilter(); fryFilter.type='lowpass'; fryFilter.frequency.value=120;
+    fryOsc.connect(fryFilter).connect(inhaleGain); fryOsc.start();
+
+    inhaleGain.connect(this.master);
+    this.inFilter=inFilter; this.fryFilter=fryFilter; this.fryOsc=fryOsc; this.inhaleGain=inhaleGain;
   },
+
   setWet(w){
     this.wetAmt=w;
     if(!this.ctx) return;
     this.dry.gain.value=lerp(1.0,0.60,w);
     this.wet.gain.value=w*0.95;
   },
+
+  /* call at the start of each pointer-down — randomises this inhale's pitch/colour */
+  startInhale(){
+    if(!this.ctx) return;
+    const now=this.ctx.currentTime;
+    this._inhaleCenterFreq = rnd(140, 400);
+    this._fryBaseFreq = rnd(22, 74) * clamp(this.pitchMult, 0.6, 1.6);
+    if(this.fryOsc) this.fryOsc.frequency.setTargetAtTime(clamp(this._fryBaseFreq,16,110), now, 0.015);
+    if(this.inFilter) this.inFilter.Q.value = rnd(1.0, 2.6);
+  },
+
+  updateInhale(pressure, isDown){
+    if(!this.ctx || !this.inhaleGain) return;
+    const now=this.ctx.currentTime;
+    const cFreq = this._inhaleCenterFreq || 200;
+    const fBase = Math.min(this._fryBaseFreq || 41, 85);
+    if(isDown){
+      /* subtler ceiling — was 0.02+p*0.12, now 0.006+p*0.06 */
+      this.inhaleGain.gain.setTargetAtTime(0.006 + pressure*0.06, now, 0.05);
+      this.inFilter.frequency.setTargetAtTime(cFreq + pressure*1600, now, 0.1);
+      this.fryFilter.frequency.setTargetAtTime(fBase + pressure*260, now, 0.1);
+    }else{
+      this.inhaleGain.gain.setTargetAtTime(0, now, 0.18);
+    }
+  },
+
+  /* brief one-shot inhale event for idle triggers */
+  triggerIdleInhale(){
+    if(!this.ctx || !this.inhaleGain) return;
+    const now=this.ctx.currentTime;
+    const freq = clamp(rnd(22, 80) * this.pitchMult, 16, 110);
+    const noiseFq = rnd(110, 460);
+    const dur = rnd(0.22, 0.6) * clamp(this.durMult, 0.7, 1.8);
+    const amp = rnd(0.004, 0.013);
+    if(this.fryOsc) this.fryOsc.frequency.setValueAtTime(freq, now);
+    if(this.inFilter){ this.inFilter.frequency.setValueAtTime(noiseFq, now); this.inFilter.Q.value=rnd(1.2,2.8); }
+    this.inhaleGain.gain.cancelScheduledValues(now);
+    this.inhaleGain.gain.setValueAtTime(Math.max(this.inhaleGain.gain.value, 0.0001), now);
+    this.inhaleGain.gain.linearRampToValueAtTime(amp, now+0.05);
+    this.inhaleGain.gain.exponentialRampToValueAtTime(0.0001, now+dur);
+  },
+
   _plate(dur){
     const ctx=this.ctx, n=Math.floor(ctx.sampleRate*dur), b=ctx.createBuffer(2,n,ctx.sampleRate);
     for(let c=0;c<2;c++){
@@ -182,13 +292,14 @@ const Sound={
   exhale(pore, pressure=0.8){
     const ctx=this.ctx; if(!ctx || !this.noiseBuffer) return;
     const now=ctx.currentTime+0.003;
-    const f0=clamp(1200/pore.r, 120, 680);
-    const ap=clamp(pore.aperture,0,1);
-    
-    const amp=(0.08 + ap*0.14 + pressure*0.12) * (1.1 + pore.bias*0.5);
-    const dur=0.28 + ap*0.9 + pressure*0.55;
 
-    // Calculate dynamic noise amplitude based on mix balance
+    /* weather: temperature scales pitch register; conditions scale amp+dur */
+    const f0=clamp(1200/pore.r, 120, 680) * clamp(this.pitchMult, 0.6, 1.6);
+    const ap=clamp(pore.aperture,0,1);
+    const durCombined = clamp(this.durMult * this.condDurMult, 0.5, 2.2);
+    const amp=(0.08 + ap*0.14 + pressure*0.12) * (1.1 + pore.bias*0.5) * this.condAmpMult;
+    const dur=(0.28 + ap*0.9 + pressure*0.55) * durCombined;
+
     const noiseAmp = pore.isFlute ? amp * lerp(1.1, 0.15, pore.mixBalance) : amp;
 
     const src=ctx.createBufferSource();
@@ -226,10 +337,8 @@ const Sound={
 
     if(pore.isFlute){
       osc.type='square';
-      // Apply pitch multiplier
       const flutePitch = f0 * pore.flutePitchMult;
       osc.frequency.setValueAtTime(flutePitch,now);
-      // Slight pitch bend upwards based on pressure
       osc.frequency.linearRampToValueAtTime(flutePitch*(1+0.03*pressure),now+dur*0.5);
 
       const fluteLp=ctx.createBiquadFilter();
@@ -245,7 +354,6 @@ const Sound={
       lfo.connect(lfoGain).connect(osc.detune);
 
       const og=ctx.createGain();
-      // Flute amplitude also heavily scaled by mix balance
       const fluteAmp = amp * lerp(0.3, 1.2, pore.mixBalance);
       og.gain.setValueAtTime(0.0001,now);
       og.gain.linearRampToValueAtTime(fluteAmp,now+0.07);
@@ -274,10 +382,103 @@ const Sound={
     osc.start(now); osc.stop(now+dur+0.05);
     if(lfo){ lfo.start(now); lfo.stop(now+dur+0.05); }
     wob.start(now); wob.stop(now+dur+0.05);
-  }
+  },
+
+  applyWeatherProfile(p){
+    if(!this.ctx) return;
+
+    /* temperature → pitch register */
+    this.pitchMult = lerp(0.75, 1.35, p.tempNorm);
+
+    /* humidity → exhale duration + reverb wetness + ambient presence */
+    this.durMult = lerp(0.8, 1.5, p.humNorm);
+    const humWet = lerp(0.22, 0.52, p.humNorm);
+    this.setWet(humWet);
+    const wetEl = document.getElementById('wet');
+    if(wetEl) wetEl.value = humWet * 100;
+    if(this.ambGain){
+      this.ambGain.gain.setTargetAtTime(lerp(0.003, 0.011, p.humNorm), this.ctx.currentTime, 0.8);
+      this.ambFilter.frequency.setTargetAtTime(lerp(200, 380, p.humNorm), this.ctx.currentTime, 0.8);
+    }
+
+    /* wind speed → idle breath frequency (more wind = shorter intervals) */
+    this.idleIntervalMult = lerp(1.3, 0.45, p.windNorm);
+
+    /* condition → amplitude + duration character */
+    const condMap = {
+      'Clear':        { amp:1.0,  dur:0.85 },
+      'Clouds':       { amp:1.0,  dur:1.0  },
+      'Rain':         { amp:0.9,  dur:1.35 },
+      'Drizzle':      { amp:0.85, dur:1.2  },
+      'Thunderstorm': { amp:1.25, dur:0.65 },
+      'Mist':         { amp:0.7,  dur:1.65 },
+      'Fog':          { amp:0.65, dur:1.7  },
+      'Haze':         { amp:0.9,  dur:1.05 },
+      'Smoke':        { amp:0.85, dur:1.1  },
+    };
+    const cm = condMap[p.condition] || { amp:1.0, dur:1.0 };
+    this.condAmpMult = cm.amp;
+    this.condDurMult = cm.dur;
+  },
 };
 
-const cv=document.getElementById('stage');
+/* ─── WEATHER — fetched once on load, applied on enter ──────────────── */
+const Weather = {
+  apiKey : '577a29cc9a4c7e6bc3cb4675384e8d4e',
+  city   : 'Manila,PH',
+  data   : null,
+  profile : {
+    tempNorm  : 0.50,  /* ~30°C Manila baseline */
+    humNorm   : 0.75,  /* ~75% RH Manila baseline */
+    windNorm  : 0.20,
+    condition : 'Clear',
+    cloudNorm : 0.30,
+  },
+  async fetch(){
+    try {
+      const res = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(this.city)}&appid=${this.apiKey}&units=metric`
+      );
+      if(!res.ok) {
+        const tag = document.getElementById('weather-tag');
+        if(tag) tag.textContent = 'CITY NOT FOUND';
+        return;
+      }
+      const d = await res.json();
+      this.data = d;
+      const p = this.profile;
+      p.tempNorm  = clamp((d.main.temp - 20) / 20, 0, 1);
+      p.humNorm   = d.main.humidity / 100;
+      p.windNorm  = clamp((d.wind?.speed || 0) / 12, 0, 1);
+      p.condition = d.weather?.[0]?.main || 'Clear';
+      p.cloudNorm = (d.clouds?.all || 0) / 100;
+      const tag = document.getElementById('weather-tag');
+      if(tag){
+        tag.textContent = `${p.condition.toLowerCase()} · ${Math.round(d.main.temp)}° · ${d.main.humidity}%rh`;
+        tag.classList.add('visible');
+      }
+      /* if user already entered before fetch completed, apply now */
+      if(Sound.ctx) Sound.applyWeatherProfile(p);
+    } catch(e) { /* silent — profile stays at Manila defaults */ }
+  },
+};
+
+/* Event listener for city input */
+const cityInput = document.getElementById('city-input');
+if(cityInput) {
+  cityInput.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter' && cityInput.value.trim() !== '') {
+      Weather.city = cityInput.value.trim();
+      Weather.fetch();
+      cityInput.blur();
+    }
+  });
+}
+
+Weather.fetch(); /* one call only — no refresh */
+
+
+const cv = document.getElementById('stage');
 const g=cv.getContext('2d');
 let W=0,H=0,DPR=Math.max(1,Math.min(2,window.devicePixelRatio||1));
 
@@ -297,7 +498,11 @@ let pressure=0;
 let pressurePeak=0;
 let holdTime=0;
 let nextIdleBreath=1.4;
-let lastTapTime=0; 
+let lastTapTime=0;
+let microClock=0, nextMicroBreath=rnd(0.35,0.8);
+let inhaleClock=0, nextIdleInhale=rnd(3.0,7.0);
+
+
 
 function seedPore(x,y,r){
   const isFlute = Math.random() > 0.6;
@@ -425,10 +630,11 @@ function randomIdleBreath() {
 }
 
 function bgField(t){
+  // Switched the hardcoded gradient to match light mode base colors
   const grad=g.createLinearGradient(0,0,0,H);
-  grad.addColorStop(0,'#1b1a21');
-  grad.addColorStop(0.55,'#1f2d27');
-  grad.addColorStop(1,'#191820');
+  grad.addColorStop(0,'#f0f2eb');
+  grad.addColorStop(0.55,'#e2ebd8');
+  grad.addColorStop(1,'#e9ece3');
   g.fillStyle=grad;
   g.fillRect(0,0,W,H);
 
@@ -513,7 +719,7 @@ function drawPore(p,t){
 }
 
 function update(dt,t){
-  idleClock+=dt;
+  idleClock+=dt; microClock+=dt; inhaleClock+=dt;
   if(pointer.down){
     holdTime+=dt;
     pressure=clamp(pressure + dt*0.24, 0, 1.2);
@@ -523,22 +729,38 @@ function update(dt,t){
     pressure=clamp(pressure - dt*0.42, 0, 1.2);
   }
 
+  Sound.updateInhale(pressure, pointer.down);
+
   for(const p of pores){
     const auto=0.12 + 0.08*Math.sin(t*0.0005 + p.pulse) + 0.06*Math.sin(t*0.00018 + p.phase*2.1);
     if(!pointer.down && Math.random()<dt*0.3) p.target=clamp(auto + rnd(-0.1, 0.2), 0.02, 0.7);
-    
     p.aperture=lerp(p.aperture,p.target,dt*2.6);
     p.flash=Math.max(0,p.flash-dt*0.9);
     p.phase += dt*(0.15 + p.bias*0.22);
   }
 
+  /* main idle breath — interval shrinks with wind speed */
   if(!pointer.down && idleClock>nextIdleBreath){
     randomIdleBreath();
     idleClock=0;
-    nextIdleBreath=rnd(0.8, 3.8);
+    nextIdleBreath=rnd(0.6, 2.4)*Sound.idleIntervalMult;
+  }
+
+  /* micro-breath: frequent soft single-pore puffs that fill the silence */
+  if(!pointer.down && pores.length>0 && microClock>nextMicroBreath){
+    const p=pores[Math.floor(Math.random()*pores.length)];
+    if(p.aperture>0.04){ Sound.exhale(p,rnd(0.05,0.18)); p.flash=Math.max(p.flash,0.05); }
+    microClock=0;
+    nextMicroBreath=rnd(0.22,0.65)*Sound.idleIntervalMult;
+  }
+
+  /* idle inhale: brief inhale sounds when left alone */
+  if(!pointer.down && entered && inhaleClock>nextIdleInhale){
+    Sound.triggerIdleInhale();
+    inhaleClock=0;
+    nextIdleInhale=rnd(2.8,7.5);
   }
 }
-
 function draw(t){
   bgField(t);
 
@@ -569,6 +791,7 @@ function pt(e){
 
 function begin(x,y){
   pointer.down=true; pointer.x=pointer.lastX=x; pointer.y=pointer.lastY=y; pointer.moved=false; holdTime=0; pressurePeak=0; idleClock=0;
+  Sound.startInhale();
   const p=poreAt(x,y);
   if(!p){
     seedPore(x,y,rnd(18,40));
@@ -633,6 +856,12 @@ function enter(){
   entered=true;
   Sound.start();
   Sound.setWet(wet.value/100);
+  Sound.applyWeatherProfile(Weather.profile);
+  /* reset timers so nothing fires immediately on first frame */
+  idleClock=0; microClock=0; inhaleClock=0;
+  nextIdleBreath=rnd(1.0,2.2)*Sound.idleIntervalMult;
+  nextMicroBreath=rnd(0.5,1.2);
+  nextIdleInhale=rnd(4.0,9.0);
   gate.classList.add('gone');
   setTimeout(()=>hint.classList.add('gone'),3500); 
   setTimeout(()=>title.classList.add('dim'),2000);
@@ -641,6 +870,7 @@ gate.addEventListener('pointerdown', e=>{ e.preventDefault(); enter(); }, {passi
 window.addEventListener('keydown', e=>{ if(e.key===' '||e.key==='Enter') enter(); });
 
 window.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT') return;
   if (e.key.toLowerCase() === 'h') document.body.classList.toggle('hide-ui');
 });
 </script>

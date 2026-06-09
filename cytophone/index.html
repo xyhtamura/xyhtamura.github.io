@@ -3,34 +3,31 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>cytophone</title>
+<title>cytophone — a collection of seven</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..500;1,9..144,300..500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2032%2032%22%3E%3Crect%20width=%2232%22%20height=%2232%22%20rx=%227%22%20fill=%22%23070710%22/%3E%3Cpath%20d=%22M10%2017L16%209L23%2020%22%20fill=%22none%22%20stroke=%22%237a839c%22%20stroke-width=%222%22%20stroke-linecap=%22round%22/%3E%3Ccircle%20cx=%2210%22%20cy=%2217%22%20r=%224%22%20fill=%22%23d57732%22/%3E%3Ccircle%20cx=%2216%22%20cy=%229%22%20r=%224%22%20fill=%22%239fd9c8%22/%3E%3Ccircle%20cx=%2223%22%20cy=%2220%22%20r=%224%22%20fill=%22%23cfe3ec%22/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2032%2032%22%3E%3Crect%20width=%2232%22%20height=%2232%22%20rx=%227%22%20fill=%22%23070710%22/%3E%3Cg%20stroke=%22%237a839c%22%20stroke-width=%221.2%22%20stroke-linecap=%22round%22%20opacity=%22.65%22%3E%3Cpath%20d=%22M9%2016L14%209L20%2011L24%2018L17%2023L9%2016%22/%3E%3Cpath%20d=%22M14%209L17%2023M20%2011L9%2016%22/%3E%3C/g%3E%3Ccircle%20cx=%229%22%20cy=%2216%22%20r=%223.4%22%20fill=%22%23d57732%22/%3E%3Ccircle%20cx=%2214%22%20cy=%229%22%20r=%223.1%22%20fill=%22%239fd9c8%22/%3E%3Ccircle%20cx=%2220%22%20cy=%2211%22%20r=%222.8%22%20fill=%22%23cf9b68%22/%3E%3Ccircle%20cx=%2224%22%20cy=%2218%22%20r=%223.2%22%20fill=%22%23d8ef73%22/%3E%3Ccircle%20cx=%2217%22%20cy=%2223%22%20r=%223.5%22%20fill=%22%23cfe3ec%22/%3E%3C/svg%3E">
 
-
-<meta name="description" content="Seven irregular playable cell generators where physics-based interactions and mechanics drive dynamic audio synthesis.">
+<meta name="description" content="Seven irregular playable cell generators where physics-based interactions and live data drive audio synthesis.">
 <meta name="author" content="Xyh">
 <meta name="theme-color" content="#070710">
 <meta name="color-scheme" content="dark">
 
-<!-- Social embed / link preview tags. Replace relative image URLs with absolute URLs after deployment if your host or platform requires it. -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="cytophone">
 <meta property="og:title" content="cytophone — a collection of seven">
-<meta property="og:description" content="Seven irregular playable cell generators where physics-based interactions and mechanics drive dynamic audio synthesis.">
+<meta property="og:description" content="Seven irregular playable cell generators where physics-based interactions and live data drive audio synthesis.">
 <meta property="og:image" content="cytophone-embed.png">
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Seven irregular playable cell generators where physics-based interactions and mechanics drive dynamic audio synthesis.">
+<meta property="og:image:alt" content="Seven irregular playable cell generators where physics-based interactions and live data drive audio synthesis.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="cytophone — a collection of seven">
-<meta name="twitter:description" content="Seven irregular playable cell generators where physics-based interactions and mechanics drive dynamic audio synthesis.">
+<meta name="twitter:description" content="Seven irregular playable cell generators where physics-based interactions and live data drive audio synthesis.">
 <meta name="twitter:image" content="cytophone-embed.png">
-<meta name="twitter:image:alt" content="Seven irregular playable cell generators where physics-based interactions and mechanics drive dynamic audio synthesis.">
-
+<meta name="twitter:image:alt" content="Seven irregular playable cell generators where physics-based interactions and live data drive audio synthesis.">
 
 <style>
   :root{
@@ -95,18 +92,18 @@
   .tile .ds{font-size:12.5px;line-height:1.6;color:var(--faint);margin-top:11px;min-height:4.8em}
   .tile.understory:hover{box-shadow:0 18px 50px -28px rgba(213,119,50,.55)}
   .tile.halocline:hover{box-shadow:0 18px 50px -28px rgba(70,110,200,.6)}
-  .tile.xenolith:hover{box-shadow:0 18px 50px -28px rgba(110,200,180,.5)}
+  .tile.xenalloy:hover{box-shadow:0 18px 50px -28px rgba(110,200,180,.5)}
   .tile.cambium:hover{box-shadow:0 18px 50px -28px rgba(207,155,104,.58)}
-  .tile.ectoplasm:hover{box-shadow:0 18px 50px -28px rgba(220,230,235,.38)}
+  .tile.seismocyte:hover{box-shadow:0 18px 50px -28px rgba(180,150,110,.42)}
   .tile.murmuration:hover{box-shadow:0 18px 50px -28px rgba(252,253,253,.32)}
-  .tile.stomata:hover{box-shadow:0 18px 50px -28px rgba(216,239,115,.42)}
+  .tile.stomata:hover{box-shadow:0 18px 50px -28px rgba(139,163,46,.42)}
   .tile.understory .nm{color:#f0d79a}
   .tile.halocline .nm{color:#cfe3ec}
-  .tile.xenolith .nm{color:#b8cfc9}
+  .tile.xenalloy .nm{color:#b8cfc9}
   .tile.cambium .nm{color:#cf9b68}
-  .tile.ectoplasm .nm{color:#f2f5f6}
+  .tile.seismocyte .nm{color:#d8d1c8}
   .tile.murmuration .nm{color:#e7eef1}
-  .tile.stomata .nm{color:#dff2c6}
+  .tile.stomata .nm{color:#388c6e}
   .arrow{position:absolute;top:14px;right:16px;font-size:13px;color:var(--faint);opacity:0;transform:translateX(-4px);transition:.4s ease;z-index:2}
   .tile:hover .arrow{opacity:.9;transform:none}
 
@@ -124,17 +121,17 @@
 <div class="wrap">
   <header>
     <div class="word">cyto<b>phone</b></div>
-    <p class="sub">Seven irregular playable cell generators where physics-based interactions and mechanics drive dynamic audio synthesis. Users pluck, strike, and drag procedural bodies, while autonomous behaviors like drifting, flocking, and twitching continuously influence synthesis. Play alone or as an ensemble.</p>
+    <p class="sub">Seven browser instruments for small synthetic ecologies. Seed, strike, bow, pluck, drag, press, or wait: each cytophone maps body shape, motion, contact, live data, and wet/dry space into sound. Press 'h' to hide the HUD.</p>
   </header>
 
-  <div class="grid">
+<div class="grid">
     <a class="tile understory" href="cytophone-understory.html">
       <span class="arrow">↗</span>
       <canvas data-piece="understory"></canvas>
       <div class="meta">
         <div class="nm">understory</div>
-        <div class="rg">low · struck · 58–360 hz</div>
-        <div class="ds">Membrane-gongs using a drumhead spectrum. Bronze, inharmonic, long-decaying.</div>
+        <div class="rg">low · struck membrane · 58–360 hz</div>
+        <div class="ds">A percussion environment where visual cell bodies act as membrane resonators to produce gong-like strikes shaped by size, drift, and collision.</div>
       </div>
     </a>
 
@@ -143,18 +140,18 @@
       <canvas data-piece="halocline"></canvas>
       <div class="meta">
         <div class="nm">halocline</div>
-        <div class="rg">mid · bowed · 140–520 hz</div>
-        <div class="ds">Bowed timbres with an idiophone's envelope. Dampened or excited based on height.</div>
+        <div class="rg">mid · bowed boundary · 140–520 hz</div>
+        <div class="ds">A fluid acoustic environment where live marine data—such as wave height, period, and current velocity—directly dictates the harmonic detuning, spectral tilt, and resonant breathing of floating cellular bodies.</div>
       </div>
     </a>
 
-    <a class="tile xenolith" href="cytophone-xenolith.html">
+    <a class="tile xenalloy" href="cytophone-xenalloy.html">
       <span class="arrow">↗</span>
-      <canvas data-piece="xenolith"></canvas>
+      <canvas data-piece="xenalloy"></canvas>
       <div class="meta">
-        <div class="nm">xenolith</div>
-        <div class="rg">high · struck · 78–1020 hz</div>
-        <div class="ds">Modal synthesis, bell-glass clangor, and hybrid materials.</div>
+        <div class="nm">xenalloy</div>
+        <div class="rg">high · struck alloy · 78–1020 hz</div>
+        <div class="ds">A modal-synthesis instrument that generates glass-metal clusters by mapping acoustic traits to nonliteral visible properties like lightness, jaggedness, and hue.</div>
       </div>
     </a>
 
@@ -163,18 +160,18 @@
       <canvas data-piece="cambium"></canvas>
       <div class="meta">
         <div class="nm">cambium</div>
-        <div class="rg">fiber · plucked · friction/reed</div>
-        <div class="ds">Interconnected cells that can be plucked. Connected cells ring on their own.</div>
+        <div class="rg">fiber · pluck/scrape · 85–720 hz</div>
+        <div class="ds">A playable connective graph where drawing and plucking fibers translates structural tension, friction, and topological strain into string and reed-like sounds.</div>
       </div>
     </a>
 
-    <a class="tile ectoplasm" href="cytophone-ectoplasm.html">
+    <a class="tile seismocyte" href="cytophone-seismocyte.html">
       <span class="arrow">↗</span>
-      <canvas data-piece="ectoplasm"></canvas>
+      <canvas data-piece="seismocyte"></canvas>
       <div class="meta">
-        <div class="nm">ectoplasm</div>
-        <div class="rg">motor · scraped · nudge clock</div>
-        <div class="ds">Draggable ghost motors that twitch. Scrapes, subharmonic groans, and crackles.</div>
+        <div class="nm">seismocyte</div>
+        <div class="rg">seismic · scraped motor · live quake feed</div>
+        <div class="ds">A generative geological interface that translates real-time global tectonic data into bathyal sub-harmonics and physical collisions.</div>
       </div>
     </a>
 
@@ -183,8 +180,8 @@
       <canvas data-piece="murmuration"></canvas>
       <div class="meta">
         <div class="nm">murmuration</div>
-        <div class="rg">flock · chirp · scatter</div>
-        <div class="ds">A cloud of small chirpy percussives.</div>
+        <div class="rg">flock · chirp · collision pings</div>
+        <div class="ds">A flocking simulation that generates a shimmering network of oscillator pings through proximity and collisions, actively tuned by live atmospheric conditions.</div>
       </div>
     </a>
 
@@ -193,12 +190,11 @@
       <canvas data-piece="stomata"></canvas>
       <div class="meta">
         <div class="nm">stomata</div>
-        <div class="rg">pore · pressure · exhale aerophones</div>
-        <div class="ds">Organic breathing apertures. Press to build pressure, drag to open, and release a varied mix of breathy puffs and pitched aerophone tones.</div>
+        <div class="rg">pore · pressure · aerophone</div>
+        <div class="ds">A pressure-sensitive aerophone of pore-like entities that exhales autonomous, randomized breathing sounds governed directly by live weather data.</div>
       </div>
     </a>
   </div>
-
   <footer>
     <a class="ens" href="#" id="ensemble">open all seven →</a>
     <p class="note">Browsers may ask for permission to open multiple tabs. For deployment, keep this page beside the seven cytophone HTML files using the canonical filenames linked here.</p>
@@ -211,13 +207,13 @@ const TAU=Math.PI*2, rnd=(a,b)=>a+Math.random()*(b-a), clamp=(v,a,b)=>v<a?a:v>b?
 
 // per-piece signature: palette + gesture + miniature ecology
 const PIECES={
-  understory :{ground:'#0b0805',base:34, base2:44, rim:168,sat:60,gesture:'strike',rate:2.6,decay:3.4,mode:'cell'},
-  halocline  :{ground:'#070a16',base:226,base2:252,rim:192,sat:62,gesture:'hold',  rate:0,  decay:0,  mode:'cell'},
-  xenolith   :{ground:'#05100f',base:170,base2:150,rim:300,sat:48,gesture:'strike',rate:1.1,decay:6.0,mode:'cell'},
-  cambium    :{ground:'#7f878c',base:32, base2:110,rim:318,sat:34,gesture:'grow',  rate:1.7,decay:2.8,mode:'fiber'},
-  ectoplasm  :{ground:'#020304',base:196,base2:210,rim:0,  sat:10,gesture:'nudge', rate:1.0,decay:4.2,mode:'ghost'},
-  murmuration:{ground:'#fcfdfd',base:196,base2:205,rim:12, sat:18,gesture:'scatter',rate:2.2,decay:1.2,mode:'flock'},
-  stomata    :{ground:'#17141d',base:160,base2:323,rim:72, sat:48,gesture:'breath', rate:1.3,decay:2.1,mode:'pore'}
+  understory :{ground:'#0b0805',base:34,  base2:44,  rim:168,sat:60,gesture:'strike', rate:2.6,decay:3.4,mode:'cell'},
+  halocline  :{ground:'#070a16',base:226, base2:252, rim:192,sat:62,gesture:'hold',   rate:0,  decay:0,  mode:'cell'},
+  xenalloy   :{ground:'#05100f',base:170, base2:150, rim:300,sat:48,gesture:'strike', rate:1.1,decay:6.0,mode:'cell'},
+  cambium    :{ground:'#7f878c',base:32,  base2:110, rim:318,sat:34,gesture:'grow',   rate:1.7,decay:2.8,mode:'fiber'},
+  seismocyte :{ground:'#a4a19b',base:32,  base2:42,  rim:40, sat:18,gesture:'nudge',  rate:1.0,decay:4.2,mode:'seismic'},
+  murmuration:{ground:'#fcfdfd',base:196, base2:205, rim:12, sat:18,gesture:'scatter',rate:2.2,decay:1.2,mode:'flock'},
+  stomata    :{ground:'#f0f2eb',base:158, base2:334, rim:72, sat:48,gesture:'breath', rate:1.3,decay:2.1,mode:'pore'}
 };
 
 function portal(cv){
@@ -240,7 +236,7 @@ function portal(cv){
     g.globalCompositeOperation='source-over';
     g.fillStyle=p.ground;g.fillRect(0,0,W,H);
     const vg=g.createRadialGradient(W*0.5,H*0.45,8,W*0.5,H*0.5,Math.max(W,H)*0.72);
-    const light = p.mode==='flock';
+    const light = p.mode==='flock' || p.mode==='pore';
     vg.addColorStop(0,light?'rgba(0,0,0,0.015)':'rgba(255,255,255,0.035)');
     vg.addColorStop(1,light?'rgba(0,0,0,0.05)':'rgba(0,0,0,0.28)');
     g.fillStyle=vg;g.fillRect(0,0,W,H);
@@ -342,6 +338,127 @@ function portal(cv){
     g.restore();g.globalAlpha=1;
   }
 
+  function drawSeismic(t){
+    const cx=W/2, cy=H/2;
+    const bodies=[
+      {x:-0.24,y:-0.08,r:28,ph:0.1,sp:0.9},
+      {x: 0.02,y: 0.12,r:36,ph:1.7,sp:0.7},
+      {x: 0.26,y:-0.02,r:24,ph:2.8,sp:1.05},
+      {x:-0.08,y: 0.26,r:18,ph:3.9,sp:0.8}
+    ];
+
+    g.save();
+
+    /* subtle fault lines in the background */
+    g.globalAlpha = 0.22;
+    g.strokeStyle = 'rgba(43,41,39,0.22)';
+    g.lineWidth = 1;
+    for(let i=0;i<4;i++){
+      const yy = H*(0.22 + i*0.18);
+      g.beginPath();
+      g.moveTo(0, yy + Math.sin(t*0.9 + i)*6);
+      for(let x=0;x<=W;x+=28){
+        g.lineTo(x, yy + Math.sin(x*0.018 + t*0.8 + i*1.7)*7);
+      }
+      g.stroke();
+    }
+    g.globalAlpha = 1;
+
+    /* occasional "slip" pulse */
+    const slip = Math.max(0, Math.sin(t*1.2));
+    if(slip > 0.72){
+      g.globalAlpha = (slip-0.72)/0.28 * 0.22;
+      g.strokeStyle = 'rgba(245,232,205,0.55)';
+      g.lineWidth = 2;
+      g.beginPath();
+      g.moveTo(W*0.12, H*(0.52 + Math.sin(t*3)*0.02));
+      g.lineTo(W*0.88, H*(0.48 + Math.cos(t*2.4)*0.02));
+      g.stroke();
+      g.globalAlpha = 1;
+    }
+
+    for(const b of bodies){
+      const jig = 0.35 + ex*0.65;
+      const x = cx + b.x*W + Math.sin(t*b.sp + b.ph)*12*jig;
+      const y = cy + b.y*H + Math.cos(t*(b.sp*0.9) + b.ph)*8*jig;
+      const R = b.r*(1 + 0.05*Math.sin(t*1.3 + b.ph) + ex*0.06);
+
+      g.save();
+      g.translate(x,y);
+
+      const steps = 56;
+      const pts = [];
+      g.beginPath();
+      for(let i=0;i<=steps;i++){
+        const a = i/steps*TAU;
+        const rad =
+          R * (
+            1
+            + 0.10*Math.sin(3*a + b.ph)
+            + 0.06*Math.sin(5*a + b.ph*1.7)
+            + 0.04*Math.sin(2*a - t*0.8)
+          );
+        const px = Math.cos(a)*rad*(1+ex*0.06);
+        const py = Math.sin(a)*rad*(1+ex*0.03);
+        pts.push([px,py]);
+        i ? g.lineTo(px,py) : g.moveTo(px,py);
+      }
+      g.closePath();
+
+      g.save();
+      g.clip();
+
+      /* mineral fill */
+      const core = g.createRadialGradient(-R*0.22,-R*0.24,R*0.06,0,0,R*1.1);
+      core.addColorStop(0, 'hsla(38, 22%, 82%, 0.88)');
+      core.addColorStop(0.45, 'hsla(34, 14%, 66%, 0.62)');
+      core.addColorStop(1, 'hsla(30, 10%, 38%, 0.08)');
+      g.fillStyle = core;
+      g.fillRect(-R*2,-R*2,R*4,R*4);
+
+      /* topographic contour rings */
+      g.globalCompositeOperation = 'source-over';
+      g.strokeStyle = 'hsla(32, 18%, 22%, 0.34)';
+      g.lineWidth = 1;
+      for(let j=1;j<6;j++){
+        g.beginPath();
+        for(let i=0;i<=steps;i++){
+          const a=i/steps*TAU;
+          const rr = R*(0.16*j)*(1 + 0.08*Math.sin(4*a + j + b.ph));
+          const px=Math.cos(a)*rr;
+          const py=Math.sin(a)*rr;
+          i ? g.lineTo(px,py) : g.moveTo(px,py);
+        }
+        g.closePath();
+        g.stroke();
+      }
+
+      /* pressure / friction glow */
+      if(ex > 0.04){
+        g.globalCompositeOperation = 'lighter';
+        const pg = g.createRadialGradient(0,0,0,0,0,R);
+        pg.addColorStop(0, `hsla(22, 76%, 66%, ${0.18 + ex*0.22})`);
+        pg.addColorStop(1, 'hsla(22, 76%, 66%, 0)');
+        g.fillStyle = pg;
+        g.fillRect(-R,-R,R*2,R*2);
+      }
+
+      g.restore();
+
+      /* outer crust rim */
+      g.strokeStyle = 'hsla(28, 18%, 22%, 0.8)';
+      g.lineWidth = 1.6;
+      g.beginPath();
+      pts.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));
+      g.closePath();
+      g.stroke();
+
+      g.restore();
+    }
+
+    g.restore();
+  }
+
   function drawGhost(t){
     const light=220;
     g.save();g.globalCompositeOperation='lighter';
@@ -382,25 +499,25 @@ function portal(cv){
     const cx=W/2,cy=H/2,R=Math.min(W,H)*.32;
     const open=.18+.62*ex;
     g.save();g.translate(cx,cy);
-    g.globalCompositeOperation='lighter';
+    g.globalCompositeOperation='source-over';
     const gr=g.createRadialGradient(0,0,R*.1,0,0,R*1.25);
-    gr.addColorStop(0,hsl(p.rim,72,68,.22+.24*open));
-    gr.addColorStop(.48,hsl(p.base,42,48,.24));
+    gr.addColorStop(0,hsl(p.rim,72,45,.22+.24*open));
+    gr.addColorStop(.48,hsl(p.base,42,38,.24));
     gr.addColorStop(1,hsl(p.base2,46,38,0));
     g.fillStyle=gr;g.beginPath();g.ellipse(0,0,R*1.06,R*.68,Math.sin(t*.4)*.25,0,TAU);g.fill();
     ['left','right'].forEach((side,idx)=>{
       const s=idx?1:-1;
-      g.fillStyle=hsl(idx?p.base2:p.base,52,58,.55);
+      g.fillStyle=hsl(idx?p.base2:p.base,52,48,.55);
       g.beginPath();
       g.ellipse(s*R*.27*open,0,R*.22,R*.74,Math.sin(t*.7)*.18+s*.22,0,TAU);g.fill();
-      g.strokeStyle=hsl(p.rim,74,70,.45);g.lineWidth=1.2;g.stroke();
+      g.strokeStyle=hsl(p.rim,74,40,.45);g.lineWidth=1.2;g.stroke();
     });
-    g.globalAlpha=.26+.38*open;g.strokeStyle=hsl(p.rim,80,68,.7);
+    g.globalAlpha=.26+.38*open;g.strokeStyle=hsl(p.rim,80,38,.7);
     g.beginPath();g.ellipse(0,0,R*(.18+.32*open),R*(.11+.12*open),0,0,TAU);g.stroke();
     for(let i=0;i<12;i++){
       const a=i/12*TAU+t*.35, rr=R*(.2+open*.55+rnd(0,.02));
       const x=Math.cos(a)*rr, y=Math.sin(a)*rr*.75;
-      g.fillStyle=hsl(p.rim,80,70,.25+.35*open);g.beginPath();g.arc(x,y,1.1+open*1.6,0,TAU);g.fill();
+      g.fillStyle=hsl(p.rim,80,45,.4+.4*open);g.beginPath();g.arc(x,y,1.1+open*1.6,0,TAU);g.fill();
     }
     g.restore();g.globalAlpha=1;g.globalCompositeOperation='source-over';
   }
@@ -413,7 +530,7 @@ function portal(cv){
     hue=(p.base+(p.base2-p.base)*(0.5+0.5*Math.sin(t*0.25)))%360;
     background(t);
     if(p.mode==='fiber')drawFiber(t);
-    else if(p.mode==='ghost')drawGhost(t);
+     else if(p.mode==='seismic')drawSeismic(t);
     else if(p.mode==='flock')drawFlock(t,dt);
     else if(p.mode==='pore')drawPore(t);
     else drawCell(t);
@@ -428,9 +545,9 @@ document.getElementById('ensemble').addEventListener('click',e=>{
   [
     'cytophone-understory.html',
     'cytophone-halocline.html',
-    'cytophone-xenolith.html',
+    'cytophone-xenalloy.html',
     'cytophone-cambium.html',
-    'cytophone-ectoplasm.html',
+    'cytophone-seismocyte.html',
     'cytophone-murmuration.html',
     'cytophone-stomata.html'
   ].forEach((u,i)=>setTimeout(()=>window.open(u,'_blank'),i*120));
