@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,300..400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --ground:#05100f;       /* dark steel-teal, chromatic */
+:root{
+    --ground:#183b36;       /* brighter, saturated teal */
     --ink:#b8cfc9;
     --faint:#5f7a74;
   }
@@ -20,7 +20,6 @@
 
   #title{position:fixed;top:max(20px,env(safe-area-inset-top));left:22px;font-family:"Fraunces",serif;font-style:italic;font-weight:300;font-size:17px;letter-spacing:.01em;color:var(--faint);pointer-events:none;user-select:none;transition:opacity 2s ease}
   #title.dim{opacity:.35}
-
 
 /* UI Toggle Class */
   body.hide-ui #title,
@@ -53,16 +52,26 @@
   #wet::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:#9fd9c8;box-shadow:0 0 10px rgba(150,220,200,.5);cursor:pointer}
   #wet::-moz-range-thumb{width:13px;height:13px;border:none;border-radius:50%;background:#9fd9c8;box-shadow:0 0 10px rgba(150,220,200,.5);cursor:pointer}
 
-  #gate{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 120% at 50% 40%, #0c1c1a 0%, #05100f 70%);z-index:10;transition:opacity .9s ease}
+  #gate{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 120% at 50% 40%, #255952 0%, var(--ground) 70%);z-index:10;transition:opacity .9s ease}
   #gate.gone{opacity:0;pointer-events:none}
   #gate .gi{text-align:center;max-width:360px;padding:0 24px;animation:rise 1.4s cubic-bezier(.2,.8,.2,1) both}
   #gate h1{font-family:"Fraunces",serif;font-style:italic;font-weight:300;font-size:34px;color:var(--ink);margin-bottom:14px}
   #gate p{font-size:13px;line-height:1.7;color:var(--faint)}
+  
+  /* Bright, multi-color pulse that rotates hue */
   #gate .pulse{margin:30px auto 0;width:60px;height:60px;border-radius:50%;
-    background:radial-gradient(circle at 38% 34%, #d8e8c8 0%, #6fae9e 40%, #1b3a36 100%);
-    box-shadow:0 0 40px rgba(150,200,180,.3);animation:breathe 3.2s ease-in-out infinite}
+    /* vibrant multi-color base representing the generated cells */
+    background:radial-gradient(circle at 38% 34%, hsl(320, 70%, 80%) 0%, hsl(260, 60%, 65%) 40%, hsl(200, 80%, 45%) 100%);
+    box-shadow:0 0 40px rgba(200,200,255,.3);
+    animation:breathe 3.2s ease-in-out infinite, shift-hue 8s linear infinite;}
   @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
   @keyframes breathe{0%,100%{transform:scale(.92);opacity:.8}50%{transform:scale(1.08);opacity:1}}
+  @keyframes shift-hue{from{filter:hue-rotate(0deg)}to{filter:hue-rotate(360deg)}}
+  }
+  
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  @keyframes breathe{0%,100%{transform:scale(.92);opacity:.8}50%{transform:scale(1.08);opacity:1}}
+  @keyframes pulseHue {0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); }}
 </style>
 </head>
 <body>
@@ -386,9 +395,11 @@ let last=performance.now();
 function frame(now){
   let dt=Math.min((now-last)/1000,0.05);last=now;const t=now/1000;
   g.globalCompositeOperation='source-over';
-  g.fillStyle='rgba(5,16,15,0.30)'; g.fillRect(0,0,W,H);
+/* Matches the brighter #183b36 base */
+  g.fillStyle='rgba(24,59,54,0.30)'; g.fillRect(0,0,W,H);
   const vg=g.createRadialGradient(W*0.5,H*0.45,Math.min(W,H)*0.1,W*0.5,H*0.5,Math.max(W,H)*0.75);
-  vg.addColorStop(0,'rgba(16,40,36,0.05)'); vg.addColorStop(1,'rgba(2,8,7,0.12)');
+  vg.addColorStop(0,'rgba(110,25,85,0.18)'); 
+  vg.addColorStop(1,'rgba(18,45,41,0.15)');
   g.fillStyle=vg; g.fillRect(0,0,W,H);
   if(started){
     for(const c of cells)c.step(dt,t);

@@ -76,11 +76,11 @@
   #gate .gi{text-align:center;max-width:360px;padding:0 24px;animation:rise 1.4s cubic-bezier(.2,.8,.2,1) both}
   #gate h1{font-family:"Fraunces",serif;font-style:italic;font-weight:300;font-size:34px;color:var(--ink);margin-bottom:14px}
   #gate p{font-size:13px;line-height:1.7;color:var(--faint)}
-  
-  /* Pulse updated to look like a subtle compression wave in stone */
+
+  /* Pulse updated with the geological cell palette (sulfur, iron-oxide, oxidized-copper) */
   #gate .pulse{margin:30px auto 0;width:60px;height:60px;border-radius:50%;
-    background:radial-gradient(circle at 38% 34%, #ffffff 0%, #c5c2bc 40%, #8e8b85 100%);
-    box-shadow:0 0 30px rgba(43,41,39,.1);animation:breathe 4.2s ease-in-out infinite}
+    background:radial-gradient(circle at 38% 34%, hsl(48, 20%, 73%) 0%, hsl(20, 25%, 45%) 40%, hsl(170, 25%, 28%) 100%);
+    box-shadow:0 0 30px rgba(43,41,39,.15);animation:breathe 4.2s ease-in-out infinite}
     
   @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
   @keyframes breathe{0%,100%{transform:scale(.95);opacity:.6}50%{transform:scale(1.05);opacity:1}}

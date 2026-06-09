@@ -104,16 +104,18 @@
   #gate .g-inner{text-align:center;max-width:360px;padding:0 24px;animation:rise 1.4s cubic-bezier(.2,.8,.2,1) both}
   #gate h1{font-family:"Fraunces",serif;font-style:italic;font-weight:300;font-size:34px;color:var(--ink);margin-bottom:14px}
   #gate p{font-size:13px;line-height:1.7;color:var(--faint)}
-  #gate .pulse{
-    margin:30px auto 0;width:68px;height:68px;border-radius:44% 56% 48% 52% / 56% 43% 57% 44%;
-    background:
-      radial-gradient(circle at 38% 34%, #ffffff 0%, #7db8a4 32%, #cc81a6 60%, #8777b5 78%, #f0f2eb 100%);
-    box-shadow:
-      0 0 34px rgba(56,140,110,.28),
-      0 0 72px rgba(184,88,130,.14),
-      inset 0 0 18px rgba(255,255,255,.5);
-    animation:breathe 3.6s ease-in-out infinite;
-  }
+#gate .pulse {
+  margin: 30px auto 0;
+  width: 68px;
+  height: 68px;
+  border-radius: 44% 56% 48% 52% / 56% 43% 57% 44%;
+  background: radial-gradient(circle at 38% 34%, var(--ground-0) 0%, var(--spore) 18%, var(--guard) 45%, var(--mucosa) 72%, var(--bruise) 100%);
+  box-shadow:
+    0 0 34px rgba(56, 140, 110, 0.28),
+    0 0 72px rgba(184, 88, 130, 0.14),
+    inset 0 0 18px rgba(240, 242, 235, 0.5);
+  animation: breathe 3.6s ease-in-out infinite;
+}
   @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
   @keyframes breathe{0%,100%{transform:scale(.92) rotate(-2deg);opacity:.8}50%{transform:scale(1.08) rotate(3deg);opacity:1}}
 </style>
@@ -664,9 +666,12 @@ function drawPore(p,t){
   const guardH=lerp(p.r*0.55,p.r*0.95,ap);
   const glow=(0.07 + ap*0.08 + p.flash*0.14)*(0.9+p.wet*0.25);
 
+  /* Map the inner flesh color directly to the audio synthesis type */
+  const throatColor = p.isFlute ? COLORS.bruise : COLORS.mucosa;
+
   const aura=g.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*2.4);
   aura.addColorStop(0, rgba(COLORS.guard, glow));
-  aura.addColorStop(0.45, rgba(COLORS.mucosa, glow*0.7));
+  aura.addColorStop(0.45, rgba(throatColor, glow*0.7));
   aura.addColorStop(1, rgba(COLORS.bruise, 0));
   g.fillStyle=aura;
   g.beginPath(); g.arc(p.x,p.y,p.r*2.4,0,TAU); g.fill();
@@ -684,7 +689,8 @@ function drawPore(p,t){
   g.beginPath();
   g.ellipse(guardOffset,0,guardW,guardH,0,0,TAU); g.fill(); g.stroke();
 
-  g.fillStyle=rgba(COLORS.mucosa, 0.10 + ap*0.16);
+  /* Apply the sound-based variation to the mucosa layers */
+  g.fillStyle=rgba(throatColor, 0.10 + ap*0.16);
   g.beginPath(); g.ellipse(-guardOffset*0.8,0,guardW*0.72,guardH*0.74,0,0,TAU); g.fill();
   g.beginPath(); g.ellipse( guardOffset*0.8,0,guardW*0.72,guardH*0.74,0,0,TAU); g.fill();
 
