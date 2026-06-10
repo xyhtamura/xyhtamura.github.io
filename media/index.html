@@ -7,7 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500&family=Spline+Sans+Mono:wght@300..500&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500&family=Spline+Sans+Mono:wght@300..500&display=swap" rel="stylesheet">
 <style>
   :root{
     /* ============ PALETTE — from the photographed work ============
@@ -15,8 +14,8 @@
        every value carries hue — no zero-chroma colors */
     --ground:    #ece7d9;  /* warm ivory, the tabletop */
     --ground-2:  #e2dcc9;
-    --gel:       #e2daae;  /* champagne-chartreuse gelatin */
-    --gel-deep:  #cdc28a;
+    --gel:       #f4f1e1;  /* champagne-chartreuse gelatin */
+    --gel-deep:  #d1cebe;
     --plastic:   #f1f3ec;  /* container plastic, faint green-cool */
     --plastic-2: #d9ddd4;
     --ink:       #2e2820;  /* warm near-black, strip text */
@@ -185,22 +184,22 @@
     will-change: opacity, filter;
   }
 
-  .frag{
-    position: absolute;
-    height: 7%;
-    transform-origin: left bottom;
-  }
-  .frag img{
-    display: block;
-    height: 100%;
-    width: auto;
-    filter: drop-shadow(0 1px 2px rgba(95, 82, 44, 0.3));
-  }
+.frag{
+  position: absolute;
+  transform-origin: left bottom;
+  /* width is set per-fragment from the image's natural size */
+}
+.frag img{
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 1px 2px rgba(95, 82, 44, 0.3));
+}
   /* fallback strip when a png is missing — also useful while building */
   .frag .strip-text{
     display: inline-flex;
     align-items: center;
-    height: 100%;
+    padding: 0.3em 0.55em;
     padding: 0 0.55em;
     font-family: var(--mono);
     font-size: clamp(0.55rem, 1.9vw, 0.85rem);
@@ -363,6 +362,7 @@
 <body>
 <div class="page">
 
+
   <header>
     <p class="eyebrow">xyh tamura</p>
     <h1 id="title">Media</h1>
@@ -394,8 +394,10 @@
       <output class="depth-readout" id="readout" for="depth">cut depth z = 4.00</output>
     </div>
 
-    <div class="stage" id="stage" role="img"
-         aria-label="Text fragments suspended at four depths in virtual gelatin. Use the slider to cut through the layers."></div>
+    <div class="vitrine">
+      <div class="stage" id="stage" role="img"
+           aria-label="Text fragments suspended at four depths in virtual gelatin. Use the slider to cut through the layers."></div>
+    </div>
 
     <div class="slider-row">
       <span class="slider-label">surface</span>
@@ -407,7 +409,7 @@
   </section>
 
   <section class="gallery">
-    <h2>Process</h2>
+    <h2>Gallery</h2>
     <div class="gallery-grid" id="galleryGrid"></div>
   </section>
 
@@ -426,7 +428,12 @@
    POEM DATA — edit fragments here.
    --------------------------------------------------------------------
    origin: bottom-left.  higher z = closer to viewer (z 4 is the surface).
-   x and y are grid units; the stage maps them onto its width/height.
+   x and y are grid units mapped onto the stage:
+     a fragment at x sits at (x / gridX) of the way across,
+     a fragment at y sits at (y / gridY) of the way up.
+   So LOWER gridX/gridY values spread the fragments out to fill the
+   stage; HIGHER values compress them toward the bottom-left.
+   --------------------------------------------------------------------
    Each fragment's image is looked up at  text/<text minus punctuation>.png
    (spaces kept). To point a fragment at a different file, add:
        img: "text/whatever.png"
@@ -435,35 +442,35 @@
    ===================================================================== */
 
 const POEM = {
-  title: "Media",          // <- page title
-  gridX: 7.5,                                 // x units across the stage
-  gridY: 9.5,                                 // y units up the stage
+  title: "Media",
+  gridX: 7.5,
+  gridY: 9.5,
+  pxPerStage: undefined,
   fragments: [
-    { id: "A", text: "not able to clarify",          x: 0.5, y: 8, z: 4 },
-    { id: "Q", text: "narratives",                   x: 4.5, y: 8, z: 4 },
-    { id: "B", text: "both have a keen attention to",x: 1, y: 6, z: 4 },
-    { id: "C", text: "the value of failure",         x: 0, y: 4, z: 4 },
-    { id: "D", text: "cheap MyGel 0.7",              x: 0, y: 2, z: 4 },
+    { id: "A", text: "not able to clarify", x: 1.66, y: 6.88, z: 4 },
+    { id: "B", text: "both have a keen attention to", x: 1.81, y: 5.44, z: 4 },
+    { id: "C", text: "the value of failure", x: 2.65, y: 4.35, z: 4 },
+    { id: "D", text: "cheap MyGel 0.7", x: 2.32, y: 3.12, z: 4 },
+    { id: "Q", text: "narratives", x: 4.14, y: 6.81, z: 4 },
 
-    { id: "E", text: "resilient in their own",       x: 2, y: 9, z: 3 },
-    { id: "F", text: "questitions",                  x: 3, y: 5, z: 3 },
-    { id: "G", text: "takes time,",                  x: 1, y: 3, z: 3 },
-    { id: "H", text: "be visible",                   x: 1, y: 1, z: 3 },
+    { id: "E", text: "resilient in their own", x: 2.51, y: 7.69, z: 3 },
+    { id: "F", text: "questitions", x: 3, y: 5, z: 3 },
+    { id: "G", text: "takes time,", x: 3.24, y: 4.06, z: 3 },
+    { id: "H", text: "be visible", x: 4.02, y: 3.08, z: 3 },
 
-    { id: "I", text: "snapshot",                     x: 3, y: 6, z: 2 },
-    { id: "J", text: "acquires",                     x: 3, y: 5, z: 2 },
-    { id: "K", text: "sustain - 75% to 35%",         x: 0, y: 2, z: 2 },
+    { id: "I", text: "snapshot", x: 3.38, y: 7.25, z: 2 },
+    { id: "J", text: "acquires", x: 3, y: 5, z: 2 },
+    { id: "K", text: "sustain - 75% to 35%", x: 2.24, y: 3.77, z: 2 },
 
-    { id: "L", text: "how every",                    x: 0, y: 8, z: 1 },
-    { id: "M", text: "wreck",                        x: 0, y: 6, z: 1 },
-    { id: "N", text: "detail, necessary to save",    x: 0, y: 4, z: 1 },
-    { id: "O", text: "the shape",                    x: 0, y: 1, z: 1 },
-    { id: "P", text: "of loss",                      x: 0, y: 0, z: 1 },
+    { id: "L", text: "how every", x: 1.9, y: 7.65, z: 1 },
+    { id: "M", text: "wreck", x: 2.26, y: 7.21, z: 1 },
+    { id: "N", text: "detail, necessary to save", x: 2.53, y: 5.58, z: 1 },
+    { id: "O", text: "the shape", x: 2.49, y: 2.91, z: 1 },
+    { id: "P", text: "of loss", x: 3.31, y: 1.96, z: 1 },
   ],
 };
-
 /* Gallery: process images, same directory as this file */
-const GALLERY = ["m01.png","m02.png","m03.png","m04.png","m05.png","m06.png","m07.png"];
+const GALLERY = ["m01.png","m02.png","m03.png","m04.png","m05.png","m06.png","m07.png", "m08.png"];
 
 /* =====================================================================
    GEL PHYSICS — how layers respond to the cut depth
@@ -476,10 +483,10 @@ const GALLERY = ["m01.png","m02.png","m03.png","m04.png","m05.png","m06.png","m0
    ===================================================================== */
 const GEL = {
   FADE_OUT_SPAN: 0.4,
-  CLARIFY_RATE: 0.85,
-  FLOOR: 0.15,
-  BLUR_PER_UNIT: 0.5,    // px of blur per z-unit of gel above a fragment
-  SHRINK_PER_UNIT: 0.013 // subtle scale-down with depth
+  CLARIFY_RATE: 0.4,    // was 0.85 — slower attenuation with depth
+  FLOOR: 0.55,          // was 0.13 — deepest layer stays clearly readable
+  BLUR_PER_UNIT: 0.4,   // was 1.5 — much clearer gel
+  SHRINK_PER_UNIT: 0.013
 };
 
 /* ---------------------------------------------------------------- */
@@ -534,15 +541,15 @@ function styleLayer(el, z, cut){
     // above the cut: removed fast, dissolving as it goes
     const gone = Math.min(1, (z - cut) / GEL.FADE_OUT_SPAN);
     el.style.opacity = (1 - gone).toFixed(3);
-    el.style.filter = `blur(${(gone * 3).toFixed(2)}px)`;
-    el.style.transform = `scale(${(1 + gone * 0.015).toFixed(4)})`;
+    el.style.filter = "blur(" + (gone * 3).toFixed(2) + "px)";
+    el.style.transform = "scale(" + (1 + gone * 0.015).toFixed(4) + ")";
   } else {
     // at or below the cut: visible through d units of gel, clarifying slowly
     const d = cut - z;
     const o = GEL.FLOOR + (1 - GEL.FLOOR) * Math.exp(-d * GEL.CLARIFY_RATE);
     el.style.opacity = o.toFixed(3);
-    el.style.filter = `blur(${(d * GEL.BLUR_PER_UNIT).toFixed(2)}px)`;
-    el.style.transform = `scale(${(1 - d * GEL.SHRINK_PER_UNIT).toFixed(4)})`;
+    el.style.filter = "blur(" + (d * GEL.BLUR_PER_UNIT).toFixed(2) + "px)";
+    el.style.transform = "scale(" + (1 - d * GEL.SHRINK_PER_UNIT).toFixed(4) + ")";
   }
 }
 
