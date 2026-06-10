@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Untitled (Gelatin Poem) — virtual exhibit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500&family=Spline+Sans+Mono:wght@300..500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500&family=Spline+Sans+Mono:wght@300..500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* ============ PALETTE — from the photographed work ============
+       ivory ground / champagne gel / warm ink / periwinkle (plastic-shadow) UI
+       every value carries hue — no zero-chroma colors */
+    --ground:    #ece7d9;  /* warm ivory, the tabletop */
+    --ground-2:  #e2dcc9;
+    --gel:       #e2daae;  /* champagne-chartreuse gelatin */
+    --gel-deep:  #cdc28a;
+    --plastic:   #f1f3ec;  /* container plastic, faint green-cool */
+    --plastic-2: #d9ddd4;
+    --ink:       #2e2820;  /* warm near-black, strip text */
+    --ink-dim:   #837763;
+    --peri:      #6d77a4;  /* periwinkle, UI accents only */
+    --paper:     #fbf7ea;  /* strip paper */
+
+    /* ============ SIZE KNOB ============
+       width of the parse window — change this one number */
+    --stage-width: 440px;
+
+    --display: "Instrument Serif", serif;
+    --body: "Newsreader", serif;
+    --mono: "Spline Sans Mono", monospace;
+  }
+
+  *{ box-sizing: border-box; margin: 0; padding: 0; }
+
+  html{ background: var(--ground); }
+
+  body{
+    font-family: var(--body);
+    font-weight: 380;
+    color: var(--ink);
+    background:
+      radial-gradient(120% 90% at 50% -10%, #f3efe3 0%, var(--ground) 60%);
+    min-height: 100vh;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page{
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 4.5rem 1.25rem 6rem;
+  }
+
+  /* ---------- header ---------- */
+  .eyebrow{
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--peri);
+  }
+
+  h1{
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(2.4rem, 7vw, 3.6rem);
+    line-height: 1.05;
+    margin: 0.5rem 0 0.4rem;
+    letter-spacing: 0.005em;
+  }
+
+  .subtitle{
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--ink-dim);
+    letter-spacing: 0.04em;
+  }
+
+  /* ---------- main work image ---------- */
+  .media{ margin: 3rem 0 0; }
+  .media img{
+    display: block;
+    width: 100%;
+    border-radius: 6px;
+    background: var(--ground-2);
+    box-shadow: 0 14px 34px -20px rgba(62, 52, 34, 0.5);
+  }
+  .media figcaption{
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--ink-dim);
+    margin-top: 0.6rem;
+    letter-spacing: 0.05em;
+  }
+
+  /* ---------- about ---------- */
+  .about{
+    margin: 2.6rem 0 0;
+    font-size: 1.08rem;
+    max-width: 60ch;
+  }
+  .about p + p{ margin-top: 1em; }
+
+  /* ---------- parse section ---------- */
+  .parse{ margin: 3.6rem 0 0; }
+  .parse-head{
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+  }
+  .parse-head h2{
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.6rem;
+  }
+  .depth-readout{
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--peri);
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+
+  /* the plastic container */
+  .vitrine{
+    max-width: var(--stage-width);
+    margin: 0 auto;
+    padding: 4.5%;
+    border-radius: 20px;
+    background: linear-gradient(168deg, var(--plastic) 0%, #e8ebe3 55%, var(--plastic-2) 100%);
+    box-shadow:
+      inset 0 1px 2px rgba(255,255,255,0.9),
+      inset 0 -2px 6px rgba(96, 102, 90, 0.25),
+      0 16px 36px -18px rgba(70, 62, 44, 0.45);
+  }
+
+  /* the gel slab */
+  .stage{
+    position: relative;
+    aspect-ratio: 10 / 11;
+    border-radius: 26px;
+    overflow: hidden;
+    background:
+      radial-gradient(120% 95% at 32% 8%,
+        color-mix(in oklab, var(--gel) 55%, #f4efd8) 0%,
+        var(--gel) 52%,
+        var(--gel-deep) 100%);
+    box-shadow:
+      inset 0 2px 10px rgba(255, 252, 235, 0.8),
+      inset 0 -14px 26px -14px rgba(110, 96, 50, 0.5),
+      inset 0 0 0 1px rgba(150, 136, 80, 0.25);
+  }
+  /* diagonal sheen on the gel surface */
+  .stage::before{
+    content:"";
+    position: absolute; inset: 0;
+    pointer-events: none;
+    z-index: 10;
+    background: linear-gradient(118deg,
+      rgba(255,253,242,0.42) 0%,
+      rgba(255,253,242,0.0) 32%,
+      rgba(255,253,242,0.0) 78%,
+      rgba(255,253,242,0.22) 100%);
+  }
+  /* faint suspended-particle grain */
+  .stage::after{
+    content:"";
+    position: absolute; inset: 0;
+    pointer-events: none;
+    z-index: 11;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .layer{
+    position: absolute; inset: 0;
+    will-change: opacity, filter;
+  }
+
+  .frag{
+    position: absolute;
+    height: 7%;
+    transform-origin: left bottom;
+  }
+  .frag img{
+    display: block;
+    height: 100%;
+    width: auto;
+    filter: drop-shadow(0 1px 2px rgba(95, 82, 44, 0.3));
+  }
+  /* fallback strip when a png is missing — also useful while building */
+  .frag .strip-text{
+    display: inline-flex;
+    align-items: center;
+    height: 100%;
+    padding: 0 0.55em;
+    font-family: var(--mono);
+    font-size: clamp(0.55rem, 1.9vw, 0.85rem);
+    font-weight: 400;
+    white-space: nowrap;
+    color: var(--ink);
+    background: linear-gradient(175deg, var(--paper), #efe7d0);
+    box-shadow: 0 1px 3px rgba(95, 82, 44, 0.35);
+    border-radius: 1px;
+  }
+
+  /* slider */
+  .slider-row{
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 0.9rem;
+    margin-top: 1.4rem;
+    max-width: var(--stage-width);
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .slider-label{
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-dim);
+  }
+  input[type="range"]{
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 26px;
+    background: transparent;
+    cursor: ew-resize;
+  }
+  input[type="range"]:focus-visible{
+    outline: 2px solid var(--peri);
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+  input[type="range"]::-webkit-slider-runnable-track{
+    height: 3px;
+    background: linear-gradient(90deg, var(--gel-deep), var(--peri));
+    border-radius: 2px;
+  }
+  input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    width: 17px; height: 17px;
+    margin-top: -7px;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    box-shadow: 0 1px 4px rgba(70, 60, 36, 0.4);
+  }
+  input[type="range"]::-moz-range-track{
+    height: 3px;
+    background: linear-gradient(90deg, var(--gel-deep), var(--peri));
+    border-radius: 2px;
+  }
+  input[type="range"]::-moz-range-thumb{
+    width: 13px; height: 13px;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    box-shadow: 0 1px 4px rgba(70, 60, 36, 0.4);
+  }
+  .parse-hint{
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--ink-dim);
+    margin-top: 0.7rem;
+    letter-spacing: 0.03em;
+    text-align: center;
+  }
+
+  /* ---------- gallery ---------- */
+  .gallery{ margin: 4rem 0 0; }
+  .gallery h2{
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.6rem;
+    margin-bottom: 1.1rem;
+  }
+  .gallery-grid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.7rem;
+  }
+  @media (max-width: 540px){
+    .gallery-grid{ grid-template-columns: repeat(2, 1fr); }
+  }
+  .gallery-grid figure{ margin: 0; }
+  .gallery-grid button{
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: var(--ground-2);
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: zoom-in;
+    aspect-ratio: 1;
+    box-shadow: 0 8px 20px -14px rgba(70, 62, 44, 0.55);
+  }
+  .gallery-grid button:focus-visible{
+    outline: 2px solid var(--peri);
+    outline-offset: 3px;
+  }
+  .gallery-grid img{
+    display: block;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+  .gallery-grid button:hover img{ transform: scale(1.03); }
+  .gallery-grid figcaption{
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--ink-dim);
+    margin-top: 0.4rem;
+    letter-spacing: 0.08em;
+  }
+
+  /* lightbox */
+  dialog.lightbox{
+    border: 0;
+    padding: 0;
+    background: transparent;
+    max-width: min(92vw, 1000px);
+    max-height: 90vh;
+  }
+  dialog.lightbox::backdrop{
+    background: rgba(46, 40, 32, 0.78);
+    backdrop-filter: blur(2px);
+  }
+  dialog.lightbox img{
+    display: block;
+    max-width: 100%;
+    max-height: 88vh;
+    border-radius: 4px;
+    cursor: zoom-out;
+  }
+
+  footer{
+    margin-top: 5rem;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--ink-dim);
+    letter-spacing: 0.06em;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{ transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <p class="eyebrow">xyh tamura</p>
+    <h1 id="title">Media</h1>
+    <p class="subtitle" id="subtitle">cut documents, gelatin</p>
+  </header>
+
+  <figure class="media">
+    <img src="media.png" alt="The gelatin poem — full view of the work">
+    <figcaption>the work — full view</figcaption>
+  </figure>
+
+  <section class="about">
+    <!-- ============ EDIT YOUR ABOUT TEXT HERE ============ -->
+    <p>
+      A poem set in four strata of clear gelatin. The text is cut from
+      documents and suspended so that each layer stays partly transparent to the one
+      behind it. 
+    </p>
+    <p>
+      Below, you can parse the virtual block the way the physical one is
+      parsed. The layer above lifts away quickly;
+      what is underneath clarifies slowly, the way it does in the jelly.
+    </p>
+  </section>
+
+  <section class="parse" aria-label="Interactive layer parser">
+    <div class="parse-head">
+      <h2>Parse the block</h2>
+      <output class="depth-readout" id="readout" for="depth">cut depth z = 4.00</output>
+    </div>
+
+    <div class="stage" id="stage" role="img"
+         aria-label="Text fragments suspended at four depths in virtual gelatin. Use the slider to cut through the layers."></div>
+
+    <div class="slider-row">
+      <span class="slider-label">surface</span>
+      <input type="range" id="depth" min="0" max="3" step="0.005" value="0"
+             aria-label="Cut depth — drag right to remove layers and reveal deeper fragments">
+      <span class="slider-label">depth</span>
+    </div>
+    <p class="parse-hint">drag toward depth — the top layer lifts away almost whole; the layers beneath clear slowly</p>
+  </section>
+
+  <section class="gallery">
+    <h2>Process</h2>
+    <div class="gallery-grid" id="galleryGrid"></div>
+  </section>
+
+  <dialog class="lightbox" id="lightbox">
+    <img id="lightboxImg" src="" alt="">
+  </dialog>
+
+  <footer>
+    <p id="footerLine">gelatin poem · virtual exhibit</p>
+  </footer>
+
+</div>
+
+<script>
+/* =====================================================================
+   POEM DATA — edit fragments here.
+   --------------------------------------------------------------------
+   origin: bottom-left.  higher z = closer to viewer (z 4 is the surface).
+   x and y are grid units; the stage maps them onto its width/height.
+   Each fragment's image is looked up at  text/<text minus punctuation>.png
+   (spaces kept). To point a fragment at a different file, add:
+       img: "text/whatever.png"
+   If an image is missing, the fragment renders as a plain text strip
+   so you can still preview the layout.
+   ===================================================================== */
+
+const POEM = {
+  title: "Media",          // <- page title
+  gridX: 7.5,                                 // x units across the stage
+  gridY: 9.5,                                 // y units up the stage
+  fragments: [
+    { id: "A", text: "not able to clarify",          x: 0.5, y: 8, z: 4 },
+    { id: "Q", text: "narratives",                   x: 4.5, y: 8, z: 4 },
+    { id: "B", text: "both have a keen attention to",x: 1, y: 6, z: 4 },
+    { id: "C", text: "the value of failure",         x: 0, y: 4, z: 4 },
+    { id: "D", text: "cheap MyGel 0.7",              x: 0, y: 2, z: 4 },
+
+    { id: "E", text: "resilient in their own",       x: 2, y: 9, z: 3 },
+    { id: "F", text: "questitions",                  x: 3, y: 5, z: 3 },
+    { id: "G", text: "takes time,",                  x: 1, y: 3, z: 3 },
+    { id: "H", text: "be visible",                   x: 1, y: 1, z: 3 },
+
+    { id: "I", text: "snapshot",                     x: 3, y: 6, z: 2 },
+    { id: "J", text: "acquires",                     x: 3, y: 5, z: 2 },
+    { id: "K", text: "sustain - 75% to 35%",         x: 0, y: 2, z: 2 },
+
+    { id: "L", text: "how every",                    x: 0, y: 8, z: 1 },
+    { id: "M", text: "wreck",                        x: 0, y: 6, z: 1 },
+    { id: "N", text: "detail, necessary to save",    x: 0, y: 4, z: 1 },
+    { id: "O", text: "the shape",                    x: 0, y: 1, z: 1 },
+    { id: "P", text: "of loss",                      x: 0, y: 0, z: 1 },
+  ],
+};
+
+/* Gallery: process images, same directory as this file */
+const GALLERY = ["m01.png","m02.png","m03.png","m04.png","m05.png","m06.png","m07.png"];
+
+/* =====================================================================
+   GEL PHYSICS — how layers respond to the cut depth
+   --------------------------------------------------------------------
+   FADE_OUT_SPAN: z-units over which a layer above the cut dissolves
+                  (small = the top slab lifts away quickly, almost whole)
+   CLARIFY_RATE : exponential rate at which layers below the cut clarify
+                  (small = slow, murky reveal)
+   FLOOR        : minimum visibility of the deepest layer through the gel
+   ===================================================================== */
+const GEL = {
+  FADE_OUT_SPAN: 0.4,
+  CLARIFY_RATE: 0.85,
+  FLOOR: 0.15,
+  BLUR_PER_UNIT: 0.5,    // px of blur per z-unit of gel above a fragment
+  SHRINK_PER_UNIT: 0.013 // subtle scale-down with depth
+};
+
+/* ---------------------------------------------------------------- */
+
+function filenameFor(text){
+  // strip punctuation, keep letters/numbers/spaces/%/-
+  const clean = text.replace(/[,.;:!?'"\u2018\u2019\u201C\u201D()\[\]{}]/g, "");
+  return "text/" + clean + ".png";
+}
+
+const stage = document.getElementById("stage");
+const layers = {};   // z -> layer element
+
+// build layers deepest-first so nearer layers paint on top
+const zValues = [...new Set(POEM.fragments.map(f => f.z))].sort((a,b) => a - b);
+for (const z of zValues){
+  const el = document.createElement("div");
+  el.className = "layer";
+  el.dataset.z = z;
+  stage.appendChild(el);
+  layers[z] = el;
+}
+
+for (const f of POEM.fragments){
+  const frag = document.createElement("div");
+  frag.className = "frag";
+  frag.style.left   = (f.x / POEM.gridX * 100) + "%";
+  frag.style.bottom = (f.y / POEM.gridY * 100) + "%";
+
+  const img = document.createElement("img");
+  img.src = f.img || filenameFor(f.text);
+  img.alt = f.text;
+  img.loading = "lazy";
+  img.addEventListener("error", () => {
+    const strip = document.createElement("span");
+    strip.className = "strip-text";
+    strip.textContent = f.text;
+    img.replaceWith(strip);
+  });
+
+  frag.appendChild(img);
+  layers[f.z].appendChild(frag);
+}
+
+/* ---- the asymmetric fade ---- */
+const slider = document.getElementById("depth");
+const readout = document.getElementById("readout");
+const maxZ = Math.max(...zValues);
+
+function styleLayer(el, z, cut){
+  if (z > cut + 1e-4){
+    // above the cut: removed fast, dissolving as it goes
+    const gone = Math.min(1, (z - cut) / GEL.FADE_OUT_SPAN);
+    el.style.opacity = (1 - gone).toFixed(3);
+    el.style.filter = `blur(${(gone * 3).toFixed(2)}px)`;
+    el.style.transform = `scale(${(1 + gone * 0.015).toFixed(4)})`;
+  } else {
+    // at or below the cut: visible through d units of gel, clarifying slowly
+    const d = cut - z;
+    const o = GEL.FLOOR + (1 - GEL.FLOOR) * Math.exp(-d * GEL.CLARIFY_RATE);
+    el.style.opacity = o.toFixed(3);
+    el.style.filter = `blur(${(d * GEL.BLUR_PER_UNIT).toFixed(2)}px)`;
+    el.style.transform = `scale(${(1 - d * GEL.SHRINK_PER_UNIT).toFixed(4)})`;
+  }
+}
+
+function render(){
+  const cut = maxZ - parseFloat(slider.value);
+  for (const z of zValues) styleLayer(layers[z], z, cut);
+  readout.textContent = "cut depth z = " + cut.toFixed(2);
+}
+
+slider.addEventListener("input", render);
+render();
+
+/* ---- gallery + lightbox ---- */
+const grid = document.getElementById("galleryGrid");
+const lightbox = document.getElementById("lightbox");
+const lightboxImg = document.getElementById("lightboxImg");
+
+GALLERY.forEach((src, i) => {
+  const figure = document.createElement("figure");
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.setAttribute("aria-label", "View process image " + (i + 1) + " enlarged");
+  const img = document.createElement("img");
+  img.src = src;
+  img.alt = "Process image " + (i + 1);
+  img.loading = "lazy";
+  btn.appendChild(img);
+  btn.addEventListener("click", () => {
+    lightboxImg.src = src;
+    lightboxImg.alt = img.alt;
+    lightbox.showModal();
+  });
+  const cap = document.createElement("figcaption");
+  cap.textContent = src.replace(".png", "");
+  figure.appendChild(btn);
+  figure.appendChild(cap);
+  grid.appendChild(figure);
+});
+
+lightbox.addEventListener("click", () => lightbox.close());
+
+/* keep page title in sync with POEM.title */
+document.getElementById("title").textContent = POEM.title;
+document.title = POEM.title + " — virtual exhibit";
+</script>
+</body>
+</html>

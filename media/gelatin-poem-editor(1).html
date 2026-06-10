@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Media — fragment editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Spline+Sans+Mono:wght@300..500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ground:    #ece7d9;
+    --ground-2:  #e2dcc9;
+    --gel:       #e2daae;
+    --gel-deep:  #cdc28a;
+    --plastic:   #f1f3ec;
+    --plastic-2: #d9ddd4;
+    --ink:       #2e2820;
+    --ink-dim:   #837763;
+    --peri:      #6d77a4;
+    --paper:     #fbf7ea;
+
+    --stage-width: 480px;   /* editor stage size — change freely */
+
+    --display: "Instrument Serif", serif;
+    --mono: "Spline Sans Mono", monospace;
+  }
+
+  *{ box-sizing: border-box; margin: 0; padding: 0; }
+  html{ background: var(--ground); }
+  body{
+    font-family: var(--mono);
+    color: var(--ink);
+    background: radial-gradient(120% 90% at 50% -10%, #f3efe3 0%, var(--ground) 60%);
+    min-height: 100vh;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page{
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 2.5rem 1.25rem 5rem;
+  }
+  h1{
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 2rem;
+    margin-bottom: 0.2rem;
+  }
+  .lede{
+    font-size: 0.72rem;
+    color: var(--ink-dim);
+    letter-spacing: 0.04em;
+    margin-bottom: 1.6rem;
+    max-width: 56ch;
+  }
+
+  /* ---- layer tabs ---- */
+  .layer-tabs{
+    display: flex;
+    gap: 0.45rem;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+  .layer-tabs button{
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid var(--ink-dim);
+    background: transparent;
+    color: var(--ink-dim);
+    cursor: pointer;
+  }
+  .layer-tabs button[aria-pressed="true"]{
+    background: var(--peri);
+    border-color: var(--peri);
+    color: var(--paper);
+  }
+  .layer-tabs button:focus-visible{
+    outline: 2px solid var(--peri);
+    outline-offset: 2px;
+  }
+
+  /* ---- vitrine + stage (matches main site) ---- */
+  .vitrine{
+    max-width: var(--stage-width);
+    margin: 0 auto;
+    padding: 4.5%;
+    border-radius: 20px;
+    background: linear-gradient(168deg, var(--plastic) 0%, #e8ebe3 55%, var(--plastic-2) 100%);
+    box-shadow:
+      inset 0 1px 2px rgba(255,255,255,0.9),
+      inset 0 -2px 6px rgba(96, 102, 90, 0.25),
+      0 16px 36px -18px rgba(70, 62, 44, 0.45);
+  }
+  .stage{
+    position: relative;
+    aspect-ratio: 10 / 11;
+    border-radius: 26px;
+    overflow: hidden;
+    touch-action: none;
+    background:
+      radial-gradient(120% 95% at 32% 8%,
+        color-mix(in oklab, var(--gel) 55%, #f4efd8) 0%,
+        var(--gel) 52%,
+        var(--gel-deep) 100%);
+    box-shadow:
+      inset 0 2px 10px rgba(255, 252, 235, 0.8),
+      inset 0 -14px 26px -14px rgba(110, 96, 50, 0.5),
+      inset 0 0 0 1px rgba(150, 136, 80, 0.25);
+  }
+  .stage::before{
+    content:"";
+    position: absolute; inset: 0;
+    pointer-events: none;
+    z-index: 10;
+    background: linear-gradient(118deg,
+      rgba(255,253,242,0.42) 0%,
+      rgba(255,253,242,0.0) 32%,
+      rgba(255,253,242,0.0) 78%,
+      rgba(255,253,242,0.22) 100%);
+  }
+
+  .layer{ position: absolute; inset: 0; will-change: opacity, filter; pointer-events: none; }
+  .layer .frag{ pointer-events: none; }
+  .layer.active .frag{ pointer-events: auto; cursor: grab; }
+  .layer.active .frag.dragging{ cursor: grabbing; }
+
+  .frag{
+    position: absolute;
+    transform-origin: left bottom;
+  }
+  .frag img{
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 1px 2px rgba(95, 82, 44, 0.3));
+    -webkit-user-drag: none;
+    user-select: none;
+  }
+  .frag .strip-text{
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3em 0.55em;
+    font-family: var(--mono);
+    font-size: clamp(0.55rem, 1.9vw, 0.85rem);
+    white-space: nowrap;
+    color: var(--ink);
+    background: linear-gradient(175deg, var(--paper), #efe7d0);
+    box-shadow: 0 1px 3px rgba(95, 82, 44, 0.35);
+    border-radius: 1px;
+    user-select: none;
+  }
+  .frag.selected{
+    outline: 1.5px dashed var(--peri);
+    outline-offset: 3px;
+  }
+
+  /* ---- slider ---- */
+  .slider-row{
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 0.9rem;
+    margin: 1.2rem auto 0;
+    max-width: var(--stage-width);
+  }
+  .slider-label{
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-dim);
+  }
+  input[type="range"]{
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 26px;
+    background: transparent; cursor: ew-resize;
+  }
+  input[type="range"]:focus-visible{
+    outline: 2px solid var(--peri); outline-offset: 4px; border-radius: 4px;
+  }
+  input[type="range"]::-webkit-slider-runnable-track{
+    height: 3px;
+    background: linear-gradient(90deg, var(--gel-deep), var(--peri));
+    border-radius: 2px;
+  }
+  input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    width: 17px; height: 17px; margin-top: -7px;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    box-shadow: 0 1px 4px rgba(70, 60, 36, 0.4);
+  }
+  input[type="range"]::-moz-range-track{
+    height: 3px;
+    background: linear-gradient(90deg, var(--gel-deep), var(--peri));
+    border-radius: 2px;
+  }
+  input[type="range"]::-moz-range-thumb{
+    width: 13px; height: 13px; border-radius: 50%;
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    box-shadow: 0 1px 4px rgba(70, 60, 36, 0.4);
+  }
+
+  .status{
+    text-align: center;
+    font-size: 0.7rem;
+    color: var(--peri);
+    letter-spacing: 0.05em;
+    margin-top: 0.7rem;
+    min-height: 1.2em;
+  }
+  .hint{
+    text-align: center;
+    font-size: 0.66rem;
+    color: var(--ink-dim);
+    letter-spacing: 0.03em;
+    margin-top: 0.3rem;
+  }
+
+  /* ---- export ---- */
+  .export{ margin-top: 2.4rem; }
+  .export-head{
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 0.6rem;
+  }
+  .export-head h2{
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.3rem;
+  }
+  .export button{
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    padding: 0.45rem 1rem;
+    border-radius: 4px;
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+    cursor: pointer;
+  }
+  .export button:focus-visible{
+    outline: 2px solid var(--peri); outline-offset: 2px;
+  }
+  textarea{
+    width: 100%;
+    min-height: 320px;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+    line-height: 1.5;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--ground-2);
+    border-radius: 6px;
+    padding: 0.9rem;
+    resize: vertical;
+  }
+  textarea:focus-visible{
+    outline: 2px solid var(--peri); outline-offset: 2px;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <h1>Media — fragment editor</h1>
+  <p class="lede">
+    pick a layer, drag its strips into place. the selected layer renders
+    crisp while the others follow the gel. arrow keys nudge the selected
+    strip (shift = bigger steps). the POEM block below updates live —
+    copy it over the one in the main page.
+  </p>
+
+  <div class="layer-tabs" id="layerTabs" role="group" aria-label="Layer to edit"></div>
+
+  <div class="vitrine">
+    <div class="stage" id="stage"></div>
+  </div>
+
+  <div class="slider-row">
+    <span class="slider-label">surface</span>
+    <input type="range" id="depth" min="0" max="3" step="0.005" value="0"
+           aria-label="Cut depth preview">
+    <span class="slider-label">depth</span>
+  </div>
+  <p class="status" id="status">no strip selected</p>
+  <p class="hint">click a strip to select · drag to move · arrows to nudge</p>
+
+  <section class="export">
+    <div class="export-head">
+      <h2>POEM out</h2>
+      <button type="button" id="copyBtn">copy</button>
+    </div>
+    <textarea id="exportBox" spellcheck="false"
+              aria-label="Generated POEM constant — copy into the main page"></textarea>
+  </section>
+
+</div>
+
+<script>
+/* =====================================================================
+   Same data shape as the main page. Paste your current POEM over this
+   one to pick up where you left off; the exporter writes it back out
+   with the dragged coordinates.
+   ===================================================================== */
+
+const POEM = {
+  title: "Media",          // <- page title
+  gridX: 7.5,                                 // x units across the stage
+  gridY: 9.5,                                 // y units up the stage
+  fragments: [
+    { id: "A", text: "not able to clarify",          x: 0.5, y: 8, z: 4 },
+    { id: "Q", text: "narratives",                   x: 4.5, y: 8, z: 4 },
+    { id: "B", text: "both have a keen attention to",x: 1, y: 6, z: 4 },
+    { id: "C", text: "the value of failure",         x: 1.2, y: 4, z: 4 },
+    { id: "D", text: "cheap MyGel 0.7",              x: 1, y: 2, z: 4 },
+
+    { id: "E", text: "resilient in their own",       x: 2, y: 9, z: 3 },
+    { id: "F", text: "questitions",                  x: 3, y: 5, z: 3 },
+    { id: "G", text: "takes time,",                  x: 1, y: 3, z: 3 },
+    { id: "H", text: "be visible",                   x: 1, y: 1, z: 3 },
+
+    { id: "I", text: "snapshot",                     x: 3, y: 6, z: 2 },
+    { id: "J", text: "acquires",                     x: 3, y: 5, z: 2 },
+    { id: "K", text: "sustain - 75% to 35%",         x: 0, y: 2, z: 2 },
+
+    { id: "L", text: "how every",                    x: 0, y: 8, z: 1 },
+    { id: "M", text: "wreck",                        x: 0, y: 6, z: 1 },
+    { id: "N", text: "detail, necessary to save",    x: 0, y: 4, z: 1 },
+    { id: "O", text: "the shape",                    x: 0, y: 1, z: 1 },
+    { id: "P", text: "of loss",                      x: 0, y: 0, z: 1 },
+  ],
+};
+
+/* clear-gel physics — matches the override for the main page */
+const GEL = {
+  FADE_OUT_SPAN: 0.4,
+  CLARIFY_RATE: 0.4,
+  FLOOR: 0.55,
+  BLUR_PER_UNIT: 0.4,
+  SHRINK_PER_UNIT: 0.013
+};
+
+const NUDGE = 0.05;        // arrow-key step, grid units
+const NUDGE_BIG = 0.25;    // with shift held
+
+/* ---------------------------------------------------------------- */
+
+function filenameFor(text){
+  const clean = text.replace(/[,.;:!?'"\u2018\u2019\u201C\u201D()\[\]{}]/g, "");
+  return "text/" + clean + ".png";
+}
+function fmt(n){
+  const r = Math.round(n * 100) / 100;
+  return Object.is(r, -0) ? 0 : r;
+}
+
+/* --- DOM references (must all be up here, before any init code calls
+       functions that use them — const TDZ would otherwise crash the script) --- */
+const stage     = document.getElementById("stage");
+const tabs      = document.getElementById("layerTabs");
+const status    = document.getElementById("status");
+const slider    = document.getElementById("depth");
+const exportBox = document.getElementById("exportBox");
+
+const layers = {};
+const fragEls = {};   // id -> element
+let activeZ = null;
+let selectedId = null;
+
+const zValues = [...new Set(POEM.fragments.map(f => f.z))].sort((a,b) => a - b);
+const maxZ = Math.max(...zValues);
+
+for (const z of zValues){
+  const el = document.createElement("div");
+  el.className = "layer";
+  el.dataset.z = z;
+  stage.appendChild(el);
+  layers[z] = el;
+}
+
+for (const f of POEM.fragments){
+  const frag = document.createElement("div");
+  frag.className = "frag";
+  frag.dataset.id = f.id;
+  positionFrag(frag, f);
+
+  const img = document.createElement("img");
+  img.src = f.img || filenameFor(f.text);
+  img.alt = f.text;
+  img.draggable = false;
+  img.addEventListener("load", () => {
+    const scale = f.scale || 1;
+    frag.style.width = (img.naturalWidth / POEM.pxPerStage * 100 * scale) + "%";
+  });
+  img.addEventListener("error", () => {
+    const strip = document.createElement("span");
+    strip.className = "strip-text";
+    strip.textContent = f.text;
+    img.replaceWith(strip);
+  });
+
+  frag.appendChild(img);
+  layers[f.z].appendChild(frag);
+  fragEls[f.id] = frag;
+}
+
+function positionFrag(el, f){
+  el.style.left   = (f.x / POEM.gridX * 100) + "%";
+  el.style.bottom = (f.y / POEM.gridY * 100) + "%";
+}
+
+/* ---- layer tabs ---- */
+for (const z of [...zValues].reverse()){
+  const b = document.createElement("button");
+  b.type = "button";
+  b.textContent = "z = " + z + (z === maxZ ? " (surface)" : z === zValues[0] ? " (deepest)" : "");
+  b.addEventListener("click", () => setActiveLayer(z, b));
+  tabs.appendChild(b);
+  if (z === maxZ) setActiveLayer(z, b);
+}
+
+function setActiveLayer(z, btn){
+  activeZ = z;
+  for (const child of tabs.children) child.setAttribute("aria-pressed", child === btn);
+  for (const zz of zValues) layers[zz].classList.toggle("active", zz === z);
+  selectFrag(null);
+  render();
+}
+
+/* ---- selection + status ---- */
+function selectFrag(id){
+  if (selectedId && fragEls[selectedId]) fragEls[selectedId].classList.remove("selected");
+  selectedId = id;
+  if (id){
+    fragEls[id].classList.add("selected");
+    updateStatus();
+  } else {
+    status.textContent = "no strip selected";
+  }
+}
+function updateStatus(){
+  const f = POEM.fragments.find(f => f.id === selectedId);
+  if (f) status.textContent =
+    f.id + " \u201C" + f.text + "\u201D \u00B7 x " + fmt(f.x) + " \u00B7 y " + fmt(f.y) + " \u00B7 z " + f.z;
+}
+
+/* ---- dragging ---- */
+let drag = null;
+
+stage.addEventListener("pointerdown", (e) => {
+  const fragEl = e.target.closest(".frag");
+  if (!fragEl || !fragEl.parentElement.classList.contains("active")) return;
+  const id = fragEl.dataset.id;
+  const f = POEM.fragments.find(f => f.id === id);
+  selectFrag(id);
+  const rect = stage.getBoundingClientRect();
+  drag = {
+    f, fragEl, rect,
+    startPX: e.clientX, startPY: e.clientY,
+    startX: f.x, startY: f.y
+  };
+  fragEl.classList.add("dragging");
+  fragEl.setPointerCapture(e.pointerId);
+  e.preventDefault();
+});
+
+stage.addEventListener("pointermove", (e) => {
+  if (!drag) return;
+  const dxUnits = (e.clientX - drag.startPX) / drag.rect.width  * POEM.gridX;
+  const dyUnits = (e.clientY - drag.startPY) / drag.rect.height * POEM.gridY;
+  drag.f.x = drag.startX + dxUnits;
+  drag.f.y = drag.startY - dyUnits;   // screen y is inverted vs origin bottom-left
+  positionFrag(drag.fragEl, drag.f);
+  updateStatus();
+});
+
+function endDrag(){
+  if (!drag) return;
+  drag.fragEl.classList.remove("dragging");
+  drag = null;
+  regenerate();
+}
+stage.addEventListener("pointerup", endDrag);
+stage.addEventListener("pointercancel", endDrag);
+
+/* ---- arrow-key nudging ---- */
+document.addEventListener("keydown", (e) => {
+  if (!selectedId) return;
+  if (document.activeElement && /TEXTAREA|INPUT/.test(document.activeElement.tagName)) return;
+  const f = POEM.fragments.find(f => f.id === selectedId);
+  const step = e.shiftKey ? NUDGE_BIG : NUDGE;
+  let moved = true;
+  switch (e.key){
+    case "ArrowLeft":  f.x -= step; break;
+    case "ArrowRight": f.x += step; break;
+    case "ArrowUp":    f.y += step; break;
+    case "ArrowDown":  f.y -= step; break;
+    default: moved = false;
+  }
+  if (moved){
+    e.preventDefault();
+    positionFrag(fragEls[f.id], f);
+    updateStatus();
+    regenerate();
+  }
+});
+
+/* ---- gel preview (active layer stays crisp) ---- */
+
+function styleLayer(el, z, cut){
+  if (z === activeZ){
+    el.style.opacity = 1;
+    el.style.filter = "none";
+    el.style.transform = "none";
+    return;
+  }
+  if (z > cut + 1e-4){
+    const gone = Math.min(1, (z - cut) / GEL.FADE_OUT_SPAN);
+    el.style.opacity = (1 - gone).toFixed(3);
+    el.style.filter = "blur(" + (gone * 3).toFixed(2) + "px)";
+    el.style.transform = "scale(" + (1 + gone * 0.015).toFixed(4) + ")";
+  } else {
+    const d = cut - z;
+    const o = GEL.FLOOR + (1 - GEL.FLOOR) * Math.exp(-d * GEL.CLARIFY_RATE);
+    el.style.opacity = o.toFixed(3);
+    el.style.filter = "blur(" + (d * GEL.BLUR_PER_UNIT).toFixed(2) + "px)";
+    el.style.transform = "scale(" + (1 - d * GEL.SHRINK_PER_UNIT).toFixed(4) + ")";
+  }
+}
+
+function render(){
+  const cut = maxZ - parseFloat(slider.value);
+  for (const z of zValues) styleLayer(layers[z], z, cut);
+}
+slider.addEventListener("input", render);
+
+/* ---- export ---- */
+
+function fragLine(f){
+  let s = '    { id: "' + f.id + '", text: "' + f.text.replace(/"/g, '\\"') + '"' +
+          ", x: " + fmt(f.x) + ", y: " + fmt(f.y) + ", z: " + f.z;
+  if (f.img)   s += ', img: "' + f.img + '"';
+  if (f.scale) s += ", scale: " + f.scale;
+  return s + " },";
+}
+
+function regenerate(){
+  const byZ = [...POEM.fragments].sort((a, b) => b.z - a.z || a.id.localeCompare(b.id));
+  let out = "const POEM = {\n";
+  out += '  title: "' + POEM.title + '",\n';
+  out += "  gridX: " + POEM.gridX + ",\n";
+  out += "  gridY: " + POEM.gridY + ",\n";
+  out += "  pxPerStage: " + POEM.pxPerStage + ",\n";
+  out += "  fragments: [\n";
+  let lastZ = null;
+  for (const f of byZ){
+    if (lastZ !== null && f.z !== lastZ) out += "\n";
+    out += fragLine(f) + "\n";
+    lastZ = f.z;
+  }
+  out += "  ],\n};";
+  exportBox.value = out;
+}
+
+document.getElementById("copyBtn").addEventListener("click", async () => {
+  try{
+    await navigator.clipboard.writeText(exportBox.value);
+    status.textContent = "copied to clipboard";
+  } catch {
+    exportBox.select();
+    document.execCommand("copy");
+    status.textContent = "copied (fallback)";
+  }
+});
+
+render();
+regenerate();
+</script>
+</body>
+</html>
