@@ -492,8 +492,8 @@ const GEL = {
 /* ---------------------------------------------------------------- */
 
 function filenameFor(text){
-  // strip punctuation, keep letters/numbers/spaces/%/-
-  const clean = text.replace(/[,.;:!?'"\u2018\u2019\u201C\u201D()\[\]{}]/g, "");
+  const clean = text
+    .replace(/[,.;:!?'"\u2018\u2019\u201C\u201D()\[\]{}%]/g, "")
   return "text/" + clean + ".png";
 }
 
