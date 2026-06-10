@@ -164,7 +164,7 @@ const slides = [
       media: [
         { type: "image", src: "../card/media.png", label: "gelatin poem — virtual exhibit" }
       ],
-      blurb: "Media exists in two simultaneous forms: a physical sculpture and an interactive virtual artifact. Physically, it is a poem set in four strata of clear gelatin, where text cut from documents is suspended so each layer remains partly transparent to the one behind it. The virtual exhibit is a digital extension of the piece that allows readers to dynamically parse the block. As users adjust the virtual cut depth to zoom through the layers, the interface simulates the optical properties of the physical jelly—the top layer lifts away quickly, while the deeper textual fragments slowly clarify and emerge.",
+      blurb: "Media exists in two related forms: a physical gelatin poem and an interactive virtual artifact. In the sculptural work, cut-up documents are suspended across four clear gel strata, allowing fragments of text to show through, obscure, and transform one another across depth. Its web counterpart extends this layered reading experience by letting readers adjust a virtual cut depth, moving through the block as upper layers recede and deeper textual fragments slowly clarify.",
       links: [
         { label: "Open Exhibit", url: "https://xyhtamura.github.io/media/" }
       ]
