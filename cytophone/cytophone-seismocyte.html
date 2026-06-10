@@ -116,6 +116,52 @@ const lerp=(a,b,t)=>a+(b-a)*t;
 const TAU=Math.PI*2;
 
 /* ============================================================
+   MINERAL VOICES — composition determines timbre.
+   Each tint tag maps to a distinct friction archetype:
+     iron-oxide      — dry gritty scrape, dense crackle
+     oxidized-copper — sparse strikes ringing through modal resonators
+     sulfur-deposit  — brittle hiss, fast sparks
+     ochre-sediment  — rolling lowpassed rumble, soft surges
+     quartz-vein     — glassy detuned shimmer partials
+     basalt-core     — deep FM-wobbled sub groan
+   ============================================================ */
+const MINERAL_PROFILES = {
+  "iron-oxide": {
+    filterType:'bandpass', filterMul:1.0, q:[2.5,6.5], noiseLvl:1.0,
+    subWave:'triangle', subRatio:0.5, subGatedLvl:1.15, droneLvl:0.0,
+    crackle:[7,95], gateThresh:0.55, gateSoft:0, sweep:2.5
+  },
+  "oxidized-copper": {
+    filterType:'bandpass', filterMul:1.6, q:[3,5], noiseLvl:0.85,
+    modal:{ ratios:[1.0, 2.76, 5.40], q:26, lvl:1.7, freqMul:2.2 },
+    subWave:'sine', subRatio:0.5, subGatedLvl:0.4, droneLvl:0.0,
+    crackle:[3,30], gateThresh:0.88, gateSoft:0, sweep:1.6
+  },
+  "sulfur-deposit": {
+    filterType:'bandpass', filterMul:7.0, q:[1.2,2.8], noiseLvl:0.9,
+    subWave:'triangle', subRatio:0.5, subGatedLvl:0.3, droneLvl:0.0,
+    crackle:[16,140], gateThresh:0.78, gateSoft:0, sweep:1.9
+  },
+  "ochre-sediment": {
+    filterType:'lowpass', filterMul:2.4, q:[0.7,1.4], noiseLvl:1.0,
+    subWave:'sine', subRatio:0.5, subGatedLvl:1.0, droneLvl:0.35,
+    crackle:[2,16], gateThresh:0.3, gateSoft:1.0, sweep:2.0
+  },
+  "quartz-vein": {
+    filterType:'bandpass', filterMul:4.0, q:[7,12], noiseLvl:0.3,
+    shimmer:{ ratios:[4.0, 6.02], wave:'triangle', lvl:0.4 },
+    subWave:'sine', subRatio:1.0, subGatedLvl:0.2, droneLvl:0.25,
+    crackle:[3,22], gateThresh:0.45, gateSoft:1.0, sweep:1.5
+  },
+  "basalt-core": {
+    filterType:'lowpass', filterMul:1.2, q:[0.8,1.6], noiseLvl:0.6,
+    subWave:'sine', subRatio:0.33, subGatedLvl:0.5, droneLvl:0.9,
+    fm:{ rate:[0.4,1.6], depthMul:0.12 },
+    crackle:[2.5,18], gateThresh:0.5, gateSoft:1.0, sweep:1.8
+  }
+};
+
+/* ============================================================
    AUDIO — Friction, Sub-harmonics & Crackle
    ============================================================ */
 const Sound={
@@ -161,59 +207,143 @@ const Sound={
     return b;
   },
 
-  createScrapeVoice(size){
+  createScrapeVoice(size, tint){
     const ctx = this.ctx; if(!ctx) return null;
-    
-    const baseFreq = clamp(8000 / size, 60, 250);
+
+    const P = MINERAL_PROFILES[tint && tint.tag] || MINERAL_PROFILES["iron-oxide"];
+    const baseFreq = clamp(8000 / size, 60, 250) * rnd(0.92, 1.1);
+
+    const stops = [];
+
+    // pre-gate mix: filtered noise + gated sub
+    const preMix = ctx.createGain(); preMix.gain.value = 1.0;
 
     const noise = ctx.createBufferSource();
     noise.buffer = this.noiseBuffer; noise.loop = true;
 
     const filter = ctx.createBiquadFilter();
-    filter.type = 'bandpass'; filter.frequency.value = baseFreq; filter.Q.value = rnd(2.0, 6.0);
+    filter.type = P.filterType;
+    filter.frequency.value = baseFreq * P.filterMul;
+    filter.Q.value = rnd(P.q[0], P.q[1]);
+
+    const noiseGain = ctx.createGain(); noiseGain.gain.value = P.noiseLvl;
+    noise.connect(filter).connect(noiseGain).connect(preMix);
 
     const subOsc = ctx.createOscillator();
-    subOsc.type = 'triangle'; subOsc.frequency.value = baseFreq * 0.5;
-    const subGain = ctx.createGain(); subGain.gain.value = 1.2;
+    subOsc.type = P.subWave; subOsc.frequency.value = baseFreq * P.subRatio;
+    const subGated = ctx.createGain(); subGated.gain.value = P.subGatedLvl;
+    subOsc.connect(subGated).connect(preMix);
 
-    const mixNode = ctx.createGain(); mixNode.gain.value = 1.0;
-    noise.connect(filter).connect(mixNode); subOsc.connect(subGain).connect(mixNode);
-
+    // crackle gate — threshold sets density, gateSoft turns hard chops into surges
     const gateGain = ctx.createGain(); gateGain.gain.value = 0;
+    const crackleLfo = ctx.createOscillator(); crackleLfo.type = 'sawtooth';
+    crackleLfo.frequency.value = P.crackle[0];
 
-    const crackleLfo = ctx.createOscillator(); crackleLfo.type = 'sawtooth'; crackleLfo.frequency.value = 8.0; 
-    
     const curve = new Float32Array(256);
-    for(let i=0; i<256; i++) { let x = (i/255) * 2 - 1; curve[i] = x > 0.75 ? 1.0 : 0.0; }
+    for(let i=0; i<256; i++){
+      const x = (i/255) * 2 - 1;
+      curve[i] = x <= P.gateThresh ? 0
+        : (P.gateSoft > 0 ? Math.pow((x - P.gateThresh) / (1 - P.gateThresh), P.gateSoft) : 1.0);
+    }
     const shaper = ctx.createWaveShaper(); shaper.curve = curve;
-
     crackleLfo.connect(shaper).connect(gateGain.gain);
 
-    const env = ctx.createGain(); env.gain.value = 0;
+    preMix.connect(gateGain);
 
-    mixNode.connect(gateGain).connect(env).connect(this.bus);
-    
-    noise.start(); subOsc.start(); crackleLfo.start();
+    const env = ctx.createGain(); env.gain.value = 0;
+    gateGain.connect(env);
+
+    // modal resonators — gated bursts ring through detuned high-Q bandpasses
+    let modalFilters = null;
+    if(P.modal){
+      modalFilters = [];
+      const mg = ctx.createGain(); mg.gain.value = P.modal.lvl;
+      for(const r of P.modal.ratios){
+        const bp = ctx.createBiquadFilter();
+        bp.type = 'bandpass';
+        bp.frequency.value = baseFreq * P.modal.freqMul * r * rnd(0.985, 1.015);
+        bp.Q.value = P.modal.q;
+        gateGain.connect(bp); bp.connect(mg);
+        modalFilters.push({ bp, ratio: r });
+      }
+      mg.connect(env);
+    }
+
+    // ungated drone path — continuous tone underneath the crackle
+    if(P.droneLvl > 0){
+      const droneGain = ctx.createGain(); droneGain.gain.value = P.droneLvl;
+      subOsc.connect(droneGain).connect(env);
+    }
+
+    // glassy shimmer partials with slow detune drift
+    let shimmerOscs = null;
+    if(P.shimmer){
+      shimmerOscs = [];
+      const sg = ctx.createGain(); sg.gain.value = P.shimmer.lvl;
+      const detLfo = ctx.createOscillator(); detLfo.type = 'sine';
+      detLfo.frequency.value = rnd(0.07, 0.16);
+      const detDepth = ctx.createGain(); detDepth.gain.value = rnd(4, 9); // cents
+      detLfo.connect(detDepth);
+      for(const r of P.shimmer.ratios){
+        const o = ctx.createOscillator(); o.type = P.shimmer.wave;
+        o.frequency.value = baseFreq * r;
+        detDepth.connect(o.detune);
+        o.connect(sg);
+        o.start(); stops.push(o);
+        shimmerOscs.push({ o, ratio: r });
+      }
+      sg.connect(env);
+      detLfo.start(); stops.push(detLfo);
+    }
+
+    // slow FM wobble on the sub — tectonic groan
+    if(P.fm){
+      const fmLfo = ctx.createOscillator(); fmLfo.type = 'sine';
+      fmLfo.frequency.value = rnd(P.fm.rate[0], P.fm.rate[1]);
+      const fmDepth = ctx.createGain();
+      fmDepth.gain.value = baseFreq * P.subRatio * P.fm.depthMul;
+      fmLfo.connect(fmDepth).connect(subOsc.frequency);
+      fmLfo.start(); stops.push(fmLfo);
+    }
+
+    // stereo placement follows the cell across the field
+    const panner = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
+    if(panner){ env.connect(panner); panner.connect(this.bus); }
+    else { env.connect(this.bus); }
+
+    noise.start(0, rnd(0, 2.5)); // decorrelate noise between cells
+    subOsc.start(); crackleLfo.start();
+    stops.push(noise, subOsc, crackleLfo);
 
     return {
         env, filter, subOsc, crackleLfo, baseFreq,
-        update: (speed, pressure, depthShift = 1.0) => {
+        update: (speed, pressure, depthShift = 1.0, pan = 0) => {
             const now = ctx.currentTime;
-            const targetRate = lerp(6.0, 80.0, clamp(speed + pressure*0.5, 0, 1));
-            crackleLfo.frequency.setTargetAtTime(targetRate, now, 0.15);
-            
-            const shiftedFreq = baseFreq * depthShift;
-            filter.frequency.setTargetAtTime(lerp(shiftedFreq, shiftedFreq * 2.5, pressure), now, 0.15);
-            subOsc.frequency.setTargetAtTime(shiftedFreq * 0.5, now, 0.15);
-            
+            const drive = clamp(speed + pressure*0.5, 0, 1);
+            crackleLfo.frequency.setTargetAtTime(lerp(P.crackle[0], P.crackle[1], drive), now, 0.15);
+
+            const shifted = baseFreq * depthShift;
+            filter.frequency.setTargetAtTime(
+              lerp(shifted * P.filterMul, shifted * P.filterMul * P.sweep, pressure), now, 0.15);
+            subOsc.frequency.setTargetAtTime(shifted * P.subRatio, now, 0.15);
+
+            if(modalFilters) for(const m of modalFilters)
+              m.bp.frequency.setTargetAtTime(shifted * P.modal.freqMul * m.ratio, now, 0.25);
+            if(shimmerOscs) for(const s of shimmerOscs)
+              s.o.frequency.setTargetAtTime(shifted * s.ratio, now, 0.25);
+
             const activity = clamp(speed * 2.0 + pressure * 0.8, 0, 0.9);
             env.gain.setTargetAtTime(activity, now, 0.1);
+
+            if(panner) panner.pan.setTargetAtTime(clamp(pan, -1, 1) * 0.7, now, 0.3);
         },
         destroy: () => {
             const now = ctx.currentTime;
             env.gain.cancelScheduledValues(now);
-            env.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
-            setTimeout(() => { noise.stop(); subOsc.stop(); crackleLfo.stop(); noise.disconnect(); }, 600);
+            env.gain.setTargetAtTime(0.0001, now, 0.12);
+            setTimeout(() => {
+              for(const s of stops){ try{ s.stop(); }catch(e){} try{ s.disconnect(); }catch(e){} }
+            }, 600);
         }
     };
   }
@@ -265,7 +395,7 @@ class Cell{
     this.id = NEXT_CELL_ID++; this.x=x;this.y=y;this.vx=0;this.vy=0;
     this.size=rnd(45, 95); this.tint = pickTint();
     this.lobes=Array.from({length:5},()=>({k:2+(Math.random()*4|0),ph:rnd(0,TAU),sp:rnd(-0.04,0.04),amp:rnd(0.06,0.18)}));
-    this.voice = Sound.createScrapeVoice(this.size);
+    this.voice = Sound.createScrapeVoice(this.size, this.tint);
     this.dragSpeed = 0; this.pressure = 0; this.nudgeFlash = 0; this.depthShift = 1.0;
   }
   
@@ -305,7 +435,7 @@ class Cell{
     this.dragSpeed = Math.hypot(this.vx, this.vy) / 250.0;
     this.pressure *= 0.92; 
     
-    if(this.voice) this.voice.update(this.dragSpeed, this.pressure, this.depthShift);
+    if(this.voice) this.voice.update(this.dragSpeed, this.pressure, this.depthShift, (this.x / W) * 2 - 1);
   }
 
   draw(){

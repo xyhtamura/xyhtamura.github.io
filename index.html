@@ -444,6 +444,34 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2rem,6vw,3rem
 .colophon .row:nth-child(n) span{
   opacity:inherit;
 }
+
+/* Container for your mini-gallery */
+.media-group {
+  display: flex;
+  flex-wrap: wrap; 
+  gap: 12px;       
+  margin: 0.2rem 0 1rem;
+  align-items: flex-start; /* Keeps them aligned smoothly at the top */
+}
+
+/* Forces items to respect their true sizes instead of stretching to fill the row */
+.media-group .media {
+  flex: 0 1 auto;
+  width: auto;
+  height: auto;
+  max-height: 200px;
+  object-fit: contain;
+  margin: 0;       
+}
+
+/* Firefox-ish first-open details jump fix */
+.index,
+.entry,
+.entry summary,
+.entry .body,
+.media-group {
+  overflow-anchor: none;
+}
 </style>
 </head>
 <body>
@@ -475,7 +503,7 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
     <div class="blurb">
       xyh is a Filipino/Ilonggo-Japanese creator working through intermedia art, experimental pop, electronic literature, science and technology, research, and theory. Their work orbits issues of selfhood, media, posthuman relations, ecological-technological worlds, and the ways cultures metabolize systems.
     </div>
-  </header>
+
   </header>
 
   <nav class="socials" aria-label="links">
@@ -541,6 +569,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
     <span class="chips"><span class="chip intermedia">intermedia</span></span>
   </summary>
   <div class="body">
+              <div class="media-group">
+      <img class="media" src="media/media.png" alt="media">
+<img class="media" src="media/m06.png" alt="germanium">
+	</div>
+
     <p>Media is a gelatin poem made from cut-up documents collaged through the gel layers so that fragments of text show through, obscure, and alter one another. It has an interactive web counterpart that allows readers to move through layers of text.</p>
     <div class="outlinks">
       <a class="glass visit" href="/media/" target="_blank" rel="noopener">▷ media</a>
@@ -555,6 +588,10 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
     <span class="chips"><span class="chip intermedia">intermedia</span><span class="chip games">games</span></span>
   </summary>
   <div class="body">
+                <div class="media-group">
+      <img class="media" src="cornice/cornice1.jpg" alt="media">
+
+	</div>
     <p>A browser-based poetic art game and ASCII terrarium, modeling a nocturnal balcony at the edge of an impossible post-cyberpunk city. The work combines WASD traversal, click-to-inspect textual specimens, movable world elements, randomized distant vistas, changing weather states, and an interactive sound engine to create a compact, living ecology of terminal life.</p>
     <div class="outlinks">
       <a class="glass visit" href="/cornice/" target="_blank" rel="noopener">▷ Launch Game</a>
@@ -582,6 +619,12 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
     <span class="chips"><span class="chip tech">tech</span><span class="chip music">music</span><span class="chip intermedia">intermedia</span><span class="chip games">games</span><span class="chip artistic-research">research-art</span></span>
   </summary>
   <div class="body">
+   <div class="media-group">
+      <img class="media" src="img/cytophone1.jpg" alt="media">
+	  <img class="media" src="img/murmuration.jpg" alt="media">
+	  <img class="media" src="img/cambium.jpg" alt="media">
+
+	</div>
     <p>A collection of interactive, browser-based audio-visual instruments built with HTML canvas and the Web Audio API. Each piece stages a small 2D ecology of playable bodies whose visual properties are mapped directly to sound generation: size, brightness, geometry, motion, contact, pressure, tension, and environmental data determine pitch, resonance, damping, friction, and decay. Across the collection, the user seeds, strikes, bows, plucks, drags, presses, or disturbs animated entities while each instrument maintains its own physics, synthesis model, and wet/dry spatial control.</p>
 	<div class="subs">
       <div class="sub">
@@ -797,6 +840,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
     <span class="chips"><span class="chip tech">tech</span><span class="chip artistic-research">research-art</span></span>
   </summary>
   <div class="body">
+     <div class="media-group">
+      <img class="media" src="img/tabota.jpg" alt="media">
+
+
+	</div>
     <p>Tabota is a post-MIDI experimental composition tool and notation language for microtonal, polymetric, and time-based media. The project combines a JSON-based score format with browser-based editors: a piano-roll interface for drawing held tones, glides, freehand pitch contours, and voice assignments, and Cycla, a subdivision grammar builder for designing recursive meters and exporting <code>.cyc</code> time maps. Tabota models a score as a set of translatable temporal and axial regimes: beats, seconds, unordered cues, frequencies, note names, categories, and performance instructions. Its relationship to Scala is expanded sideways: where <code>.scl</code> files describe tuning systems for pitch, Cycla’s <code>.cyc</code> files describe tuning systems for time.</p>
     <div class="outlinks">
       <a class="glass visit" href="/tabota/" target="_blank" rel="noopener">▷ docs</a>
@@ -1234,6 +1282,20 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   </div>
 </details>
 
+
+<details class="entry" data-cats="tech" id="gahuema">
+  <summary>
+    <span class="year">2025→</span>
+    <span class="title">GaHueMa</span>
+    <span class="chips"><span class="chip tech">tech</span></span>
+  </summary>
+  <div class="body">
+    <p>A web-based image processing system that reconceptualizes hue as a relational, topological medium. A user-defined anchor hue transforms colors through attraction, repulsion, inversion, compression, and expansion across the color wheel, without touching saturation or luminosity. HSL or OKLCH; CPU or GPU.</p>
+    <div class="outlinks">
+      <a class="glass visit" href="https://xyhtamura.github.io/gahuema/" target="_blank" rel="noopener">▷ open tool</a>
+    </div>
+  </div>
+</details>
 <details class="entry" data-cats="intermedia" id="of-another-shore">
   <summary>
     <span class="year">2025→</span>
@@ -1251,19 +1313,7 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   </div>
 </details>
 
-<details class="entry" data-cats="tech" id="gahuema">
-  <summary>
-    <span class="year">2025→</span>
-    <span class="title">GaHueMa</span>
-    <span class="chips"><span class="chip tech">tech</span></span>
-  </summary>
-  <div class="body">
-    <p>A web-based image processing system that reconceptualizes hue as a relational, topological medium. A user-defined anchor hue transforms colors through attraction, repulsion, inversion, compression, and expansion across the color wheel, without touching saturation or luminosity. HSL or OKLCH; CPU or GPU.</p>
-    <div class="outlinks">
-      <a class="glass visit" href="https://xyhtamura.github.io/gahuema/" target="_blank" rel="noopener">▷ open tool</a>
-    </div>
-  </div>
-</details>
+
 
 <details class="entry" data-cats="intermedia" id="table-of-metalloids">
   <summary>
@@ -1272,6 +1322,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
     <span class="chips"><span class="chip intermedia">intermedia</span></span>
   </summary>
   <div class="body">
+            <div class="media-group">
+      <img class="media" src="card/table.jpeg" alt="table of Metalloids">
+<img class="media" src="img/germanium.jpg" alt="germanium">
+	</div>
+
     <p>An interactive collection organized around the seven metalloids, presented as a digital periodic table. Each element's properties become a generative constraint for New Weird fiction, slipstream, body horror, kinetic poetry, science writing, and prose poetry — termite symbiosis, programmable skin, undersea cables, metallic wolves, radioactive decay.</p>
     <div class="outlinks">
       <a class="glass visit" href="https://ppk80.github.io/table-of-metalloids/" target="_blank" rel="noopener">▷ open table</a>
@@ -1325,6 +1380,10 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
     <span class="chips"><span class="chip research">research</span></span>
   </summary>
   <div class="body">
+              <div class="media-group">
+<img class="media" src="img/denk.jpg" alt="LLMs">
+	</div>
+
     <p class="ctx">LLMs and the Patterns of Human Language Use · Denkwerkstatt Berlin · researcher, participant, presenter</p>
     <div class="outlinks">
       <a class="glass visit" href="https://denkwerkstatt.berlin/ANNA-STRASSER/ORGANIZED-EVENTS/LLMs-in-Berlin/" target="_blank" rel="noopener">▷ workshop</a>
@@ -1340,6 +1399,12 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
     <span class="chips"><span class="chip intermedia">intermedia</span></span>
   </summary>
   <div class="body">
+          <div class="media-group">
+      <img class="media" src="img/shook1.jpg" alt="post history institute">
+    <img class="media" src="img/shook2.jpg" alt="lost">
+	<img class="media" src="img/shook3.jpg" alt="ticking">
+	</div>
+
     <p>Shook is an ongoing suite of electronic literature, videopoetry, docupoetry, and web art about the afterlives of disaster from a Filipino-Japanese perspective. Anchored by the 1990 Luzon earthquake, the 2011 Tōhoku earthquake, and the 2020 Taal phreatic eruption, the work uses browser-based poems, archival video, movable windows, blackout editing, and Windows XP-inspired interfaces to examine how geological rupture intersects with national history, family memory, digital media, economic anxiety, and inherited trauma.</p>
     <div class="outlinks">
       <a class="glass visit" href="https://ppk80.github.io/shook/" target="_blank" rel="noopener">▷ v0.3</a>
@@ -1355,6 +1420,10 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
     <span class="chips"><span class="chip intermedia">intermedia</span></span>
   </summary>
   <div class="body">
+      <div class="media-group">
+      <img class="media" src="img/cybernetic1.jpg" alt="cybernetic inquiry">
+    <img class="media" src="img/cybernetic2.jpg" alt="early image gen">
+	</div>
     <p>An LLM co-authored hypertext lyric essay presented as a continuously scrolling academic paper. Through recursive writing, footnotes, and AI-generated language, the work examines language, documents, humans, environments, and LLMs as surface-based archives shaped by bias, extraction, historical debris, and collaborative knowledge production.</p>
     <div class="outlinks">
       <a class="glass visit" href="https://ppk80.github.io/cybernetic-inquiry/" target="_blank" rel="noopener">▷ v0.2</a>
@@ -1370,6 +1439,10 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
     <span class="chips"><span class="chip intermedia">intermedia</span></span>
   </summary>
   <div class="body">
+    <div class="media-group">
+      <img class="media" src="img/plasticoid1.jpg" alt="anthopocenes">
+    <img class="media" src="img/plasticoid2.jpg" alt="plasticoid detail">
+	</div>
     <p>A hypertext digital collage poem composed from images and text fragments that link outward to academic papers, public-domain archives, found media, recordings, online forums, discarded materials, and commercial packaging. The work examines identity as a citational structure shaped by academia, plastics, capitalism, virtuality, globalization, and ecological crisis.</p>
     <div class="outlinks">
       <a class="glass visit" href="https://ppk80.github.io/plasticoid/" target="_blank" rel="noopener">▷ open</a>
@@ -1521,7 +1594,6 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
     </div>
   </div>
 </details>
-
 <details class="entry" data-cats="score" id="handaan">
   <summary>
     <span class="year">2018</span>
@@ -1529,6 +1601,10 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
     <span class="chips"><span class="chip score">score</span></span>
   </summary>
   <div class="body">
+  <div class="media-group">
+    <img class="media" src="img/stills/handaan1.jpg" alt="Handaan film still 1">
+    <img class="media" src="img/stills/handaan2.jpg" alt="Handaan film still 2">
+</div>
     <p class="ctx">short film · music composer</p>
     <p>A warm, narrative film score with a more traditional animation-film sensibility, inflected with Filipino timbres such as gongs, bamboo instruments, and guitars.</p>
     <p>Film nominated for Best Director and Best Cinematography at the Las Vegas Filipino Short Film Festival 2025.</p>
@@ -1545,6 +1621,10 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
     <span class="chips"><span class="chip score">score</span></span>
   </summary>
   <div class="body">
+    <div class="media-group">
+    <img class="media" src="img/stills/palibut1.png" alt="Palibut-Libot film still 1">
+    <img class="media" src="img/stills/palibut2.jpg" alt="Palibut-Libot film still 2">
+</div>
     <p class="ctx">short film · music composer</p>
     <p>A Manila interpretation of neon-noir: a synth-driven soundtrack using field recordings, noise, and rougher textures, moving away from glossy slickness toward something grimier and more unstable.</p>
     <p>Awarded Best Short Film at the FilAm Creative Film Festival 2023. Film nominated for Best Editing and Bahaghari / LGBTQ Award at the Las Vegas Filipino Short Film Festival 2025.</p>
