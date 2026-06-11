@@ -1757,7 +1757,7 @@ const BASE_TILE_DB = {
     id:"low_cloud", glyphs:["\u2591","\u25cb","\u25cc","\u25e6"],
     name:"low cloud", type:"terrain", zLayer:"floor", solid:false,
     color:"#c8d8f0", fx:"fx-drift", windResponsive:true, animated:true,
-    blobChance:0.02, blobCount:2, blobRadius:5, blobRadiusY:2,
+    blobChance:0.01, blobCount:1, blobRadius:2, blobRadiusY:2,
     tags:["walkable","atmospheric","weather-bound","soft","wind-responsive"],
     sound:{ scaleIndex:7, type:"sine" },
     whispers:[
@@ -1826,7 +1826,7 @@ const BASE_TILE_DB = {
     id:"cloud_bank", glyphs:["░","○","◌","◦"],
     name:"cloud bank", type:"terrain", zLayer:"floor", solid:false,
     color:"#d8e7ff", fx:"fx-drift", animated:true, windResponsive:true,
-    blobChance:0.04, blobCount:2, blobRadius:5, blobRadiusY:2,
+    blobChance:0.02, blobCount:1, blobRadius:3, blobRadiusY:2,
     tags:["walkable","aerial","atmospheric","cloud","wind-responsive"],
     whispers:[
       "your tokens are safe and sound",
@@ -1895,8 +1895,8 @@ const BASE_TILE_DB = {
     sound:{ scaleIndex:13, type:"sine" },
     whispers:[
       "a flower blooming from residual nightlife",
-      "petals tuned to the balcony's damp voltage",
-      "soft pink insistence in the terminal garden",
+      "tuned and listening listing",
+      "in the terminal garden",
       "it opens only when no one is done arriving"
     ]
   },
@@ -1920,9 +1920,9 @@ const BASE_TILE_DB = {
     sound:{ scaleIndex:15, type:"triangle" },
     whispers:[
       "a small sun with poor boundaries",
-      "the flower looks chemically awake",
+      "chemically awake",
       "marigold logic in highlighter yellow",
-      "its petals make the surrounding dark feel procedural"
+      "it is itself and its color"
     ]
   },
 
@@ -1946,8 +1946,8 @@ const BASE_TILE_DB = {
     sound:{ scaleIndex:16, type:"sine" },
     whispers:[
       "almost a flower, almost a reflection",
-      "its whiteness is not purity but low signal",
-      "an orchid that learned to haunt its own outline",
+      "its whiteness is low signal",
+      "haunting its own outline",
       "botanical afterimage"
     ]
   },
@@ -2011,6 +2011,10 @@ const BASE_TILE_DB = {
     fx:"fx-drift",
     animated:true,
     windResponsive:true,
+	blobChance:0.006,
+blobCount:2,
+blobRadius:2,
+blobRadiusY:2,
     tags:["overhead","floral","flower","vine","canopy","wind-responsive"],
     sound:{ scaleIndex:14, type:"sine" },
     whispers:[
@@ -2033,10 +2037,10 @@ const BASE_TILE_DB = {
     animated:true,
     windResponsive:false,
     rare:true,
-    blobChance:0.03,
+    blobChance:0.01,
     blobCount:1,
-    blobRadius:2,
-    blobRadiusY:2,
+    blobRadius:1,
+    blobRadiusY:1,
     tags:["walkable","floral","corpse-flower","signal","rare","odor"],
     sound:{ scaleIndex:4, type:"sawtooth" },
     whispers:[
@@ -2055,6 +2059,10 @@ const BASE_TILE_DB = {
     solid:false,
     color:"#f2d6ff",
     fx:"",
+	    blobChance:0.05,
+    blobCount:1,
+    blobRadius:3,
+    blobRadiusY:3,
     windResponsive:false,
     tags:["walkable","mall","tile","interior","polished"],
     whispers:[
@@ -2076,6 +2084,10 @@ const BASE_TILE_DB = {
     fx:"fx-flicker entity",
     animated:true,
     windResponsive:false,
+	    blobChance:0.005,
+    blobCount:1,
+    blobRadius:1,
+    blobRadiusY:1,
     tags:["walkable","mall","signage","neon","directory","commercial"],
     sound:{ scaleIndex:12, type:"sawtooth" },
     whispers:[
@@ -2097,6 +2109,10 @@ const BASE_TILE_DB = {
     fx:"fx-ripple",
     animated:true,
     windResponsive:false,
+	    blobChance:0.01,
+    blobCount:1,
+    blobRadius:1,
+    blobRadiusY:1,
     tags:["walkable","mall","fountain","water","interior"],
     sound:{ scaleIndex:7, type:"sine" },
     whispers:[
@@ -2159,6 +2175,10 @@ const BASE_TILE_DB = {
     solid:false,
     color:"#a87948",
     fx:"",
+	    blobChance:0.04,
+    blobCount:2,
+    blobRadius:1,
+    blobRadiusY:1,
     windResponsive:true,
     tags:["walkable","grass","meadow","dry","wind-responsive"],
     whispers:[
@@ -2179,6 +2199,10 @@ const BASE_TILE_DB = {
     color:"#7dff8a",
     fx:"",
     windResponsive:true,
+	    blobChance:0.03,
+    blobCount:2,
+    blobRadius:2,
+    blobRadiusY:2,
     tags:["walkable","grass","meadow","green","wind-responsive"],
     whispers:[
       "all grass, no argument",
@@ -2219,6 +2243,10 @@ const BASE_TILE_DB = {
     fx:"fx-breathe",
     animated:true,
     windResponsive:true,
+	    blobChance:0.01,
+    blobCount:1,
+    blobRadius:2,
+    blobRadiusY:2,
     tags:["walkable","jungle","thicket","urban","tropical","wind-responsive"],
     sound:{ scaleIndex:9, type:"sine" },
     whispers:[
@@ -2241,6 +2269,10 @@ const BASE_TILE_DB = {
     animated:true,
     windResponsive:false,
     rare:true,
+	    blobChance:0.01,
+    blobCount:1,
+    blobRadius:1,
+    blobRadiusY:1,
     tags:["walkable","jungle","payphone","urban","telecom","receptive"],
     sound:{ scaleIndex:14, type:"triangle" },
     whispers:[
@@ -2283,6 +2315,10 @@ const BASE_TILE_DB = {
     fx:"fx-drift",
     animated:true,
     windResponsive:true,
+	    blobChance:0.01,
+    blobCount:1,
+    blobRadius:1,
+    blobRadiusY:1,
     tags:["walkable","jungle","fern","office","aircon","wind-responsive"],
     whispers:[
       "a fern trained by exhaust wind",
@@ -2320,7 +2356,7 @@ const BASE_ENTITY_DB = {
     solid:false, mobile:true, moveChance:0.16, windResponsive:false, color:"#e8b7da", fx:"fx-breathe entity",
     spawnWeight:2, glyphCycleSpeed:0.05,
     tags:["npc","ghost","mobile-entity"], sound:{ scaleIndex:8, type:"sine" },
-    whispers:["I came for the opening and stayed for the humidity.","Everyone here is either a guest, a host, or a substrate.","Do you know who curated the fog?","My invitation expired in a previous build. I prefer it here."]
+    whispers:["I came for the afterparty.","Everyone here is either a guest, a host, or a substrate.","Do you know who curated the fog?","My invitation expired in a previous build. I prefer it here.", "Where are we going after this?", "there are days and there are nights",]
   },
   archive_bird: {
     id:"archive_bird", glyphs:["\u039b","\u03bb","\u2227"], name:"archive bird", type:"organism",
@@ -3055,15 +3091,24 @@ function getSceneForCell(x, y) {
 // ═══════════════════════════════════════════════════════════════════
 function blob(cx, cy, rx, ry, tileId, raggedness) {
   const isOverhead = TILE_DB[tileId]?.zLayer === 'overhead';
-  for (let y=cy-ry-1; y<=cy+ry+1; y++) {
-    for (let x=cx-rx-1; x<=cx+rx+1; x++) {
-      if (!inBounds(x,y)) continue;
+
+  // The source/origin of any blob must be grounded in the garden.
+  // The footprint may still cross into sky if it is overhead.
+  if (isSky(cx, cy) || isRail(cx, cy)) return;
+
+  for (let y = cy - ry - 1; y <= cy + ry + 1; y++) {
+    for (let x = cx - rx - 1; x <= cx + rx + 1; x++) {
+      if (!inBounds(x, y)) continue;
+
       if (!isOverhead) {
-        if (isSky(x,y) || isRail(x,y)) continue;
-        if (x===0 || y===ROWS-1 || x===COLS-1) continue;
+        if (isSky(x, y) || isRail(x, y)) continue;
+        if (x === 0 || y === ROWS - 1 || x === COLS - 1) continue;
       }
-      const dx=(x-cx)/rx, dy=(y-cy)/ry;
-      if (dx*dx+dy*dy < 1+(rand()-.5)*raggedness*3) {
+
+      const dx = (x - cx) / rx;
+      const dy = (y - cy) / ry;
+
+      if (dx * dx + dy * dy < 1 + (rand() - .5) * raggedness * 3) {
         if (isOverhead) {
           if (state.overheadTerrain) state.overheadTerrain[y][x] = { id: tileId };
         } else {
@@ -3391,8 +3436,15 @@ function applyGardenBiomeCuts() {
       if (!pal?.tiles?.length) continue;
 
       if (chance(pal.density) && !TILE_DB[state.terrain[y][x].id]?.solid) {
-        state.terrain[y][x].id = pick(pal.tiles);
-      }
+  const picked = pick(pal.tiles);
+  const pickedSpec = TILE_DB[picked];
+
+  if (pickedSpec?.zLayer === "overhead") {
+    state.overheadTerrain[y][x] = { id: picked };
+  } else {
+    state.terrain[y][x].id = picked;
+  }
+}
     }
   }
 }
@@ -3400,32 +3452,57 @@ function applyGardenBiomeCuts() {
 
 function placeBiomes() {
   const api = { blob, rand, chance, pick, inBounds, isSky };
-  for (let i=0, att=0; i<3 && att<60; att++) {
-    const cx = 5 + Math.floor(rand()*(COLS-10));
-    const cy = 4 + Math.floor(rand()*(ROWS-8));
-    if (isSky(cx,cy)) continue;
+
+  for (let i = 0, att = 0; i < 3 && att < 60; att++) {
+    const cx = 5 + Math.floor(rand() * (COLS - 10));
+    const cy = 4 + Math.floor(rand() * (ROWS - 8));
+
+    // Biome sources must begin on the deck/garden side.
+    if (isSky(cx, cy) || isRail(cx, cy)) continue;
+
     pick(BIOME_TEMPLATES).paint(cx, cy, api);
     i++;
   }
 }
 
+function findBlobSource() {
+  for (let att = 0; att < 40; att++) {
+    const x = 3 + Math.floor(rand() * Math.max(1, COLS - 6));
+    const y = 3 + Math.floor(rand() * Math.max(1, ROWS - 6));
+
+    // Blob sources must begin on the deck/garden side.
+    if (isSky(x, y) || isRail(x, y)) continue;
+
+    // Avoid outer structural border as a source.
+    if (x === 0 || y === 0 || x === COLS - 1 || y === ROWS - 1) continue;
+
+    return { x, y };
+  }
+
+  return null;
+}
+
 function placeBlobTerrain() {
   for (const spec of Object.values(TILE_DB)) {
     if (!spec.blobChance) continue;
-    const count = scaledCount(spec.blobCount || 4, state.worldMode === "mini" ? 0 : 1);
-const rx = scaledLen(spec.blobRadius || 3, 1);
-const ry = scaledLen(spec.blobRadiusY || 2, 1);
 
-for (let i = 0; i < count; i++) {
-  blob(
-    3 + Math.floor(rand() * Math.max(1, COLS - 6)),
-    3 + Math.floor(rand() * Math.max(1, ROWS - 6)),
-    rx,
-    ry,
-    spec.id,
-    spec.blobChance
-  );
-}
+    const count = scaledCount(spec.blobCount || 4, state.worldMode === "mini" ? 0 : 1);
+    const rx = scaledLen(spec.blobRadius || 3, 1);
+    const ry = scaledLen(spec.blobRadiusY || 2, 1);
+
+    for (let i = 0; i < count; i++) {
+      const source = findBlobSource();
+      if (!source) continue;
+
+      blob(
+        source.x,
+        source.y,
+        rx,
+        ry,
+        spec.id,
+        spec.blobChance
+      );
+    }
   }
 }
 
