@@ -442,7 +442,7 @@ h1 {
     .entity   { opacity: .98; font-weight: 700; text-shadow: 0 0 .5em currentColor; }
     .solid    { filter: contrast(1.06) saturate(1.12); }
     .sky-tier { opacity: .10; font-weight: 300; }
-    .player   { color: #fff26e; text-shadow: 0 0 4px #e5e32f, 0 0 14px #ff65d8, 0 0 28px #2dff6e; animation: playerPulse .88s ease-in-out infinite alternate; z-index: 4; }
+    .player   { color: #fff26e; text-shadow: 0 0 4px #e5e32f, 0 0 14px #ff65d8, 0 0 28px #2dff6e; z-index: 4; }
 
     .fx-glow    { animation: glow    1.7s ease-in-out infinite alternate; }
     .fx-flicker { animation: flicker .18s steps(2,end) infinite; }
@@ -912,6 +912,100 @@ h1 {
       text-align: center;
       transform: translateY(-1px) scaleX(1.25);
     }
+
+.cell[data-tile="ceramic_pool"]::before {
+  content: "·";
+  position: absolute;
+  font-size: 0.34em;
+  color: #ffffff;
+  opacity: 0.38;
+  top: 6%;
+  right: 8%;
+}
+
+.cell[data-tile="chlorine_foam"]::before {
+  content: "∘";
+  position: absolute;
+  font-size: 0.48em;
+  color: #ffffff;
+  opacity: 0.36;
+  top: 0;
+  left: 0; right: 0;
+  text-align: center;
+  animation: ripple 1.6s ease-in-out infinite alternate;
+}
+
+.cell[data-tile="drain_eye"]::before {
+  content: "•";
+  position: absolute;
+  font-size: 0.28em;
+  color: #050718;
+  opacity: 0.7;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.cell[data-tile="ladder_rail"]::before {
+  content: "─";
+  position: absolute;
+  font-size: 0.32em;
+  color: #ffffff;
+  opacity: 0.36;
+  top: 12%;
+  left: 0; right: 0;
+  text-align: center;
+}
+
+.cell[data-tile="cloud_bank"] {
+  filter: blur(0.18px);
+}
+
+.cell[data-tile="cloud_bank"]::before {
+  content: "◦";
+  position: absolute;
+  font-size: 0.48em;
+  color: #ffffff;
+  opacity: 0.26;
+  top: 0;
+  left: 0; right: 0;
+  text-align: center;
+  transform: scaleX(1.25);
+}
+
+.cell[data-tile="rain_thread"]::before {
+  content: "·";
+  position: absolute;
+  font-size: 0.34em;
+  color: #d8ffff;
+  opacity: 0.45;
+  bottom: 2%;
+  left: 0; right: 0;
+  text-align: center;
+  animation: ripple 1.2s ease-in-out infinite alternate;
+}
+
+.cell[data-tile="aerial_root"]::before {
+  content: "⌇";
+  position: absolute;
+  font-size: 0.42em;
+  color: #f0ffd0;
+  opacity: 0.28;
+  top: -5%;
+  left: 0; right: 0;
+  text-align: center;
+  transform: scaleY(0.85);
+}
+
+.cell[data-tile="kite_litter"]::before {
+  content: "·";
+  position: absolute;
+  font-size: 0.34em;
+  color: #fff2a8;
+  opacity: 0.5;
+  top: 5%;
+  right: 6%;
+}
 
     @media (max-width: 840px) {
       header { grid-template-columns: 1fr; }
@@ -1393,7 +1487,7 @@ const BASE_TILE_DB = {
     whispers:[
       "thin as a decision",
       "the city's surface tension",
-      "barely water, mostly memory of water",
+      "a film about water",
       "a puddle with depth issues"
     ]
   },
@@ -1405,10 +1499,10 @@ const BASE_TILE_DB = {
     tags:["walkable","liquid","mineral","saline","crusted"],
     sound:{ scaleIndex:2, type:"sine" },
     whispers:[
-      "salt remembers an ocean",
+      "artificial ocean",
       "mineral residue of a distant body of water",
-      "evaporating into its own record",
-      "the floor tastes of infrastructure"
+      "recording its own evaporation",
+      "the floor tastes of civilization"
     ]
   },
   oil_slick: {
@@ -1419,7 +1513,7 @@ const BASE_TILE_DB = {
     tags:["walkable","liquid","iridescent","rare","petroleum"],
     sound:{ scaleIndex:10, type:"sawtooth" },
     whispers:[
-      "iridescence as industrial confession",
+      "not enough to burn",
       "the substrate leaked, briefly",
       "every color present but none dominant",
       "a thin agreement between chemistry and light"
@@ -1432,9 +1526,9 @@ const BASE_TILE_DB = {
     blobChance:0.05, blobCount:2, blobRadius:2, blobRadiusY:1,
     tags:["walkable","mineral","transparent","fragile","reflective","urban"],
     whispers:[
-      "broken clarity",
+      "almost seeing yourself before seeing something else",
       "a window's former jurisdiction",
-      "transparent even in pieces",
+      "transparent in pieces",
       "the light bends around the argument"
     ]
   },
@@ -1451,7 +1545,116 @@ const BASE_TILE_DB = {
       "mist with structural aspirations",
       "the forecast descended entirely"
     ]
-  }
+  },
+    ceramic_pool: {
+    id:"ceramic_pool", glyphs:["□","▫","▱","."],
+    name:"ceramic pool tile", type:"terrain", zLayer:"floor", solid:false,
+    color:"#b8f7ff", fx:"", windResponsive:false,
+    tags:["walkable","poolrooms","ceramic","wet","architecture"],
+    whispers:[
+      "an alternative to indoor or outdoor",
+      "I think I can hear my voice",
+      "an ancient material",
+      "a bathroom for an absent city"
+    ]
+  },
+
+  chlorine_foam: {
+    id:"chlorine_foam", glyphs:["○","◦","°","∘"],
+    name:"chlorine foam", type:"terrain", zLayer:"floor", solid:false,
+    color:"#d8fff2", fx:"fx-ripple", animated:true, windResponsive:false,
+    tags:["walkable","poolrooms","liquid","foam","chemical"],
+    sound:{ scaleIndex:6, type:"sine" },
+    whispers:[
+      "bubbles in administrative water",
+      "the smell of cleaned absence",
+      "reassuring chemical theater",
+      "it's definitely not urine"
+    ]
+  },
+
+  drain_eye: {
+    id:"drain_eye", glyphs:["⊙","⊚","◉","◎"],
+    name:"drain eye", type:"structure", zLayer:"floor", solid:false,
+    color:"#7fd8ff", fx:"fx-breathe entity", animated:true, windResponsive:false,
+    rare:true,
+    tags:["walkable","poolrooms","drain","infrastructure","receptive"],
+    sound:{ scaleIndex:12, type:"triangle" },
+    whispers:[
+      "the room has a pupil",
+      "all shallow water eventually develops an exit",
+      "a tiny municipal abyss",
+      "the drain listens with perfect patience"
+    ]
+  },
+
+  ladder_rail: {
+    id:"ladder_rail", glyphs:["╫","╪","╬","╂"],
+    name:"pool ladder rail", type:"structure", zLayer:"floor", solid:false,
+    color:"#d6eaff", fx:"fx-breathe", windResponsive:false,
+    tags:["walkable","poolrooms","metal","architecture","threshold"],
+    whispers:[
+      "a ladder into knee-deep unreality",
+      "exit apparatus without a clear outside",
+      "cold handhold, damp rung",
+      "it descends into almost nothing"
+    ]
+  },
+
+  cloud_bank: {
+    id:"cloud_bank", glyphs:["░","○","◌","◦"],
+    name:"cloud bank", type:"terrain", zLayer:"floor", solid:false,
+    color:"#d8e7ff", fx:"fx-drift", animated:true, windResponsive:true,
+    blobChance:0.04, blobCount:2, blobRadius:5, blobRadiusY:2,
+    tags:["walkable","aerial","atmospheric","cloud","wind-responsive"],
+    whispers:[
+      "your tokens are safe and sound",
+      "tomorrow we're trading in ENSO",
+      "soft enough to misplace a border",
+      "saving for a rainy day"
+    ]
+  },
+
+  rain_thread: {
+    id:"rain_thread", glyphs:["╎","┆","¦","|"],
+    name:"rain thread", type:"terrain", zLayer:"overhead", solid:false,
+    color:"#9eeeff", fx:"fx-ripple", animated:true, windResponsive:true,
+    tags:["overhead","aerial","rain","weather","wind-responsive"],
+    sound:{ scaleIndex:8, type:"sine" },
+    whispers:[
+      "a vertical sentence of water",
+      "spinning tomorrow's fate",
+      "falling syntax",
+      "...,,.,.,,,....,.."
+    ]
+  },
+
+  aerial_root: {
+    id:"aerial_root", glyphs:["⌇","∫","╎","ʃ"],
+    name:"aerial root", type:"terrain", zLayer:"overhead", solid:false,
+    color:"#d7ff9a", fx:"fx-drift", windResponsive:true,
+    tags:["overhead","aerial","root","plant","wind-responsive"],
+    whispers:[
+      "a root looking for ground after the ground moved",
+      "hanging botany",
+      "the garden grows downward from an unseen ceiling",
+      "a plant rehearsing rainhood"
+    ]
+  },
+
+  kite_litter: {
+    id:"kite_litter", glyphs:["△","◇","◁","▵"],
+    name:"kite litter", type:"terrain", zLayer:"floor", solid:false,
+    color:"#f7b8ff", fx:"fx-flicker", windResponsive:true,
+    rare:true,
+    tags:["walkable","aerial","paper","urban","wind-responsive"],
+    whispers:[
+      "bright debris from an upper festival",
+      "still flying somewhat",
+      "a small color caught in the balcony",
+      "not a bird or trash exactly"
+    ]
+  },
 };
 
 const BASE_ENTITY_DB = {
@@ -2086,7 +2289,7 @@ function getGardenBiomeRegion(x, y) {
 // Build all biome cuts and per-region vista blends.
 // Called after randomizeRailingStructure(), which establishes isSky / isRail.
 function buildBiomeCuts() {
-  const p1 = 0.42, p2 = 0.18; // P(1st cut), P(2nd cut | 1st cut exists)
+  const p1 = 0.62, p2 = 0.32; // P(1st cut), P(2nd cut | 1st cut exists)
 
   // Vista (sky) cuts — each creates a new horizon band with its own scene blend
   let nVista = 0;
@@ -2194,65 +2397,172 @@ function blob(cx, cy, rx, ry, tileId, raggedness) {
 // Secondary terrain pass: apply tile-palette bias per garden biome region.
 // Only fires if gardenCuts exist; leaves region 0 untouched.
 function applyGardenBiomeCuts() {
-  if (!state.gardenCuts.length) return;
+  const PALETTE_FAMILIES = [
+    {
+      id: "lush",
+      name: "wet/lush organic",
+      palettes: [
+        { density:0.34, tiles:["neon_fuzz","neon_fuzz","spore_bloom","signal_moss","black_water","damp_soil"] },
+        { density:0.38, tiles:["signal_moss","signal_moss","neon_fuzz","spore_bloom","wire_vine","black_water"] },
+        { density:0.62, rare:true, tiles:["neon_fuzz","neon_fuzz","neon_fuzz","spore_bloom","spore_bloom","signal_moss"] },
+        { density:0.56, rare:true, tiles:["signal_moss","signal_moss","signal_moss","wire_vine","spore_bloom","low_cloud"] },
+      ]
+    },
 
-  // Each entry: { density, tiles, rare? }
-  // density  — probability of overriding any given non-solid cell
-  // rare     — if true, only selected ~22% of the time
-  const PALETTE_OPTIONS = [
-    // region 0 — base, always untouched
-    [{ density:0, tiles:[] }],
+    {
+      id: "rubble",
+      name: "arid/industrial urban",
+      palettes: [
+        { density:0.34, tiles:["city_debris","city_debris","gravel_bed","gravel_bed","sand_drift","lost_pavement"] },
+        { density:0.36, tiles:["lost_pavement","lost_pavement","city_debris","gravel_bed","sand_drift","frost_crust"] },
+        { density:0.58, rare:true, tiles:["lost_pavement","lost_pavement","lost_pavement","city_debris","city_debris","gravel_bed"] },
+        { density:0.52, rare:true, tiles:["glass_shard","glass_shard","lost_pavement","city_debris","brine_puddle","gravel_bed"] },
+      ]
+    },
 
-    // region 1 — wet / lush / organic (normal + rare extremes)
-    [
-      { density:0.17, tiles:["black_water","black_water","neon_fuzz","neon_fuzz","signal_moss","wire_vine"] },
-      { density:0.17, tiles:["neon_fuzz","neon_fuzz","spore_bloom","spore_bloom","signal_moss","black_water"] },
-      { density:0.17, tiles:["spore_bloom","spore_bloom","neon_fuzz","signal_moss","black_water","damp_soil"] },
-      { density:0.17, tiles:["signal_moss","signal_moss","neon_fuzz","black_water","spore_bloom","wire_vine"] },
-      // rare extremes ─────────────────────────────────────────────
-      { density:0.58, rare:true, tiles:["black_water","black_water","black_water","shallow_pool","shallow_pool","brine_puddle"] },
-      { density:0.55, rare:true, tiles:["neon_fuzz","neon_fuzz","neon_fuzz","spore_bloom","spore_bloom","spore_bloom"] },
-      { density:0.50, rare:true, tiles:["low_cloud","low_cloud","spore_bloom","neon_fuzz","signal_moss","damp_soil"] },
-      { density:0.48, rare:true, tiles:["signal_moss","signal_moss","signal_moss","wire_vine","spore_bloom","low_cloud"] },
-    ],
+    {
+      id: "poolrooms",
+      name: "water/poolrooms",
+      palettes: [
+        { density:0.78, tiles:[
+          "ceramic_pool","ceramic_pool","ceramic_pool",
+          "black_water","black_water",
+          "shallow_pool","chlorine_foam",
+          "ladder_rail"
+        ] },
+        { density:0.84, tiles:[
+          "black_water","black_water","black_water",
+          "shallow_pool","shallow_pool",
+          "ceramic_pool","chlorine_foam",
+          "drain_eye"
+        ] },
+        { density:0.92, rare:true, tiles:[
+          "black_water","black_water","black_water","black_water",
+          "shallow_pool","shallow_pool",
+          "chlorine_foam","chlorine_foam",
+          "drain_eye"
+        ] },
+        { density:0.72, rare:true, tiles:[
+          "ceramic_pool","ceramic_pool","ceramic_pool",
+          "brine_puddle","chlorine_foam",
+          "glass_shard","ladder_rail","drain_eye"
+        ] },
+      ]
+    },
 
-    // region 2 — arid / industrial / urban (normal + rare extremes)
-    [
-      { density:0.17, tiles:["city_debris","city_debris","gravel_bed","gravel_bed","sand_drift","damp_soil"] },
-      { density:0.17, tiles:["lost_pavement","lost_pavement","city_debris","gravel_bed","sand_drift","damp_soil"] },
-      { density:0.17, tiles:["gravel_bed","gravel_bed","city_debris","lost_pavement","frost_crust","damp_soil"] },
-      { density:0.17, tiles:["sand_drift","sand_drift","gravel_bed","city_debris","lost_pavement","damp_soil"] },
-      { density:0.17, tiles:["frost_crust","frost_crust","gravel_bed","lost_pavement","city_debris","damp_soil"] },
-      // rare extremes ─────────────────────────────────────────────
-      { density:0.62, rare:true, tiles:["lost_pavement","lost_pavement","lost_pavement","city_debris","city_debris","gravel_bed"] },
-      { density:0.55, rare:true, tiles:["glass_shard","glass_shard","lost_pavement","city_debris","brine_puddle","gravel_bed"] },
-      { density:0.45, rare:true, tiles:["oil_slick","oil_slick","city_debris","lost_pavement","brine_puddle","gravel_bed"] },
-      { density:0.50, rare:true, tiles:["sand_drift","sand_drift","sand_drift","gravel_bed","city_debris","frost_crust"] },
-    ],
+    {
+      id: "aerial",
+      name: "aerial/clouds",
+      palettes: [
+        { density:0.66, tiles:[
+          "cloud_bank","cloud_bank","cloud_bank",
+          "low_cloud","low_cloud",
+          "rain_thread","aerial_root"
+        ] },
+        { density:0.58, tiles:[
+          "low_cloud","low_cloud","cloud_bank",
+          "spore_bloom","aerial_root",
+          "rain_thread","damp_soil"
+        ] },
+        { density:0.76, rare:true, tiles:[
+          "cloud_bank","cloud_bank","cloud_bank","cloud_bank",
+          "low_cloud","low_cloud",
+          "rain_thread","kite_litter"
+        ] },
+        { density:0.68, rare:true, tiles:[
+          "aerial_root","aerial_root",
+          "rain_thread","rain_thread",
+          "cloud_bank","low_cloud","kite_litter"
+        ] },
+      ]
+    },
+
+    {
+      id: "glasshouse",
+      name: "glass/brine greenhouse",
+      palettes: [
+        { density:0.46, tiles:[
+          "glass_shard","glass_shard",
+          "brine_puddle","shallow_pool",
+          "neon_fuzz","signal_moss"
+        ] },
+        { density:0.54, rare:true, tiles:[
+          "glass_shard","glass_shard","glass_shard",
+          "oil_slick","brine_puddle",
+          "chlorine_foam","ceramic_pool"
+        ] },
+      ]
+    },
+
+    {
+      id: "infrastructure",
+      name: "leaking infrastructure",
+      palettes: [
+        { density:0.44, tiles:[
+          "leaking_conduit","leaking_conduit",
+          "thermal_vent",
+          "wire_vine","city_debris",
+          "shallow_pool","signal_moss"
+        ] },
+        { density:0.55, rare:true, tiles:[
+          "leaking_conduit","leaking_conduit",
+          "wire_vine","wire_vine",
+          "thermal_vent","black_water","drain_eye"
+        ] },
+      ]
+    },
   ];
 
-  function pickPalette(opts) {
-    const normal  = opts.filter(o => !o.rare && o.tiles?.length);
-    const extreme = opts.filter(o =>  o.rare);
-    if (extreme.length && chance(0.22)) return pick(extreme);
-    return pick(normal.length ? normal : opts.filter(o => o.tiles?.length));
+  function pickPaletteFromFamily(family) {
+    const normal  = family.palettes.filter(o => !o.rare && o.tiles?.length);
+    const extreme = family.palettes.filter(o =>  o.rare && o.tiles?.length);
+
+    // Slightly higher than before because the point is stronger regional identity.
+    if (extreme.length && chance(0.28)) return pick(extreme);
+    return pick(normal.length ? normal : family.palettes.filter(o => o.tiles?.length));
   }
 
-  const palettes = [null, pickPalette(PALETTE_OPTIONS[1]), pickPalette(PALETTE_OPTIONS[2])];
+  function pickDistinctFamilies(n) {
+    const bag = [...PALETTE_FAMILIES];
+
+    // Shuffle using seeded rand(), not Math.random().
+    for (let i = bag.length - 1; i > 0; i--) {
+      const j = Math.floor(rand() * (i + 1));
+      [bag[i], bag[j]] = [bag[j], bag[i]];
+    }
+
+    return bag.slice(0, n);
+  }
+
+  // Geometry still only gives regions 0/1/2.
+  // Region 0 stays as the base garden; regions 1 and 2 get selected biome families.
+  const activeRegionCount = state.gardenCuts.length + 1;
+  const transformedRegionCount = Math.max(0, activeRegionCount - 1);
+  const families = pickDistinctFamilies(transformedRegionCount);
+
+  const palettes = [null];
+  for (let r = 1; r < activeRegionCount; r++) {
+    const family = families[r - 1];
+    palettes[r] = pickPaletteFromFamily(family);
+  }
 
   for (let y = 1; y < ROWS - 1; y++) {
     for (let x = 1; x < COLS - 1; x++) {
       if (isSky(x, y) || isRail(x, y)) continue;
+
       const region = getGardenBiomeRegion(x, y);
       if (region === 0) continue;
-      const pal = palettes[region] || palettes[1];
+
+      const pal = palettes[region];
       if (!pal?.tiles?.length) continue;
+
       if (chance(pal.density) && !TILE_DB[state.terrain[y][x].id]?.solid) {
         state.terrain[y][x].id = pick(pal.tiles);
       }
     }
   }
 }
+
 
 function placeBiomes() {
   const api = { blob, rand, chance, pick, inBounds, isSky };

@@ -288,7 +288,7 @@ footer code{font-family:var(--mono); color:var(--ink)}
 </div>
 
 <div class="toolbar" style="border-top:none">
-  <div class="group">
+  <div class="group" id="tempoGroup">
     <label>bpm</label><input type="number" id="bpm" value="120" min="20" max="400" step="1">
     <label>sig</label><input type="number" id="sigNum" class="w48" value="4" min="1" max="32"> / 
     <select id="sigDen"><option>1</option><option>2</option><option selected>4</option><option>8</option><option>16</option></select>
@@ -628,6 +628,11 @@ function focusRegion(id){
   syncRegionFromControls();                 // save the looks of the region we're leaving
   activeRegionId=id;
   applyRegionToControls(activeRegion());
+  // reflect the region's coordinate kind in the meter|time toggle (without converting)
+  const kind=mainSystem().kind==='chronological'?'time':'meter';
+  view.timeRegime=kind;
+  document.querySelectorAll('#timeRegime button').forEach(x=>x.classList.toggle('on',x.dataset.r===kind));
+  if(typeof regimePill==='function') regimePill();
   updateRegionIndicator();
   if(typeof draw==='function') draw();
 }
@@ -646,8 +651,10 @@ function deleteRegion(id){
   applyRegionToControls(activeRegion()); changed();
 }
 function renameRegion(id){ const r=regions.find(x=>x.id===id); if(!r) return; const n=prompt('Region name:', r.name||r.id); if(n!=null && n.trim()){ r.name=n.trim(); if(typeof draw==='function') draw(); updateRegionIndicator(); } }
-function updateRegionIndicator(){ const el=document.getElementById('activeRegionName'); if(el){ const r=activeRegion(), m=mainSystem(r);
-  el.textContent = (r.name||r.id) + (m? ('  \u2669'+Math.round(m.bpm)+' '+(m.sigNum||4)+'/'+(m.sigDen||4)) : ''); } }
+function updateRegionIndicator(){ const el=document.getElementById('activeRegionName'); const r=activeRegion(), m=mainSystem(r);
+  if(el){ el.textContent = (r.name||r.id) + (m? (m.kind==='chronological' ? '  free time' : ('  \u2669'+Math.round(m.bpm)+' '+(m.sigNum||4)+'/'+(m.sigDen||4))) : ''); }
+  const tg=document.getElementById('tempoGroup'); if(tg) tg.style.display = (m && m.kind==='chronological') ? 'none' : '';   // free time has no tempo/meter/A4
+}
 function renderRegionTabs(){ updateRegionIndicator(); }   // tab strip removed — on-canvas region labels are the tabs
 function splitRegionAt(r, cutBeat){
   const m=mainSystem(r);
@@ -662,7 +669,50 @@ function splitRegionAt(r, cutBeat){
   mainSystem(r2).bars = totalUnits - cutUnits;
   regions.splice(i+1,0,r2);
   for(const n of notes){ if(n.region===r.id && n.start>=cutBeat-1e-9){ n.region=r2.id; n.start-=cutBeat; } }   // later notes -> new region, seconds conserved
-  focusRegion(r.id); changed(); flash('sliced into 2 regions');
+  applyRegionToControls(activeRegion());     // controls now reflect the post-slice bars (prevents stale-sync clobber)
+  changed(); updateRegionIndicator(); flash('sliced into 2 regions');
+}
+/* ---- boundary merge / cannibalism: move the A|B boundary, conserving every note's seconds ---- */
+function regUnitSec(m){ return m.kind==='chronological' ? 1 : (m.sigNum||4)*60/(m.bpm||120); }   // seconds per "snap unit" (a bar, or 1s)
+function snapBoundarySec(sec, i, mode){
+  if(!settings.snapTime) return sec;
+  if(mode==='left'){ const m=mainSystem(regions[i]), st=regionStartSec(regions[i]); const u=regUnitSec(m);
+    return st + Math.round((sec-st)/u)*u; }                      // left region's own grid -> clean ending for it
+  const m=mainSystem(regions[i+1]), anchor=regionStartSec(regions[i+1]); const u=regUnitSec(m);
+  return anchor + Math.round((sec-anchor)/u)*u;                  // right region's units from the boundary -> "per second / per bar"
+}
+function moveBoundary(i, newBoundarySec){
+  const left=regions[i], right=regions[i+1];
+  const leftStart=regionStartSec(left), rightEnd=regionStartSec(right)+regionSecLen(right);
+  const MIN=0.25;
+  newBoundarySec=Math.max(leftStart+MIN, Math.min(rightEnd-MIN, newBoundarySec));
+  const lm=mainSystem(left), rm=mainSystem(right);
+  // record affected notes' absolute seconds BEFORE resizing (start AND end — shape is conserved in time)
+  const aff=notes.filter(n=>n.region===left.id||n.region===right.id).map(n=>{
+    const r=regionById(n.region), m=mainSystem(r), rs=regionStartSec(r), spb=m.kind==='chronological'?1:60/m.bpm;
+    return {n, sec: rs+n.start*spb, endSec: rs+(n.start+(n.dur||0))*spb};
+  });
+  // resize both regions to meet at the new boundary
+  lm.bars = lm.kind==='chronological'? (newBoundarySec-leftStart) : (newBoundarySec-leftStart)*lm.bpm/60/(lm.sigNum||4);
+  rm.bars = rm.kind==='chronological'? (rightEnd-newBoundarySec) : (rightEnd-newBoundarySec)*rm.bpm/60/(rm.sigNum||4);
+  // reassign each note to whichever region now owns its onset; recompute local beats AND duration (seconds conserved)
+  for(const {n,sec,endSec} of aff){
+    const goLeft = sec < newBoundarySec-1e-9;
+    const m = goLeft?lm:rm, origin = goLeft?leftStart:newBoundarySec, ups = m.kind==='chronological'?1:m.bpm/60;  // units per second
+    n.region = goLeft?left.id:right.id;
+    n.start = (sec-origin)*ups;
+    n.dur   = Math.max(1e-4,(endSec-sec)*ups);
+  }
+  applyRegionToControls(activeRegion());   // keep controls in step (prevents stale-sync clobber)
+  changed(); updateRegionIndicator();
+}
+function boundaryHandleAt(p){
+  if(p.y<GUT_T+1 || p.y>GUT_T+20) return null;
+  for(let i=0;i<regions.length-1;i++){ const bx=secToX(regionStartSec(regions[i+1]));
+    if(p.x>=bx-13 && p.x<bx) return {i, mode:'left'};     // this region's end-flag (snaps to left grid)
+    if(p.x>=bx && p.x<=bx+13) return {i, mode:'right'};   // next region's start tab (snaps to right grid)
+  }
+  return null;
 }
 let selection=new Set();
 let clipboard=null;                 // {notes:[...deep clones with absolute start]}
@@ -1031,9 +1081,12 @@ function drawRegionFrames(W,H){
   for(const r of regions){
     const s0=regionStartSec(r), x0=secToX(s0); const active=(r.id===activeRegionId);
     if(s0>0 && x0>=GUT_L-1 && x0<=W){ ctx.strokeStyle='rgba(106,71,216,0.6)'; ctx.lineWidth=1.6; ctx.setLineDash([5,3]);
-      ctx.beginPath(); ctx.moveTo(Math.round(x0)+.5,GUT_T); ctx.lineTo(Math.round(x0)+.5,H); ctx.stroke(); ctx.setLineDash([]); }
+      ctx.beginPath(); ctx.moveTo(Math.round(x0)+.5,GUT_T); ctx.lineTo(Math.round(x0)+.5,H); ctx.stroke(); ctx.setLineDash([]);
+      // backward end-flag handle (drag = cannibalize on the left region's grid)
+      if(x0>=GUT_L+13){ ctx.fillStyle='rgba(106,71,216,0.18)'; ctx.fillRect(x0-12,GUT_T+3,11,15);
+        ctx.fillStyle='rgba(106,71,216,0.95)'; ctx.font='10px ui-monospace, Menlo, monospace'; ctx.fillText('\u25c2|', x0-11, GUT_T+14); } }
     const m=mainSystem(r);
-    const label=(r.name||r.id)+'  \u2669'+Math.round(m.bpm)+' '+(m.sigNum||4)+'/'+(m.sigDen||4)+(m.kind==='chronological'?' sec':'');
+    const label=(r.name||r.id)+(m.kind==='chronological'?'  free':('  \u2669'+Math.round(m.bpm)+' '+(m.sigNum||4)+'/'+(m.sigDen||4)));
     ctx.font='10px ui-monospace, Menlo, monospace';
     const lx=Math.min(W-4, Math.max(GUT_L+4, x0+6)); const tw=ctx.measureText(label).width+10;
     ctx.fillStyle = active ? 'rgba(17,137,126,0.16)' : 'rgba(231,223,238,0.66)';
@@ -1041,6 +1094,11 @@ function drawRegionFrames(W,H){
     ctx.fillStyle = active ? col('--tide') : 'rgba(40,82,76,0.62)';
     ctx.fillText(label, lx, GUT_T+14);
   }
+  // end of piece: a double bar, as in notation
+  { const endX=secToX(regions.reduce((s,r)=>s+regionSecLen(r),0));
+    if(endX>=GUT_L-2 && endX<=W+4){ ctx.strokeStyle='rgba(24,48,43,0.78)';
+      ctx.lineWidth=1.2; ctx.beginPath(); ctx.moveTo(Math.round(endX-4)+.5,GUT_T); ctx.lineTo(Math.round(endX-4)+.5,H); ctx.stroke();
+      ctx.lineWidth=3;   ctx.beginPath(); ctx.moveTo(Math.round(endX)+.5,GUT_T);   ctx.lineTo(Math.round(endX)+.5,H);   ctx.stroke(); } }
   // tuning track — its own sticky flag (one for now: the score is 12-TET; per-region tuning later)
   { const tn=(typeof activeScale!=='undefined' && activeScale && activeScale.name)?activeScale.name:'12-TET';
     ctx.font='10px ui-monospace, Menlo, monospace'; const tw=ctx.measureText(tn).width+10;
@@ -1260,6 +1318,9 @@ cv.addEventListener('pointerdown',e=>{
   const t=view.tool;
   if(t==='pan'||e.button===1||spaceDown){ drag={mode:'pan',sx:p.x,sy:p.y,ox:view.scrollX,oy:view.scrollY}; stage.classList.add('tool-pan'); return; }
 
+  // boundary merge handles: grab a region edge to cannibalize the neighbor (snap differs per handle)
+  { const bh=boundaryHandleAt(p); if(bh){ drag={mode:'boundary', i:bh.i, snap:bh.mode, preview:regionStartSec(regions[bh.i+1])}; return; } }
+
   // contiguous canvas: clicking into a region focuses it (its looks show); editing continues in it
   { const r=regionAtX(p.x); if(r && r.id!==activeRegionId) focusRegion(r.id); }
 
@@ -1417,6 +1478,9 @@ cv.addEventListener('pointermove',e=>{
   const d=drag;
   if(d.mode==='pan'){ view.scrollX=d.ox-(p.x-d.sx); view.scrollY=d.oy-(p.y-d.sy); clampScroll(); draw(); return; }
   if(d.mode==='scrollGutter'){ if(d.axis==='x') view.scrollX=d.ox-(p.x-d.sx); else view.scrollY=d.oy-(p.y-d.sy); clampScroll(); draw(); return; }
+  if(d.mode==='boundary'){ d.preview=snapBoundarySec(xToSec(p.x), d.i, d.snap); draw();
+    const x=secToX(d.preview); ctx.save(); ctx.strokeStyle=col('--ember'); ctx.lineWidth=2; ctx.setLineDash([4,3]);
+    ctx.beginPath(); ctx.moveTo(x,GUT_T); ctx.lineTo(x,cv.clientHeight); ctx.stroke(); ctx.restore(); return; }
 
   if(d.mode==='newHoldLen'){ const b=clampBeatToContent(snapBeat(xToBeat(p.x))); d.note.dur=Math.max(1/settings.grid, b-d.baseStart || settings.defLen); if(d.note.dur<=0) d.note.dur=settings.defLen; d.note.voice=autoVoice(d.note); draw(); updateStatus(); return; }
   if(d.mode==='newGlide'){
@@ -1535,6 +1599,7 @@ function hoverFeedback(p){
 cv.addEventListener('pointerup',e=>{
   if(drag){
     if(drag.mode==='marquee'){ commitMarquee(drag); }
+    if(drag.mode==='boundary'){ pushHistory(); moveBoundary(drag.i, drag.preview); flash('boundary moved'); }
     if((drag.mode==='newGlide'||drag.mode==='newFree'||drag.mode==='newHoldLen')){
       // discard zero-length frees
       if(drag.note.type==='free' && drag.note.pts.length<2){ notes=notes.filter(n=>n!==drag.note); }
@@ -1636,7 +1701,19 @@ function setTool(t){ if(penNote && t!=='pen') finalizePen(); view.tool=t;
   stage.className='stage tool-'+t; cv.style.cursor=''; changed();
 }
 document.querySelectorAll('#timeRegime button').forEach(b=>b.addEventListener('click',()=>{
-  view.timeRegime=b.dataset.r; document.querySelectorAll('#timeRegime button').forEach(x=>x.classList.toggle('on',x===b)); regimePill(); draw();
+  view.timeRegime=b.dataset.r; document.querySelectorAll('#timeRegime button').forEach(x=>x.classList.toggle('on',x===b)); regimePill();
+  // consequential: convert the ACTIVE region's coordinate system (extent + notes conserved in seconds)
+  const want = b.dataset.r==='time' ? 'chronological' : 'metered';
+  const m=mainSystem();
+  if(m.kind!==want){
+    pushHistory();
+    relabelActiveRegion(mm=>{
+      if(want==='chronological'){ mm.kind='chronological'; }
+      else { mm.kind='metered'; mm.bpm=+bpm.value||120; mm.sigNum=+sigNum.value||4; mm.sigDen=+sigDen.value||4; }
+    });
+    updateRegionIndicator(); flash(want==='chronological'?'region → free time':'region → metered');
+  }
+  draw();
 }));
 document.querySelectorAll('#pitchRegime button').forEach(b=>b.addEventListener('click',()=>{
   view.pitchRegime=b.dataset.r; document.querySelectorAll('#pitchRegime button').forEach(x=>x.classList.toggle('on',x===b)); regimePill(); draw();
@@ -1892,7 +1969,24 @@ function fitContent(){
   clampScroll(); draw();
 }
 
-[bpm,sigNum,sigDen,a4,bars].forEach(el=>el.addEventListener('change',()=>{syncRegionFromControls();clampScroll();draw();}));
+/* GOLDEN RULE: the extent (seconds) changes only explicitly — boundary drag or the bars input.
+   bpm / sig edits are RELABELINGS: the span stays put, bars remap onto it, notes freeze in seconds. */
+function relabelActiveRegion(fn){
+  const r=activeRegion(), m=mainSystem(r);
+  const secLen=regionSecLen(r), rs=regionStartSec(r);
+  const spb=m.kind==='chronological'?1:60/m.bpm;
+  const abs=notes.filter(n=>n.region===r.id).map(n=>({n, sec:rs+n.start*spb, endSec:rs+(n.start+(n.dur||0))*spb}));
+  fn(m);                                                       // apply the edit (new bpm / sig / kind from controls)
+  m.bars = (m.kind==='chronological') ? secLen : secLen/((m.sigNum||4)*60/m.bpm);   // extent conserved: units remap onto it
+  const ups2=m.kind==='chronological'?1:m.bpm/60;
+  for(const {n,sec,endSec} of abs){ n.start=(sec-rs)*ups2; n.dur=Math.max(1e-4,(endSec-sec)*ups2); }  // notes frozen in time
+  applyRegionToControls(r);
+}
+[bpm,sigNum,sigDen].forEach(el=>el.addEventListener('change',()=>{
+  relabelActiveRegion(m=>{ m.bpm=+bpm.value||120; m.sigNum=+sigNum.value||4; m.sigDen=+sigDen.value||4; });
+  changed(); clampScroll(); draw();
+}));
+[a4,bars].forEach(el=>el.addEventListener('change',()=>{syncRegionFromControls();changed();clampScroll();draw();}));   // bars = the explicit extent edit
 bendRange.addEventListener('input',()=>{document.getElementById('pillRange').textContent='±'+settings.range;});
 
 /* ---- voice manual control ---- */
@@ -2404,6 +2498,9 @@ function seed(){
     {id:NID++,region:A.id,start:0,dur:1,type:'hold', vel:100,voice:1,pts:[{t:0,hz:a}]},
     {id:NID++,region:A.id,start:1,dur:1,type:'hold', vel:100,voice:1,pts:[{t:0,hz:semis(3.5)}]},                            // neutral third
     {id:NID++,region:A.id,start:2,dur:2,type:'glide',vel:100,voice:1,pts:[{t:0,hz:semis(7)},{t:1,hz:semis(12)}]},
+    {id:NID++,region:A.id,start:4,dur:1,type:'hold', vel:95, voice:1,pts:[{t:0,hz:semis(9)}]},
+    {id:NID++,region:A.id,start:5,dur:1,type:'hold', vel:95, voice:1,pts:[{t:0,hz:semis(7)}]},
+    {id:NID++,region:A.id,start:6,dur:2,type:'glide',vel:95, voice:1,pts:[{t:0,hz:semis(5)},{t:1,hz:a}]},
     // B — chronological @4s (start/dur in SECONDS)
     {id:NID++,region:B.id,start:0,  dur:1.2,type:'glide',vel:100,voice:1,pts:[{t:0,hz:semis(12)},{t:1,hz:semis(5)}]},
     {id:NID++,region:B.id,start:1.6,dur:0.6,type:'hold', vel:90, voice:1,pts:[{t:0,hz:semis(9)}]},
