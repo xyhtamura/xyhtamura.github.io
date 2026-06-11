@@ -1007,6 +1007,90 @@ h1 {
   right: 6%;
 }
 
+.cell[data-tile="night_blossom"]::before {
+  content: "·";
+  position: absolute;
+  font-size: 0.34em;
+  color: #fff2a8;
+  opacity: 0.55;
+  top: 8%;
+  right: 10%;
+  animation: rare 3.2s ease-in-out infinite alternate;
+}
+
+.cell[data-tile="acid_marigold"]::before {
+  content: "✦";
+  position: absolute;
+  font-size: 0.34em;
+  color: #ffffa8;
+  opacity: 0.5;
+  top: 2%;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+
+.cell[data-tile="ghost_orchid"] {
+  mix-blend-mode: screen;
+}
+
+.cell[data-tile="ghost_orchid"]::before {
+  content: "◇";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  opacity: 0.22;
+  transform: translate(1px, -1px) scale(0.85);
+  filter: blur(0.3px);
+}
+
+.cell[data-tile="bougainvillea_static"]::before {
+  content: "✣";
+  position: absolute;
+  font-size: 0.42em;
+  color: #ffef6e;
+  opacity: 0.36;
+  bottom: 0;
+  right: 4%;
+  animation: flicker .24s steps(2,end) infinite;
+}
+
+.cell[data-tile="pollen_dust"]::before {
+  content: "°";
+  position: absolute;
+  font-size: 0.32em;
+  color: #fff6b8;
+  opacity: 0.42;
+  top: 1%;
+  right: 2%;
+}
+
+.cell[data-tile="hanging_blossom"]::before {
+  content: "⌇";
+  position: absolute;
+  font-size: 0.38em;
+  color: #d7ff9a;
+  opacity: 0.34;
+  top: -6%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  transform: scaleY(0.9);
+}
+
+.cell[data-tile="corpse_lily_signal"]::before {
+  content: "◉";
+  position: absolute;
+  font-size: 0.32em;
+  color: #3b0b24;
+  opacity: 0.58;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
     @media (max-width: 840px) {
       header { grid-template-columns: 1fr; }
       .status-strip { justify-items: start; text-align: left; min-width: 0; }
@@ -1645,7 +1729,7 @@ const BASE_TILE_DB = {
   kite_litter: {
     id:"kite_litter", glyphs:["△","◇","◁","▵"],
     name:"kite litter", type:"terrain", zLayer:"floor", solid:false,
-    color:"#f7b8ff", fx:"fx-flicker", windResponsive:true,
+    color:"#f7b8ff", windResponsive:true,
     rare:true,
     tags:["walkable","aerial","paper","urban","wind-responsive"],
     whispers:[
@@ -1653,6 +1737,176 @@ const BASE_TILE_DB = {
       "still flying somewhat",
       "a small color caught in the balcony",
       "not a bird or trash exactly"
+    ]
+  },
+    night_blossom: {
+    id:"night_blossom",
+    glyphs:["✿","✽","✾","*"],
+    name:"night blossom",
+    type:"terrain",
+    zLayer:"floor",
+    solid:false,
+    color:"#ff8bd8",
+    fx:"fx-breathe",
+    animated:true,
+    windResponsive:true,
+    blobChance:0.05,
+    blobCount:3,
+    blobRadius:3,
+    blobRadiusY:2,
+    tags:["walkable","floral","flower","bioluminescent","wind-responsive"],
+    sound:{ scaleIndex:13, type:"sine" },
+    whispers:[
+      "a flower blooming from residual nightlife",
+      "petals tuned to the balcony's damp voltage",
+      "soft pink insistence in the terminal garden",
+      "it opens only when no one is done arriving"
+    ]
+  },
+
+  acid_marigold: {
+    id:"acid_marigold",
+    glyphs:["✺","✹","✸","✶"],
+    name:"acid marigold",
+    type:"terrain",
+    zLayer:"floor",
+    solid:false,
+    color:"#e8e52f",
+    fx:"fx-glow",
+    animated:true,
+    windResponsive:true,
+    blobChance:0.08,
+    blobCount:3,
+    blobRadius:3,
+    blobRadiusY:2,
+    tags:["walkable","floral","flower","acid","luminous","wind-responsive"],
+    sound:{ scaleIndex:15, type:"triangle" },
+    whispers:[
+      "a small sun with poor boundaries",
+      "the flower looks chemically awake",
+      "marigold logic in highlighter yellow",
+      "its petals make the surrounding dark feel procedural"
+    ]
+  },
+
+  ghost_orchid: {
+    id:"ghost_orchid",
+    glyphs:["♢","◇","♧","✧"],
+    name:"ghost orchid",
+    type:"terrain",
+    zLayer:"floor",
+    solid:false,
+    color:"#d8fff2",
+    fx:"fx-rare",
+    animated:true,
+    windResponsive:false,
+    rare:true,
+    blobChance:0.04,
+    blobCount:2,
+    blobRadius:2,
+    blobRadiusY:1,
+    tags:["walkable","floral","orchid","ghost","rare","pale"],
+    sound:{ scaleIndex:16, type:"sine" },
+    whispers:[
+      "almost a flower, almost a reflection",
+      "its whiteness is not purity but low signal",
+      "an orchid that learned to haunt its own outline",
+      "botanical afterimage"
+    ]
+  },
+
+  bougainvillea_static: {
+    id:"bougainvillea_static",
+    glyphs:["✣","✤","✥","✦"],
+    name:"bougainvillea static",
+    type:"terrain",
+    zLayer:"floor",
+    solid:false,
+    color:"#f060c0",
+    animated:true,
+    windResponsive:true,
+    blobChance:0.03,
+    blobCount:2,
+    blobRadius:2,
+    blobRadiusY:2,
+    tags:["walkable","floral","bougainvillea","paper","urban","wind-responsive"],
+    sound:{ scaleIndex:10, type:"sawtooth" },
+    whispers:[
+      "paper flowers climbing the broadcast",
+      "bougainvillea with genetically modified lights",
+      "a familiar tropical color rendered as noise",
+      "the bracts are brighter tonight"
+    ]
+  },
+
+  pollen_dust: {
+    id:"pollen_dust",
+    glyphs:["˚","°","·","⁕"],
+    name:"pollen dust",
+    type:"terrain",
+    zLayer:"floor",
+    solid:false,
+    color:"#ffd98a",
+    fx:"",
+    animated:true,
+    windResponsive:true,
+    blobChance:0.16,
+    blobCount:4,
+    blobRadius:5,
+    blobRadiusY:2,
+    tags:["walkable","floral","pollen","particulate","wind-responsive","soft"],
+    whispers:[
+      "small reproductive punctuation",
+      "the air has been lightly edited",
+      "archive of nearby bloom",
+      "yellow dust from an optimistic system"
+    ]
+  },
+
+  hanging_blossom: {
+    id:"hanging_blossom",
+    glyphs:["❀","✿","✽","❁"],
+    name:"hanging blossom",
+    type:"terrain",
+    zLayer:"overhead",
+    solid:false,
+    color:"#f0b8de",
+    fx:"fx-drift",
+    animated:true,
+    windResponsive:true,
+    tags:["overhead","floral","flower","vine","canopy","wind-responsive"],
+    sound:{ scaleIndex:14, type:"sine" },
+    whispers:[
+      "flowers hanging from a layer above the map",
+      "above nose height",
+      "a suspended bloom with no visible branch",
+      "petals occupy the overhead channel"
+    ]
+  },
+
+  corpse_lily_signal: {
+    id:"corpse_lily_signal",
+    glyphs:["☣","✹","◉","✺"],
+    name:"corpse lily signal",
+    type:"terrain",
+    zLayer:"floor",
+    solid:false,
+    color:"#b86e8a",
+    fx:"fx-breathe entity",
+    animated:true,
+    windResponsive:false,
+    rare:true,
+    blobChance:0.03,
+    blobCount:1,
+    blobRadius:2,
+    blobRadiusY:2,
+    tags:["walkable","floral","corpse-flower","signal","rare","odor"],
+    sound:{ scaleIndex:4, type:"sawtooth" },
+    whispers:[
+      "broadcasting an invitation",
+      "the smell is conceptual but convincing",
+      "huge bloom, small scandal",
+      "it calls insects that have not been implemented yet"
     ]
   },
 };
@@ -1789,8 +2043,52 @@ const BASE_ENTITY_DB = {
     spawnWeight:1, glyphCycleSpeed:0.05,
     tags:["infrastructure","network","soft-machine","rare","signal"], sound:{ scaleIndex:2, type:"sine" },
     whispers:["Packets arrive wearing little coats.","I route carpets inefficiently.","The network is warm where it should be neutral.","Connection refused. Connection reconsidered. Connection held."]
-  }
+  },
   
+    wakeful_refrigerator: {
+    id:"wakeful_refrigerator",
+    glyphs:["▣","▤","▥","▦"],
+    name:"wakeful refrigerator",
+    type:"appliance-spirit",
+
+    // Keep false unless you have entity collision checks.
+    // It can still feel massive through color/fx/whispers.
+    solid:false,
+
+    mobile:false,
+    moveChance:0,
+    windResponsive:false,
+
+    color:"#d8fff2",
+    fx:"fx-breathe entity",
+    spawnWeight:1,
+    glyphCycleSpeed:0.035,
+
+    tags:[
+      "appliance",
+      "spirit",
+      "infrastructure",
+      "cold",
+      "domestic",
+      "watching",
+      "rare"
+    ],
+
+    sound:{ scaleIndex:1, type:"triangle" },
+
+    whispers:[
+      "awake but not alarmed.",
+      "I've been here since morning.",
+      "It's often disappointing not to find a snack, even if there is food",
+      "It has been keeping something fresh past the end of the party.",
+      "A domestic monolith",
+      "The inside is larger than its appliance category allows.",
+      "I'm feeling a little warm outside.",
+      "I'm feeling a little chilly inside.",
+      "It is the architecture of hunger.",
+      "The refrigerator blinks in cubic silence."
+    ]
+  },
   
 };
 
@@ -2508,6 +2806,48 @@ function applyGardenBiomeCuts() {
           "leaking_conduit","leaking_conduit",
           "wire_vine","wire_vine",
           "thermal_vent","black_water","drain_eye"
+        ] },
+      ]
+    },
+	    {
+      id: "floral",
+      name: "floral overgrowth",
+      palettes: [
+        { density:0.58, tiles:[
+          "night_blossom","night_blossom","night_blossom",
+          "pollen_dust","pollen_dust",
+          "neon_fuzz","spore_bloom",
+          "hanging_blossom"
+        ] },
+
+        { density:0.62, tiles:[
+          "bougainvillea_static","bougainvillea_static","bougainvillea_static",
+          "night_blossom","night_blossom",
+          "pollen_dust",
+          "wire_vine","signal_moss"
+        ] },
+
+        { density:0.52, tiles:[
+          "acid_marigold","acid_marigold","acid_marigold",
+          "pollen_dust","pollen_dust",
+          "sand_drift","gravel_bed"
+        ] },
+
+        { density:0.48, rare:true, tiles:[
+          "ghost_orchid","ghost_orchid",
+          "night_blossom",
+          "low_cloud",
+          "pollen_dust",
+          "hanging_blossom"
+        ] },
+
+        { density:0.42, rare:true, tiles:[
+          "corpse_lily_signal",
+          "corpse_lily_signal",
+          "acid_marigold",
+          "bougainvillea_static",
+          "signal_moss",
+          "black_water"
         ] },
       ]
     },
