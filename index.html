@@ -69,6 +69,7 @@
   --category-fashion-color:#e6a3b1;
   --category-dot-color:#c3c6d6;
   --category-games-color: #ff7f50;
+  --category-film-color:#d8f23b;
 
   --btn-lavender:rgba(62,56,89,0.6);
   --btn-amber:rgba(46,43,40,0.6);
@@ -99,26 +100,11 @@
   --work-entry-bg:rgba(224,255,244,0.3);
   --sub-entry-bg:rgba(224,255,244,0.3);
   --minor-work-entry-bg:rgba(255,255,255,0.1);
-  --category-research-color:#b32846;
-  --category-intermedia-color:#402f89;
-  --category-virtual-color:#2c9c87;
-  --category-music-color:#1e7a4e;
-  --category-score-color:#a64625;
-  --category-writing-color:#2e57a1;
-  --category-theater-color:#731d73;
-  --category-tech-color:#2e72b5;
-  --category-visual-color:#8b3ebd;
-  --category-participatory-color:#d49a00;
-  --category-management-color:#4a3952;
-  --category-sci-comm-color:#1a7a99;
-  --category-artistic-research-color:#00796b;
-  --category-fashion-color:#a34f60;
-  --category-dot-color:#514d3d;
   --btn-lavender:rgba(117,205,255,0.3);
   --btn-amber:rgba(255,217,120,0.3);
   --btn-glass-shine:rgba(191,218,245,0.35);
   --btn-glass-shadow:rgba(6,4,36,0.4);
-  --category-games-color: #cc4714;
+
 }
 }
 
@@ -251,6 +237,7 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2rem,6vw,3rem
 .fbtn[data-cat="sci-comm"].on{background:var(--category-sci-comm-color);}
 .fbtn[data-cat="artistic-research"].on{background:var(--category-artistic-research-color);}
 .fbtn[data-cat="fashion"].on{background:var(--category-fashion-color);}
+.fbtn[data-cat="film"].on{background:var(--category-film-color);}
 .fbtn[data-cat="games"].on{background:var(--category-games-color);}
 }
 
@@ -280,15 +267,16 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2rem,6vw,3rem
 .chip.virtual{background:var(--category-virtual-color);color:#fff;text-shadow:none;}
 .chip.music{background:var(--category-music-color);}
 .chip.score{background:var(--category-score-color);}
-.chip.writing{background:var(--category-writing-color);}
-.chip.theater{background:var(--category-theater-color);}
+.chip.writing{background:var(--category-writing-color);color:#001;text-shadow:none;}
+.chip.theater{background:var(--category-theater-color);color:#001;text-shadow:none;}
 .chip.tech{background:var(--category-tech-color);}
 .chip.visuals{background:var(--category-visual-color);color:#fff;text-shadow:none;}
-.chip.participatory{background:var(--category-participatory-color);}
-.chip.management{background:var(--category-management-color);}
-.chip.sci-comm{background:var(--category-sci-comm-color);}
-.chip.artistic-research{background:var(--category-artistic-research-color);}
-.chip.fashion{background:var(--category-fashion-color);}
+.chip.participatory{background:var(--category-participatory-color);color:#001;text-shadow:none;}
+.chip.management{background:var(--category-management-color);color:#001;text-shadow:none;}
+.chip.sci-comm{background:var(--category-sci-comm-color);color:#001;text-shadow:none;}
+.chip.artistic-research{background:var(--category-artistic-research-color);color:#001;text-shadow:none;}
+.chip.fashion{background:var(--category-fashion-color);color:#001;text-shadow:none;}
+.chip.film{background:var(--category-film-color);color:#001;text-shadow:none;}
 .chip.games {
   background: var(--category-games-color);
   color: #15131f; 
@@ -448,20 +436,32 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2rem,6vw,3rem
 /* Container for your mini-gallery */
 .media-group {
   display: flex;
-  flex-wrap: wrap; 
-  gap: 12px;       
+  flex-wrap: nowrap;            /* was: wrap — this is the key change */
+  gap: 12px;
   margin: 0.2rem 0 1rem;
-  align-items: flex-start; /* Keeps them aligned smoothly at the top */
+  align-items: flex-start;
+  overflow-x: auto;             /* horizontal scroll when items overflow */
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;        /* Firefox */
+  padding-bottom: 6px;          /* breathing room so scrollbar doesn't kiss the images */
 }
 
-/* Forces items to respect their true sizes instead of stretching to fill the row */
+/* thin scrollbar for Chromium/WebKit */
+.media-group::-webkit-scrollbar { height: 6px; }
+.media-group::-webkit-scrollbar-thumb {
+  background: var(--line-color);
+  border-radius: 3px;
+}
+
 .media-group .media {
-  flex: 0 1 auto;
+  flex: 0 0 auto;               /* was 0 1 auto — don't let items shrink, let the row scroll instead */
   width: auto;
   height: auto;
   max-height: 200px;
   object-fit: contain;
-  margin: 0;       
+  margin: 0;
+  cursor: zoom-in;
 }
 
 /* Firefox-ish first-open details jump fix */
@@ -471,6 +471,24 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2rem,6vw,3rem
 .entry .body,
 .media-group {
   overflow-anchor: none;
+}
+
+/* lightbox */
+.lightbox {
+  position: fixed; inset: 0; z-index: 999;
+  display: none;
+  align-items: center; justify-content: center;
+  background: rgba(10, 8, 18, .88);
+  backdrop-filter: blur(6px);
+  cursor: zoom-out;
+  padding: 4vmin;
+}
+.lightbox.open { display: flex; }
+.lightbox img {
+  max-width: 100%; max-height: 100%;
+  object-fit: contain;
+  border-radius: 10px;
+  box-shadow: 0 10px 50px rgba(0,0,0,.6);
 }
 </style>
 </head>
@@ -544,18 +562,19 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
 <button class="fbtn on" data-cat="all">all</button>
 <button class="fbtn" data-cat="intermedia" data-tooltip="works transcending disciplines and combining multiple media forms">intermedia</button>
 <button class="fbtn" data-cat="research" data-tooltip="academic and para-academic work">research</button>
-<button class="fbtn" data-cat="music" data-tooltip="works within music cultures">music</button>
-<button class="fbtn" data-cat="tech" data-tooltip="software & hardware">tech</button>
+<button class="fbtn" data-cat="music" data-tooltip="works with outputs in music circulation">music</button>
+<button class="fbtn" data-cat="tech" data-tooltip="software & hardware, tools">tech</button>
 <button class="fbtn" data-cat="score" data-tooltip="as a composer, scoring for video, film, & stage">score</button>
 <button class="fbtn" data-cat="artistic-research" data-tooltip="works hybridizing research and making">research-art</button>
-<button class="fbtn" data-cat="writing" data-tooltip="mostly pure text and literature">writing</button>
+<button class="fbtn" data-cat="writing" data-tooltip="works with outputs that circulate as pure text">writing</button>
 <button class="fbtn" data-cat="theater" data-tooltip="theater, acting, performance, playwriting, and dramaturgical work">theater</button>
 <button class="fbtn" data-cat="games" data-tooltip="games and ludic work">games</button>
-<button class="fbtn" data-cat="visuals" data-tooltip="pure visual and graphic work">visual</button>
+<button class="fbtn" data-cat="visuals" data-tooltip="works with outputs circulating as pure visual/graphic objects">visual</button>
 <button class="fbtn" data-cat="virtual" data-tooltip="virtual spaces and communities">virtual</button>
 <button class="fbtn" data-cat="fashion" data-tooltip="fashion & worn art, digital and physical">fashion</button>
 <button class="fbtn" data-cat="sci-comm" data-tooltip="science communication">sci-comm</button>
 <button class="fbtn" data-cat="participatory" data-tooltip="participatory research, social action, community building">participatory</button>
+<button class="fbtn" data-cat="film" data-tooltip="works with outputs that circulate as film & video objects">film</button>
 <button class="fbtn" data-cat="management">management</button>
   </nav>
 
@@ -612,11 +631,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
 </details>
 
 
-<details class="entry" data-cats="tech music games intermedia artistic-research" id="cytophone">
+<details class="entry" data-cats="tech games intermedia artistic-research" id="cytophone">
   <summary>
     <span class="year">2026</span>
     <span class="title">Cytophone</span>
-    <span class="chips"><span class="chip tech">tech</span><span class="chip music">music</span><span class="chip intermedia">intermedia</span><span class="chip games">games</span><span class="chip artistic-research">research-art</span></span>
+    <span class="chips"><span class="chip tech">tech</span><span class="chip intermedia">intermedia</span><span class="chip games">games</span><span class="chip artistic-research">research-art</span></span>
   </summary>
   <div class="body">
    <div class="media-group">
@@ -712,11 +731,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   </div>
 </details>
 
-<details class="entry minor" data-cats="tech music intermedia games" id="electropond">
+<details class="entry minor" data-cats="tech intermedia games" id="electropond">
   <summary>
     <span class="year">2026</span>
     <span class="title">Electropond</span>
-    <span class="chips"><span class="chip tech">tech</span><span class="chip music">music</span><span class="chip intermedia">intermedia</span><span class="chip games">games</span></span>
+    <span class="chips"><span class="chip tech">tech</span><span class="chip intermedia">intermedia</span><span class="chip games">games</span></span>
   </summary>
   <div class="body">
     <p>A browser-based visual-physics instrument where FM-synthesis plankton generate complex sound layers through physical motion, color properties, collision dynamics, and rippling microtonal fields.</p>
@@ -884,11 +903,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   </div>
 </details>
 
-<details class="entry major" data-cats="tech visuals" id="sgueltch">
+<details class="entry major" data-cats="tech" id="sgueltch">
   <summary>
     <span class="year">2025–26→</span>
     <span class="title">Sgueltch</span>
-    <span class="chips"><span class="chip tech">tech</span><span class="chip visuals">visual</span></span>
+    <span class="chips"><span class="chip tech">tech</span></span>
   </summary>
   <div class="body">
     <p>An aesthetic philosophy and a tech suite. Sgueltch is a word between squelch and glitch. It moves away from traditional glitch art's rigid, pixelated, mechanical disruptions and toward fluid, continuous, biologically-inspired distortion. Sgueltch asks what digital error can become when it begins from other substrates: ooze, tissue, silt, weather, viscosity, lesion, flocking, breath, and growth. It values asymmetry, unpredictability, embodiment, and mess-compatible media as a counter-infrastructure and a counter-erroring for an alternate digitality. </p>
@@ -991,11 +1010,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   </div>
 </details>
 
-<details class="entry" data-cats="intermedia visuals" id="open4">
+<details class="entry" data-cats="intermedia film" id="open4">
   <summary>
     <span class="year">2025→</span>
     <span class="title">Open4</span>
-    <span class="chips"><span class="chip intermedia">Intermedia</span><span class="chip visuals">visual</span></span>
+    <span class="chips"><span class="chip intermedia">Intermedia</span><span class="chip film">film</span></span>
   </summary>
   <div class="body">
     <p>Long, looped ambient videos made from non-explicit transitional footage in archival gay adult media from the 1980s on — isolating rooms, hallways, pools, beds. Shifts attention from action to atmosphere, anticipation, and disappearance; on queer temporality and the ephemerality of worlds that may no longer exist.</p>
@@ -1024,11 +1043,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   </div>
 </details>
 
-<details class="entry" data-cats="intermedia visuals" id="insulae-incognita">
+<details class="entry" data-cats="intermedia" id="insulae-incognita">
   <summary>
     <span class="year">2025→</span>
     <span class="title">Insulae Incognita</span>
-    <span class="chips"><span class="chip intermedia">intermedia</span><span class="chip visuals">visual</span></span>
+    <span class="chips"><span class="chip intermedia">intermedia</span></span>
   </summary>
   <div class="body">
     <p>A media art algorithmic poem generating an archipelago based on special Unicode characters and scripts of cultures with precolonial contact with Manila.</p>
@@ -1046,11 +1065,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   </div>
 </details>
 
-<details class="entry" data-cats="intermedia music virtual" id="manifest">
+<details class="entry" data-cats="intermedia music score film" id="manifest">
   <summary>
     <span class="year">2024–25→</span>
     <span class="title">Manifest</span>
-    <span class="chips"><span class="chip intermedia">intermedia</span><span class="chip music">music</span><span class="chip virtual">virtual</span></span>
+    <span class="chips"><span class="chip intermedia">intermedia</span><span class="chip score">score</span><span class="chip film">film</span></span>
   </summary>
   <div class="body">
     <div class="media">[ short film / live score still ]</div>
@@ -1086,11 +1105,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   </div>
 </details>
 
-<details class="entry" data-cats="research intermedia" id="feeling-together">
+<details class="entry" data-cats="research artistic-research" id="feeling-together">
   <summary>
     <span class="year">2025</span>
     <span class="title">Feeling Together: Affective Circuits and the Relational Self in Philippine Cultures, Beyond Literary Individualism</span>
-    <span class="chips"><span class="chip research">research</span><span class="chip intermedia">intermedia</span></span>
+    <span class="chips"><span class="chip research">research</span><span class="chip artistic-research">research-art</span></span>
   </summary>
   <div class="body">
     <p class="ctx">Feeling Formal · Nanyang Technological University · academic and literary/artistic presentation for a workshop on theories of emotion · researcher, participant, presenter</p>
@@ -1113,11 +1132,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   </div>
 </details> -->
 
-<details class="entry" data-cats="research intermedia" id="intermedia-musicopoetics">
+<details class="entry" data-cats="research artistic-research" id="intermedia-musicopoetics">
   <summary>
     <span class="year">2025</span>
     <span class="title">Intermedia Musicopoetics and Transpractice Songwriting in Night Bus</span>
-    <span class="chips"><span class="chip research">research</span><span class="chip intermedia">intermedia</span></span>
+    <span class="chips"><span class="chip research">research</span><span class="chip artistic-research">research-art</span></span>
   </summary>
   <div class="body">
     <p class="ctx">Saliksik-Musika II · University of the Philippines · academic and musical/artistic presentation for an international forum on music · researcher, participant, presenter</p>
@@ -1130,11 +1149,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   </div>
 </details>
 
-<details class="entry" data-cats="music participatory virtual" id="piyesta-plaza">
+<details class="entry" data-cats="music participatory" id="piyesta-plaza">
   <summary>
     <span class="year">2025</span>
     <span class="title">Piyesta Plaza <span class="artist-tag">as Cyberpaean</span></span>
-    <span class="chips"><span class="chip music">music</span><span class="chip participatory">participatory</span><span class="chip virtual">virtual</span></span>
+    <span class="chips"><span class="chip music">music</span><span class="chip participatory">participatory</span></span>
   </summary>
   <div class="body">
     <p class="ctx">Mono by Phono · conceptualizer, event designer, performer, composer <span class="role">as Cyberpaean</span></p>
@@ -1164,11 +1183,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   </div>
 </details>
 
-<details class="entry minor" data-cats="intermedia writing" id="love-letter">
+<details class="entry minor" data-cats="intermedia " id="love-letter">
   <summary>
     <span class="year">2025</span>
     <span class="title">LOVE-LETTER-FOR-YOU.TXT</span>
-    <span class="chips"><span class="chip intermedia">intermedia</span><span class="chip writing">writing</span></span>
+    <span class="chips"><span class="chip intermedia">intermedia</span></span>
   </summary>
   <div class="body">
     <p>An algorithmic poem based on the ILOVEYOU virus, written through its creator's imagined persona and a postcolonial reading of internet access and desire. Its words are replaced one by one with ILOVEYOU until the phrase overtakes the text — the poem performs its own viral collapse.</p>
@@ -1178,11 +1197,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   </div>
 </details>
 
-<details class="entry minor" data-cats="intermedia music writing" id="breakfast">
+<details class="entry minor" data-cats="intermedia" id="breakfast">
   <summary>
     <span class="year">2025</span>
     <span class="title">breakfast</span>
-    <span class="chips"><span class="chip intermedia">intermedia</span><span class="chip music">music</span><span class="chip writing">writing</span></span>
+    <span class="chips"><span class="chip intermedia">intermedia</span></span>
   </summary>
   <div class="body">
     <p>A lo-fi spoken-word poem recorded on a phone during an early-morning walk — shaped by breath, footsteps, and traffic; a roadside animal death against an eroticized vision of a runner.</p>
@@ -1192,11 +1211,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   </div>
 </details>
 
-<details class="entry minor" data-cats="intermedia visuals" id="uniform">
+<details class="entry minor" data-cats="intermedia film" id="uniform">
   <summary>
     <span class="year">2025</span>
     <span class="title">Uniform</span>
-    <span class="chips"><span class="chip intermedia">intermedia</span><span class="chip visuals">visual</span></span>
+    <span class="chips"><span class="chip intermedia">intermedia</span><span class="chip film">film</span></span>
   </summary>
   <div class="body">
     <p>Animated asemic writing short.</p>
@@ -1248,11 +1267,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   </div>
 </details>
 
-<details class="entry" data-cats="research participatory intermedia" id="istorya">
+<details class="entry" data-cats="research participatory intermedia tech" id="istorya">
   <summary>
     <span class="year">2025</span>
     <span class="title"><em>Istorya sang Bȧlatyagon</em></span>
-    <span class="chips"><span class="chip participatory">participatory</span><span class="chip research">research</span><span class="chip intermedia">intermedia</span></span>
+    <span class="chips"><span class="chip participatory">participatory</span><span class="chip research">research</span><span class="chip intermedia">intermedia</span><span class="chip tech">tech</span></span>
   </summary>
   <div class="body">
     <p class="ctx">Atipan+ General Workshop 2025 · intern, artist-researcher, developer, translator, facilitator</p>
@@ -1268,11 +1287,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   </div>
 </details>
 
-<details class="entry" data-cats="intermedia visuals" id="where-you-were-last-seen">
+<details class="entry" data-cats="intermedia" id="where-you-were-last-seen">
   <summary>
     <span class="year">2025</span>
     <span class="title">Where You Were Last Seen</span>
-    <span class="chips"><span class="chip intermedia">intermedia</span><span class="chip visuals">visual</span></span>
+    <span class="chips"><span class="chip intermedia">intermedia</span></span>
   </summary>
   <div class="body">
     <p>Three textual-visual drawings fusing maps, diagrams, and manipulated photographs with poetry, prose, and asemic writing.</p>
@@ -1296,11 +1315,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
     </div>
   </div>
 </details>
-<details class="entry" data-cats="intermedia" id="of-another-shore">
+<details class="entry" data-cats="intermedia film" id="of-another-shore">
   <summary>
     <span class="year">2025→</span>
     <span class="title">Of Another Shore</span>
-    <span class="chips"><span class="chip intermedia">intermedia</span></span>
+    <span class="chips"><span class="chip intermedia">intermedia</span><span class="chip film">film</span></span>
   </summary>
   <div class="body">
     <div class="media">[ image / videopoem still ]</div>
@@ -1392,11 +1411,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   </div>
 </details>
 
-<details class="entry" data-cats="intermedia" id="shook">
+<details class="entry" data-cats="intermedia film" id="shook">
   <summary>
     <span class="year">2024→</span>
     <span class="title">Shook</span>
-    <span class="chips"><span class="chip intermedia">intermedia</span></span>
+    <span class="chips"><span class="chip intermedia">intermedia</span><span class="chip film">film</span></span>
   </summary>
   <div class="body">
           <div class="media-group">
@@ -1450,11 +1469,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   </div>
 </details>
 
-<details class="entry" data-cats="research participatory" id="nmt-stakeholder">
+<details class="entry" data-cats="research participatory tech" id="nmt-stakeholder">
   <summary>
     <span class="year">2024</span>
     <span class="title"><em>Participatory stakeholder engagement to build a constituency for a proposed Non-motorised transport plan and policy in UP Diliman</em></span>
-    <span class="chips"><span class="chip research">research</span><span class="chip participatory">participatory</span></span>
+    <span class="chips"><span class="chip research">research</span><span class="chip participatory">participatory</span><span class="chip tech">tech</span></span>
   </summary>
   <div class="body">
     <p class="ctx">researcher, developer · policy research</p>
@@ -1958,6 +1977,29 @@ btns.forEach(b=>b.addEventListener('click',()=>{
     e.hidden=!(active.size===0||[...active].some(t=>cats.includes(t)));
   });
 }));
+
+// lightbox for media-group images
+const lb = document.createElement('div');
+lb.className = 'lightbox';
+lb.innerHTML = '<img alt="">';
+document.body.appendChild(lb);
+const lbImg = lb.querySelector('img');
+
+document.querySelectorAll('.media-group img.media').forEach(img => {
+  img.addEventListener('click', () => {
+    lbImg.src = img.src;
+    lbImg.alt = img.alt;
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  });
+});
+
+const closeLb = () => {
+  lb.classList.remove('open');
+  document.body.style.overflow = '';
+};
+lb.addEventListener('click', closeLb);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLb(); });
 </script>
 
 
