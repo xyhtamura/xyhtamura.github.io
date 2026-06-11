@@ -1091,6 +1091,143 @@ h1 {
   transform: translate(-50%, -50%);
 }
 
+.cell[data-tile="mall_marble"]::before {
+  content: "·";
+  position: absolute;
+  font-size: 0.32em;
+  color: #ffffff;
+  opacity: 0.34;
+  top: 6%;
+  right: 8%;
+}
+
+.cell[data-tile="neon_directory"]::before {
+  content: "▭";
+  position: absolute;
+  font-size: 0.42em;
+  color: #7dfff2;
+  opacity: 0.42;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  transform: scale(0.72);
+  animation: flicker .26s steps(2,end) infinite;
+}
+
+.cell[data-tile="dead_fountain"]::before {
+  content: "○";
+  position: absolute;
+  font-size: 0.46em;
+  color: #ffffff;
+  opacity: 0.28;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  animation: ripple 1.8s ease-in-out infinite alternate;
+}
+
+.cell[data-tile="escalator_teeth"]::before {
+  content: "›";
+  position: absolute;
+  font-size: 0.42em;
+  color: #ffffff;
+  opacity: 0.28;
+  right: 2%;
+  top: 3%;
+}
+
+.cell[data-tile="atrium_glass"] {
+  mix-blend-mode: screen;
+}
+
+.cell[data-tile="atrium_glass"]::before {
+  content: "◇";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  opacity: 0.24;
+  transform: translate(1px, -1px) scale(0.82);
+}
+
+.cell[data-tile="brown_grass"]::before {
+  content: "ˎ";
+  position: absolute;
+  font-size: 0.34em;
+  color: #e2b56d;
+  opacity: 0.28;
+  top: 2%;
+  right: 4%;
+}
+
+.cell[data-tile="meadow_grass"]::before {
+  content: "′";
+  position: absolute;
+  font-size: 0.36em;
+  color: #d7ff9a;
+  opacity: 0.32;
+  top: 0;
+  left: 8%;
+}
+
+.cell[data-tile="seed_head"]::before {
+  content: "°";
+  position: absolute;
+  font-size: 0.34em;
+  color: #fff2a8;
+  opacity: 0.45;
+  top: 0;
+  right: 4%;
+}
+
+.cell[data-tile="office_thicket"]::before {
+  content: "⌇";
+  position: absolute;
+  font-size: 0.38em;
+  color: #d7ff9a;
+  opacity: 0.34;
+  top: -4%;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+
+.cell[data-tile="payphone_relic"]::before {
+  content: "•";
+  position: absolute;
+  font-size: 0.3em;
+  color: #ff8bd8;
+  opacity: 0.68;
+  top: 18%;
+  right: 18%;
+  animation: rare 2.4s ease-in-out infinite alternate;
+}
+
+.cell[data-tile="cable_root"]::before {
+  content: "·";
+  position: absolute;
+  font-size: 0.34em;
+  color: #ffb8ea;
+  opacity: 0.34;
+  bottom: 3%;
+  right: 4%;
+  animation: wire 2.3s linear infinite;
+}
+
+.cell[data-tile="ac_fern"]::before {
+  content: "≈";
+  position: absolute;
+  font-size: 0.38em;
+  color: #d7ff9a;
+  opacity: 0.3;
+  top: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  transform: scaleX(0.72);
+}
+
     @media (max-width: 840px) {
       header { grid-template-columns: 1fr; }
       .status-strip { justify-items: start; text-align: left; min-width: 0; }
@@ -1620,7 +1757,7 @@ const BASE_TILE_DB = {
     id:"low_cloud", glyphs:["\u2591","\u25cb","\u25cc","\u25e6"],
     name:"low cloud", type:"terrain", zLayer:"floor", solid:false,
     color:"#c8d8f0", fx:"fx-drift", windResponsive:true, animated:true,
-    blobChance:0.05, blobCount:2, blobRadius:5, blobRadiusY:2,
+    blobChance:0.02, blobCount:2, blobRadius:5, blobRadiusY:2,
     tags:["walkable","atmospheric","weather-bound","soft","wind-responsive"],
     sound:{ scaleIndex:7, type:"sine" },
     whispers:[
@@ -1751,9 +1888,9 @@ const BASE_TILE_DB = {
     animated:true,
     windResponsive:true,
     blobChance:0.05,
-    blobCount:3,
-    blobRadius:3,
-    blobRadiusY:2,
+    blobCount:2,
+    blobRadius:1,
+    blobRadiusY:1,
     tags:["walkable","floral","flower","bioluminescent","wind-responsive"],
     sound:{ scaleIndex:13, type:"sine" },
     whispers:[
@@ -1776,9 +1913,9 @@ const BASE_TILE_DB = {
     animated:true,
     windResponsive:true,
     blobChance:0.08,
-    blobCount:3,
-    blobRadius:3,
-    blobRadiusY:2,
+    blobCount:2,
+    blobRadius:1,
+    blobRadiusY:1,
     tags:["walkable","floral","flower","acid","luminous","wind-responsive"],
     sound:{ scaleIndex:15, type:"triangle" },
     whispers:[
@@ -1802,8 +1939,8 @@ const BASE_TILE_DB = {
     windResponsive:false,
     rare:true,
     blobChance:0.04,
-    blobCount:2,
-    blobRadius:2,
+    blobCount:1,
+    blobRadius:1,
     blobRadiusY:1,
     tags:["walkable","floral","orchid","ghost","rare","pale"],
     sound:{ scaleIndex:16, type:"sine" },
@@ -1826,9 +1963,9 @@ const BASE_TILE_DB = {
     animated:true,
     windResponsive:true,
     blobChance:0.03,
-    blobCount:2,
-    blobRadius:2,
-    blobRadiusY:2,
+    blobCount:1,
+    blobRadius:1,
+    blobRadiusY:1,
     tags:["walkable","floral","bougainvillea","paper","urban","wind-responsive"],
     sound:{ scaleIndex:10, type:"sawtooth" },
     whispers:[
@@ -1851,8 +1988,8 @@ const BASE_TILE_DB = {
     animated:true,
     windResponsive:true,
     blobChance:0.16,
-    blobCount:4,
-    blobRadius:5,
+    blobCount:2,
+    blobRadius:2,
     blobRadiusY:2,
     tags:["walkable","floral","pollen","particulate","wind-responsive","soft"],
     whispers:[
@@ -1907,6 +2044,251 @@ const BASE_TILE_DB = {
       "the smell is conceptual but convincing",
       "huge bloom, small scandal",
       "it calls insects that have not been implemented yet"
+    ]
+  },
+    mall_marble: {
+    id:"mall_marble",
+    glyphs:["□","▧","▫","▱"],
+    name:"mall marble",
+    type:"terrain",
+    zLayer:"floor",
+    solid:false,
+    color:"#f2d6ff",
+    fx:"",
+    windResponsive:false,
+    tags:["walkable","mall","tile","interior","polished"],
+    whispers:[
+      "polished by discontinued foot traffic",
+      "even where nothing stands",
+      "under synthetic weather",
+      "interior space civic"
+    ]
+  },
+
+  neon_directory: {
+    id:"neon_directory",
+    glyphs:["▣","▤","▥","▦"],
+    name:"neon directory",
+    type:"structure",
+    zLayer:"floor",
+    solid:false,
+    color:"#ff6bd6",
+    fx:"fx-flicker entity",
+    animated:true,
+    windResponsive:false,
+    tags:["walkable","mall","signage","neon","directory","commercial"],
+    sound:{ scaleIndex:12, type:"sawtooth" },
+    whispers:[
+      "lists stores without interiors",
+      "you are here, apparently",
+      "an obsolete map",
+      "retail memory or wayfinding"
+    ]
+  },
+
+  dead_fountain: {
+    id:"dead_fountain",
+    glyphs:["◎","⊙","○","◉"],
+    name:"dead fountain",
+    type:"structure",
+    zLayer:"floor",
+    solid:false,
+    color:"#78e8ff",
+    fx:"fx-ripple",
+    animated:true,
+    windResponsive:false,
+    tags:["walkable","mall","fountain","water","interior"],
+    sound:{ scaleIndex:7, type:"sine" },
+    whispers:[
+      "a fountain with almost enough water",
+      "the atrium gathers around this dry blue center",
+      "wish technology",
+      "a public pool for small currency ghosts"
+    ]
+  },
+
+  escalator_teeth: {
+    id:"escalator_teeth",
+    glyphs:["≡","═","≋","▤"],
+    name:"escalator teeth",
+    type:"terrain",
+    zLayer:"floor",
+    solid:false,
+    color:"#b8b7ff",
+    fx:"fx-wire",
+    animated:true,
+    windResponsive:false,
+    tags:["walkable","mall","escalator","metal","motion"],
+    sound:{ scaleIndex:5, type:"triangle" },
+    whispers:[
+      "stairs moving like grinding",
+      "the escalator sleeps with its teeth showing",
+      "a conveyor for vanished afternoons",
+      "metal ridges pointing toward another level"
+    ]
+  },
+
+  atrium_glass: {
+    id:"atrium_glass",
+    glyphs:["◇","◈","♢","⋄"],
+    name:"atrium glass",
+    type:"terrain",
+    zLayer:"floor",
+    solid:false,
+    color:"#d6ffff",
+    fx:"fx-breathe",
+    animated:true,
+    windResponsive:false,
+    rare:true,
+    tags:["walkable","mall","glass","atrium","reflective"],
+    whispers:[
+      "skylight underfoot",
+      "from a roof that still believes in daylight",
+      "the ceiling has fallen into reflection",
+      "being on the above"
+    ]
+  },
+
+  brown_grass: {
+    id:"brown_grass",
+    id:"brown_grass",
+    glyphs:["'","`","‚","·"],
+    name:"brown grass",
+    type:"terrain",
+    zLayer:"floor",
+    solid:false,
+    color:"#a87948",
+    fx:"",
+    windResponsive:true,
+    tags:["walkable","grass","meadow","dry","wind-responsive"],
+    whispers:[
+      "too much sun and not enough story",
+      "must be El Ni�o",
+      "brown blades holding down",
+      "the soft color of almost given up"
+    ]
+  },
+
+  meadow_grass: {
+    id:"meadow_grass",
+    glyphs:[",","'",";","ˎ"],
+    name:"meadow grass",
+    type:"terrain",
+    zLayer:"floor",
+    solid:false,
+    color:"#7dff8a",
+    fx:"",
+    windResponsive:true,
+    tags:["walkable","grass","meadow","green","wind-responsive"],
+    whispers:[
+      "all grass, no argument",
+      "a simple field trying to happen",
+      "punctuation in loose weather",
+      "the meadow is small but sincere"
+    ]
+  },
+
+  seed_head: {
+    id:"seed_head",
+    glyphs:["⁕","✶","˚","°"],
+    name:"seed head",
+    type:"terrain",
+    zLayer:"floor",
+    solid:false,
+    color:"#e6d37a",
+    fx:"fx-drift",
+    animated:true,
+    windResponsive:true,
+    tags:["walkable","meadow","seed","grass","wind-responsive"],
+    whispers:[
+      "a seed head waiting for a larger wind",
+      "stores futures in punctuation",
+      "dry gold at the top of a small stem",
+      "a soft threat of propagation"
+    ]
+  },
+
+  office_thicket: {
+    id:"office_thicket",
+    glyphs:["♣","♧","♠","♤"],
+    name:"office thicket",
+    type:"terrain",
+    zLayer:"floor",
+    solid:false,
+    color:"#1fff78",
+    fx:"fx-breathe",
+    animated:true,
+    windResponsive:true,
+    tags:["walkable","jungle","thicket","urban","tropical","wind-responsive"],
+    sound:{ scaleIndex:9, type:"sine" },
+    whispers:[
+      "a thicket behind the office",
+      "plants as dense as affidavit files",
+      "accumulating around a service corridor",
+      "timing with the building's schedule"
+    ]
+  },
+
+  payphone_relic: {
+    id:"payphone_relic",
+    glyphs:["☎","☏","▣","▤"],
+    name:"payphone relic",
+    type:"structure",
+    zLayer:"floor",
+    solid:false,
+    color:"#4dfff0",
+    fx:"fx-wire entity",
+    animated:true,
+    windResponsive:false,
+    rare:true,
+    tags:["walkable","jungle","payphone","urban","telecom","receptive"],
+    sound:{ scaleIndex:14, type:"triangle" },
+    whispers:[
+      "still expects coins",
+      "a dial tone lives",
+      "telecom fossil",
+      "someone could call from here"
+    ]
+  },
+
+  cable_root: {
+    id:"cable_root",
+    glyphs:["⌇","╎","∫","¦"],
+    name:"cable root",
+    type:"terrain",
+    zLayer:"overhead",
+    solid:false,
+    color:"#9cffc8",
+    fx:"fx-wire",
+    animated:true,
+    windResponsive:true,
+    tags:["overhead","jungle","cable","root","cybernetic","wind-responsive"],
+    sound:{ scaleIndex:6, type:"triangle" },
+    whispers:[
+      "which way what goes where",
+      "roots from an electrical ceiling",
+      "connecting one to another",
+      "wire, vine, line, liana"
+    ]
+  },
+
+  ac_fern: {
+    id:"ac_fern",
+    glyphs:["≋","≈","∿","∽"],
+    name:"A/C fern",
+    type:"terrain",
+    zLayer:"floor",
+    solid:false,
+    color:"#85ffb0",
+    fx:"fx-drift",
+    animated:true,
+    windResponsive:true,
+    tags:["walkable","jungle","fern","office","aircon","wind-responsive"],
+    whispers:[
+      "a fern trained by exhaust wind",
+      "inhaling office breath",
+      "whistling in the building",
+      "fronds leaning toward machine humidity"
     ]
   },
 };
@@ -2587,7 +2969,7 @@ function getGardenBiomeRegion(x, y) {
 // Build all biome cuts and per-region vista blends.
 // Called after randomizeRailingStructure(), which establishes isSky / isRail.
 function buildBiomeCuts() {
-  const p1 = 0.62, p2 = 0.32; // P(1st cut), P(2nd cut | 1st cut exists)
+  const p1 = 0.32, p2 = 0.1; // P(1st cut), P(2nd cut | 1st cut exists)
 
   // Vista (sky) cuts — each creates a new horizon band with its own scene blend
   let nVista = 0;
@@ -2848,6 +3230,118 @@ function applyGardenBiomeCuts() {
           "bougainvillea_static",
           "signal_moss",
           "black_water"
+        ] },
+      ]
+    },
+	    {
+      id: "vapor_mall",
+      name: "vaporwave mall",
+      palettes: [
+        { density:0.66, tiles:[
+          "mall_marble","mall_marble","mall_marble","mall_marble",
+          "neon_directory","neon_directory",
+          "dead_fountain",
+          "escalator_teeth",
+          "atrium_glass"
+        ] },
+
+        { density:0.72, tiles:[
+          "mall_marble","mall_marble","mall_marble",
+          "ceramic_pool","ceramic_pool",
+          "dead_fountain","dead_fountain",
+          "neon_directory",
+          "chlorine_foam"
+        ] },
+
+        { density:0.58, rare:true, tiles:[
+          "neon_directory","neon_directory","neon_directory",
+          "atrium_glass","atrium_glass",
+          "escalator_teeth",
+          "oil_slick",
+          "glass_shard"
+        ] },
+
+        { density:0.78, rare:true, tiles:[
+          "mall_marble","mall_marble",
+          "dead_fountain","dead_fountain",
+          "black_water",
+          "chlorine_foam",
+          "neon_directory",
+          "drain_eye"
+        ] },
+      ]
+    },
+
+    {
+      id: "meadow",
+      name: "brown-green meadow",
+      palettes: [
+        { density:0.74, tiles:[
+          "meadow_grass","meadow_grass","meadow_grass","meadow_grass",
+          "brown_grass","brown_grass",
+          "seed_head",
+          "pollen_dust"
+        ] },
+
+        { density:0.82, tiles:[
+          "meadow_grass","meadow_grass","meadow_grass",
+          "brown_grass","brown_grass","brown_grass",
+          "neon_fuzz",
+          "seed_head",
+          "pollen_dust"
+        ] },
+
+        { density:0.68, rare:true, tiles:[
+          "brown_grass","brown_grass","brown_grass","brown_grass",
+          "seed_head","seed_head",
+          "acid_marigold",
+          "pollen_dust"
+        ] },
+
+        { density:0.76, rare:true, tiles:[
+          "meadow_grass","meadow_grass",
+          "night_blossom",
+          "pollen_dust","pollen_dust",
+          "seed_head",
+          "spore_bloom"
+        ] },
+      ]
+    },
+
+    {
+      id: "office_jungle",
+      name: "office jungle thicket",
+      palettes: [
+        { density:0.72, tiles:[
+          "office_thicket","office_thicket","office_thicket",
+          "ac_fern","ac_fern",
+          "wire_vine","wire_vine",
+          "cable_root",
+          "signal_moss"
+        ] },
+
+        { density:0.78, tiles:[
+          "office_thicket","office_thicket","office_thicket","office_thicket",
+          "neon_fuzz","neon_fuzz",
+          "ac_fern",
+          "cable_root",
+          "payphone_relic"
+        ] },
+
+        { density:0.66, rare:true, tiles:[
+          "payphone_relic","payphone_relic",
+          "office_thicket","office_thicket",
+          "cable_root","cable_root",
+          "leaking_conduit",
+          "signal_moss"
+        ] },
+
+        { density:0.84, rare:true, tiles:[
+          "office_thicket","office_thicket","office_thicket",
+          "ac_fern","ac_fern",
+          "cable_root","cable_root",
+          "hanging_blossom",
+          "corpse_lily_signal"
         ] },
       ]
     },
