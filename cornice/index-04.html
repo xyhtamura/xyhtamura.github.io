@@ -663,9 +663,14 @@ h1 {
       mix-blend-mode: screen;
     }
 
+    /* ─ black_water: gradient fill on the wave glyph itself ─ */
     .cell[data-tile="black_water"] {
-  color: #60d6ff;
-}
+      background: linear-gradient(168deg, #9de8ff 0%, #1b5e8a 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent !important;
+    }
+
     /* ─ neon_fuzz: bioluminescent spore particle, upper-right ─ */
     .cell[data-tile="neon_fuzz"]::before {
       content: "˚";
@@ -1223,9 +1228,6 @@ h1 {
   transform: scaleX(0.72);
 }
 
-
-
-
     @media (max-width: 840px) {
       header { grid-template-columns: 1fr; }
       .status-strip { justify-items: start; text-align: left; min-width: 0; }
@@ -1348,91 +1350,6 @@ body::after {
     radial-gradient(circle at 50% 45%, rgba(144,85,255,.18), transparent 24rem),
     linear-gradient(145deg, rgba(6,3,15,.45), rgba(18,5,24,.35), rgba(45,255,110,.08));
   mix-blend-mode: multiply;
-}
-
-/* ---------------------------------------------------------------
-   FLOOR-FILL MATERIAL SYSTEM
-   floorFill in TILE_DB turns glyph tiles into semi-solid floor matter.
---------------------------------------------------------------- */
-
-.cell.tile-fill {
-  border-radius: 1px;
-  background:
-    color-mix(in srgb, var(--tile-bg) var(--tile-bg-strength), transparent);
-}
-
-/* water: slightly fuller */
-.cell.tile-fill[data-fill="water"] {
-  background:
-    linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--tile-bg) calc(var(--tile-bg-strength) * .7), transparent),
-      color-mix(in srgb, var(--tile-bg) var(--tile-bg-strength), transparent)
-    );
-}
-
-/* tile/mall: flat architectural fill */
-.cell.tile-fill[data-fill="tile"] {
-  background:
-    linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--tile-bg) var(--tile-bg-strength), transparent),
-      color-mix(in srgb, var(--tile-bg) 12%, transparent)
-    );
-}
-
-/* grass: mostly flat field */
-.cell.tile-fill[data-fill="grass"] {
-  background:
-    color-mix(in srgb, var(--tile-bg) var(--tile-bg-strength), transparent);
-}
-
-/* thicket: heavier, darker mass */
-.cell.tile-fill[data-fill="thicket"] {
-  background:
-    color-mix(in srgb, var(--tile-bg) var(--tile-bg-strength), transparent);
-}
-
-.cell[data-tile="neon_directory"],
-.cell[data-tile="payphone_relic"],
-.cell[data-tile="ancient_node"],
-.cell[data-tile="corpse_lily_signal"] {
-  box-shadow: 0 0 6px color-mix(in srgb, currentColor 22%, transparent);
-}
-
-.cell.tile-fill[data-fill="moss-wall"] {
-  background:
-    linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--tile-bg) var(--tile-bg-strength), transparent),
-      color-mix(in srgb, #35e36a 14%, transparent)
-    );
-}
-
-/* keep selected/hover readable without erasing material identity */
-.cell.tile-fill:hover,
-.cell.tile-fill.selected {
-  outline: 1px solid rgba(232,229,47,.32);
-  box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--tile-bg) 28%, transparent),
-    0 0 8px color-mix(in srgb, var(--tile-bg) 24%, transparent);
-}
-
-.cell.tile-fill[data-fill="bruised-stone"] {
-  background:
-    linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--tile-bg) var(--tile-bg-strength), transparent),
-      color-mix(in srgb, #8f5cff 18%, transparent)
-    );
-}
-
-.cell.glyph-faded {
-  color: color-mix(
-    in srgb,
-    currentColor calc(var(--glyph-opacity) * 100%),
-    transparent
-  );
 }
   </style>
 </head>
@@ -1565,7 +1482,6 @@ const BASE_TILE_DB = {
     name:"damp soil", type:"terrain", zLayer:"floor", solid:false,
     color:"#b7c5ad", fx:"", windResponsive:false,
     blobChance:null, spawnWeight:0,
-	 glyphOpacity:0.42,
     tags:["walkable","soil","wet"],
     whispers:["the ground keeps count without becoming a ledger","small pressure, small memory","soil rehearses being a floor","every step negotiates"]
   },
@@ -1573,56 +1489,21 @@ const BASE_TILE_DB = {
     id:"moss_wall", glyphs:["#","\u2593","\u2592"],
     name:"moss wall", type:"terrain", zLayer:"wall", solid:true,
     color:"#35e36a", fx:"solid", windResponsive:false,
-
-    floorFill:"#124c2a",
-    floorFillStrength:"54%",
-    floorFillEdge:"18%",
-    floorFillGlow:"0%",
-    floorFillMode:"moss-wall",
-
     tags:["boundary","moss","wet"],
-    whispers:[
-      "the wall is mostly plant agreement",
-      "blocked, but not dead",
-      "moss holds the edge in its mouth",
-      "a breathing boundary"
-    ]
+    whispers:["the wall is mostly plant agreement","blocked, but not dead","moss holds the edge in its mouth","a breathing boundary"]
   },
-bruised_stone: {
-  id:"bruised_stone",
-  glyphs:["%","&","8"],
-  name:"bruised stone",
-  type:"terrain",
-  zLayer:"wall",
-  solid:true,
-  color:"#8f5cff",
-  fx:"solid",
-  windResponsive:false,
-
-  floorFill:"#363834",
-  floorFillStrength:"58%",
-  floorFillEdge:"20%",
-  floorFillGlow:"0%",
-  floorFillMode:"bruised-stone",
-
-  tags:["stone","boundary","mineral","old-city"],
-  whispers:[
-    "a stone with urban aftertaste",
-    "wounded somehow",
-    "the mineral looks kind of civic",
-    "older than the city"
-  ]
-},
+  bruised_stone: {
+    id:"bruised_stone", glyphs:["%","&","8"],
+    name:"bruised stone", type:"terrain", zLayer:"wall", solid:true,
+    color:"#8f5cff", fx:"solid", windResponsive:false,
+    tags:["stone","boundary","mineral","old-city"],
+    whispers:["a stone with urban aftertaste","wounded somehow","the mineral looks kind of civic","older than the city"]
+  },
   neon_fuzz: {
     id:"neon_fuzz", glyphs:[",","'",";","\u02cc"],
     name:"neon fuzz", type:"terrain", zLayer:"floor", solid:false,
     color:"#55ff8f", fx:"", windResponsive:true,
     blobChance:0.22, blobCount:5, blobRadius:4, blobRadiusY:2,
-	  floorFill:"#2dff6e",
-  floorFillStrength:"12%",
-  floorFillEdge:"6%",
-  floorFillGlow:"14%",
-  floorFillMode:"grass",
     tags:["walkable","fungal","grass","bioluminescent","wind-responsive"],
     whispers:["soft things garbling","grass pretending","each comma is a root","the fuzz blooms on frequencies"]
   },
@@ -1631,11 +1512,6 @@ bruised_stone: {
     name:"black water", type:"terrain", zLayer:"floor", solid:false,
     color:"#60d6ff", fx:"", animated:true, windResponsive:false,
     blobChance:0.10, blobCount:3, blobRadius:3, blobRadiusY:2,
-	  floorFill:"#063d5c",
-  floorFillStrength:"22%",
-  floorFillEdge:"0%",
-  floorFillGlow:"0%",
-  floorFillMode:"water",
     tags:["walkable","liquid","reflection","sound-source"],
     sound:{ scaleIndex:3, type:"sine" },
     whispers:["it reflects from a city not loaded yet","water as an interface with no buttons","the pond keeps a [weather] cache","something about surface tension"]
@@ -1763,11 +1639,6 @@ bruised_stone: {
     blobChance:0.14, blobCount:3, blobRadius:3, blobRadiusY:2,
     tags:["walkable","moss","conductive","bioluminescent","receptive"],
     sound:{ scaleIndex:7, type:"sine" },
-	  floorFill:"#5effb1",
-  floorFillStrength:"18%",
-  floorFillEdge:"8%",
-  floorFillGlow:"14%",
-  floorFillMode:"thicket",
     whispers:[
       "the moss has reception",
       "indeterminate bandwidth",
@@ -1833,13 +1704,7 @@ bruised_stone: {
     color:"#7eefff", fx:"", animated:true, windResponsive:false,
     blobChance:0.08, blobCount:3, blobRadius:3, blobRadiusY:2,
     tags:["walkable","liquid","reflection","thin"],
-	 glyphOpacity:0.72,
     sound:{ scaleIndex:4, type:"sine" },
-	  floorFill:"#71ccd9",
-  floorFillStrength:"5%",
-  floorFillEdge:"0%",
-  floorFillGlow:"0%",
-  floorFillMode:"water",
     whispers:[
       "thin as a decision",
       "the city's surface tension",
@@ -1854,11 +1719,6 @@ bruised_stone: {
     blobChance:0.06, blobCount:2, blobRadius:3, blobRadiusY:1,
     tags:["walkable","liquid","mineral","saline","crusted"],
     sound:{ scaleIndex:2, type:"sine" },
-	  floorFill:"#0f5a75",
-  floorFillStrength:"32%",
-  floorFillEdge:"12%",
-  floorFillGlow:"12%",
-  floorFillMode:"water",
     whispers:[
       "artificial ocean",
       "mineral residue of a distant body of water",
@@ -1912,11 +1772,6 @@ bruised_stone: {
     name:"ceramic pool tile", type:"terrain", zLayer:"floor", solid:false,
     color:"#b8f7ff", fx:"", windResponsive:false,
     tags:["walkable","poolrooms","ceramic","wet","architecture"],
-	floorFill:"#b8f7ff",
-  floorFillStrength:"30%",
-  floorFillEdge:"16%",
-  floorFillGlow:"10%",
-  floorFillMode:"tile",
     whispers:[
       "an alternative to indoor or outdoor",
       "I think I can hear my voice",
@@ -1973,12 +1828,6 @@ bruised_stone: {
     color:"#d8e7ff", fx:"fx-drift", animated:true, windResponsive:true,
     blobChance:0.02, blobCount:1, blobRadius:3, blobRadiusY:2,
     tags:["walkable","aerial","atmospheric","cloud","wind-responsive"],
-	glyphOpacity: 0.5,
-	floorFill: "#cdd2d4",
- floorFillStrength:"20%",
-  floorFillEdge:"0%",
-  floorFillGlow:"0%",
-  floorFillMode:"tile",
     whispers:[
       "your tokens are safe and sound",
       "tomorrow we're trading in ENSO",
@@ -1993,7 +1842,6 @@ bruised_stone: {
     color:"#9eeeff", fx:"fx-ripple", animated:true, windResponsive:true,
     tags:["overhead","aerial","rain","weather","wind-responsive"],
     sound:{ scaleIndex:8, type:"sine" },
-	glyphOpacity: 0.5,
     whispers:[
       "a vertical sentence of water",
       "spinning tomorrow's fate",
@@ -2143,7 +1991,6 @@ bruised_stone: {
     blobCount:2,
     blobRadius:2,
     blobRadiusY:2,
-
     tags:["walkable","floral","pollen","particulate","wind-responsive","soft"],
     whispers:[
       "small reproductive punctuation",
@@ -2210,14 +2057,8 @@ blobRadiusY:2,
     type:"terrain",
     zLayer:"floor",
     solid:false,
-    color:"#696b6e",
-	 glyphOpacity:0.22,
+    color:"#f2d6ff",
     fx:"",
-	  floorFill:"#cac0cf",
-  floorFillStrength:"40%",
-  floorFillEdge:"0%",
-  floorFillGlow:"0%",
-  floorFillMode:"tile",
 	    blobChance:0.05,
     blobCount:1,
     blobRadius:3,
@@ -2244,8 +2085,9 @@ blobRadiusY:2,
     animated:true,
     windResponsive:false,
 	    blobChance:0.005,
-    blobCount:3,
-    singleTile:true,
+    blobCount:1,
+    blobRadius:1,
+    blobRadiusY:1,
     tags:["walkable","mall","signage","neon","directory","commercial"],
     sound:{ scaleIndex:12, type:"sawtooth" },
     whispers:[
@@ -2287,11 +2129,6 @@ blobRadiusY:2,
     name:"escalator teeth",
     type:"terrain",
     zLayer:"floor",
-floorFill:"#b8b7ff",
-  floorFillStrength:"28%",
-  floorFillEdge:"18%",
-  floorFillGlow:"10%",
-  floorFillMode:"tile",
     solid:false,
     color:"#b8b7ff",
     fx:"fx-wire",
@@ -2319,11 +2156,6 @@ floorFill:"#b8b7ff",
     animated:true,
     windResponsive:false,
     rare:true,
-	  floorFill:"#d6ffff",
-  floorFillStrength:"26%",
-  floorFillEdge:"18%",
-  floorFillGlow:"18%",
-  floorFillMode:"tile",
     tags:["walkable","mall","glass","atrium","reflective"],
     whispers:[
       "skylight underfoot",
@@ -2347,11 +2179,6 @@ floorFill:"#b8b7ff",
     blobCount:2,
     blobRadius:1,
     blobRadiusY:1,
-	  floorFill:"#8f6338",
-  floorFillStrength:"34%",
-  floorFillEdge:"8%",
-  floorFillGlow:"8%",
-  floorFillMode:"grass",
     windResponsive:true,
     tags:["walkable","grass","meadow","dry","wind-responsive"],
     whispers:[
@@ -2371,11 +2198,6 @@ floorFill:"#b8b7ff",
     solid:false,
     color:"#7dff8a",
     fx:"",
-	  floorFill:"#043b08",
-  floorFillStrength:"34%",
-  floorFillEdge:"8%",
-  floorFillGlow:"10%",
-  floorFillMode:"grass",
     windResponsive:true,
 	    blobChance:0.03,
     blobCount:2,
@@ -2425,11 +2247,6 @@ floorFill:"#b8b7ff",
     blobCount:1,
     blobRadius:2,
     blobRadiusY:2,
-	  floorFill:"#09301a",
-  floorFillStrength:"44%",
-  floorFillEdge:"14%",
-  floorFillGlow:"18%",
-  floorFillMode:"thicket",
     tags:["walkable","jungle","thicket","urban","tropical","wind-responsive"],
     sound:{ scaleIndex:9, type:"sine" },
     whispers:[
@@ -2453,8 +2270,9 @@ floorFill:"#b8b7ff",
     windResponsive:false,
     rare:true,
 	    blobChance:0.01,
-    blobCount:3,
-    singleTile:true,
+    blobCount:1,
+    blobRadius:1,
+    blobRadiusY:1,
     tags:["walkable","jungle","payphone","urban","telecom","receptive"],
     sound:{ scaleIndex:14, type:"triangle" },
     whispers:[
@@ -3673,46 +3491,17 @@ function placeBlobTerrain() {
     const ry = scaledLen(spec.blobRadiusY || 2, 1);
 
     for (let i = 0; i < count; i++) {
-      if (spec.singleTile) {
-        placeSingleTerrainTile(spec.id, spec.blobChance);
-        continue;
-      }
+      const source = findBlobSource();
+      if (!source) continue;
 
       blob(
-        3 + Math.floor(rand() * Math.max(1, COLS - 6)),
-        3 + Math.floor(rand() * Math.max(1, ROWS - 6)),
+        source.x,
+        source.y,
         rx,
         ry,
         spec.id,
         spec.blobChance
       );
-    }
-  }
-}
-
-function placeSingleTerrainTile(tileId, probability = 1) {
-  if (!chance(probability)) return;
-
-  const spec = TILE_DB[tileId];
-  const isOverhead = spec?.zLayer === "overhead";
-
-  for (let att = 0; att < 80; att++) {
-    const x = 2 + Math.floor(rand() * Math.max(1, COLS - 4));
-    const y = 2 + Math.floor(rand() * Math.max(1, ROWS - 4));
-
-    if (!inBounds(x, y)) continue;
-
-    if (isOverhead) {
-      if (state.overheadTerrain) {
-        state.overheadTerrain[y][x] = { id: tileId };
-        return;
-      }
-    } else {
-      if (isSky(x, y) || isRail(x, y)) continue;
-      if (TILE_DB[state.terrain[y][x].id]?.solid) continue;
-
-      state.terrain[y][x].id = tileId;
-      return;
     }
   }
 }
@@ -3977,13 +3766,6 @@ function refreshCell(x, y) {
   span.style.color = "";
   span.style.opacity = "";
   span.style.filter = "";
-  span.style.removeProperty("--glyph-opacity");
-span.classList.remove("glyph-faded");
-    span.style.removeProperty("--tile-bg");
-  span.style.removeProperty("--tile-bg-strength");
-  span.style.removeProperty("--tile-bg-edge");
-  span.style.removeProperty("--tile-bg-glow");
-  span.dataset.fill = "";
   span.dataset.tile = "";
   span.dataset.glyph = "";
   if (state.selected?.x===x && state.selected?.y===y) span.classList.add("selected");
@@ -4019,7 +3801,6 @@ if (ent) {
   span.textContent = glyph; 
   span.className += ` entity ${spec.fx || ""}`; 
   span.style.color = spec.color;
-  
   applyOverheadOverlay(span, x, y);
   return;
 }
@@ -4063,25 +3844,7 @@ span.style.opacity = String(perTileOpacity.toFixed(3));
   span.className+=` terrain ${spec.fx||""}`;
   span.dataset.tile = cell.id;
   if (cell.id === "void_patch" || cell.id === "ferrofluid_pool" || cell.id === "oil_slick") span.dataset.glyph = span.textContent;
-span.style.setProperty("--glyph-color", spec.color);
-span.style.color = `color-mix(in srgb, var(--glyph-color) ${Math.round((spec.glyphOpacity ?? 1) * 100)}%, transparent)`;
-  
-  if (spec.glyphOpacity !== undefined) {
-  span.classList.add("glyph-faded");
-  span.style.setProperty("--glyph-opacity", spec.glyphOpacity);
-}
-  
-    if (spec.floorFill) {
-    span.classList.add("tile-fill");
-    span.style.setProperty("--tile-bg", spec.floorFill);
-    span.style.setProperty("--tile-bg-strength", spec.floorFillStrength || "30%");
-    span.style.setProperty("--tile-bg-edge", spec.floorFillEdge || "10%");
-    span.style.setProperty("--tile-bg-glow", spec.floorFillGlow || "12%");
-
-    if (spec.floorFillMode) {
-      span.dataset.fill = spec.floorFillMode;
-    }
-  }
+  span.style.color=spec.color;
   applyOverheadOverlay(span, x, y);
 }
 

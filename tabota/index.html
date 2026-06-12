@@ -5,277 +5,147 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tabota</title>
 
-<!-- editor -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/mode/javascript/javascript.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/addon/edit/matchbrackets.min.js"></script>
-<!-- markdown + midi import -->
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script src="https://unpkg.com/@tonejs/midi"></script>
-<!-- type -->
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,400;1,9..144,600&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23f1ecf4'/%3E%3Crect x='2.5' y='2.5' width='27' height='27' rx='5.5' fill='%23eaf1ec' stroke='%23cdbcd6' stroke-width='1.2'/%3E%3Ctext x='16' y='22.2' text-anchor='middle' font-family='Georgia, serif' font-size='20' font-weight='700' fill='%235d8c00'%3E田%3C/text%3E%3C/svg%3E">
-<meta name="description" content="Tabota is an event description language and workspace for describing musical, theatrical, and temporal events, then realizing determinate fragments as microtonal MIDI.">
 
-<meta property="og:title" content="Tabota 田">
-<meta property="og:description" content="An event description language where notes, regimes, cues, and movements are all recursive Events — readable as notation, plottable as structure, and exportable to microtonal MIDI.">
-<meta property="og:type" content="website">
-<meta property="og:image" content="tabota-card.png">
-
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Tabota 田">
-<meta name="twitter:description" content="A recursive event description language and workspace for notation, temporal structure, and microtonal MIDI transfer.">
-<meta name="twitter:image" content="tabota-card.png">
 <style>
 :root{
-  /* Light palette — fully hued, no achromatic axis. Pale tide-pool in daylight.
-     Matches tabota_roll.html. Variable names kept; values flipped to light:
-     ground = pale green-cyan, panels = pale plum (different hue),
-     text = dark teal (not black), accents deepened for legibility on light. */
-  --abyss:        #eaf1ec;  /* app ground, high-L green-cyan */
-  --abyss-2:      #e3ebe6;  /* inset / input wells / score field */
-  --membrane:     #f1ecf4;  /* panel, low-chroma plum (different hue) */
-  --membrane-2:   #e7dfee;  /* raised panel */
-  --silt:         #cdbcd6;  /* borders, hued violet */
-  --silt-2:       #ddd2e6;  /* subtle inner dividers (lighter than border) */
-  --bone:         #18302b;  /* text, dark teal (not black) */
-  --bone-dim:     #5a6f68;  /* dim text, hued */
-  --bone-faint:   #8a9b93;
-  --algae:        #5d8c00;  /* chartreuse, deepened — points */
-  --algae-deep:   #496e00;
-  --membrane-pink:#d1336b;  /* magenta — lines / slides */
-  --tide:         #11897e;  /* teal-cyan — structure / links / primary action */
-  --tide-deep:    #0c6c63;
-  --ember:        #dd6b12;  /* amber — warnings / overflow / refusals */
-  --bruise:       #6a47d8;  /* violet — secondary structural */
-
-  --mono: "IBM Plex Mono", "SFMono-Regular", Menlo, monospace;
-  --display: "Fraunces", Georgia, serif;
+  --abyss:#eaf1ec; --abyss-2:#e3ebe6; --membrane:#f1ecf4; --membrane-2:#e7dfee;
+  --silt:#cdbcd6; --silt-2:#ddd2e6; --bone:#18302b; --bone-dim:#5a6f68; --bone-faint:#8a9b93;
+  --algae:#5d8c00; --algae-deep:#496e00; --membrane-pink:#d1336b;
+  --tide:#11897e; --tide-deep:#0c6c63; --ember:#dd6b12; --bruise:#6a47d8;
+  --mono:"IBM Plex Mono","SFMono-Regular",Menlo,monospace; --display:"Fraunces",Georgia,serif;
 }
+*{box-sizing:border-box;}
+html{scrollbar-color:var(--silt) var(--abyss);}
+body{font-family:var(--mono);
+  background:radial-gradient(1200px 620px at 82% -6%,#f1ecf488 0%,transparent 55%),radial-gradient(1000px 560px at -8% 108%,#e6efe988 0%,transparent 55%),radial-gradient(120% 80% at 0% 0%,#eef4ef 0%,var(--abyss) 60%),var(--abyss);
+  background-attachment:fixed; color:var(--bone); margin:0; padding:28px 22px 64px; font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased;}
+.wrap{width:97%; max-width:1480px; margin:0 auto; display:flex; flex-direction:column; gap:20px;}
 
-*{ box-sizing:border-box; }
-html{ scrollbar-color: var(--silt) var(--abyss); }
-body{
-  font-family: var(--mono);
-  background:
-    radial-gradient(1200px 620px at 82% -6%, #f1ecf488 0%, transparent 55%),
-    radial-gradient(1000px 560px at -8% 108%, #e6efe988 0%, transparent 55%),
-    radial-gradient(120% 80% at 0% 0%, #eef4ef 0%, var(--abyss) 60%),
-    var(--abyss);
-  background-attachment: fixed;
-  color: var(--bone);
-  margin:0; padding:28px 22px 64px;
-  font-size:14px; line-height:1.5;
-  -webkit-font-smoothing:antialiased;
-}
-.wrap{ width:97%; max-width:1480px; margin:0 auto; display:flex; flex-direction:column; gap:20px; }
+.masthead{display:flex; align-items:flex-end; justify-content:space-between; gap:20px; border-bottom:1px solid var(--silt); padding-bottom:14px; flex-wrap:wrap;}
+.logo{display:flex; align-items:baseline; gap:14px;}
+.logo h1{font-family:var(--display); font-style:italic; font-weight:400; font-size:46px; letter-spacing:-1px; margin:0; line-height:.9; color:var(--bone);}
+.logo .kanji{color:var(--algae); font-style:normal;}
+.logo .tag{font-size:11px; color:var(--bone-dim); letter-spacing:.18em; text-transform:uppercase;}
+.meta-strip{display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
+.chip{font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; border:1px solid var(--silt); border-radius:2px; padding:4px 8px; color:var(--bone-dim); background:var(--abyss-2);}
+.chip b{color:var(--tide); font-weight:500;}
+.rolllink{display:inline-flex; align-items:center; gap:10px; text-decoration:none; border:1px solid var(--tide); border-radius:3px; padding:6px 12px 6px 11px; background:linear-gradient(180deg,#ffffffaa,#e9f3f1); color:var(--bone); transition:.14s;}
+.rolllink:hover{background:var(--tide); border-color:var(--tide);}
+.rolllink:hover .rl-ico,.rolllink:hover .rl-arr,.rolllink:hover .rl-tx b,.rolllink:hover .rl-tx em{color:#fff;}
+.rolllink .rl-ico{font-size:16px; color:var(--tide); line-height:1;}
+.rolllink .rl-tx{display:flex; flex-direction:column; line-height:1.15;}
+.rolllink .rl-tx b{font-size:12.5px; color:var(--bone);}
+.rolllink .rl-tx em{font-style:normal; font-size:9.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--bone-dim);}
+.rolllink .rl-arr{font-size:14px; color:var(--tide); margin-left:2px;}
 
-/* --- masthead --------------------------------------------------------- */
-.masthead{ display:flex; align-items:flex-end; justify-content:space-between; gap:20px;
-  border-bottom:1px solid var(--silt); padding-bottom:14px; flex-wrap:wrap; }
-.logo{ display:flex; align-items:baseline; gap:14px; }
-.logo h1{ font-family:var(--display); font-style:italic; font-weight:400;
-  font-size:46px; letter-spacing:-1px; margin:0; line-height:.9;
-  color:var(--bone); }
-.logo .kanji{ color:var(--algae); font-style:normal; }
-.logo .tag{ font-size:11px; color:var(--bone-dim); letter-spacing:.18em; text-transform:uppercase; }
-.meta-strip{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
-.chip{ font-size:10.5px; letter-spacing:.12em; text-transform:uppercase;
-  border:1px solid var(--silt); border-radius:2px; padding:4px 8px; color:var(--bone-dim);
-  background:var(--abyss-2); }
-.chip b{ color:var(--tide); font-weight:500; }
-.chip.live b{ color:var(--algae); }
+.lede{font-size:13px; line-height:1.6; color:var(--bone-dim); margin:-4px 0 0; padding:0 2px;}
+.lede b{color:var(--bone); font-weight:600;}
+.lede a{color:var(--tide); text-decoration:none; border-bottom:1px solid var(--tide);}
+.lede a:hover{color:var(--tide-deep); border-color:var(--tide-deep);}
+.lede .fct{color:var(--bruise); font-weight:500;}
 
-/* link to the piano-roll editor */
-.rolllink{ display:inline-flex; align-items:center; gap:10px; text-decoration:none;
-  border:1px solid var(--tide); border-radius:3px; padding:6px 12px 6px 11px;
-  background:linear-gradient(180deg,#ffffffaa,#e9f3f1); color:var(--bone);
-  transition:.14s; position:relative; }
-.rolllink:hover{ background:var(--tide); border-color:var(--tide); }
-.rolllink:hover .rl-ico,.rolllink:hover .rl-arr{ color:#fff; }
-.rolllink:hover .rl-tx b,.rolllink:hover .rl-tx em{ color:#fff; }
-.rolllink .rl-ico{ font-size:16px; color:var(--tide); line-height:1; }
-.rolllink .rl-tx{ display:flex; flex-direction:column; line-height:1.15; }
-.rolllink .rl-tx b{ font-size:12.5px; letter-spacing:.02em; color:var(--bone); }
-.rolllink .rl-tx em{ font-style:normal; font-size:9.5px; letter-spacing:.1em;
-  text-transform:uppercase; color:var(--bone-dim); }
-.rolllink .rl-arr{ font-size:14px; color:var(--tide); margin-left:2px; }
+.panel{border:1px solid var(--silt); border-radius:3px; background:var(--membrane); position:relative;}
+.panel::before{content:""; position:absolute; top:7px; left:7px; width:9px; height:9px; border-top:1px solid var(--silt); border-left:1px solid var(--silt); pointer-events:none;}
+.panel::after{content:""; position:absolute; bottom:7px; right:7px; width:9px; height:9px; border-bottom:1px solid var(--silt); border-right:1px solid var(--silt); pointer-events:none;}
+.panel-head{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:13px 18px; border-bottom:1px solid var(--silt-2); flex-wrap:wrap;}
+.panel-head h2{font-family:var(--display); font-weight:400; font-size:18px; margin:0; letter-spacing:.2px;}
+.panel-head .idx{font-size:10.5px; color:var(--bone-faint); letter-spacing:.2em; text-transform:uppercase;}
+.panel-body{padding:18px;}
 
-.lede{ font-size:13px; line-height:1.6; color:var(--bone-dim); max-width:none;
-  margin:-4px 0 0; padding:0 2px; }
-.lede b{ color:var(--bone); font-weight:600; }
-.lede a{ color:var(--tide); text-decoration:none; border-bottom:1px solid var(--tide); }
-.lede a:hover{ color:var(--tide-deep); border-color:var(--tide-deep); }
-.lede .fct{ color:var(--bruise); font-weight:500; }
+button,.btn{font-family:var(--mono); font-size:12.5px; cursor:pointer; background:var(--membrane-2); border:1px solid var(--silt); color:var(--bone); padding:7px 13px; border-radius:2px; letter-spacing:.02em; transition:.12s;}
+button:hover,.btn:hover{border-color:var(--tide); color:var(--tide);}
+button.primary{background:var(--tide); color:#fff; border-color:var(--tide); font-weight:600; letter-spacing:.05em;}
+button.primary:hover{background:var(--tide-deep); color:#fff; border-color:var(--tide-deep);}
+.icon-btn{display:inline-flex; align-items:center; gap:6px;}
+select,input[type=text]{font-family:var(--mono); font-size:13px; background:var(--abyss-2); border:1px solid var(--silt); color:var(--bone); padding:7px 9px; border-radius:2px;}
+select:focus{outline:none; border-color:var(--tide);}
 
-/* --- panels ----------------------------------------------------------- */
-.panel{ border:1px solid var(--silt); border-radius:3px; background:var(--membrane);
-  position:relative; }
-.panel::before{ /* exposed corner specimen ticks — construction left visible */
-  content:""; position:absolute; top:7px; left:7px; width:9px; height:9px;
-  border-top:1px solid var(--silt); border-left:1px solid var(--silt); pointer-events:none; }
-.panel::after{ content:""; position:absolute; bottom:7px; right:7px; width:9px; height:9px;
-  border-bottom:1px solid var(--silt); border-right:1px solid var(--silt); pointer-events:none; }
-.panel-head{ display:flex; align-items:center; justify-content:space-between; gap:12px;
-  padding:13px 18px; border-bottom:1px solid var(--silt-2); flex-wrap:wrap; }
-.panel-head h2{ font-family:var(--display); font-weight:400; font-size:18px; margin:0;
-  letter-spacing:.2px; }
-.panel-head .idx{ font-size:10.5px; color:var(--bone-faint); letter-spacing:.2em;
-  text-transform:uppercase; }
-.panel-body{ padding:18px; }
+.zoom{display:flex; gap:6px; align-items:center;}
+.zoom span{font-size:10px; color:var(--bone-faint); letter-spacing:.12em; text-transform:uppercase;}
+.zoom-btn{width:26px; padding:4px 0; text-align:center;}
+#plot-wrap{overflow:auto; position:relative; padding:4px 0;}
+#plot-wrap svg{display:block;}
+.svg-frame-band{opacity:.5;}
+.svg-grid{stroke:rgba(24,48,43,0.08); stroke-width:1;}
+.svg-axislabel{fill:var(--bone-faint); font:10px var(--mono);}
+.svg-framelabel{fill:var(--bone-dim); font:10.5px var(--mono);}
+.svg-divider{stroke:rgba(24,48,43,0.20); stroke-width:1; stroke-dasharray:3 3;}
+.legend{display:flex; gap:14px; flex-wrap:wrap; margin-top:12px; font-size:11px; color:var(--bone-dim);}
+.legend .k{display:inline-flex; align-items:center; gap:6px;}
+.legend .sw{width:14px; height:10px; border-radius:2px; display:inline-block;}
 
-/* --- buttons / inputs ------------------------------------------------- */
-button, .btn{ font-family:var(--mono); font-size:12.5px; cursor:pointer;
-  background:var(--membrane-2); border:1px solid var(--silt); color:var(--bone);
-  padding:7px 13px; border-radius:2px; letter-spacing:.02em; transition:.12s; }
-button:hover, .btn:hover{ border-color:var(--tide); color:var(--tide); }
-button.primary{ background:var(--tide); color:#fff; border-color:var(--tide);
-  font-weight:600; letter-spacing:.05em; }
-button.primary:hover{ background:var(--tide-deep); color:#fff; border-color:var(--tide-deep); }
-button.ghost{ background:transparent; }
-.icon-btn{ display:inline-flex; align-items:center; gap:6px; }
+.editor-actions{display:flex; gap:9px; flex-wrap:wrap; align-items:center;}
+.CodeMirror{border:1px solid var(--silt); border-radius:2px; height:340px; font-size:13px; font-family:var(--mono); background:var(--abyss-2)!important; color:var(--bone)!important;}
+.CodeMirror-gutters{background:var(--abyss)!important; border-right:1px solid var(--silt)!important;}
+.CodeMirror-linenumber{color:var(--bone-faint)!important;}
+.CodeMirror-cursor{border-left:1px solid var(--algae)!important;}
+.CodeMirror-selected{background:#11897e2e!important;}
+.cm-s-default .cm-string{color:var(--membrane-pink)!important;}
+.cm-s-default .cm-property{color:var(--tide)!important;}
+.cm-s-default .cm-number{color:var(--algae)!important;}
+.cm-s-default .cm-atom,.cm-s-default .cm-keyword{color:var(--bruise)!important;}
+#render-btn{margin-top:11px;}
 
-label.field{ display:flex; flex-direction:column; gap:5px; font-size:10.5px;
-  letter-spacing:.13em; text-transform:uppercase; color:var(--bone-dim); }
-input[type=number], input[type=text], select, textarea.tn{
-  font-family:var(--mono); font-size:13px; background:var(--abyss-2);
-  border:1px solid var(--silt); color:var(--bone); padding:7px 9px; border-radius:2px; }
-input:focus, select:focus, textarea:focus{ outline:none; border-color:var(--tide); }
-select{ cursor:pointer; }
-input[type=file]{ font-family:var(--mono); font-size:12px; color:var(--bone-dim);
-  background:var(--abyss-2); border:1px dashed var(--silt); padding:10px; border-radius:2px; width:100%; }
-input[type=file]::file-selector-button{ font-family:var(--mono); background:var(--membrane-2);
-  color:var(--bone); border:1px solid var(--silt); border-radius:2px; padding:5px 10px; margin-right:10px; cursor:pointer; }
+.note{font-size:11.5px; color:var(--bone-dim); line-height:1.55;}
+.note code{color:var(--algae);}
+.facets{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px;}
+.facet{border:1px solid var(--silt); border-radius:2px; padding:9px 11px; background:var(--abyss-2);}
+.facet b{color:var(--bruise); font-size:11.5px;}
+.facet span{display:block; color:var(--bone-dim); font-size:11px; line-height:1.5; margin-top:3px;}
 
-/* --- visualizer ------------------------------------------------------- */
-.zoom{ display:flex; gap:6px; align-items:center; }
-.zoom span{ font-size:10px; color:var(--bone-faint); letter-spacing:.12em; text-transform:uppercase; }
-.zoom-btn{ width:26px; padding:4px 0; text-align:center; }
-#score-container{ overflow:auto; position:relative; padding:6px 0 2px; }
-.timeline-wrapper{ position:relative; display:grid; grid-template-columns:78px 1fr;
-  grid-template-rows:1fr 38px; gap:6px; min-width:400px; }
-.timeline-view{ grid-column:2; grid-row:1; position:relative;
-  background:repeating-linear-gradient(transparent,transparent 23px,rgba(24,48,43,0.06) 23px,rgba(24,48,43,0.06) 24px); }
-.y-axis{ grid-column:1; grid-row:1; position:relative; }
-.x-axis{ grid-column:2; grid-row:2; position:relative; }
-.axis-label{ position:absolute; font-size:10px; color:var(--bone-faint); letter-spacing:.04em; }
-.section-background{ position:absolute; height:100%; top:0; opacity:.5; }
-.section-divider{ position:absolute; width:1px; height:100%; top:0; border-left:1px dashed rgba(24,48,43,0.20); }
-.section-divider-label{ position:absolute; top:-20px; color:var(--bone-dim); font-size:10.5px;
-  background:var(--abyss-2); border:1px solid var(--silt); padding:2px 7px; border-radius:2px;
-  transform:translateX(-50%); letter-spacing:.06em; white-space:nowrap; }
-.event-point{ position:absolute; width:11px; height:11px; border-radius:50%;
-  transform:translate(-50%,-50%); z-index:10; background:var(--algae);
-  box-shadow:0 0 0 1.5px #fff, 0 0 0 2.5px var(--algae); }
-.event-group{ position:absolute; width:13px; height:13px; transform:translate(-50%,-50%);
-  z-index:10; background:var(--bruise); border:2px solid var(--tide); border-radius:2px; }
-.event-line{ position:absolute; height:2.5px; background:var(--membrane-pink);
-  transform-origin:0 50%; z-index:9; border-radius:2px; }
-.event-bar{ position:absolute; height:7px; background:var(--algae); opacity:.85;
-  transform:translateY(-50%); z-index:9; border-radius:2px; }
-.event-band{ position:absolute; background:var(--bruise); opacity:.16;
-  border:1px dashed var(--bruise); z-index:8; border-radius:2px; }
-.event-payload{ position:absolute; transform:translate(14px,-50%); font-size:11px;
-  color:var(--bone-dim); white-space:nowrap; z-index:11; }
-.grid-line-vertical{ position:absolute; width:1px; height:100%; top:0; background:rgba(24,48,43,0.07); }
+.report-wrap{overflow:auto; max-height:380px; border:1px solid var(--silt); border-radius:2px;}
+table.report{width:100%; border-collapse:collapse; font-size:12px;}
+table.report th,table.report td{padding:6px 11px; text-align:left; white-space:nowrap; border-bottom:1px solid var(--silt-2);}
+table.report th{position:sticky; top:0; background:var(--membrane-2); color:var(--bone-dim); font-weight:500; letter-spacing:.05em; text-transform:uppercase; font-size:10px; z-index:1;}
+table.report tr:hover td{background:rgba(24,48,43,0.04);}
+.tag{display:inline-block; font-size:9.5px; letter-spacing:.04em; padding:1px 6px; border-radius:9px; margin:1px 2px 1px 0; border:1px solid;}
+.tag.determinate{color:var(--tide); border-color:var(--tide);}
+.tag.relational{color:var(--bruise); border-color:var(--bruise);}
+.tag.indeterminate{color:var(--ember); border-color:var(--ember);}
+.tag.ordinal{color:var(--algae-deep); border-color:var(--algae);}
+.tag.point{color:var(--bone-dim); border-color:var(--silt);}
+.tag.open{color:var(--ember); border-color:var(--ember);}
+.tag.unpegged,.tag.unplaced,.tag.dangling{color:var(--membrane-pink); border-color:var(--membrane-pink);}
+.tag.in-cycle{color:#fff; background:var(--bruise); border-color:var(--bruise);}
+.tag.tempo-ramp{color:var(--tide); border-color:var(--tide);}
 
-/* --- editor ----------------------------------------------------------- */
-.editor-actions{ display:flex; gap:9px; flex-wrap:wrap; align-items:center; }
-.CodeMirror{ border:1px solid var(--silt); border-radius:2px; height:340px; font-size:13px;
-  font-family:var(--mono); background:var(--abyss-2)!important; color:var(--bone)!important; }
-.CodeMirror-gutters{ background:var(--abyss)!important; border-right:1px solid var(--silt)!important; }
-.CodeMirror-linenumber{ color:var(--bone-faint)!important; }
-.CodeMirror-cursor{ border-left:1px solid var(--algae)!important; }
-.CodeMirror-selected{ background:#11897e2e!important; }
-.cm-s-default .cm-string{ color:var(--membrane-pink)!important; }
-.cm-s-default .cm-property{ color:var(--tide)!important; }
-.cm-s-default .cm-number{ color:var(--algae)!important; }
-.cm-s-default .cm-atom{ color:var(--bruise)!important; }
-.cm-s-default .cm-keyword{ color:var(--bruise)!important; }
-#render-btn{ margin-top:11px; align-self:flex-start; }
+.described{margin-top:14px; border:1px solid var(--bruise); border-radius:2px; background:#6a47d80d; padding:11px 13px;}
+.described h4{margin:0 0 8px; color:var(--bruise); font-family:var(--display); font-weight:400; font-size:14px;}
+.described .chip-row{display:flex; gap:8px; flex-wrap:wrap;}
+.dchip{border:1px solid var(--silt); border-radius:3px; padding:6px 10px; background:var(--abyss-2); font-size:11.5px; color:var(--bone);}
+.dchip b{color:var(--bone);} .dchip em{font-style:normal; color:var(--bone-dim); display:block; font-size:10.5px; margin-top:2px;}
+.diags{margin-top:14px;}
+.diag{font-size:11.5px; padding:4px 0 4px 11px; margin:5px 0; border-left:2px solid var(--silt); color:var(--bone-dim);}
+.diag.error{border-left-color:var(--membrane-pink); color:var(--membrane-pink);}
+.diag.info{border-left-color:var(--bruise);}
+.summary{display:flex; gap:18px; flex-wrap:wrap; margin:0 0 12px; font-size:12px;}
+.summary .stat b{color:var(--tide); font-weight:600;}
 
-/* --- workbench tabs --------------------------------------------------- */
-.tabs{ display:flex; gap:0; border-bottom:1px solid var(--silt); }
-.tab{ background:transparent; border:none; border-bottom:2px solid transparent;
-  color:var(--bone-dim); padding:11px 18px; font-size:12px; letter-spacing:.08em;
-  text-transform:uppercase; border-radius:0; }
-.tab:hover{ color:var(--bone); border-bottom-color:var(--silt); }
-.tab.active{ color:var(--algae); border-bottom-color:var(--algae); }
-.tab .num{ color:var(--bone-faint); margin-right:7px; }
-.tab.active .num{ color:var(--algae-deep); }
-.tabpane{ display:none; padding:20px 18px; }
-.tabpane.active{ display:block; }
-
-.controls-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-  gap:14px; margin-bottom:16px; }
-.note{ font-size:11.5px; color:var(--bone-dim); line-height:1.55; }
-.note code{ color:var(--algae); }
-.divider{ height:1px; background:var(--silt-2); margin:16px 0; }
-.row-actions{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:4px; }
-
-/* --- report table ----------------------------------------------------- */
-.report-wrap{ overflow:auto; max-height:420px; border:1px solid var(--silt); border-radius:2px; margin-top:14px; }
-table.report{ width:100%; border-collapse:collapse; font-size:12px; }
-table.report th, table.report td{ padding:7px 11px; text-align:right; white-space:nowrap;
-  border-bottom:1px solid var(--silt-2); }
-table.report th{ position:sticky; top:0; background:var(--membrane-2); color:var(--bone-dim);
-  font-weight:500; letter-spacing:.06em; text-transform:uppercase; font-size:10px; z-index:1; }
-table.report td:first-child, table.report th:first-child{ text-align:left; color:var(--bone-faint); }
-table.report td.note-cell{ text-align:left; color:var(--bone); }
-table.report tr:hover td{ background:rgba(24,48,43,0.04); }
-.cents-pos{ color:var(--algae); } .cents-neg{ color:var(--membrane-pink); } .cents-zero{ color:var(--bone-faint); }
-.pb-val{ color:var(--tide); }
-.flag-slide{ color:var(--bruise); } .flag-clip{ color:var(--ember); }
-.summary{ display:flex; gap:18px; flex-wrap:wrap; margin-top:14px; font-size:12px; }
-.summary .stat b{ color:var(--tide); font-weight:600; }
-.warnings{ margin-top:12px; }
-.warn{ font-size:11.5px; color:var(--ember); border-left:2px solid var(--ember);
-  padding:4px 0 4px 11px; margin:5px 0; }
-/* refusal block — "here are the things I cannot do" */
-.refusals{ margin-top:14px; border:1px solid var(--ember); border-radius:2px;
-  background:#dd6b120d; padding:11px 13px; }
-.refusals h4{ margin:0 0 7px; color:var(--ember); font-family:var(--display); font-weight:400;
-  font-size:14px; }
-.refusals ul{ margin:0; padding-left:18px; }
-.refusals li{ font-size:11.5px; color:var(--bone-dim); line-height:1.5; margin-bottom:4px; }
-.refusals li b{ color:var(--bone); font-weight:500; }
-.bend-bar{ display:inline-block; width:54px; height:6px; background:var(--abyss-2);
-  border:1px solid var(--silt); position:relative; vertical-align:middle; }
-.bend-bar i{ position:absolute; top:0; bottom:0; width:1px; background:var(--bone-faint); left:50%; }
-.bend-bar u{ position:absolute; top:0; bottom:0; background:var(--tide); }
-
-/* --- reference -------------------------------------------------------- */
-.ref a{ color:var(--tide); text-decoration:none; } .ref a:hover{ text-decoration:underline; }
-.ref h1,.ref h2{ font-family:var(--display); font-weight:400; border-bottom:1px solid var(--silt);
-  padding-bottom:9px; margin-top:30px; }
-.ref h3{ color:var(--algae); margin-top:26px; font-family:var(--display); font-weight:400; }
-.ref h4{ color:var(--tide); margin:18px 0 5px; }
-.ref p,.ref li{ color:var(--bone-dim); line-height:1.65; }
-.ref table{ width:100%; border-collapse:collapse; margin:14px 0; }
-.ref th,.ref td{ border:1px solid var(--silt); padding:8px 11px; text-align:left; }
-.ref th{ background:var(--membrane-2); color:var(--bone); }
-.ref ul{ padding-left:22px; } .ref li{ margin-bottom:7px; }
-.ref code{ background:var(--abyss-2); color:var(--membrane-pink); padding:2px 5px; border-radius:2px; font-size:.9em; }
-.ref pre{ background:var(--abyss-2); border:1px solid var(--silt); border-radius:2px; padding:14px; overflow:auto; }
-.ref pre code{ color:var(--bone); display:block; white-space:pre; }
-.stale-note{ font-size:11.5px; color:var(--ember); border-left:2px solid var(--ember);
-  padding:4px 0 4px 11px; margin:0 0 14px; }
-.sample pre{ background:var(--abyss-2); border:1px solid var(--silt); border-radius:2px; padding:13px;
-  white-space:pre-wrap; word-break:break-word; font-size:12px; max-height:200px; overflow:auto; }
-.sample .panel-head{ border-bottom:none; padding:0 0 8px; }
-.json-key{ color:var(--tide); } .json-string{ color:var(--membrane-pink); }
-.json-number{ color:var(--algae); } .json-boolean{ color:var(--bruise); }
-.hidden{ display:none!important; }
-::selection{ background:#bfe7e1; color:var(--bone); }
-
-/* --- model key (facets) ----------------------------------------------- */
-.facets{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin-top:4px; }
-.facet{ border:1px solid var(--silt); border-radius:2px; padding:9px 11px; background:var(--abyss-2); }
-.facet b{ color:var(--bruise); font-size:11.5px; letter-spacing:.04em; }
-.facet span{ display:block; color:var(--bone-dim); font-size:11px; line-height:1.5; margin-top:3px; }
+.ref a{color:var(--tide); text-decoration:none;} .ref a:hover{text-decoration:underline;}
+.ref h1,.ref h2{font-family:var(--display); font-weight:400; border-bottom:1px solid var(--silt); padding-bottom:9px; margin-top:30px;}
+.ref h3{color:var(--algae); margin-top:26px; font-family:var(--display); font-weight:400;}
+.ref h4{color:var(--tide); margin:18px 0 5px;}
+.ref p,.ref li{color:var(--bone-dim); line-height:1.65;}
+.ref table{width:100%; border-collapse:collapse; margin:14px 0;}
+.ref th,.ref td{border:1px solid var(--silt); padding:8px 11px; text-align:left;}
+.ref th{background:var(--membrane-2); color:var(--bone);}
+.ref ul{padding-left:22px;} .ref li{margin-bottom:7px;}
+.ref code{background:var(--abyss-2); color:var(--membrane-pink); padding:2px 5px; border-radius:2px; font-size:.9em;}
+.ref pre{background:var(--abyss-2); border:1px solid var(--silt); border-radius:2px; padding:14px; overflow:auto;}
+.ref pre code{color:var(--bone); display:block; white-space:pre;}
+.sample pre{background:var(--abyss-2); border:1px solid var(--silt); border-radius:2px; padding:13px; white-space:pre-wrap; word-break:break-word; font-size:12px; max-height:200px; overflow:auto;}
+.sample .panel-head{border-bottom:none; padding:0 0 8px;}
+.json-key{color:var(--tide);} .json-string{color:var(--membrane-pink);} .json-number{color:var(--algae);} .json-boolean{color:var(--bruise);}
+::selection{background:#bfe7e1; color:var(--bone);}
 </style>
 </head>
 <body>
@@ -284,1031 +154,342 @@ table.report tr:hover td{ background:rgba(24,48,43,0.04); }
 <div class="masthead">
   <div class="logo">
     <h1>Tabota<span class="kanji">田</span></h1>
-    <span class="tag">event description language · one type · transfer to MIDI</span>
+    <span class="tag">event description language · read-only visualizer</span>
   </div>
   <div class="meta-strip">
-    <a class="rolllink" href="tabota_roll.html" title="Open the visual piano-roll editor">
-      <span class="rl-ico">▦</span>
-      <span class="rl-tx"><b>Piano Roll</b><em>draw notes · polyphonic</em></span>
-      <span class="rl-arr">→</span>
-    </a>
-
-    <a class="rolllink" href="cycla_builder.html" title="Open the Cycla subdivision grammar builder">
-      <span class="rl-ico">⌬</span>
-      <span class="rl-tx"><b>Cycla</b><em>build meters · export .cyc</em></span>
-      <span class="rl-arr">→</span>
-    </a>
-
+    <a class="rolllink" href="tabota_roll.html" title="Open the visual piano-roll editor"><span class="rl-ico">▦</span><span class="rl-tx"><b>Piano Roll</b><em>draw · edit · MIDI</em></span><span class="rl-arr">→</span></a>
+    <a class="rolllink" href="cycla_builder.html" title="Open the Cycla subdivision grammar builder"><span class="rl-ico">⌬</span><span class="rl-tx"><b>Cycla</b><em>build meters</em></span><span class="rl-arr">→</span></a>
     <span class="chip">lang <b>v2.0</b></span>
-    <span class="chip" id="chip-bend">bend <b>±24 st</b></span>
+    <span class="chip">interpreter <b>shared</b></span>
   </div>
 </div>
 
 <p class="lede">
-  A workspace for the Tabota notation language. In v2 there is a single recursive type — the <b>Event</b> — and everything in a score is one. An Event is a bag of optional, stackable facets: a <span class="fct">frame</span> (the regime role: it turns the Event into a coordinate field its children are read in), a <span class="fct">value</span> (a pitch, a lane, an instruction), a <span class="fct">position</span>, an <span class="fct">extent</span>, and nested <span class="fct">events</span>. None are required — an empty <code>{}</code> is a valid Event, and the same facets describe a note, a regime, or a whole movement.
+  A read-only window onto the Tabota language. In v2 every node of a score is one recursive <b>Event</b>, a stackable bag of facets — a <span class="fct">frame</span> (coordinate field), a <span class="fct">value</span>, a <span class="fct">position</span>, an <span class="fct">extent</span>, nested <span class="fct">events</span>. This page and the <a href="tabota_roll.html">piano-roll editor</a> read the score through the <b>same interpreter</b> (<code>tabota-resolve.js</code>); they only differ in what each chooses to draw.
 </p>
 <p class="lede">
-  Tabota is a language of <b>description, not scheduling</b>: it can express relations that are indeterminate, over-determined, or even paradoxical. This workspace is a <b>realizer</b> — it plots and compiles the <b>determinate fragment</b> (events placed at exact coordinates with exact or gliding pitch) to microtonal MIDI, retuning through pitch bend so the result travels into a normal DAW. Anything outside that fragment — relational placement (<code>after</code>, <code>meets</code>), ranges, open extents, cycles — stays valid in the language, but is listed under <b>“cannot schedule here”</b> rather than drawn. To draw notes directly, open the <a href="tabota_roll.html">piano-roll editor</a>; for rhythm, <a href="cycla_builder.html">Cycla</a> treats meter as a recursive subdivision grammar, a tuning system for time.
+  Because it never has to <i>play</i> anything, this page draws a <b>wider</b> domain than the Roll: zero-extent <span class="fct">points</span>, purely sequential <span class="fct">achronous</span> events, indeterminate pitch <span class="fct">bands</span> — all things MIDI can't represent. The genuinely <i>unplaceable</i> (relational cycles, indeterminate onsets) can't sit on a timeline, so they're <b>described, not placed</b> below the plot rather than refused. MIDI export lives in the Roll; here you export the visual score.
 </p>
 
-<div class="facets" id="facet-key"></div>
+<div class="panel"><div class="panel-body"><div class="facets" id="facet-key"></div></div></div>
 
-  <!-- VISUALIZER ------------------------------------------------------- -->
-  <div class="panel">
-    <div class="panel-head">
-      <h2>Graphical Output</h2>
-      <div style="display:flex;gap:16px;align-items:center;">
-        <div class="zoom"><span>X</span><button class="zoom-btn" id="zoom-x-out">–</button><button class="zoom-btn" id="zoom-x-in">+</button></div>
-        <div class="zoom"><span>Y</span><button class="zoom-btn" id="zoom-y-out">–</button><button class="zoom-btn" id="zoom-y-in">+</button></div>
-      </div>
-    </div>
-    <div class="panel-body"><div id="score-container"></div><div id="resolve-report"></div></div>
-  </div>
-
-  <!-- EDITOR ----------------------------------------------------------- -->
-  <div class="panel">
-    <div class="panel-head">
-      <h2>Score Source</h2>
-      <div class="editor-actions">
-        <select id="sample-select" title="Load a sample">
-          <option value="">load sample…</option>
-          <option value="main">Language showcase</option>
-          <option value="micro">Microtonal scale (Hz)</option>
-          <option value="symbolic">Symbolic melody + glide</option>
-          <option value="theatre">Theatrical cues (achronous)</option>
-          <option value="relational">Relations &amp; the unschedulable</option>
-        </select>
-        <button class="action-btn" id="beautify-btn">Beautify</button>
-        <button class="copy-btn icon-btn" id="copy-main-json">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy
-        </button>
-      </div>
-    </div>
-    <div class="panel-body">
-      <textarea id="json-input"></textarea>
-      <button id="render-btn" class="primary">Render Score</button>
+<div class="panel">
+  <div class="panel-head">
+    <h2>Graphical Output</h2>
+    <div style="display:flex;gap:16px;align-items:center;">
+      <button class="btn" id="export-svg">↓ Export visual score (SVG)</button>
+      <div class="zoom"><span>X</span><button class="zoom-btn" id="zx-">–</button><button class="zoom-btn" id="zx+">+</button></div>
+      <div class="zoom"><span>Y</span><button class="zoom-btn" id="zy-">–</button><button class="zoom-btn" id="zy+">+</button></div>
     </div>
   </div>
+  <div class="panel-body">
+    <div id="plot-wrap"></div>
+    <div class="legend" id="legend"></div>
+  </div>
+</div>
 
-  <!-- WORKBENCH -------------------------------------------------------- -->
-  <div class="panel">
-    <div class="tabs">
-      <button class="tab active" data-tab="export"><span class="num">01</span>Tabota → MIDI</button>
-      <button class="tab" data-tab="import"><span class="num">02</span>MIDI → Tabota</button>
-    </div>
-
-    <!-- EXPORT ........................................................ -->
-    <div class="tabpane active" id="pane-export">
-      <p class="note">Compiles <b>one voice</b> — a frame-bearing Event with a pitched axis — to a Standard MIDI File. Each note is placed on the nearest 12-TET key and retuned with a single per-channel pitch bend, so any microtonal frequency transfers exactly. Only the <b>determinate fragment</b> of the voice is written; events positioned by relation, range, or unresolved reference are reported below as unschedulable. The file writes an <code>RPN&nbsp;0,0</code> message telling the synth what bend range to expect — set it to match your instrument.</p>
-
-      <div class="controls-grid" style="margin-top:16px;">
-        <label class="field">Voice
-          <select id="exp-voice"></select>
-        </label>
-        <label class="field">Bend range ± (semitones)
-          <input type="number" id="exp-range" value="24" min="1" max="96" step="1">
-        </label>
-        <label class="field">Tuning
-          <select id="exp-tuning">
-            <option value="12-TET">12-TET (equal)</option>
-            <option value="pythagorean">Pythagorean</option>
-            <option value="just">Just intonation</option>
-            <option value="score">Use frame's tuning</option>
-            <option value="custom">Custom map (paste below)</option>
-          </select>
-        </label>
-        <label class="field">Tonic (for temperaments)
-          <select id="exp-tonic">
-            <option>C</option><option>C#</option><option>D</option><option>D#</option><option>E</option><option>F</option><option>F#</option><option>G</option><option>G#</option><option>A</option><option>A#</option><option>B</option>
-          </select>
-        </label>
-        <label class="field">A4 reference (Hz)
-          <input type="number" id="exp-a4" value="440" min="380" max="500" step="0.01">
-        </label>
-        <label class="field">Tempo (BPM)
-          <input type="number" id="exp-bpm" value="120" min="20" max="400" step="1">
-        </label>
-        <label class="field">PPQ resolution
-          <input type="number" id="exp-ppq" value="480" min="24" max="3840" step="24">
-        </label>
-        <label class="field">Channel (0–15)
-          <input type="number" id="exp-channel" value="0" min="0" max="15" step="1">
-        </label>
-        <label class="field">Program (0–127)
-          <input type="number" id="exp-program" value="0" min="0" max="127" step="1">
-        </label>
-        <label class="field">Velocity
-          <input type="number" id="exp-velocity" value="100" min="1" max="127" step="1">
-        </label>
-        <label class="field">Point note length (beats)
-          <input type="number" id="exp-pointlen" value="1" min="0.0625" max="16" step="0.0625">
-        </label>
-        <label class="field">Slide bends / beat
-          <input type="number" id="exp-slidres" value="16" min="1" max="96" step="1">
-        </label>
-      </div>
-
-      <label class="field" id="custom-tuning-wrap" style="display:none;">Custom tuning map — JSON of note→Hz, or <code>{"notes":{...}}</code>
-        <textarea class="tn" id="exp-custommap" rows="4" placeholder='{ "C4": 261.0, "D4": 293.0, ... }'></textarea>
-      </label>
-
-      <div class="row-actions" style="margin-top:16px;">
-        <button class="primary" id="compile-btn">Compile to MIDI</button>
-        <a class="btn hidden" id="midi-download" download="voice.mid">↓ Download .mid</a>
-        <span class="note" id="compile-hint">Reads the score above. Frequency frames use Hz directly; symbolic frames resolve note names through the chosen tuning.</span>
-      </div>
-
-      <div id="export-output"></div>
-    </div>
-
-    <!-- IMPORT ........................................................ -->
-    <div class="tabpane" id="pane-import">
-      <p class="note">Convert a <code>.mid</code> file into a Tabota <b>v2</b> score. Each MIDI track becomes a child Event carrying a symbolic frame (12-TET note names); notes become value+position+extent Events. The result is loaded straight into the editor above.</p>
-      <div style="margin:16px 0;"><input type="file" id="midi-input" accept=".mid,.midi"></div>
-      <div class="controls-grid">
-        <label class="field" style="text-transform:none;letter-spacing:0;">
-          <span style="text-transform:uppercase;letter-spacing:.13em;">Positioning format</span>
-          <select id="import-format">
-            <option value="meter-duration">Meter + duration — readable</option>
-            <option value="meter-full">Full meter (start/end) — symmetric</option>
-            <option value="beats">Flat beats — raw grid</option>
-          </select>
-        </label>
-      </div>
-      <div class="row-actions">
-        <button class="primary" id="import-btn">Convert &amp; Load</button>
-        <a class="btn hidden" id="json-download" download="score.json">↓ Download .json</a>
-        <span class="note" id="import-hint"></span>
-      </div>
+<div class="panel">
+  <div class="panel-head">
+    <h2>Score Source</h2>
+    <div class="editor-actions">
+      <select id="sample-select" title="Load a sample">
+        <option value="">load sample…</option>
+        <option value="main">Language showcase</option>
+        <option value="micro">Points (no extent)</option>
+        <option value="symbolic">Symbolic melody + glide</option>
+        <option value="theatre">Achronous cues</option>
+        <option value="relational">Relations &amp; the unplaceable</option>
+      </select>
+      <button id="beautify-btn">Beautify</button>
+      <button class="copy-btn icon-btn" id="copy-main"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button>
     </div>
   </div>
-
-  <!-- SAMPLES ---------------------------------------------------------- -->
-  <div class="panel">
-    <div class="panel-head"><h2>Samples</h2><span class="idx">copy &amp; render</span></div>
-    <div class="panel-body">
-      <div class="sample"><div class="panel-head"><h4 style="margin:0;color:var(--tide);">Symbolic melody + glide</h4><button class="copy-btn" data-target="symbolic">Copy &amp; Render</button></div><pre><code id="s-symbolic"></code></pre></div>
-      <div class="sample" style="margin-top:14px;"><div class="panel-head"><h4 style="margin:0;color:var(--tide);">Relations &amp; the unschedulable</h4><button class="copy-btn" data-target="relational">Copy &amp; Render</button></div><pre><code id="s-relational"></code></pre></div>
-    </div>
+  <div class="panel-body">
+    <textarea id="json-input"></textarea>
+    <button id="render-btn" class="primary">Render Score</button>
   </div>
+</div>
 
-  <div class="panel ref">
-    <div class="panel-head"><h2>Language Reference</h2><span class="idx">tabota_reference_guide.md</span></div>
-    <div class="panel-body">
-      <div id="markdown-content"><p class="note">Loading reference guide…</p></div>
-    </div>
+<div class="panel">
+  <div class="panel-head"><h2>Inspect</h2><span class="idx">resolved by tabota-resolve.js</span></div>
+  <div class="panel-body">
+    <div id="summary" class="summary"></div>
+    <div id="described"></div>
+    <div class="report-wrap"><table class="report"><thead><tr>
+      <th>id</th><th>kind</th><th>start</th><th>end</th><th>value</th><th>coords</th><th>tags</th>
+    </tr></thead><tbody id="node-rows"></tbody></table></div>
+    <div id="diags" class="diags"></div>
   </div>
+</div>
+
+<div class="panel">
+  <div class="panel-head"><h2>Samples</h2><span class="idx">copy &amp; render</span></div>
+  <div class="panel-body">
+    <div class="sample"><div class="panel-head"><h4 style="margin:0;color:var(--tide);">Symbolic melody + glide</h4><button class="copy-btn" data-target="symbolic">Copy &amp; Render</button></div><pre><code id="s-symbolic"></code></pre></div>
+    <div class="sample" style="margin-top:14px;"><div class="panel-head"><h4 style="margin:0;color:var(--tide);">Relations &amp; the unplaceable</h4><button class="copy-btn" data-target="relational">Copy &amp; Render</button></div><pre><code id="s-relational"></code></pre></div>
+  </div>
+</div>
+
+<div class="panel ref">
+  <div class="panel-head"><h2>Language Reference</h2><span class="idx">tabota_reference_guide.md</span></div>
+  <div class="panel-body"><div id="markdown-content"><p class="note">Loading reference guide…</p></div></div>
+</div>
 
 </div>
 
-<script>
-/* ============================================================
-   TABOTA MICROTONAL ENGINE  (validated against @tonejs/midi)
-   pure functions — note/freq math, tuning, pitch bend, SMF writer
-   [v2: unchanged — the engine is model-agnostic]
-   ============================================================ */
-const PITCH_CLASS={'C':0,'C#':1,'DB':1,'D':2,'D#':3,'EB':3,'E':4,'F':5,'F#':6,'GB':6,'G':7,'G#':8,'AB':8,'A':9,'A#':10,'BB':10,'B':11};
-const NOTE_NAMES=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+<script type="module">
+import { resolve } from './tabota-resolve.js';
 
-function noteNameToMidi(name){
-  const m=String(name).trim().match(/^([A-Ga-g])([#b]?)(-?\d+)$/);
-  if(!m) return null;
-  const pc=PITCH_CLASS[m[1].toUpperCase()+(m[2]==='b'?'B':m[2])];
-  if(pc===undefined) return null;
-  return (parseInt(m[3],10)+1)*12+pc;
-}
-function midiToName(midi){ return NOTE_NAMES[((midi%12)+12)%12]+(Math.floor(midi/12)-1); }
-function midiToFreq(midi,a4=440){ return a4*Math.pow(2,(midi-69)/12); }
-function freqToMidi(freq,a4=440){ return 69+12*Math.log2(freq/a4); }
-
-const PYTHAGOREAN_RATIOS=[1,256/243,9/8,32/27,81/64,4/3,729/512,3/2,128/81,27/16,16/9,243/128];
-const JUST_RATIOS=[1,16/15,9/8,6/5,5/4,4/3,45/32,3/2,8/5,5/3,9/5,15/8];
-function buildTemperament(ratios,tonicPc,a4){
-  const tonicFreq4=midiToFreq((4+1)*12+tonicPc,a4);
-  const map={};
-  for(let oct=0;oct<=9;oct++){ for(let pc=0;pc<12;pc++){
-    const steps=((pc-tonicPc)+12)%12;
-    map[NOTE_NAMES[pc]+oct]=tonicFreq4*ratios[steps]*Math.pow(2,oct-4);
-  }}
-  return map;
-}
-function resolveNoteFreq(name,tuning){
-  const a4=tuning.a4||440;
-  if(tuning.system==='custom'&&tuning.map&&tuning.map[name]!=null) return tuning.map[name];
-  if(tuning.system==='pythagorean'||tuning.system==='just'){
-    if(!tuning._map){
-      const tonicPc=PITCH_CLASS[(tuning.tonic||'C').toUpperCase()]||0;
-      tuning._map=buildTemperament(tuning.system==='pythagorean'?PYTHAGOREAN_RATIOS:JUST_RATIOS,tonicPc,a4);
-    }
-    if(tuning._map[name]!=null) return tuning._map[name];
-  }
-  const midi=noteNameToMidi(name);
-  return midi==null?null:midiToFreq(midi,a4);
-}
-function freqToBend(freq,range,a4=440){
-  const mFloat=freqToMidi(freq,a4);
-  const baseNote=Math.round(mFloat);
-  const deltaSemis=mFloat-baseNote;
-  let pb=Math.round(8192+(deltaSemis/range)*8192);
-  pb=Math.max(0,Math.min(16383,pb));
-  return {baseNote,deltaSemis,deltaCents:deltaSemis*100,pb14:pb};
-}
-function bendForTargetMidi(targetMidi,baseNote,range){
-  const deltaSemis=targetMidi-baseNote;
-  let pb=Math.round(8192+(deltaSemis/range)*8192);
-  const clamped=Math.max(0,Math.min(16383,pb));
-  return {pb14:clamped,deltaSemis,overflow:pb!==clamped};
-}
-
-class MidiWriter{
-  constructor(ppq=480){ this.ppq=ppq; this.events=[]; this._seq=0; }
-  _push(tick,bytes,order=0){ this.events.push({tick:Math.round(tick),order,seq:this._seq++,bytes}); }
-  tempo(tick,bpm){ const m=Math.round(60000000/bpm); this._push(tick,[0xFF,0x51,0x03,(m>>16)&255,(m>>8)&255,m&255],-100); }
-  timeSignature(tick,num,den){ this._push(tick,[0xFF,0x58,0x04,num,Math.round(Math.log2(den)),24,8],-99); }
-  trackName(tick,name){ const b=[].slice.call(new TextEncoder().encode(name)); this._push(tick,[0xFF,0x03,b.length,...b],-98); }
-  programChange(tick,ch,p){ this._push(tick,[0xC0|(ch&15),p&127],-50); }
-  cc(tick,ch,c,v,order=-40){ this._push(tick,[0xB0|(ch&15),c&127,v&127],order); }
-  setBendRange(tick,ch,semis,cents=0){
-    this.cc(tick,ch,101,0,-60); this.cc(tick,ch,100,0,-59);
-    this.cc(tick,ch,6,semis&127,-58); this.cc(tick,ch,38,cents&127,-57);
-    this.cc(tick,ch,101,127,-56); this.cc(tick,ch,100,127,-55);
-  }
-  pitchBend(tick,ch,v14){ const v=Math.max(0,Math.min(16383,Math.round(v14))); this._push(tick,[0xE0|(ch&15),v&127,(v>>7)&127],-10); }
-  noteOn(tick,ch,note,vel=100){ this._push(tick,[0x90|(ch&15),note&127,vel&127],0); }
-  noteOff(tick,ch,note){ this._push(tick,[0x80|(ch&15),note&127,0],-5); }
-  _vlq(value){ let buf=value&127; const out=[]; while(value>>=7){ buf<<=8; buf|=((value&127)|128); } while(true){ out.push(buf&255); if(buf&128) buf>>=8; else break; } return out; }
-  build(){
-    this.events.sort((a,b)=>a.tick-b.tick||a.order-b.order||a.seq-b.seq);
-    const trk=[]; let last=0;
-    for(const e of this.events){ trk.push(...this._vlq(e.tick-last),...e.bytes); last=e.tick; }
-    trk.push(0x00,0xFF,0x2F,0x00);
-    const ppq=this.ppq;
-    const head=[0x4D,0x54,0x68,0x64,0,0,0,6,0,0,0,1,(ppq>>8)&255,ppq&255];
-    const len=trk.length;
-    const th=[0x4D,0x54,0x72,0x6B,(len>>24)&255,(len>>16)&255,(len>>8)&255,len&255];
-    return new Uint8Array([...head,...th,...trk]);
-  }
-}
-
-/* ============================================================
-   V2 RESOLVER  (recursive Event walk → determinate fragment)
-   ------------------------------------------------------------
-   A frame establishes the coordinate system its children are read in
-   and supplies the conversion keys (bpm for time, tuning for pitch).
-   Nesting is a SCOPE edge (inherit, like CSS), not a temporal "during":
-   children inherit the frame; a child may outlast its parent.
-   We resolve only VALUE positions (at / meter / index) and exact or
-   gliding pitch — the fragment the Roll emits and a DAW can read.
-   Relational / range / open / reference forms are collected as
-   "cannot schedule here" rather than placed.
-   ============================================================ */
-const NOMINAL_INDEX_SEC=0.6;          // achronous slot width for layout
-const DEFAULT_BPM=120;
-
-function meterToBeats(m,beatsPerMeasure){ return ((m.measure-1)*(beatsPerMeasure||4))+m.beat; }
-
-// Merge an Event's own frame onto the inherited frame (lexical scope).
-function deriveFrame(ev, inh){
-  const f=ev.frame||{};
-  let temporal=inh.temporal, tset=inh.temporalSettings, bpm=inh.bpm, bpmsr=inh.beatsPerMeasure;
-  if(f.temporal){
-    temporal=f.temporal; tset=f.temporalSettings||{};
-    bpm=(tset.bpm!=null?tset.bpm:inh.bpm); // bpm is a conversion key: own > inherited
-    bpmsr=tset.timeSignature?parseInt(tset.timeSignature.split('/')[0]):(inh.beatsPerMeasure||4);
-  }
-  let axis=inh.axis, aset=inh.axisSettings;
-  if(f.axis){ axis=f.axis; aset=f.axisSettings||{}; }
-  return {temporal,temporalSettings:tset,bpm,beatsPerMeasure:bpmsr,axis,axisSettings:aset,hasOwnFrame:!!ev.frame};
-}
-
-// Convert a quantity in a frame's units into seconds.
-function unitToSec(val,frame){
-  if(val==null) return null;
-  if(!frame||!frame.temporal) return val;                       // root context → seconds
-  if(frame.temporal==='chronological'){
-    const u=(frame.temporalSettings&&frame.temporalSettings.units)||'seconds';
-    return u==='milliseconds'?val/1000:(u==='minutes'?val*60:val);
-  }
-  if(frame.temporal==='metered') return val*60/(frame.bpm||DEFAULT_BPM);
-  if(frame.temporal==='achronous') return val*NOMINAL_INDEX_SEC;
-  return val;
-}
-
-// Onset in the governing frame's own units. null if not given by VALUE.
-function localOnset(ev,frame){
-  const p=ev.position||{};
-  if(p.at!=null) return p.at;
-  if(p.meter) return meterToBeats(p.meter,frame.beatsPerMeasure);
-  if(p.index!=null) return p.index;
-  if(p.anchor&&p.anchor.time!=null) return p.anchor.time;       // approximation: pin time as onset
-  return null;
-}
-// Why an onset is *unresolvable* by value (for the refusal report). null if it is resolvable / absent.
-function onsetRefusal(ev){
-  const p=ev.position||{};
-  if(p.relations&&p.relations.length) return 'relational placement ('+p.relations.map(r=>r.type).join(', ')+')';
-  if(p.between) return 'indeterminate window (position.between)';
-  return null;
-}
-// Local extent length in frame units. null if not a plain length.
-function localExtentLen(ev,frame,onLocal){
-  const x=ev.extent||{};
-  if(x.duration!=null) return x.duration;
-  if(x.endAt!=null) return x.endAt-(onLocal||0);
-  if(x.endMeter) return meterToBeats(x.endMeter,frame.beatsPerMeasure)-(onLocal||0);
-  return null;
-}
-function extentRefusal(ev){
-  const x=ev.extent||{};
-  if(x.end==='open') return 'open extent (goes on forever)';
-  if(x.until) return 'extent ends at a landmark (extent.until)';
-  if(x.between) return 'indeterminate duration (extent.between)';
-  return null;
-}
-
-function tuningFromFrame(frame){
-  const a=(frame&&frame.axisSettings)||{};
-  return {system:'12-TET', a4:a.a4||440};
-}
-// Resolve value.pitch → {hz} | {from,to} | {band:[lo,hi]} | {unresolved:reason} | null
-function resolvePitch(pv,frame){
-  if(!pv) return null;
-  const tn=tuningFromFrame(frame);
-  const toHz=x=> (typeof x==='number')?x:(resolveNoteFreq(x,tn));
-  if(pv.hz!=null) return {hz:pv.hz, label:pv.hz.toFixed(2)+' Hz'};
-  if(pv.note!=null){ const h=toHz(pv.note); return h?{hz:h,label:pv.note}:{unresolved:'unknown note "'+pv.note+'"'}; }
-  if(pv.from!=null||pv.to!=null){ const a=toHz(pv.from!=null?pv.from:pv.to), b=toHz(pv.to!=null?pv.to:pv.from);
-    return {from:a,to:b,label:(typeof pv.from==='string'?pv.from:Math.round(a))+' → '+(typeof pv.to==='string'?pv.to:Math.round(b))}; }
-  if(pv.between){ const lo=toHz(pv.between.low), hi=toHz(pv.between.high); return {band:[lo,hi],label:'['+pv.between.low+'–'+pv.between.high+']'}; }
-  if(pv.relativeTo) return {unresolved:'pitch relative to "'+pv.relativeTo+'"'};
-  return null;
-}
-
-const ROOT_FRAME={temporal:null,temporalSettings:{},bpm:null,beatsPerMeasure:4,axis:null,axisSettings:{}};
-
-/* Walk the tree. Returns {nodes, frames, totalSec, refusals}. */
-function resolveScore(data){
-  const nodes=[], frames=[], refusals=[];
-  let primaryAxis=null, primaryAxisSettings=null;
-
-  function describe(ev,idx,depth){
-    return ev.id || (ev.role?ev.role:'event')+' @'+depth+'.'+idx;
-  }
-
-  function walk(list, inh, originSec, depth, seqStartSec){
-    let cursor=seqStartSec;            // for positionless sequential layout at this level
-    let spanMin=Infinity, spanMax=-Infinity;
-    (list||[]).forEach((ev,idx)=>{
-      if(!ev||typeof ev!=='object') return;
-      const frame=deriveFrame(ev,inh);
-      if(frame.axis && !primaryAxis){ primaryAxis=frame.axis; primaryAxisSettings=frame.axisSettings; }
-
-      // ---- onset ----
-      const onLocal=localOnset(ev,frame);
-      const oRef=onLocal==null?onsetRefusal(ev):null;
-      let onsetSec=null, placed=true;
-      if(onLocal!=null){ onsetSec=originSec+unitToSec(onLocal,frame); }
-      else if(oRef){ placed=false; refusals.push({who:describe(ev,idx,depth),why:oRef}); }
-      else { onsetSec = depth===0 ? cursor : originSec; }   // positionless: sequential at top, at-parent nested
-
-      // ---- extent ----
-      const extLen=localExtentLen(ev,frame,onLocal||0);
-      const xRef=extLen==null?extentRefusal(ev):null;
-      let endSec=null, open=false;
-      if(placed){
-        if(extLen!=null) endSec=onsetSec+unitToSec(extLen,frame);
-        else if((ev.extent||{}).end==='open'){ open=true; }
-        // else: point (endSec stays null until children resolve)
-      }
-      if(xRef && xRef.indexOf('open')<0){ refusals.push({who:describe(ev,idx,depth),why:xRef}); }
-
-      // ---- pitch / value ----
-      const pitch = ev.value ? resolvePitch(ev.value.pitch,frame) : null;
-      if(pitch && pitch.unresolved){ refusals.push({who:describe(ev,idx,depth),why:pitch.unresolved}); }
-
-      // ---- recurse into children (origin = this event's onset) ----
-      let childMin=Infinity, childMax=-Infinity;
-      if(ev.events && ev.events.length){
-        const childOrigin = onsetSec!=null?onsetSec:originSec;
-        const r=walk(ev.events, frame, childOrigin, depth+1, childOrigin);
-        childMin=r.min; childMax=r.max;
-      }
-
-      // container extent defaults: untilChildrenEnd / no extent + has children → bound to children
-      if(placed && endSec==null && !open && isFinite(childMax)) endSec=childMax;
-      if(placed && open===false && endSec==null) endSec=onsetSec;   // bare point
-
-      // ---- record drawable node ----
-      if(placed){
-        const isFrame=!!ev.frame;
-        const node={
-          onsetSec, endSec:(endSec==null?onsetSec:endSec), open, depth,
-          frame, axis:frame.axis, axisSettings:frame.axisSettings,
-          pitch, lane:ev.value&&ev.value.lane, text:ev.value&&ev.value.text,
-          comment:ev.payload&&ev.payload.comment,
-          label:describe(ev,idx,depth), isFrame,
-          hasChildren:!!(ev.events&&ev.events.length)
-        };
-        nodes.push(node);
-        if(isFrame){ frames.push({onsetSec,endSec:node.endSec,label:ev.id||ev.role||('frame '+(frames.length+1)),axis:frame.axis}); }
-        spanMin=Math.min(spanMin,onsetSec); spanMax=Math.max(spanMax,node.endSec,isFinite(childMax)?childMax:onsetSec);
-        cursor=Math.max(cursor,node.endSec);
-      } else if(isFinite(childMax)){
-        spanMin=Math.min(spanMin,childMin); spanMax=Math.max(spanMax,childMax);
-      }
-    });
-    return {min:spanMin,max:spanMax};
-  }
-
-  const r=walk(data.score, ROOT_FRAME, 0, 0, 0);
-  const totalSec=Math.max(isFinite(r.max)?r.max:0, 0.0001);
-  // open-extent nodes extend to the score end for drawing
-  nodes.forEach(n=>{ if(n.open) n.endSec=totalSec; });
-  return {nodes,frames,totalSec,refusals,primaryAxis,primaryAxisSettings};
-}
-
-/* ============================================================
-   APP STATE + V2 SAMPLES
-   ============================================================ */
-let zoom={x:1,y:1};
-const BASE_TIMELINE_HEIGHT=300;
-let codeEditor;
-let GLOBAL_MIDI_RANGE={min:48,max:84};   // recomputed per render for symbolic y
+/* ---- label helpers (formatting only; not interpretation) ---- */
+const NOTE=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const freqToMidi=(f)=>69+12*Math.log2(f/440);
+const midiToName=(m)=>NOTE[((Math.round(m)%12)+12)%12]+(Math.floor(Math.round(m)/12)-1);
 
 const FACETS=[
-  ['frame','the regime role — a coordinate field its children are read in (temporal + axis + conversion keys)'],
-  ['value','what the Event is: a pitch (Hz / note / glide / band), a lane, or an instruction'],
-  ['position','where it sits: at / meter / index (exact), or relation / between (deferred to a realizer)'],
-  ['extent','its own duration / end — decoupled from what it contains'],
-  ['events','nested Events. scope, not "during": a child may outlast its parent']
+  ['frame','the regime role — a coordinate field its children are read in'],
+  ['value','what the Event is: pitch, lane, text, tempo'],
+  ['position','where it sits — exact, relational, or a window'],
+  ['extent','its own duration / end'],
+  ['lenses','named secondary charts — alternate tempo/meter or tuning'],
+  ['events','nested Events — scope, not "during"']
 ];
 
 const samples={
-  main:`{
+ main:`{
   "projectName": "Tabota Language Showcase",
   "languageVersion": "2.0",
   "metadata": { "profile": "determinate" },
   "score": [
-    {
-      "id": "A1_Melody",
-      "role": "regime",
-      "frame": {
-        "temporal": "metered", "temporalSettings": { "beats": 4, "bpm": 120, "timeSignature": "4/4" },
-        "axis": "frequency", "axisSettings": { "minHz": 100, "maxHz": 2000 }
-      },
+    { "id": "A1_Melody", "role": "regime",
+      "frame": { "temporal": "metered", "temporalSettings": { "beats": 4, "bpm": 120, "timeSignature": "4/4" }, "axis": "frequency" },
       "events": [
         { "value": { "pitch": { "from": 440.0, "to": 523.25 } }, "position": { "at": 0 }, "extent": { "duration": 2 }, "payload": { "comment": "A4 -> C5 glide" } },
-        { "value": { "pitch": { "hz": 587.33 } }, "position": { "at": 2.5 }, "payload": { "comment": "D5" } },
-        { "value": { "pitch": { "from": 659.25, "to": 675.50 } }, "position": { "at": 3 }, "extent": { "duration": 1 }, "payload": { "comment": "E5 microtonal bend" } }
-      ]
-    },
-    {
-      "id": "B1_Rhythm",
-      "role": "regime",
-      "frame": {
-        "temporal": "chronological", "temporalSettings": { "duration": 2, "units": "seconds" },
-        "axis": "categorical", "axisSettings": { "categories": ["Kick", "Snare", "Hi-Hat"] }
-      },
+        { "value": { "pitch": { "hz": 587.33 } }, "position": { "at": 2.5 } },
+        { "value": { "pitch": { "from": 659.25, "to": 675.5 } }, "position": { "at": 3 }, "extent": { "duration": 1 } }
+      ] },
+    { "id": "B1_Rhythm", "role": "regime",
+      "frame": { "temporal": "chronological", "temporalSettings": { "duration": 2, "units": "seconds" }, "axis": "categorical", "axisSettings": { "categories": ["Kick", "Snare", "Hi-Hat"] } },
       "events": [
-        { "value": { "lane": "Kick" },  "position": { "at": 0.0 } },
+        { "value": { "lane": "Kick" }, "position": { "at": 0 } },
         { "value": { "lane": "Snare" }, "position": { "at": 0.5 } },
-        { "value": { "lane": "Kick" },  "position": { "at": 1.0 } },
+        { "value": { "lane": "Kick" }, "position": { "at": 1 } },
         { "value": { "lane": "Snare" }, "position": { "at": 1.5 } }
-      ]
-    }
+      ] }
   ]
 }`,
-  micro:`{
-  "projectName": "Microtonal Scale",
+ micro:`{
+  "projectName": "Points (no extent)",
   "languageVersion": "2.0",
   "score": [
-    {
-      "id": "Scale", "role": "regime",
-      "frame": {
-        "temporal": "metered", "temporalSettings": { "beats": 8, "bpm": 90 },
-        "axis": "frequency", "axisSettings": { "minHz": 200, "maxHz": 600 }
-      },
+    { "id": "Scale", "role": "regime",
+      "frame": { "temporal": "metered", "temporalSettings": { "beats": 8, "bpm": 90 }, "axis": "frequency" },
       "events": [
         { "value": { "pitch": { "hz": 261.63 } }, "position": { "at": 0 } },
-        { "value": { "pitch": { "hz": 285.00 } }, "position": { "at": 1 } },
         { "value": { "pitch": { "hz": 311.13 } }, "position": { "at": 2 } },
-        { "value": { "pitch": { "hz": 340.00 } }, "position": { "at": 3 } },
         { "value": { "pitch": { "hz": 369.99 } }, "position": { "at": 4 } },
-        { "value": { "pitch": { "hz": 405.00 } }, "position": { "at": 5 } },
-        { "value": { "pitch": { "hz": 440.00 } }, "position": { "at": 6 } },
-        { "value": { "pitch": { "hz": 480.00 } }, "position": { "at": 7 } }
-      ]
-    }
+        { "value": { "pitch": { "hz": 440.0 } }, "position": { "at": 6 } }
+      ] }
   ]
 }`,
-  symbolic:`{
+ symbolic:`{
   "projectName": "Symbolic Melody",
   "languageVersion": "2.0",
   "score": [
-    {
-      "id": "Theme", "role": "regime",
-      "frame": {
-        "temporal": "metered", "temporalSettings": { "beats": 8, "bpm": 100 },
-        "axis": "symbolic", "axisSettings": { "tuning": "12-TET", "a4": 440 }
-      },
+    { "id": "Theme", "role": "regime",
+      "frame": { "temporal": "metered", "temporalSettings": { "beats": 8, "bpm": 100 }, "axis": "symbolic", "axisSettings": { "tuning": "12-TET", "a4": 440 } },
       "events": [
         { "value": { "pitch": { "note": "C4" } }, "position": { "at": 0 }, "extent": { "duration": 1 } },
         { "value": { "pitch": { "note": "E4" } }, "position": { "at": 1 }, "extent": { "duration": 1 } },
         { "value": { "pitch": { "note": "G4" } }, "position": { "at": 2 }, "extent": { "duration": 1 } },
         { "value": { "pitch": { "note": "A4" } }, "position": { "at": 3 }, "extent": { "duration": 2 } },
         { "value": { "pitch": { "from": "A4", "to": "D5" } }, "position": { "at": 5 }, "extent": { "duration": 3 }, "payload": { "comment": "gliss" } }
-      ]
-    }
+      ] }
   ]
 }`,
-  theatre:`{
-  "projectName": "Simple Stage Play",
+ theatre:`{
+  "projectName": "Stage Cues",
   "languageVersion": "2.0",
   "score": [
-    {
-      "id": "Act 1, Scene 1", "role": "regime",
+    { "id": "Scene 1", "role": "regime",
       "frame": { "temporal": "achronous", "axis": "instructional" },
       "events": [
         { "value": { "text": "House lights down." }, "position": { "index": 0 } },
-        { "value": { "text": "Spotlight center." },  "position": { "index": 1 } },
-        { "value": { "text": "Actor crosses." },     "position": { "index": 2 } },
-        { "value": { "text": "'Am I late?'" },        "position": { "index": 3 } }
-      ]
-    }
+        { "value": { "text": "Spotlight center." }, "position": { "index": 1 } },
+        { "value": { "text": "Actor crosses." }, "position": { "index": 2 } },
+        { "value": { "text": "'Am I late?'" }, "position": { "index": 3 } }
+      ] }
   ]
 }`,
-  relational:`{
-  "projectName": "Relations and the Unschedulable",
+ relational:`{
+  "projectName": "Relations and the Unplaceable",
   "languageVersion": "2.0",
   "metadata": { "profile": "full" },
   "score": [
-    {
-      "id": "Spine", "role": "regime",
-      "frame": {
-        "temporal": "metered", "temporalSettings": { "beats": 8, "bpm": 100 },
-        "axis": "symbolic", "axisSettings": { "tuning": "12-TET" }
-      },
+    { "id": "Spine", "role": "regime",
+      "frame": { "temporal": "metered", "temporalSettings": { "beats": 8, "bpm": 100 }, "axis": "symbolic", "axisSettings": { "tuning": "12-TET" } },
       "events": [
         { "id": "A", "value": { "pitch": { "note": "C4" } }, "position": { "at": 0 }, "extent": { "duration": 2 } },
-        { "id": "B", "value": { "pitch": { "note": "G4" } }, "position": { "relations": [ { "type": "m", "of": { "event": "A", "point": "end" } } ] }, "extent": { "duration": 2 },
-          "payload": { "comment": "B meets A — placement deferred to a realizer that solves relations" } },
-        { "id": "C", "value": { "pitch": { "between": { "low": "E4", "high": "B4" } } }, "position": { "between": { "from": { "event": "A" }, "to": { "event": "B" } } },
-          "payload": { "comment": "indeterminate pitch AND onset" } },
+        { "id": "B", "value": { "pitch": { "note": "G4" } }, "position": { "relations": [ { "type": "m", "of": { "event": "A", "point": "end" } } ] }, "extent": { "duration": 2 }, "payload": { "comment": "meets A — resolves" } },
+        { "id": "C", "value": { "pitch": { "between": { "low": "E4", "high": "B4" } } }, "position": { "between": { "from": { "event": "A" }, "to": { "event": "B" } } } },
         { "id": "P1", "value": { "pitch": { "note": "D4" } }, "position": { "relations": [ { "type": "bi", "of": { "event": "P2" } } ] } },
-        { "id": "P2", "value": { "pitch": { "note": "F4" } }, "position": { "relations": [ { "type": "bi", "of": { "event": "P1" } } ] },
-          "payload": { "comment": "P1 after P2, P2 after P1 — a well-formed graph with no schedule. Valid in TaboTa; unschedulable here." } }
-      ]
-    }
+        { "id": "P2", "value": { "pitch": { "note": "F4" } }, "position": { "relations": [ { "type": "bi", "of": { "event": "P1" } } ] }, "payload": { "comment": "P1 after P2, P2 after P1" } }
+      ] }
   ]
 }`
 };
 
-/* ============================================================
-   INIT
-   ============================================================ */
+let editor, zoom={x:1,y:1};
+const BASE_PXPS=80, BASE_H=300, ML=72, MB=34, MT=26;
+
 document.addEventListener('DOMContentLoaded',()=>{
-  // facet key
-  const fk=document.getElementById('facet-key');
-  fk.innerHTML=FACETS.map(([n,d])=>`<div class="facet"><b>${n}</b><span>${d}</span></div>`).join('');
-
-  codeEditor=CodeMirror.fromTextArea(document.getElementById('json-input'),{
-    mode:{name:"javascript",json:true}, lineNumbers:true, matchBrackets:true
-  });
-  codeEditor.setValue(JSON.stringify(JSON.parse(samples.main),null,2));
-
-  document.getElementById('s-symbolic').innerHTML=syntaxHighlight(samples.symbolic);
-  document.getElementById('s-relational').innerHTML=syntaxHighlight(samples.relational);
-
-  document.querySelectorAll('.copy-btn').forEach(b=>b.addEventListener('click',handleCopyClick));
-  document.getElementById('render-btn').addEventListener('click',()=>{renderScore();refreshVoices();});
-  document.getElementById('beautify-btn').addEventListener('click',beautifyJson);
-  document.getElementById('sample-select').addEventListener('change',e=>{
-    if(e.target.value){ codeEditor.setValue(JSON.stringify(JSON.parse(samples[e.target.value]),null,2)); renderScore(); refreshVoices(); e.target.value=''; }
-  });
-  document.getElementById('zoom-x-in').addEventListener('click',()=>{zoom.x*=1.25;renderScore();});
-  document.getElementById('zoom-x-out').addEventListener('click',()=>{zoom.x=Math.max(0.25,zoom.x/1.25);renderScore();});
-  document.getElementById('zoom-y-in').addEventListener('click',()=>{zoom.y*=1.25;renderScore();});
-  document.getElementById('zoom-y-out').addEventListener('click',()=>{zoom.y=Math.max(0.25,zoom.y/1.25);renderScore();});
-
-  // tabs
-  document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
-    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-    document.querySelectorAll('.tabpane').forEach(x=>x.classList.remove('active'));
-    t.classList.add('active');
-    document.getElementById('pane-'+t.dataset.tab).classList.add('active');
-    if(t.dataset.tab==='export') refreshVoices();
-  }));
-
-  // export controls
-  document.getElementById('exp-tuning').addEventListener('change',e=>{
-    document.getElementById('custom-tuning-wrap').style.display = e.target.value==='custom'?'flex':'none';
-  });
-  document.getElementById('exp-range').addEventListener('input',e=>{
-    document.querySelector('#chip-bend b').textContent='±'+(e.target.value||'?')+' st';
-  });
-  document.getElementById('compile-btn').addEventListener('click',compileToMidi);
-  document.getElementById('import-btn').addEventListener('click',convertMidiToTabota);
-
-  refreshVoices();
-  renderScore();
-  loadReferenceGuide();
+  document.getElementById('facet-key').innerHTML=FACETS.map(([n,d])=>`<div class="facet"><b>${n}</b><span>${d}</span></div>`).join('');
+  editor=CodeMirror.fromTextArea(document.getElementById('json-input'),{mode:{name:'javascript',json:true},lineNumbers:true,matchBrackets:true});
+  editor.setValue(JSON.stringify(JSON.parse(samples.main),null,2));
+  document.getElementById('s-symbolic').innerHTML=hl(samples.symbolic);
+  document.getElementById('s-relational').innerHTML=hl(samples.relational);
+  document.querySelectorAll('.copy-btn').forEach(b=>b.addEventListener('click',copyClick));
+  document.getElementById('render-btn').addEventListener('click',render);
+  document.getElementById('beautify-btn').addEventListener('click',()=>{try{editor.setValue(JSON.stringify(JSON.parse(editor.getValue()),null,2));}catch(e){}});
+  document.getElementById('sample-select').addEventListener('change',e=>{ if(e.target.value){ editor.setValue(JSON.stringify(JSON.parse(samples[e.target.value]),null,2)); render(); e.target.value=''; } });
+  document.getElementById('zx+').onclick=()=>{zoom.x*=1.25;render();}; document.getElementById('zx-').onclick=()=>{zoom.x=Math.max(.25,zoom.x/1.25);render();};
+  document.getElementById('zy+').onclick=()=>{zoom.y*=1.25;render();}; document.getElementById('zy-').onclick=()=>{zoom.y=Math.max(.25,zoom.y/1.25);render();};
+  document.getElementById('export-svg').addEventListener('click',exportSvg);
+  render(); loadGuide();
 });
 
-/* ============================================================
-   VISUALIZER
-   ============================================================ */
-function renderScore(){
-  const c=document.getElementById('score-container'); c.innerHTML='';
-  const rep=document.getElementById('resolve-report'); rep.innerHTML='';
-  let data;
-  try{ data=JSON.parse(codeEditor.getValue()); }
-  catch(e){ c.innerHTML=`<p style="color:var(--membrane-pink);">JSON parse error: ${e.message}</p>`; return; }
-
-  const R=resolveScore(data);
-
-  // symbolic vertical range across all symbolic nodes
-  let mn=Infinity,mx=-Infinity;
-  R.nodes.forEach(n=>{ if(n.axis==='symbolic'&&n.pitch){ [n.pitch.hz,n.pitch.from,n.pitch.to].forEach(h=>{ if(h){ const m=freqToMidi(h); mn=Math.min(mn,m); mx=Math.max(mx,m);} }); } });
-  if(mn===Infinity){ mn=48; mx=84; } else { mn=Math.floor(mn)-3; mx=Math.ceil(mx)+3; }
-  GLOBAL_MIDI_RANGE={min:mn,max:mx};
-
-  if(R.totalSec>0.0002 && R.nodes.length){
-    const wrap=document.createElement('div'); wrap.className='timeline-wrapper';
-    const h=BASE_TIMELINE_HEIGHT*zoom.y; wrap.style.height=`${h}px`;
-    const view=document.createElement('div'); view.className='timeline-view'; view.style.width=`${100*zoom.x}%`;
-    const yAxis=document.createElement('div'); yAxis.className='y-axis';
-    const xAxis=document.createElement('div'); xAxis.className='x-axis'; xAxis.style.width=`${100*zoom.x}%`;
-    wrap.append(yAxis,view,xAxis);
-    drawBackground(R,view,xAxis,yAxis);
-    drawEvents(R,view,h);
-    c.appendChild(wrap);
-  } else if(!R.nodes.length){
-    c.innerHTML='<p class="note">Nothing placeable yet — every Event defers its position to a realizer (see below), or the score is empty.</p>';
-  }
-
-  // refusal report — "here are the things I cannot do"
-  if(R.refusals.length){
-    let h='<div class="refusals"><h4>Cannot schedule here — valid TaboTa, outside this realizer\u2019s determinate fragment</h4><ul>';
-    R.refusals.forEach(r=>{ h+=`<li><b>${r.who}</b> — ${r.why}</li>`; });
-    h+='</ul></div>';
-    rep.innerHTML=h;
-  }
+/* ============================ RENDER ============================ */
+function render(){
+  let doc; const pw=document.getElementById('plot-wrap');
+  try{ doc=JSON.parse(editor.getValue()); }
+  catch(e){ pw.innerHTML=`<p style="color:var(--membrane-pink)">JSON parse error: ${e.message}</p>`; return; }
+  const R=resolve(doc);
+  pw.innerHTML=buildSvg(R);
+  buildLegend(R);
+  buildInspect(R);
 }
 
-function drawBackground(R,view,xAxis,yAxis){
-  const total=R.totalSec;
-  const colors=['#11897e1c','#d1336b18','#5d8c0018','#6a47d818'];
-  R.frames.forEach((s,i)=>{
-    const x=(s.onsetSec/total)*100, w=Math.max(0,((s.endSec-s.onsetSec)/total)*100);
-    const bg=document.createElement('div'); bg.className='section-background'; bg.style.left=`${x}%`; bg.style.width=`${w}%`; bg.style.background=colors[i%colors.length]; view.appendChild(bg);
-    const d=document.createElement('div'); d.className='section-divider'; d.style.left=`${x}%`;
-    const l=document.createElement('div'); l.className='section-divider-label'; l.textContent=s.label; d.appendChild(l); view.appendChild(d);
+function ranges(R){
+  let fmin=Infinity,fmax=-Infinity,mmin=Infinity,mmax=-Infinity;
+  R.nodes.forEach(n=>{ if(!n.pitch) return;
+    const hs=[n.pitch.hz,n.pitch.from,n.pitch.to,...(n.pitch.band||[])].filter(x=>x!=null&&isFinite(x));
+    hs.forEach(h=>{ if(n.frame.axis==='symbolic'){ const m=freqToMidi(h); mmin=Math.min(mmin,m); mmax=Math.max(mmax,m);} else { fmin=Math.min(fmin,h); fmax=Math.max(fmax,h);} });
   });
-  // x grid in seconds
-  const ticks=Math.min(40,Math.max(4,Math.round(total)));
-  for(let i=0;i<=ticks;i++){ const t=total*(i/ticks); const x=(t/total)*100; if(x>100.0001) break;
-    const ln=document.createElement('div'); ln.className='grid-line-vertical'; ln.style.left=`${x}%`; view.appendChild(ln);
-    const lb=document.createElement('div'); lb.className='axis-label'; lb.textContent=(total<=20?t.toFixed(1):Math.round(t))+'s'; lb.style.left=`${x}%`; lb.style.transform='translateX(-50%)'; xAxis.appendChild(lb);
-  }
-  // y axis from the primary axis
-  const mode=R.primaryAxis, ms=R.primaryAxisSettings||{};
-  if(mode==='frequency'){ const minHz=ms.minHz||20,maxHz=ms.maxHz||20000; for(let i=0;i<10;i++){ const p=i/9; const hz=Math.exp(Math.log(minHz)+p*(Math.log(maxHz)-Math.log(minHz))); const y=(1-p)*100; const lb=document.createElement('div'); lb.className='axis-label'; lb.textContent=`${hz<1000?Math.round(hz):(hz/1000).toFixed(1)+'k'} Hz`; lb.style.top=`${y}%`; lb.style.right='6px'; lb.style.transform='translateY(-50%)'; yAxis.appendChild(lb);} }
-  else if(mode==='symbolic'){ const span=GLOBAL_MIDI_RANGE.max-GLOBAL_MIDI_RANGE.min||1; const step=Math.max(1,Math.round(span/8)); for(let m=Math.ceil(GLOBAL_MIDI_RANGE.min/step)*step;m<=GLOBAL_MIDI_RANGE.max;m+=step){ const y=(1-(m-GLOBAL_MIDI_RANGE.min)/span)*100; const lb=document.createElement('div'); lb.className='axis-label'; lb.textContent=midiToName(m); lb.style.top=`${y}%`; lb.style.right='6px'; lb.style.transform='translateY(-50%)'; yAxis.appendChild(lb);} }
-  else if(mode==='categorical'){ (ms.categories||[]).forEach((cat,i)=>{ const y=(i+0.5)/(ms.categories.length||1)*100; const lb=document.createElement('div'); lb.className='axis-label'; lb.textContent=cat; lb.style.top=`${y}%`; lb.style.right='6px'; lb.style.transform='translateY(-50%)'; yAxis.appendChild(lb);}); }
+  if(fmin===Infinity){fmin=110;fmax=880;} else { fmin*=0.85; fmax*=1.18; }
+  if(mmin===Infinity){mmin=48;mmax=84;} else { mmin=Math.floor(mmin)-3; mmax=Math.ceil(mmax)+3; }
+  return {fmin,fmax,mmin,mmax};
 }
-
-function getYPos(hz, node){
-  const ms=node.axisSettings||{};
-  if(node.axis==='frequency'){ const minHz=ms.minHz||20,maxHz=ms.maxHz||20000; if(hz<=0) return 100; return (1-(Math.log(hz)-Math.log(minHz))/(Math.log(maxHz)-Math.log(minHz)))*100; }
-  if(node.axis==='symbolic'){ const span=GLOBAL_MIDI_RANGE.max-GLOBAL_MIDI_RANGE.min||1; return (1-(freqToMidi(hz)-GLOBAL_MIDI_RANGE.min)/span)*100; }
-  return 50;
-}
-function laneY(lane,node){ const cats=(node.axisSettings&&node.axisSettings.categories)||[]; const i=cats.indexOf(lane); return ((i<0?0:i)+0.5)/(cats.length||1)*100; }
-
-function drawEvents(R,container,h){
-  const vw=document.getElementById('score-container').clientWidth, fw=vw*zoom.x;
-  const total=R.totalSec;
-  const xp=t=>(t/total)*100;
-  // instructional stagger counter
-  let instrIdx=0;
-  R.nodes.forEach(n=>{
-    if(n.isFrame && !n.pitch && !n.lane && !n.text) return;  // pure regime: drawn as background
-    const sx=xp(n.onsetSec), ex=xp(n.endSec);
-
-    if(n.axis==='categorical' && n.lane){
-      const el=document.createElement('div'); el.className='event-point'; el.style.left=`${sx}%`; el.style.top=`${laneY(n.lane,n)}%`; container.appendChild(el);
-      if(n.comment) el.title=n.comment; return;
-    }
-    if(n.axis==='instructional' || (!n.pitch && n.text)){
-      const el=document.createElement('div'); el.className='event-point'; el.style.background='var(--bruise)'; el.style.boxShadow='0 0 0 1.5px #fff,0 0 0 2.5px var(--bruise)';
-      el.style.left=`${sx}%`; el.style.top=`${(12+ (instrIdx%6)*14)}%`; instrIdx++; container.appendChild(el);
-      if(n.text) addPayload(el,n.text); if(n.comment) el.title=n.comment; return;
-    }
-    if(!n.pitch) return;
-
-    if(n.pitch.band){          // indeterminate pitch → translucent band
-      const y0=getYPos(n.pitch.band[1],n), y1=getYPos(n.pitch.band[0],n);
-      const el=document.createElement('div'); el.className='event-band';
-      el.style.left=`${sx}%`; el.style.top=`${Math.min(y0,y1)}%`; el.style.width=`${Math.max(2,ex-sx)}%`; el.style.height=`${Math.abs(y1-y0)}%`;
-      container.appendChild(el); if(n.comment) el.title=n.comment; return;
-    }
-    if(n.pitch.from!=null){    // glide
-      const sy=getYPos(n.pitch.from,n), ey=getYPos(n.pitch.to,n);
-      const el=document.createElement('div'); el.className='event-line';
-      const dx=(ex-sx)/100*fw, dy=(ey-sy)/100*h;
-      el.style.left=`${sx}%`; el.style.top=`${sy}%`; el.style.width=`${Math.sqrt(dx*dx+dy*dy)}px`; el.style.transform=`rotate(${Math.atan2(dy,dx)*180/Math.PI}deg)`;
-      container.appendChild(el); if(n.comment) el.title=n.comment; return;
-    }
-    if(n.pitch.hz!=null){
-      const y=getYPos(n.pitch.hz,n);
-      if(n.endSec-n.onsetSec>1e-6){ // sustained → bar
-        const el=document.createElement('div'); el.className='event-bar'; el.style.left=`${sx}%`; el.style.top=`${y}%`; el.style.width=`${Math.max(1.2,ex-sx)}%`; container.appendChild(el); if(n.comment) el.title=n.comment;
-      } else {
-        const el=document.createElement('div'); el.className='event-point'; el.style.left=`${sx}%`; el.style.top=`${y}%`; container.appendChild(el); if(n.comment) el.title=n.comment;
-      }
-    }
-  });
-}
-function addPayload(el,text){ const p=document.createElement('div'); p.className='event-payload'; p.textContent=text; el.appendChild(p); }
-
-/* ============================================================
-   VOICE ENUMERATION  (v2: a voice = a pitched frame-bearing Event)
-   ============================================================ */
-function enumerateVoices(data){
-  const voices=[];
-  function walk(list, inh, path){
-    (list||[]).forEach((ev,idx)=>{
-      if(!ev||typeof ev!=='object') return;
-      const frame=deriveFrame(ev,inh);
-      const here=path.concat(idx);
-      const isPitched = frame.axis==='frequency'||frame.axis==='symbolic'||
-        // infer from a child if axis unset
-        (!frame.axis && (ev.events||[]).some(c=>c.value&&c.value.pitch));
-      if(ev.frame && isPitched){
-        // gather leaf pitched children that do NOT open their own pitched frame
-        const leaves=[];
-        (function gather(kids){ (kids||[]).forEach(k=>{
-          if(k.frame && (k.frame.axis==='frequency'||k.frame.axis==='symbolic')) return; // own voice
-          if(k.value&&k.value.pitch) leaves.push(k);
-          if(k.events) gather(k.events);
-        }); })(ev.events);
-        if(leaves.length) voices.push({key:here.join('-'), label:(ev.id||ev.role||('voice '+here.join('.')))+' · '+(frame.axis||'pitched'), frame, leaves});
-      }
-      if(ev.events) walk(ev.events, frame, here);
-    });
-  }
-  walk(data.score, ROOT_FRAME, []);
-  return voices;
-}
-
-function refreshVoices(){
-  const sel=document.getElementById('exp-voice'); if(!sel) return;
-  let data; try{ data=JSON.parse(codeEditor.getValue()); }catch(e){ sel.innerHTML='<option>— invalid JSON —</option>'; return; }
-  const voices=enumerateVoices(data);
-  const prev=sel.value; sel.innerHTML='';
-  if(!voices.length){ sel.innerHTML='<option>— no pitched voices —</option>'; return; }
-  voices.forEach(v=>{ const o=document.createElement('option'); o.value=v.key; o.textContent=v.label; sel.appendChild(o); });
-  sel.value=voices.some(v=>v.key===prev)?prev:voices[0].key;
-}
-
-/* ============================================================
-   TABOTA -> MIDI  (single voice, microtonal pitch bend)
-   ============================================================ */
-function getTuningSpec(){
-  const sys=document.getElementById('exp-tuning').value;
-  const a4=parseFloat(document.getElementById('exp-a4').value)||440;
-  const tonic=document.getElementById('exp-tonic').value;
-  if(sys==='custom'){
-    let map={};
-    try{ const raw=JSON.parse(document.getElementById('exp-custommap').value||'{}'); map=raw.notes?raw.notes:raw; }catch(e){}
-    return {system:'custom',a4,map};
-  }
-  if(sys==='score') return {system:'score',a4,tonic};
-  return {system:sys,a4,tonic};
-}
-function resolveFrameTuning(frame,a4){
-  const a=(frame&&frame.axisSettings)||{};
-  if(a.tuning&&typeof a.tuning==='object'&&a.tuning.system==='custom')
-    return {system:'12-TET',a4:a.a4||a4,_fallback:'custom .scl tuning not embedded; using 12-TET'};
-  return {system:'12-TET',a4:a.a4||a4};
-}
-function valFreq(value,tuning){
-  if(typeof value==='number') return value;
-  if(typeof value==='string'){ const f=resolveNoteFreq(value,tuning); if(f) return f; const n=noteNameToMidi(value); return n!=null?midiToFreq(n,tuning.a4):null; }
+function yFrac(node, hz, rg){
+  const ax=node.frame.axis;
+  if(ax==='frequency'){ if(hz<=0) return 1; return 1-(Math.log(hz)-Math.log(rg.fmin))/(Math.log(rg.fmax)-Math.log(rg.fmin)); }
+  if(ax==='symbolic'){ const span=rg.mmax-rg.mmin||1; return 1-(freqToMidi(hz)-rg.mmin)/span; }
+  if(ax==='categorical'){ const c=node.frame.categories||[]; const i=Math.max(0,c.indexOf(node.lane)); return (i+0.5)/(c.length||1); }
   return null;
 }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-// onset/extent of a leaf in BEATS of its voice frame (determinate fragment only)
-function leafBeats(ev,frame){
-  const p=ev.position||{};
-  const toBeat=v=> frame.temporal==='chronological' ? v*(frame.bpm||DEFAULT_BPM)/60 : v;  // metered already beats; achronous index≈beat
-  let sb=null;
-  if(p.at!=null) sb=toBeat(p.at);
-  else if(p.meter) sb=meterToBeats(p.meter,frame.beatsPerMeasure);
-  else if(p.index!=null) sb=p.index;
-  else return null;                       // relational/between → not in fragment
-  const x=ev.extent||{};
-  let eb=null;
-  if(x.duration!=null) eb=sb+toBeat(x.duration);
-  else if(x.endAt!=null) eb=toBeat(x.endAt);
-  else if(x.endMeter) eb=meterToBeats(x.endMeter,frame.beatsPerMeasure);
-  return {sb,eb};
-}
+function buildSvg(R){
+  const rg=ranges(R);
+  const total=Math.max(R.totalSec,0.001);
+  const plotW=Math.max(560, total*BASE_PXPS*zoom.x);
+  const plotH=BASE_H*zoom.y;
+  const W=ML+plotW+14, H=MT+plotH+MB;
+  const X=sec=>ML+(sec/total)*plotW;
+  const Y=f=>MT+f*plotH;
+  const bandColors=['#11897e1c','#d1336b18','#5d8c0018','#6a47d818'];
+  let s=`<svg id="score-svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Mono, monospace">`;
+  s+=`<rect x="0" y="0" width="${W}" height="${H}" fill="transparent"/>`;
+  const hasOrdinal=R.frames.some(f=>f.ordinal)||R.nodes.some(n=>n.tags.includes('ordinal'));
 
-function compileToMidi(){
-  const out=document.getElementById('export-output'); out.innerHTML='';
-  let data; try{ data=JSON.parse(codeEditor.getValue()); }catch(e){ out.innerHTML=`<div class="warn">JSON parse error: ${e.message}</div>`; return; }
-  const voices=enumerateVoices(data);
-  const key=document.getElementById('exp-voice').value;
-  const voice=voices.find(v=>v.key===key)||voices[0];
-  if(!voice){ out.innerHTML='<div class="warn">No pitched voice found. A voice is an Event carrying a frame with a frequency or symbolic axis.</div>'; return; }
-
-  const range=Math.max(1,parseInt(document.getElementById('exp-range').value)||24);
-  const ppq=parseInt(document.getElementById('exp-ppq').value)||480;
-  const ch=Math.min(15,Math.max(0,parseInt(document.getElementById('exp-channel').value)||0));
-  const program=Math.min(127,Math.max(0,parseInt(document.getElementById('exp-program').value)||0));
-  const vel=Math.min(127,Math.max(1,parseInt(document.getElementById('exp-velocity').value)||100));
-  const pointLen=parseFloat(document.getElementById('exp-pointlen').value)||1;
-  const slideRes=Math.max(1,parseInt(document.getElementById('exp-slidres').value)||16);
-  const bpm=parseFloat(document.getElementById('exp-bpm').value)||voice.frame.bpm||120;
-  const a4=parseFloat(document.getElementById('exp-a4').value)||440;
-  const bpmsr=voice.frame.beatsPerMeasure||4;
-
-  let tuning=getTuningSpec(); const warnings=[];
-  if(tuning.system==='score'){ tuning=resolveFrameTuning(voice.frame,a4); if(tuning._fallback) warnings.push(tuning._fallback); }
-
-  // 1) determinate pitched leaves → raw notes (beats)
-  const raw=[];
-  voice.leaves.forEach((e,i)=>{
-    const pv=e.value&&e.value.pitch; if(!pv) return;
-    if(pv.between||pv.relativeTo){ warnings.push(`Event #${i} skipped — indeterminate pitch (not in the determinate fragment).`); return; }
-    const b=leafBeats(e,voice.frame);
-    if(!b){ warnings.push(`Event #${i} skipped — relational/indeterminate position (not schedulable here).`); return; }
-    let startVal,endVal,isSlide=false;
-    if(pv.note!=null){ startVal=endVal=pv.note; }
-    else if(pv.hz!=null){ startVal=endVal=pv.hz; }
-    else if(pv.from!=null||pv.to!=null){ startVal=pv.from!=null?pv.from:pv.to; endVal=pv.to!=null?pv.to:pv.from; isSlide=(startVal!==endVal); }
-    else return;
-    const fStart=valFreq(startVal,tuning), fEnd=valFreq(endVal,tuning);
-    if(fStart==null){ warnings.push(`Event #${i} skipped — could not resolve pitch "${startVal}".`); return; }
-    raw.push({i,sb:b.sb,eb:(b.eb!=null?b.eb:null),fStart,fEnd:fEnd!=null?fEnd:fStart,isSlide,
-      label:(pv.note!=null?pv.note:(typeof startVal==='number'?startVal.toFixed(2)+' Hz':String(startVal)))});
+  R.frames.forEach((fr,i)=>{
+    const x0=X(fr.startSec), x1=X(fr.endSec);
+    s+=`<rect class="svg-frame-band" x="${x0}" y="${MT}" width="${Math.max(0,x1-x0)}" height="${plotH}" fill="${bandColors[i%4]}"/>`;
+    s+=`<line class="svg-divider" x1="${x0}" y1="${MT}" x2="${x0}" y2="${MT+plotH}"/>`;
+    s+=`<text class="svg-framelabel" x="${x0+4}" y="${MT-8}">${esc(fr.id)}${fr.ordinal?' · order':''}</text>`;
   });
-  raw.sort((a,b)=>a.sb-b.sb);
-  if(!raw.length){ out.innerHTML='<div class="warn">No determinate pitched events in this voice. (Relational, ranged, or referenced events are valid TaboTa but are not schedulable here.)</div>'; return; }
-
-  // 2) resolve durations + enforce monophony (clip to next start)
-  for(let k=0;k<raw.length;k++){
-    const nextStart=k+1<raw.length?raw[k+1].sb:null;
-    if(raw[k].eb==null) raw[k].eb=raw[k].sb+(nextStart!=null?Math.min(pointLen,nextStart-raw[k].sb):pointLen);
-    if(nextStart!=null&&raw[k].eb>nextStart){ raw[k].clipped=true; raw[k].eb=nextStart; }
-    if(raw[k].eb<=raw[k].sb) raw[k].eb=raw[k].sb+Math.max(0.0625,pointLen*0.25);
+  const ticks=Math.min(40,Math.max(4,Math.round(total)));
+  for(let i=0;i<=ticks;i++){ const t=total*i/ticks, x=X(t);
+    s+=`<line class="svg-grid" x1="${x}" y1="${MT}" x2="${x}" y2="${MT+plotH}"/>`;
+    s+=`<text class="svg-axislabel" x="${x}" y="${MT+plotH+16}" text-anchor="middle">${total<=20?t.toFixed(1):Math.round(t)}${hasOrdinal?'':'s'}</text>`;
   }
+  if(hasOrdinal) s+=`<text class="svg-axislabel" x="${ML}" y="${H-4}">ordinal regions: spaced for order, not duration</text>`;
 
-  // 3) write MIDI
-  const w=new MidiWriter(ppq);
-  w.tempo(0,bpm); w.timeSignature(0,bpmsr,4); w.trackName(0,(data.projectName||'voice')+' / '+(voice.label||''));
-  w.programChange(0,ch,program); w.setBendRange(0,ch,range);
+  const ax=R.primaryAxis;
+  if(ax==='frequency'){ for(let i=0;i<8;i++){ const p=i/7, hz=Math.exp(Math.log(rg.fmin)+p*(Math.log(rg.fmax)-Math.log(rg.fmin))), y=Y(1-p); s+=`<text class="svg-axislabel" x="${ML-6}" y="${y+3}" text-anchor="end">${hz<1000?Math.round(hz):(hz/1000).toFixed(1)+'k'}Hz</text>`; } }
+  else if(ax==='symbolic'){ const span=rg.mmax-rg.mmin||1, step=Math.max(1,Math.round(span/8)); for(let m=Math.ceil(rg.mmin/step)*step;m<=rg.mmax;m+=step){ const y=Y(1-(m-rg.mmin)/span); s+=`<text class="svg-axislabel" x="${ML-6}" y="${y+3}" text-anchor="end">${midiToName(m)}</text>`; } }
 
-  const report=[]; let maxDevCents=0, overflowCount=0;
-  raw.forEach(n=>{
-    const startTick=n.sb*ppq, endTick=n.eb*ppq;
-    if(!n.isSlide){
-      const b=freqToBend(n.fStart,range,a4);
-      w.pitchBend(startTick,ch,b.pb14);
-      w.noteOn(startTick,ch,b.baseNote,vel);
-      w.noteOff(endTick,ch,b.baseNote);
-      maxDevCents=Math.max(maxDevCents,Math.abs(b.deltaCents));
-      report.push({i:n.i,beat:n.sb,dur:n.eb-n.sb,label:n.label,hz:n.fStart,base:b.baseNote,cents:b.deltaCents,pb:b.pb14,slide:false,clip:n.clipped,overflow:false});
-    } else {
-      const mStart=freqToMidi(n.fStart,a4), mEnd=freqToMidi(n.fEnd,a4);
-      const base=Math.round(mStart);
-      const steps=Math.max(2,Math.ceil((n.eb-n.sb)*slideRes));
-      let ovf=false,maxc=0;
-      for(let s=0;s<=steps;s++){ const t=s/steps; const tm=mStart+(mEnd-mStart)*t; const bb=bendForTargetMidi(tm,base,range); if(bb.overflow) ovf=true; const tick=startTick+(endTick-startTick)*t; w.pitchBend(tick,ch,bb.pb14); maxc=Math.max(maxc,Math.abs(bb.deltaSemis*100)); }
-      w.noteOn(startTick,ch,base,vel); w.noteOff(endTick,ch,base);
-      if(ovf){ overflowCount++; warnings.push(`Slide #${n.i} (${n.label}) spans more than ±${range} st from base ${midiToName(base)} — bend clamped. Increase range or split.`); }
-      maxDevCents=Math.max(maxDevCents,maxc);
-      report.push({i:n.i,beat:n.sb,dur:n.eb-n.sb,label:n.label+' → '+n.fEnd.toFixed(2)+'Hz',hz:n.fStart,base,cents:(mStart-base)*100,pb:freqToBend(n.fStart,range,a4).pb14,slide:true,clip:n.clipped,overflow:ovf});
+  let instr=0;
+  R.nodes.forEach(n=>{
+    if(n.start.sec==null) return;
+    if(n.kind==='frame') return;
+    const x0=X(n.start.sec), x1=n.end&&n.end.sec!=null?X(n.end.sec):x0;
+    const isOrd=n.tags.includes('ordinal');
+    if(n.kind==='tempo'){ const tv=(n.payload&&n.payload.tempo)||{}; const lbl=tv.bpm!=null?('♩='+tv.bpm):('♩='+(tv.from||'')+'→'+(tv.to||'')); s+=`<text class="svg-axislabel" x="${x0+2}" y="${MT-8}" fill="var(--tide)">${esc(lbl)}</text>`; return; }
+    if(n.kind==='lane'){ const y=Y(yFrac(n,0,rg)); s+=dot(x0,y,'var(--algae)'); s+=`<text class="svg-axislabel" x="${x0+9}" y="${y+3}">${esc(n.lane)}</text>`; return; }
+    if(n.kind==='text' || n.frame.axis==='instructional'){ const y=MT+18+(instr%6)*(plotH/7); instr++; s+=dot(x0,y,'var(--bruise)'); s+=`<text class="svg-axislabel" x="${x0+9}" y="${y+3}" fill="var(--bone-dim)">${esc(n.text||'')}</text>`; return; }
+    if(!n.pitch) return;
+    if(n.pitch.mode==='band'){ const yA=Y(yFrac(n,n.pitch.band[1],rg)), yB=Y(yFrac(n,n.pitch.band[0],rg)); const w=Math.max(8,x1-x0); s+=`<rect x="${x0}" y="${Math.min(yA,yB)}" width="${w}" height="${Math.abs(yB-yA)}" fill="#6a47d829" stroke="#6a47d8" stroke-dasharray="3 3"/>`; return; }
+    if(n.pitch.mode==='glide'){ const ya=Y(yFrac(n,n.pitch.from,rg)), yb=Y(yFrac(n,n.pitch.to,rg)); s+=`<line x1="${x0}" y1="${ya}" x2="${x1}" y2="${yb}" stroke="var(--membrane-pink)" stroke-width="2.5" stroke-linecap="round"/>`; return; }
+    if(n.pitch.hz!=null){ const y=Y(yFrac(n,n.pitch.hz,rg));
+      if(n.kind==='point'){ s+=dot(x0,y,isOrd?'var(--algae-deep)':'var(--algae)'); }
+      else { s+=`<rect x="${x0}" y="${y-3.5}" width="${Math.max(2,x1-x0)}" height="7" rx="2" fill="var(--algae)" opacity="0.85"/>`; }
     }
   });
+  s+=`</svg>`;
+  return s;
+}
+function dot(x,y,c){ return `<circle cx="${x}" cy="${y}" r="5.5" fill="${c}" stroke="#fff" stroke-width="1.5"/>`; }
 
-  const bytes=w.build();
-  const blob=new Blob([bytes],{type:'audio/midi'}); const url=URL.createObjectURL(blob);
-  const dl=document.getElementById('midi-download');
-  dl.href=url; dl.download=((data.projectName||'voice').replace(/\s+/g,'_'))+'_voice.mid'; dl.classList.remove('hidden');
-
-  renderReport(out,report,{range,bpm,ppq,a4,tuning,notes:raw.length,maxDevCents,overflowCount,warnings,bytes:bytes.length});
+function buildLegend(R){
+  const items=[['Hold','var(--algae)'],['Glide','var(--membrane-pink)'],['Point','var(--algae)'],['Band','#6a47d8'],['Cue/Lane','var(--bruise)']];
+  document.getElementById('legend').innerHTML=items.map(([t,c])=>`<span class="k"><span class="sw" style="background:${c}"></span>${t}</span>`).join('');
 }
 
-function centsClass(c){ const r=Math.round(c); return r>0?'cents-pos':(r<0?'cents-neg':'cents-zero'); }
-function bendBar(pb){ const center=8192; const frac=(pb-center)/8192; const w=Math.abs(frac)*27; return `<span class="bend-bar"><i></i><u style="left:${frac>=0?50:(50-w/54*100)}%;width:${w/54*100}%"></u></span>`; }
+function buildInspect(R){
+  const det=R.nodes.filter(n=>n.tags.includes('determinate')).length;
+  const unp=R.nodes.filter(n=>n.start.sec==null).length;
+  document.getElementById('summary').innerHTML=
+    `<span class="stat">nodes <b>${R.nodes.length}</b></span>`+
+    `<span class="stat">frames <b>${R.frames.length}</b></span>`+
+    `<span class="stat">determinate <b>${det}</b></span>`+
+    `<span class="stat">described, not placed <b>${unp}</b></span>`+
+    `<span class="stat">length <b>${R.totalSec.toFixed(2)}s</b></span>`;
 
-function renderReport(out,report,info){
-  let h=`<div class="summary">
-    <span class="stat">notes <b>${info.notes}</b></span>
-    <span class="stat">bend range <b>±${info.range} st</b></span>
-    <span class="stat">tuning <b>${info.tuning.system}</b></span>
-    <span class="stat">A4 <b>${info.a4} Hz</b></span>
-    <span class="stat">max deviation <b>${info.maxDevCents.toFixed(1)}¢</b></span>
-    <span class="stat">file <b>${info.bytes} bytes</b></span>
-  </div>`;
-  h+=`<div class="report-wrap"><table class="report"><thead><tr>
-    <th>#</th><th>beat</th><th>len</th><th class="note-cell" style="text-align:left">input</th><th>resolved Hz</th><th>12-TET key</th><th>cents</th><th>pitch&nbsp;bend (14-bit)</th><th>bend</th><th>flags</th>
-  </tr></thead><tbody>`;
-  report.forEach(r=>{
-    const flags=[]; if(r.slide) flags.push('<span class="flag-slide">slide</span>'); if(r.overflow) flags.push('<span class="flag-clip">clamp</span>'); if(r.clip) flags.push('<span class="flag-clip">clip</span>');
-    h+=`<tr>
-      <td>${r.i}</td><td>${r.beat.toFixed(3)}</td><td>${r.dur.toFixed(3)}</td>
-      <td class="note-cell">${r.label}</td><td>${r.hz.toFixed(3)}</td>
-      <td class="note-cell">${midiToName(r.base)} <span style="color:var(--bone-faint)">(${r.base})</span></td>
-      <td class="${centsClass(r.cents)}">${r.cents>0?'+':''}${r.cents.toFixed(1)}</td>
-      <td class="pb-val">${r.pb}${r.pb===8192?' <span style="color:var(--bone-faint)">·ctr</span>':''}</td>
-      <td>${bendBar(r.pb)}</td>
-      <td>${flags.join(' ')||'<span style="color:var(--bone-faint)">—</span>'}</td>
-    </tr>`;
-  });
-  h+='</tbody></table></div>';
-  if(info.warnings.length){ h+='<div class="warnings">'+info.warnings.map(w=>`<div class="warn">${w}</div>`).join('')+'</div>'; }
-  h+=`<p class="note" style="margin-top:12px;">Center value <code>8192</code> = no bend (note sits exactly on its 12-TET key). The synth must use a ±${info.range}-semitone bend range — the file requests this via RPN&nbsp;0,0, but not every device honors it.</p>`;
-  out.innerHTML=h;
+  const dd=document.getElementById('described');
+  const unplaced=R.nodes.filter(n=>n.start.sec==null);
+  if(unplaced.length){
+    dd.innerHTML=`<div class="described"><h4>Described, not placed — valid Tabota a timeline can't draw</h4><div class="chip-row">`+
+      unplaced.map(n=>{ const why=n.tags.includes('in-cycle')?'relational cycle — no linearization':n.tags.includes('indeterminate')?'indeterminate onset / pitch':n.tags.includes('dangling')?'dangling reference':'unresolved'; return `<div class="dchip"><b>${esc(n.id||n.kind)}</b><em>${why}</em></div>`; }).join('')+
+      `</div></div>`;
+  } else dd.innerHTML='';
+
+  document.getElementById('node-rows').innerHTML=R.nodes.map(n=>{
+    const coords=n.start.coords.map(c=>`${c.frame||'·'}${c.lens?'/'+c.lens:''}:${(+c.value).toFixed(2)}${c.in[0]}`).join(', ')||'—';
+    const val=(n.pitch?(n.pitch.label||n.pitch.mode):(n.lane||n.text||(n.kind==='tempo'?'tempo':'')))||'—';
+    return `<tr><td>${esc(n.id||'')}</td><td>${n.kind}</td><td>${n.start.sec==null?'—':n.start.sec.toFixed(2)+'s'}</td><td>${n.end&&n.end.sec!=null?n.end.sec.toFixed(2)+'s':'—'}</td><td>${esc(val)}</td><td style="color:var(--bone-faint)">${esc(coords)}</td><td>${n.tags.map(t=>`<span class="tag ${t}">${t}</span>`).join('')}</td></tr>`;
+  }).join('');
+
+  document.getElementById('diags').innerHTML = R.diagnostics.length
+    ? '<div class="note" style="margin-bottom:6px;">Diagnostics</div>'+R.diagnostics.map(d=>`<div class="diag ${d.level}"><b>${esc(d.who)}</b> — ${esc(d.message)}</div>`).join('')
+    : '';
 }
 
-/* ============================================================
-   MIDI -> TABOTA  (v2 output)
-   ============================================================ */
-function ticksToMeter(ticks,ppq,bpmsr){ const tb=ticks/ppq; return {measure:Math.floor(tb/bpmsr)+1,beat:parseFloat((tb%bpmsr).toFixed(3))}; }
-
-function convertMidiToTabota(){
-  const input=document.getElementById('midi-input'); const hint=document.getElementById('import-hint');
-  const file=input.files[0];
-  if(!file){ hint.textContent='Select a .mid file first.'; hint.style.color='var(--ember)'; return; }
-  const fmt=document.getElementById('import-format').value;
-  const reader=new FileReader();
-  reader.onload=ev=>{
-    try{
-      const midi=new Midi(ev.target.result);
-      const ppq=midi.header.ppq;
-      const bpm=midi.header.tempos.length?Math.round(midi.header.tempos[0].bpm):120;
-      let num=4,den=4;
-      if(midi.header.timeSignatures.length){ num=midi.header.timeSignatures[0].timeSignature[0]; den=midi.header.timeSignatures[0].timeSignature[1]; }
-      let maxTicks=0; const trackEvents=[];
-      midi.tracks.forEach((tr,idx)=>{
-        if(!tr.notes.length) return;
-        const events=[];
-        tr.notes.forEach(note=>{
-          const endT=note.ticks+note.durationTicks; if(endT>maxTicks) maxTicks=endT;
-          const durBeats=parseFloat((note.durationTicks/ppq).toFixed(3));
-          const o={ value:{ pitch:{ note:note.name } } };
-          if(fmt==='meter-duration'){ o.position={ meter:ticksToMeter(note.ticks,ppq,num) }; o.extent={ duration:durBeats }; }
-          else if(fmt==='meter-full'){ o.position={ meter:ticksToMeter(note.ticks,ppq,num) }; o.extent={ endMeter:ticksToMeter(endT,ppq,num) }; }
-          else { o.position={ at:parseFloat((note.ticks/ppq).toFixed(3)) }; o.extent={ duration:durBeats }; }
-          events.push(o);
-        });
-        trackEvents.push({
-          id:(tr.name?tr.name.replace(/\s+/g,'_'):`Track_${idx+1}`), role:"regime",
-          frame:{ axis:"symbolic", axisSettings:{ tuning:"12-TET", a4:440 } },
-          events
-        });
-      });
-      const score={
-        projectName:file.name.split('.')[0]||"Converted",
-        languageVersion:"2.0",
-        metadata:{ profile:"determinate" },
-        score:[{
-          id:"Main_Import", role:"regime",
-          frame:{ temporal:"metered", temporalSettings:{ bpm, beats:Math.ceil(maxTicks/ppq), timeSignature:`${num}/${den}` } },
-          events:trackEvents
-        }]
-      };
-      const json=JSON.stringify(score,null,2);
-      codeEditor.setValue(json); renderScore(); refreshVoices();
-      const blob=new Blob([json],{type:'application/json'}); const url=URL.createObjectURL(blob);
-      const dl=document.getElementById('json-download'); dl.href=url; dl.download=`${score.projectName}_tabota.json`; dl.classList.remove('hidden');
-      hint.textContent=`Imported ${trackEvents.length} track(s), ${bpm} BPM, ${num}/${den}. Loaded into editor.`; hint.style.color='var(--algae)';
-    }catch(err){ console.error(err); hint.textContent='Could not parse MIDI: '+err.message; hint.style.color='var(--ember)'; }
-  };
-  reader.readAsArrayBuffer(file);
+function exportSvg(){
+  const svg=document.getElementById('score-svg'); if(!svg) return;
+  const blob=new Blob([svg.outerHTML],{type:'image/svg+xml'}); const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; let nm='tabota-score';
+  try{ nm=(JSON.parse(editor.getValue()).projectName||'tabota-score').replace(/\s+/g,'_'); }catch(e){}
+  a.download=nm+'.svg'; a.click(); URL.revokeObjectURL(url);
 }
-
-/* ============================================================
-   UTILITIES
-   ============================================================ */
-function beautifyJson(){ try{ codeEditor.setValue(JSON.stringify(JSON.parse(codeEditor.getValue()),null,2)); }catch(e){} }
-function handleCopyClick(e){
-  const id=e.currentTarget.dataset.target;
-  const txt=id?samples[id]:codeEditor.getValue();
-  navigator.clipboard.writeText(txt).then(()=>{
-    const orig=e.currentTarget.innerHTML; e.currentTarget.innerHTML='Copied!';
-    if(id){ codeEditor.setValue(JSON.stringify(JSON.parse(txt),null,2)); renderScore(); refreshVoices(); }
-    setTimeout(()=>e.currentTarget.innerHTML=orig,1400);
-  });
+function copyClick(e){
+  const id=e.currentTarget.dataset.target; const txt=id?samples[id]:editor.getValue();
+  navigator.clipboard.writeText(txt).then(()=>{ const o=e.currentTarget.innerHTML; e.currentTarget.innerHTML='Copied!';
+    if(id){ editor.setValue(JSON.stringify(JSON.parse(txt),null,2)); render(); } setTimeout(()=>e.currentTarget.innerHTML=o,1300); });
 }
-function syntaxHighlight(s){ if(typeof s!='string') s=JSON.stringify(s,null,2); s=s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); return s.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,m=>{ let c='json-number'; if(/^"/.test(m)) c=/:$/.test(m)?'json-key':'json-string'; else if(/true|false/.test(m)) c='json-boolean'; return '<span class="'+c+'">'+m+'</span>'; }); }
-async function loadReferenceGuide(){
+function hl(s){ s=esc(s); return s.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,m=>{ let c='json-number'; if(/^&quot;|^"/.test(m)){ c=/:$/.test(m)?'json-key':'json-string'; } else if(/true|false|null/.test(m)) c='json-boolean'; return `<span class="${c}">${m}</span>`; }); }
+async function loadGuide(){
   const t=document.getElementById('markdown-content');
-  try{ const r=await fetch('tabota_reference_guide.md'); if(!r.ok) throw new Error('status '+r.status); t.innerHTML=banner+marked.parse(await r.text()); }
-  catch(e){ t.innerHTML='<p class="note">Reference guide loads from <code>tabota_reference_guide.md</code> when this file is hosted alongside it.</p>'; }
+  try{ const r=await fetch('tabota_reference_guide.md'); if(!r.ok) throw 0; t.innerHTML=marked.parse(await r.text()); }
+  catch(e){ t.innerHTML='<p class="note">The reference guide loads from <code>tabota_reference_guide.md</code> when served over a local server (see the notes about running one).</p>'; }
 }
 </script>
 </body>
