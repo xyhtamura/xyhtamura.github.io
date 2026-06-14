@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Comma Poem, after José García Villa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3CradialGradient id='slab' cx='32%25' cy='14%25' r='88%25'%3E%3Cstop offset='0%25' stop-color='%23282d2a'/%3E%3Cstop offset='60%25' stop-color='%23090c0d'/%3E%3Cstop offset='100%25' stop-color='%23020304'/%3E%3C/radialGradient%3E%3Cfilter id='soft'%3E%3CfeGaussianBlur stdDeviation='.35'/%3E%3C/filter%3E%3C/defs%3E%3Crect width='32' height='32' rx='7' fill='%23070808'/%3E%3Crect x='4.2' y='4.4' width='23.6' height='23' rx='5.2' fill='url(%23slab)' stroke='%233c4234' stroke-opacity='.8'/%3E%3Cpath d='M20.6 10.8c-3.7-.8-6.8.8-7.6 3.2-.7 2.2.4 4.3 2.6 5.1 2.5.9 4.9-.4 5.3-2.2.4-1.6-.6-2.9-2.1-3.2-1.4-.2-2.5.3-3.2 1' fill='none' stroke='%23f0ead2' stroke-width='2.25' stroke-linecap='round'/%3E%3Cpath d='M15.6 19.2c-.2 2.5-1.8 4.2-3.6 5.2' fill='none' stroke='%23f0ead2' stroke-width='1.8' stroke-linecap='round'/%3E%3Cpath d='M12.7 16.2c2.4-.7 4.4-.3 6.6 1.2' fill='none' stroke='%23869b47' stroke-width='1.1' stroke-linecap='round' opacity='.9'/%3E%3Cg filter='url(%23soft)' opacity='.42'%3E%3Ccircle cx='8.8' cy='9.2' r='.75' fill='%23f0ead2'/%3E%3Ccircle cx='24.2' cy='22.4' r='.62' fill='%23f0ead2'/%3E%3C/g%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500&family=Spline+Sans+Mono:wght@300..500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* dark palette pulled from the black gulaman photograph:
+       wet near-black slab, munggo ivory, sprout green, table-warmth, faint tile-light */
+    --ground: #070808;
+    --ground-2: #0b0e0f;
+    --ground-3: #121514;
+    --slab: #050708;
+    --slab-2: #0a0d0e;
+    --slab-hi: #2a302b;
+    --gloss: #48504a;
+    --bean: #f1ecd4;
+    --bean-dim: #cfc7aa;
+    --bean-shadow: #847c66;
+    --sprout: #8fa24a;
+    --sprout-deep: #596d31;
+    --wood: #8b4a22;
+    --wood-dark: #3b1e10;
+    --paper: #eee8d4;
+    --paper-dim: #9a927d;
+    --ink: #f0ead6;
+    --ink-dim: #b7ad95;
+    --ink-faint: #79715f;
+    --line: rgba(241,236,212,.18);
+    --line-strong: rgba(241,236,212,.48);
+
+    --display: "Instrument Serif", serif;
+    --body: "Newsreader", serif;
+    --mono: "Spline Sans Mono", monospace;
+  }
+
+  *{ box-sizing: border-box; margin: 0; padding: 0; }
+  html{ background: var(--ground); }
+  body{
+    font-family: var(--body);
+    font-weight: 380;
+    color: var(--ink);
+    min-height: 100vh;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    background:
+      radial-gradient(120% 95% at 52% -16%, rgba(75,83,76,.56) 0%, rgba(18,21,20,.94) 35%, rgba(7,8,8,1) 74%),
+      radial-gradient(70% 52% at 88% 8%, rgba(139,74,34,.22) 0%, rgba(139,74,34,0) 58%),
+      radial-gradient(90% 80% at 0% 100%, rgba(89,109,49,.16) 0%, rgba(89,109,49,0) 62%),
+      var(--ground);
+  }
+  body::before{
+    content:"";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: .055;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.76' numOctaves='2'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.62'/%3E%3C/svg%3E");
+    mix-blend-mode: screen;
+  }
+
+  .page{
+    max-width: 840px;
+    margin: 0 auto;
+    padding: 4.8rem 1.25rem 6rem;
+  }
+
+  header{ max-width: 72ch; }
+  .eyebrow{
+    font-family: var(--mono);
+    font-size: .7rem;
+    font-weight: 400;
+    letter-spacing: .24em;
+    text-transform: uppercase;
+    color: var(--sprout);
+  }
+  h1{
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(2.55rem, 8vw, 4.9rem);
+    line-height: .96;
+    margin: .55rem 0 .75rem;
+    letter-spacing: .002em;
+    color: var(--bean);
+    text-shadow:
+      0 1px 0 rgba(255,255,255,.04),
+      0 18px 40px rgba(0,0,0,.48);
+  }
+  .subtitle{
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(1.18rem, 3.1vw, 1.62rem);
+    line-height: 1.18;
+    color: var(--bean-dim);
+    max-width: 54ch;
+    margin-top: -.1rem;
+    text-shadow: 0 12px 30px rgba(0,0,0,.34);
+  }
+  .subtitle cite{
+    font-style: italic;
+    color: var(--bean);
+  }
+  .metadata{
+    margin-top: .8rem;
+    font-family: var(--mono);
+    font-size: .68rem;
+    color: var(--ink-dim);
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    max-width: 76ch;
+  }
+  .metadata .dot{
+    color: var(--sprout);
+    opacity: .85;
+    padding: 0 .45em;
+  }
+
+  /* ---------- comparison image ---------- */
+  .compare-section{ margin: 3.2rem 0 0; }
+  .compare-shell{
+    padding: clamp(.68rem, 2.2vw, 1.05rem);
+    border-radius: 22px;
+    background:
+      linear-gradient(145deg, rgba(241,236,212,.1), rgba(0,0,0,.24)),
+      linear-gradient(180deg, rgba(42,48,43,.76), rgba(8,10,10,.88));
+    border: 1px solid rgba(241,236,212,.13);
+    box-shadow:
+      inset 0 1px 1px rgba(255,255,255,.07),
+      inset 0 -18px 34px -24px rgba(0,0,0,.8),
+      0 24px 60px -32px rgba(0,0,0,.86),
+      0 0 0 1px rgba(0,0,0,.4);
+  }
+  .compare{
+    --pos: 100%;
+    --sprout-opacity: .72;
+    position: relative;
+    width: 100%;
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--slab);
+    box-shadow:
+      inset 0 0 0 1px rgba(241,236,212,.08),
+      0 18px 38px -26px rgba(0,0,0,.96);
+    user-select: none;
+    isolation: isolate;
+  }
+  .compare img{
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .compare .poem-img{
+    filter: saturate(.82) contrast(.94) brightness(.86);
+  }
+  .comma-layer{
+    position: absolute;
+    inset: 0;
+    opacity: var(--sprout-opacity);
+    clip-path: inset(0 calc(100% - var(--pos)) 0 0);
+    filter: contrast(1.04) saturate(1.04);
+    transition: opacity .08s linear, clip-path .08s linear;
+  }
+  .comma-layer img{
+    height: 100%;
+    object-fit: cover;
+  }
+  .compare::after{
+    content:"";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 4;
+    background:
+      linear-gradient(115deg, rgba(255,255,255,.2) 0%, rgba(255,255,255,0) 18%, rgba(255,255,255,0) 76%, rgba(255,255,255,.1) 100%),
+      radial-gradient(90% 70% at 28% 0%, rgba(241,236,212,.13), rgba(241,236,212,0) 44%);
+    mix-blend-mode: screen;
+  }
+  .wipe-line{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--pos);
+    z-index: 5;
+    width: 1px;
+    background: rgba(241,236,212,.64);
+    box-shadow: 0 0 14px rgba(241,236,212,.48);
+    pointer-events: none;
+    opacity: .9;
+  }
+  .wipe-line::before{
+    content:"";
+    position: absolute;
+    left: -9px;
+    top: 50%;
+    width: 18px;
+    height: 42px;
+    transform: translateY(-50%);
+    border-radius: 99px;
+    background: var(--bean);
+    border: 1px solid var(--slab-hi);
+    box-shadow: 0 2px 12px rgba(0,0,0,.56);
+  }
+  .wipe-line::after{
+    content:"↔";
+    position: absolute;
+    left: -10px;
+    top: 50%;
+    width: 20px;
+    transform: translateY(-54%);
+    font-family: var(--mono);
+    font-size: .68rem;
+    text-align: center;
+    color: var(--slab);
+  }
+  .compare-caption{
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: .75rem;
+    font-family: var(--mono);
+    font-size: .68rem;
+    color: var(--ink-dim);
+    letter-spacing: .07em;
+    text-transform: uppercase;
+  }
+  .controls{
+    display: grid;
+    gap: .88rem;
+    margin: 1.05rem auto 0;
+    max-width: 720px;
+    padding: 1rem 1rem .9rem;
+    border-radius: 16px;
+    background: rgba(7,8,8,.48);
+    border: 1px solid rgba(241,236,212,.09);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.035);
+  }
+  .slider-row{
+    display: grid;
+    grid-template-columns: 7.6rem 1fr 7.6rem;
+    gap: .85rem;
+    align-items: center;
+  }
+  .slider-label,
+  .value-readout{
+    font-family: var(--mono);
+    font-size: .66rem;
+    color: var(--ink-dim);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .value-readout{ text-align: right; color: var(--sprout); }
+  input[type="range"]{
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 26px;
+    background: transparent;
+    cursor: ew-resize;
+  }
+  input[type="range"]:focus-visible{
+    outline: 2px solid var(--sprout);
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+  input[type="range"]::-webkit-slider-runnable-track{
+    height: 3px;
+    background: linear-gradient(90deg, var(--slab-hi), var(--sprout), var(--bean));
+    border-radius: 2px;
+  }
+  input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    margin-top: -7.5px;
+    border-radius: 50%;
+    background: var(--bean);
+    border: 2px solid var(--slab);
+    box-shadow: 0 1px 6px rgba(0,0,0,.65);
+  }
+  input[type="range"]::-moz-range-track{
+    height: 3px;
+    background: linear-gradient(90deg, var(--slab-hi), var(--sprout), var(--bean));
+    border-radius: 2px;
+  }
+  input[type="range"]::-moz-range-thumb{
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--bean);
+    border: 2px solid var(--slab);
+    box-shadow: 0 1px 6px rgba(0,0,0,.65);
+  }
+  .compare-hint{
+    font-family: var(--mono);
+    font-size: .7rem;
+    color: var(--ink-faint);
+    margin-top: .72rem;
+    text-align: center;
+    letter-spacing: .035em;
+  }
+
+  /* ---------- text ---------- */
+  .about{
+    margin: 3rem 0 0;
+    max-width: 68ch;
+    font-size: 1.11rem;
+    color: var(--ink);
+  }
+  .about h2{
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.75rem;
+    margin-bottom: .75rem;
+    color: var(--bean);
+  }
+  .about p + p{ margin-top: 1em; }
+  .about em{ color: var(--bean); }
+  .about a{
+    color: var(--bean);
+    text-decoration: underline;
+    text-decoration-color: rgba(143,162,74,.7);
+    text-underline-offset: .18em;
+  }
+  .source-note{
+    margin-top: 1.1rem !important;
+    padding-left: .85rem;
+    border-left: 1px solid rgba(143,162,74,.62);
+    font-family: var(--mono);
+    font-size: .69rem;
+    line-height: 1.7;
+    letter-spacing: .035em;
+    color: var(--ink-faint);
+  }
+
+  .process,
+  .note{
+    margin: 2.2rem 0 0;
+    max-width: 66ch;
+  }
+  .process h2,
+  .gallery h2{
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.75rem;
+    margin-bottom: .7rem;
+    color: var(--bean);
+  }
+  .process-card,
+  .note{
+    padding: 1.15rem 1.2rem;
+    border-radius: 16px;
+    background:
+      linear-gradient(135deg, rgba(241,236,212,.055), rgba(5,7,8,.34)),
+      rgba(10,13,14,.58);
+    border: 1px solid rgba(241,236,212,.11);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.035);
+  }
+  .process-card p,
+  .note p{ color: var(--ink-dim); }
+  .process-card p + p{ margin-top: .9em; }
+  .note strong{
+    display: inline-block;
+    margin-bottom: .35rem;
+    font-family: var(--mono);
+    font-size: .7rem;
+    font-weight: 400;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--sprout);
+  }
+
+  /* ---------- gallery ---------- */
+  .gallery{ margin: 4.4rem 0 0; }
+  .gallery-grid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: .76rem;
+  }
+  .gallery-grid figure{ margin: 0; }
+  .gallery-grid button{
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: var(--slab);
+    border-radius: 7px;
+    overflow: hidden;
+    cursor: zoom-in;
+    aspect-ratio: 1;
+    box-shadow:
+      0 9px 23px -16px rgba(0,0,0,.9),
+      0 0 0 1px rgba(241,236,212,.075);
+  }
+  .gallery-grid button:focus-visible{
+    outline: 2px solid var(--sprout);
+    outline-offset: 3px;
+  }
+  .gallery-grid img{
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .42s ease, filter .42s ease;
+    filter: brightness(.93) saturate(.98);
+  }
+  .gallery-grid button:hover img{
+    transform: scale(1.035);
+    filter: brightness(1.02) saturate(1.02);
+  }
+  .gallery-grid figcaption{
+    font-family: var(--mono);
+    font-size: .65rem;
+    color: var(--ink-faint);
+    margin-top: .42rem;
+    letter-spacing: .08em;
+  }
+
+  dialog.lightbox{
+    border: 0;
+    padding: 0;
+    background: transparent;
+    max-width: min(92vw, 1100px);
+    max-height: 90vh;
+  }
+  dialog.lightbox::backdrop{
+    background: rgba(5,7,8,.86);
+    backdrop-filter: blur(2px);
+  }
+  dialog.lightbox img{
+    display: block;
+    max-width: 100%;
+    max-height: 88vh;
+    border-radius: 7px;
+    cursor: zoom-out;
+    box-shadow: 0 20px 64px rgba(0,0,0,.7);
+  }
+
+  footer{
+    margin-top: 5rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(241,236,212,.1);
+    font-family: var(--mono);
+    font-size: .68rem;
+    color: var(--ink-faint);
+    letter-spacing: .06em;
+  }
+
+  @media (max-width: 640px){
+    .page{ padding-top: 3.4rem; }
+    .slider-row{ grid-template-columns: 1fr; gap: .28rem; }
+    .value-readout{ text-align: left; }
+    .gallery-grid{ grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{ transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <p class="eyebrow">xyh tamura</p>
+    <h1 id="title">A Comma Poem</h1>
+    <p class="subtitle" id="subtitle">
+      after José García Villa’s <cite>“I, it, was, that, saw,”</cite> before the coming El Niño
+    </p>
+    <p class="metadata" id="metadata">
+      <time datetime="2026-06-14">2026-06-14</time><span class="dot" aria-hidden="true">·</span>mung bean sprouts and black gulaman / agar-agar
+    </p>
+  </header>
+
+  <section class="compare-section" aria-label="Overlay comparison between the original poem and the sprouted comma map">
+    <div class="compare-shell">
+      <figure class="compare" id="compare">
+        <img class="poem-img" src="poem.png" alt="Original José García Villa poem used as the source map">
+        <div class="comma-layer" id="commaLayer">
+          <img class="comma-img" src="comma.png" alt="Overhead image of mung bean sprouts placed on the comma positions">
+        </div>
+        <div class="wipe-line" id="wipeLine" aria-hidden="true"></div>
+      </figure>
+      <div class="compare-caption">
+        <span>sprouted comma map</span>
+        <span>source poem</span>
+      </div>
+    </div>
+
+    <div class="controls" aria-label="Image comparison controls">
+      <div class="slider-row">
+        <span class="slider-label">left-to-right reveal</span>
+        <input type="range" id="imageWipe" min="0" max="100" step="0.1" value="100" aria-label="Reveal the sprouted comma image from left to right over the source poem">
+        <output class="value-readout" id="wipeReadout" for="imageWipe">100%</output>
+      </div>
+      <div class="slider-row">
+        <span class="slider-label">sprout opacity</span>
+        <input type="range" id="imageOpacity" min="0" max="100" step="0.1" value="72" aria-label="Change the opacity of the sprouted comma image over the source poem">
+        <output class="value-readout" id="opacityReadout" for="imageOpacity">72%</output>
+      </div>
+    </div>
+    <p class="compare-hint">fade or wipe between the original punctuation field and its sprouted transfer</p>
+  </section>
+
+  <section class="about">
+    <h2>About</h2>
+    <p>
+      This work copies only the commas from José García Villa’s <em>“I, it, was, that, saw,”</em> and replants them as mung bean sprouts on a slab of black gulaman. Villa’s poem imagines a cultivatory miracle: a figure dances among strawberries, yet the feet that might crush instead give light, trembling, and ripeness. Here, that agricultural vision is shifted into a smaller domestic ritual of munggo germination.
+    </p>
+    <p>
+      Made on 2026-06-14, the piece stands before a developing El Niño: a Pacific climate event expected to bring uneven heat, drought, rain, and agricultural stress across different regions. In the Philippines, where El Niño often means dry spells and strained water. I think of this act as a small spell or prayer for what may come, or even like a comma, something that marks a pause before the next thing happens.
+    </p>
+    <p>
+      Black gulaman matters as a ground. It recalls palamig culture, where dark jelly is part of cold refreshment on hot days, but here it becomes a wet field recalling wet soil. 
+    </p>
+    <p>
+      The digital version places the source poem and the sprouted comma-map on the same coordinates, allowing the reader to fade or wipe between them. 
+    </p>
+    <p class="source-note">
+      Climate context: <a href="https://bagong.pagasa.dost.gov.ph/climate/el-nino-la-nina/monitoring" target="_blank" rel="noopener">PAGASA</a> reported El Niño conditions in the tropical Pacific on 2026-06-09, with most models suggesting over 80% probability of a full El Niño event likely to persist until early 2027. <a href="https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso_advisory/ensodisc.shtml" target="_blank" rel="noopener">NOAA/CPC</a> issued an El Niño Advisory on 2026-06-11, noting that conditions were present and expected to strengthen into Northern Hemisphere winter 2026–27.
+    </p>
+  </section>
+
+  <section class="process" aria-label="Process note">
+    <h2>Process</h2>
+    <div class="process-card">
+      <p>
+        The mung beans were sprouted before they were placed on the slab. They were soaked in a small tub or bowl of water overnight and into a second night, with the water replaced as it began to cloud and ferment. The beans slowly split open, producing the short white sprouts used for the piece.
+      </p>
+      <p>
+        To transfer the poem’s spacing, a sheet of paper was overlaid on a screen showing the source poem. Each comma was marked, then punctured. The paper became a stencil: its holes were used to pierce corresponding points into the black gulaman, turning the poem’s punctuation into a set of planting coordinates.
+      </p>
+    </div>
+  </section>
+
+  <section class="note" aria-label="Material note">
+    <p><strong>Material note</strong></p>
+    <p>
+      Mung bean sprouts and black gulaman / agar-agar. The living marks are temporary: they continue by curling, drying, tangling, or decaying after the moment of composition.
+    </p>
+  </section>
+
+  <section class="gallery">
+    <h2>Gallery</h2>
+    <div class="gallery-grid" id="galleryGrid"></div>
+  </section>
+
+  <dialog class="lightbox" id="lightbox">
+    <img id="lightboxImg" src="" alt="">
+  </dialog>
+
+  <footer>
+    <p>bio-art poem · living punctuation · black gulaman · after Villa’s commas</p>
+  </footer>
+</div>
+
+<script>
+const compare = document.getElementById("compare");
+const imageWipe = document.getElementById("imageWipe");
+const imageOpacity = document.getElementById("imageOpacity");
+const wipeReadout = document.getElementById("wipeReadout");
+const opacityReadout = document.getElementById("opacityReadout");
+
+function updateCompare(){
+  const wipe = Number(imageWipe.value);
+  const opacity = Number(imageOpacity.value);
+  compare.style.setProperty("--pos", wipe + "%");
+  compare.style.setProperty("--sprout-opacity", (opacity / 100).toFixed(3));
+  wipeReadout.textContent = Math.round(wipe) + "%";
+  opacityReadout.textContent = Math.round(opacity) + "%";
+}
+
+imageWipe.addEventListener("input", updateCompare);
+imageOpacity.addEventListener("input", updateCompare);
+updateCompare();
+
+/* Gallery: place this HTML file beside c01.jpg through c10.jpg */
+const GALLERY = [
+  "c01.jpg", "c02.jpg", "c03.jpg", "c04.jpg", "c05.jpg",
+  "c06.jpg", "c07.jpg", "c08.jpg", "c09.jpg", "c10.jpg"
+];
+
+const grid = document.getElementById("galleryGrid");
+const lightbox = document.getElementById("lightbox");
+const lightboxImg = document.getElementById("lightboxImg");
+
+GALLERY.forEach((src, i) => {
+  const figure = document.createElement("figure");
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.setAttribute("aria-label", "View gallery image " + (i + 1) + " enlarged");
+
+  const img = document.createElement("img");
+  img.src = src;
+  img.alt = "Gallery image " + (i + 1) + " of the comma poem";
+  img.loading = "lazy";
+
+  btn.appendChild(img);
+  btn.addEventListener("click", () => {
+    lightboxImg.src = src;
+    lightboxImg.alt = img.alt;
+    lightbox.showModal();
+  });
+
+  const cap = document.createElement("figcaption");
+  cap.textContent = src.replace(".jpg", "");
+
+  figure.appendChild(btn);
+  figure.appendChild(cap);
+  grid.appendChild(figure);
+});
+
+lightbox.addEventListener("click", () => lightbox.close());
+</script>
+</body>
+</html>

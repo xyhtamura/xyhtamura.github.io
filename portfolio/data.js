@@ -33,7 +33,23 @@ const slides = [
     }
   },
 
-
+{
+    kind: "piece",
+    piece: {
+      id: "comma-poem-villa",
+      title: "A Comma Poem, after José García Villa’s “I, it, was, that, saw,” before the coming El Niño",
+      year: "2026",
+      tags: ["intermedia", "bio-art", "electronic literature", "interactive web", "climate art"],
+      media: [
+        { type: "image", src: "../card/comma.png", label: "sprouted comma map on black gulaman slab" },
+        { type: "image", src: "../card/poem.png", label: "original punctuation field mapping coordinates" }
+      ],
+      blurb: "A Comma Poem isolates only the punctuation marks from José García Villa’s classic text and replants them as living mung bean sprouts using a stencil technique onto a dark slab of black gulaman. Shifting Villa’s agricultural vision of a cultivatory miracle into a fragile domestic ritual of munggo germination, the work stands before the developing 2026 El Niño—serving as a material spell or temporary marker of pause against regional drought and agricultural stress. The interactive digital counterpart places the source poem and the sprouted comma-map on the exact same coordinates, allowing users to wipe and fade dynamically between the original typographic punctuation grid and its temporary, decaying transfer.",
+      links: [
+        { label: "Open Poem", url: "https://xyhtamura.github.io/acommapoem/" },
+      ]
+    }
+  },
 {
     kind: "set",
     main: {
