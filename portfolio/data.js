@@ -44,7 +44,7 @@ const slides = [
         { type: "image", src: "../card/comma.png", label: "sprouted comma map on black gulaman slab" },
         { type: "image", src: "../card/poem.png", label: "original punctuation field mapping coordinates" }
       ],
-      blurb: "A Comma Poem isolates only the punctuation marks from José García Villa’s classic text and replants them as living mung bean sprouts using a stencil technique onto a dark slab of black gulaman. Shifting Villa’s agricultural vision of a cultivatory miracle into a fragile domestic ritual of munggo germination, the work stands before the developing 2026 El Niño—serving as a material spell or temporary marker of pause against regional drought and agricultural stress. The interactive digital counterpart places the source poem and the sprouted comma-map on the exact same coordinates, allowing users to wipe and fade dynamically between the original typographic punctuation grid and its temporary, decaying transfer.",
+      blurb: "A poem done on black gulaman and mung bean sprouts as well as an interactive digital poem that isolates only the commas from José García Villa's work and replants them as sprouts using a stencil technique onto a slab of black gulaman. Moving Villa’s classic imagery of a cultivatory miracle into a domestic act of munggo germination, the project acts as a small, temporary ritual for the agricultural and water anxieties of the developing 2026 El Niño. The browser interface maps the coordinates of the physical text, allowing users to wipe and fade dynamically between the original typographic punctuation and its temporary, living transfer.",
       links: [
         { label: "Open Poem", url: "https://xyhtamura.github.io/acommapoem/" },
       ]
