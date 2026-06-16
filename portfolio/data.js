@@ -491,7 +491,37 @@ const slides = [
     // --------------------------------------------------
   // SECTION: SGUELTCH SUITE
   // --------------------------------------------------
-  
+  {
+    kind: "set",
+    main: {
+      id: "hindcasts",
+      title: "Hindcasts",
+      year: "2025–2026→",
+      tags: ["Software Suite", "Acausal DSP", "Un-live Effects"],
+      blurb: "A collection of “un-live” audio and video effects that work from the whole file rather than the passing instant[cite: 1]. Treating static media as already-readable temporal objects, the suite explores what becomes possible when an effect can respond before, smooth backward, optimize globally, and act with full knowledge of the piece[cite: 1]. It intentionally drops causality to move past the traditional reactive, threshold-and-attack limitations of real-time systems, viewing the entire digital timeline at once[cite: 1].",
+      media: [{ type: "image", src: "../card/hindcasts.png", label: "Hindcasts index causality readout display" }]
+    },
+    pieces: [
+      {
+        title: "Pythia",
+        year: "2025",
+        tags: ["precognitive granular delay", "audio effect", "web audio"],
+        blurb: "A web-based “precognitive” or “paracognitive” granular delay effect that uses one audio file to anticipate and shape textures from another file[cite: 1, 4]. Driven by a dual-signal interface, it uses the structural envelope of a control signal to redistribute and scatter source material via negative delay, lookahead sampling, threshold triggering, and variable grain density[cite: 4]."
+      },
+      {
+        title: "Sounder",
+        year: "2025",
+        tags: ["un-live compressor", "depth · dynamics", "web audio"],
+        blurb: "An un-live dynamics processor that turns a sound file into a time-occupancy depth chart showing exactly how long the audio spends at each amplitude tier[cite: 1, 2]. Instead of modifying playback through standard compressor thresholds, ratios, and attack windows, the user redraws the dynamic seabed of the sound directly through an interactive visual transfer curve[cite: 2]."
+      },
+      {
+        title: "Prolepsis",
+        year: "2026",
+        tags: ["acausal feedback field", "video processing", "framesmear"],
+        blurb: "An acausal video feedback field that reads a clip completely end-to-end before generating its visual artifacting[cite: 1, 3]. It transforms traditional trailing framesmear into a pre-rendered temporal material: trails can bloom symmetrically or build up entirely ahead of a physical motion event, all while maintaining completely instant, zero-phase scrubbing across the clip[cite: 3]."
+      }
+    ]
+  }
 {
     kind: "set",
     main: {
@@ -583,15 +613,6 @@ const slides = [
         blurb: "A lightweight file-concatenation utility that merges collections of files into single, searchable .txt documents for research, archiving, and LLM workflows. It preserves source context through clear file delimiters and metadata (path, size, type). Available as a browser drag-and-drop interface and a recursive Windows desktop batch script.",
         links: [
           { label: "Launch App", url: "https://xyhtamura.github.io/stitcher/" }
-        ]
-      },
-      {
-        title: "Pythia",
-        year: "2025",
-        tags: ["granular delay", "audio effect", "web audio", "predictive DSP"],
-        blurb: "A web-based 'precognitive' granular delay effect that uses one audio file to anticipate and shape textures from another file. Features dual-signal processing, negative delay, lookahead sampling, threshold triggering, and precise grain parameters.",
-        links: [
-          { label: "Launch App", url: "https://xyhtamura.github.io/pythia/" }
         ]
       },
       {
