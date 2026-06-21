@@ -9,7 +9,6 @@
     <link rel="icon" type="image/png" sizes="192x192" href="xyh8metal.png">
     <link rel="apple-touch-icon" sizes="180x180" href="xyh8metal.png">
     <meta name="keywords" content="Xyh Tamura, Cy Tamura, Cye Tamura">
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>xyh tamura</title>
 <meta name="description" content="xyh tamura : intermedia artist-researcher, singer-songwriter, and creative technologist">
@@ -18,7 +17,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Averia+Libre:ital,wght@0,400;0,700;1,400&family=Averia+Sans+Libre:ital,wght@0,400;0,700;1,400&family=Quicksand:wght@400;500;700&family=Rubik:ital,wght@0,400;0,500;1,400&family=Lexend+Deca:wght@400;500&family=Dosis:wght@600;700&display=swap" rel="stylesheet">
 <style>
 /* ─────────────────────────────────────────────
-   TOKENS — pulled from your live index.css
+   TOKENS — pulled from your live index.css, plus
+   a bubble/glass layer harmonized to xyh01.jpg
+   (cyan-teal · blue-violet · acid green · warm rose)
    ───────────────────────────────────────────── */
 :root{
   --font-heading:"Averia Sans Libre","Noto Sans",sans-serif;
@@ -75,6 +76,34 @@
   --btn-amber:rgba(46,43,40,0.6);
   --btn-glass-shine:rgba(191,218,245,0.2);
   --btn-glass-shadow:rgba(2,33,0,0.4);
+
+  /* ── BUBBLE / GLASS SURFACE (dark scheme) ──
+     dark translucent base keeps text contrast high;
+     multichrome tint = teal → violet → green (unexpected, non-analogous);
+     gloss on top for the frutiger-aero bubble read. */
+  --bubble-base:rgba(20,28,28,0.55);
+  --bubble-tint:linear-gradient(150deg,
+                  rgba(101,255,232,0.12),
+                  rgba(122,82,243,0.13) 46%,
+                  rgba(141,226,120,0.10) 82%,
+                  rgba(231,135,221,0.10));
+  --bubble-gloss:linear-gradient(to bottom,rgba(255,255,255,0.10),transparent 42%);
+  --bubble-border:1px solid rgba(180,212,200,0.16);
+  --bubble-ring:inset 0 1px 0 rgba(255,255,255,0.14);
+  --bubble-shadow:0 12px 30px rgba(2,18,16,0.42);
+
+  /* a fainter, see-through bubble for socials + filter */
+  --bubble-glass-base:rgba(28,38,38,0.30);
+
+  /* atmosphere wash sampled from xyh01.jpg */
+  --wash-cyan:rgba(93,182,189,0.16);
+  --wash-violet:rgba(96,50,205,0.15);
+  --wash-green:rgba(50,164,33,0.12);
+  --wash-rose:rgba(176,121,112,0.12);
+
+  /* flat pill-holder surface (dark) */
+  --bubble-flat-base:rgba(10,16,16,0.30);
+  --bubble-flat-border:rgba(180,212,200,0.14);
 }
 @media (prefers-color-scheme:light){
 :root{
@@ -105,6 +134,26 @@
   --btn-glass-shine:rgba(191,218,245,0.35);
   --btn-glass-shadow:rgba(6,4,36,0.4);
 
+  /* light-scheme bubbles: pale gradient, dark text — contrast preserved */
+  --bubble-base:rgba(247,250,236,0.62);
+  --bubble-tint:linear-gradient(150deg,
+                  rgba(101,255,232,0.30),
+                  rgba(122,82,243,0.16) 46%,
+                  rgba(141,226,120,0.26) 82%,
+                  rgba(231,135,221,0.18));
+  --bubble-gloss:linear-gradient(to bottom,rgba(255,255,255,0.45),transparent 44%);
+  --bubble-border:1px solid rgba(70,96,80,0.20);
+  --bubble-ring:inset 0 1px 0 rgba(255,255,255,0.5);
+  --bubble-shadow:0 12px 28px rgba(40,60,40,0.16);
+  --bubble-glass-base:rgba(255,255,255,0.22);
+  --wash-cyan:rgba(93,182,189,0.22);
+  --wash-violet:rgba(96,50,205,0.12);
+  --wash-green:rgba(50,164,33,0.14);
+  --wash-rose:rgba(176,121,112,0.14);
+
+  /* flat pill-holder surface (light) */
+  --bubble-flat-base:rgba(255,255,255,0.20);
+  --bubble-flat-border:rgba(70,96,80,0.18);
 }
 }
 
@@ -112,19 +161,68 @@
 html{scroll-behavior:smooth;}
 body{
   font-family:var(--font-body);
-  background:var(--bg-color);
+  background:
+    radial-gradient(circle at 10% 6%, var(--wash-cyan), transparent 26rem),
+    radial-gradient(circle at 88% 12%, var(--wash-violet), transparent 28rem),
+    radial-gradient(circle at 70% 96%, var(--wash-green), transparent 32rem),
+    radial-gradient(circle at 24% 88%, var(--wash-rose), transparent 30rem),
+    var(--bg-color);
+  background-attachment:fixed;
   color:var(--text-color);
   margin:0;padding:2.5rem 1rem 5rem;
   line-height:1.35;letter-spacing:0.01em;
   display:flex;flex-direction:column;align-items:center;
 }
-.wrap{width:100%;max-width:820px;}
+.wrap{width:100%;max-width:880px;}
 ::selection{background:var(--selection-background);color:var(--selection-text);}
 
-::-webkit-scrollbar{width:14px;height:14px;}
-::-webkit-scrollbar-track{background:var(--scrollbar-track-color);}
-::-webkit-scrollbar-thumb{background:var(--scrollbar-color);border-radius:40%;border:3px solid var(--scrollbar-track-color);}
+/* ── SKINNED SCROLLBARS (global) ── */
+html{scrollbar-width:thin;scrollbar-color:var(--scrollbar-color) var(--scrollbar-track-color);}
+*{scrollbar-width:thin;scrollbar-color:var(--scrollbar-color) var(--scrollbar-track-color);}
+::-webkit-scrollbar{width:14px;height:12px;}
+::-webkit-scrollbar-track{background:var(--scrollbar-track-color);border-radius:20px;}
+::-webkit-scrollbar-thumb{
+  background:linear-gradient(160deg,var(--scrollbar-color),var(--line-hover-color));
+  border-radius:20px;border:3px solid var(--scrollbar-track-color);
+}
 ::-webkit-scrollbar-thumb:hover{background:var(--link-hover-color);}
+::-webkit-scrollbar-corner{background:var(--scrollbar-track-color);}
+
+/* ── BUBBLE UTILITY ──────────────────────────
+   .bubble  = solid glass card (sections, work entries)
+   .bubble.translucent = see-through variant (socials, filter) */
+.bubble{
+  position:relative;border-radius:26px;
+  background:var(--bubble-gloss),var(--bubble-tint),var(--bubble-base);
+  border:var(--bubble-border);
+  box-shadow:var(--bubble-ring),var(--bubble-shadow);
+  -webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);
+}
+.bubble.translucent{
+  background:var(--bubble-gloss),var(--bubble-tint),var(--bubble-glass-base);
+}
+/* raised: lifts off the page, brighter edge */
+.bubble.raised{
+  border-color:rgba(190,222,210,0.22);
+  box-shadow:var(--bubble-ring),0 18px 42px rgba(2,18,16,0.5);
+}
+/* flat: a transparent pill-holder — no gloss, no tint, just holds pills */
+.bubble.flat{
+  background:var(--bubble-flat-base);
+  border:0px;
+  box-shadow:none;
+  -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
+}
+/* hue variants — override only the tint layer */
+.bubble.tint-warm{
+  --bubble-tint:linear-gradient(150deg,rgba(231,135,221,0.14),rgba(255,180,0,0.10) 50%,rgba(122,82,243,0.11));
+}
+.bubble.tint-cool{
+  --bubble-tint:linear-gradient(150deg,rgba(101,255,232,0.15),rgba(122,82,243,0.13) 55%,rgba(50,164,200,0.10));
+}
+@media (prefers-color-scheme:light){
+  .bubble.raised{box-shadow:var(--bubble-ring),0 18px 40px rgba(40,60,40,0.22);}
+}
 
 /* glassy capsule — your global <a> look, scoped to .glass */
 .glass{
@@ -143,36 +241,85 @@ body{
 .glass:hover{transform:translateY(-2px) scale(1.04);color:var(--link-hover-color);filter:saturate(1.3) brightness(1.1);box-shadow:0 6px 15px var(--btn-glass-shadow);}
 .glass:active{transform:translateY(2px) scale(.97);background:linear-gradient(to top,var(--btn-glass-shine) 0%,transparent 50%),linear-gradient(135deg,var(--btn-lavender),var(--btn-amber));box-shadow:inset 0 4px 8px rgba(0,0,0,.5),0 0 0 transparent;}
 
-/* ── HEADER ── */
-.intro{text-align:center;margin-bottom:1.6rem;}
-.avatar{
-  width:140px;height:140px;margin:0 auto 1rem;
-  border-radius:52% 48% 57% 43% / 46% 54% 46% 54%;
-  background:linear-gradient(135deg,#7a52f3,#e72e5c 45%,#ffb400 80%,#1ad9c9);
-  rotate:-4deg;box-shadow:0 8px 24px var(--btn-glass-shadow);
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--font-special);color:rgba(255,255,255,.7);font-size:.8rem;letter-spacing:.1em;
-  animation:blob 14s ease-in-out infinite;
-  overflow:hidden;
+/* ── HEADER (unbubbled — name left, tagline pills right) ── */
+.intro{
+  display:flex;flex-direction:row;flex-wrap:nowrap;
+  align-items:center;justify-content:space-between;gap:1rem 1.6rem;
+  text-align:left;margin-bottom:1.3rem;
 }
-/* swap this div for: <img class="avatar" src="me.jpg" alt="Xyh Tamura"> */
-@keyframes blob{
-  0%,100%{border-radius:52% 48% 57% 43% / 46% 54% 46% 54%;}
-  50%{border-radius:43% 57% 48% 52% / 56% 44% 56% 44%;}
+.titleblock{min-width:0;}
+h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2.2rem,6.5vw,3.8rem);letter-spacing:.01em;line-height:.95;margin:0;
+  text-shadow:0 2px 0 rgba(122,82,243,.22),0 0 28px rgba(26,217,201,.12);}
+.othernames{font-family:var(--font-heading);font-weight:700;color:var(--other-names);margin:.35rem 0 0;font-size:.98rem;}
+.tagline{
+  display:flex;flex-direction:column;align-items:flex-end;gap:.4rem;
+  margin:0;flex:0 0 auto;
 }
-h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2rem,6vw,3rem);letter-spacing:.02em;margin:0;}
-.othernames{font-family:var(--font-heading);font-weight:700;color:var(--other-names);margin:.2rem 0 .6rem;font-size:.95rem;}
-.tagline{font-family:var(--font-heading);font-weight:700;font-size:1.05rem;color:var(--tagline-color);margin:.4rem 0;}
-.blurb{font-family:var(--font-blurb);color:var(--blurb-color);font-size:1rem;line-height:1.45;max-width:54ch;margin:.6rem auto 0;}
+.tpill{
+  font-family:var(--font-heading);font-weight:700;font-size:.9rem;
+  color:var(--tagline-color);white-space:nowrap;
+  padding:.26rem .85rem;border-radius:999px;
+  background:var(--bubble-flat-base);
+  border:1px solid var(--bubble-flat-border);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+}
+@media (max-width:640px){
+  .intro{flex-direction:column;align-items:flex-start;gap:.7rem;}
+  .tagline{flex-direction:row;flex-wrap:wrap;align-items:flex-start;justify-content:flex-start;}
+}
+
+/* ── BIO: photo + blurb on one row, reflow to column when narrow ── */
+.bio{
+  display:grid;grid-template-columns:minmax(220px,0.82fr) 1.18fr;gap:1.1rem;
+  align-items:stretch;
+  padding:1rem;margin:1.4rem 0;
+}
+.bio .portrait{
+  border-radius:20px;overflow:hidden;position:relative;
+  aspect-ratio:1/1;min-height:0;align-self:center;
+  box-shadow:0 8px 22px var(--btn-glass-shadow),inset 0 0 0 1px rgba(255,255,255,.12);
+}
+.bio .portrait img{
+  width:100%;height:100%;object-fit:cover;display:block;  /* square image → no crop */
+}
+.bio .bio-copy{display:flex;flex-direction:column;justify-content:center;padding:.2rem .3rem;}
+.blurb{font-family:var(--font-blurb);color:var(--blurb-color);font-size:1.04rem;line-height:1.5;margin:0;}
 .blurb em{font-style:italic;color:var(--h4-color);}
 
-/* ── GALLERY ── */
+/* ── SOCIALS (transparent bubble; wrap + center, no horizontal scroll) ── */
+.socials{
+  display:flex;flex-wrap:wrap;gap:.55rem;justify-content:center;align-items:center;
+  padding:.85rem 1rem;margin:.4rem 0 1.4rem;
+}
+/* the outward links — frutiger glass, multichrome, alternating; dark text reads
+   high-contrast against the bright bubbles */
+.socials .glass{
+  font-family:var(--font-heading);font-weight:700;font-size:.84rem;white-space:nowrap;
+  color:#172011;padding:.42rem .9rem;border-radius:16px;
+  background:
+    radial-gradient(circle at 34% 20%,rgba(255,255,250,.7), #a1a1a9 20%,transparent 30%),
+    linear-gradient(145deg,#44d6c1,#c17963 55%,#f424ac);
+  box-shadow:inset 0 2px 1px rgba(255,255,255,.4),inset 0 -8px 12px rgba(77,59,122,.22),0 6px 13px rgba(0,0,0,.2);
+}
+.socials .glass:nth-child(2n){
+  background:
+    radial-gradient(circle at 34% 20%,rgba(255,250,255,.7),#96abac 20%,transparent 30%),
+    linear-gradient(145deg,#2a92f5,#26a901 52%,#af8d9d);
+}
+.socials .glass:nth-child(3n){
+  background:
+    radial-gradient(circle at 34% 20%,rgba(250,255,255,.7),#a1a1a9 20%,transparent 30%),
+    linear-gradient(145deg,#5a00f2, #3de8d6 55%,#f2ce09);
+}
+.socials .glass:hover{transform:translateY(-2px) scale(1.04);color:#0a1207;filter:saturate(1.2) brightness(1.06);}
+
+/* ── GALLERY (NOT bubbled — tiles are already bubbles) ── */
 .gallery{
-  width:100%;margin:1.8rem 0 1.4rem;
-  display:flex;flex-wrap:wrap;gap:10px;padding:.4rem 0;
+  width:100%;margin:0 0 1.4rem;
+  display:flex;flex-wrap:wrap;gap:10px;padding:.2rem 0;
 }
 .tile{
-  flex:1 1 auto;height:148px;border-radius:12px;
+  flex:1 1 auto;height:148px;border-radius:14px;
   overflow:hidden;position:relative;
   box-shadow:0 4px 14px var(--btn-glass-shadow);
   display:flex;align-items:flex-end;padding:.5rem;
@@ -187,7 +334,6 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2rem,6vw,3rem
 .t5{min-width:180px;background-image:linear-gradient(135deg,#151c2e 5%,#ede8d8 50%,#9b7fc4 95%);filter:url(#goo-sm);}
 .t6{min-width:155px;background-image:linear-gradient(135deg,#3d3d1a 5%,#ff66d4 50%,#8fafc4 95%);}
 .goo-defs{position:absolute;width:0;height:0;}
-
 .tile img,.tile video{width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit;}
 
 @media(max-width:600px){
@@ -198,26 +344,16 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2rem,6vw,3rem
   .t6{min-width:115px;}
 }
 
-/* ── SOCIALS (centered, scrollable on overflow, never left-clipped) ── */
-.socials{
-  width:100%;overflow-x:auto;display:flex;gap:.5rem;
-  justify-content:safe center;justify-content:center;
-  padding:.2rem .5rem .8rem;scrollbar-width:thin;margin-bottom:.4rem;
-}
-.socials .glass{font-size:.82rem;white-space:nowrap;flex:0 0 auto;}
-
-/* ── FILTER ── */
+/* ── FILTER (transparent bubble; pills wrap + center) ── */
 .filter{
-  display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;
-  justify-content:center;
-  padding:1rem 0;margin:.4rem 0 1.6rem;
-  border-top:1px solid var(--line-color);border-bottom:1px solid var(--line-color);
+  display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;justify-content:center;
+  padding:.9rem 1rem;margin:.4rem 0 1.5rem;
 }
 .filter .lbl{font-family:var(--font-special);font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--tagline-color);margin-right:.3rem;}
 .fbtn{
   font-family:var(--font-accent);font-size:.76rem;letter-spacing:.02em;
-  background:transparent;border:1px solid var(--line-color);color:var(--text-color);
-  cursor:pointer;padding:.18rem .6rem;border-radius:20px;
+  background:rgba(0,0,0,.14);border:1px solid var(--line-color);color:var(--text-color);
+  cursor:pointer;padding:.2rem .65rem;border-radius:20px;
   transition:all .18s cubic-bezier(.175,.885,.32,1.275);
 }
 .fbtn:hover{color:var(--link-hover-color);border-color:var(--line-hover-color);transform:translateY(-1px);}
@@ -239,23 +375,45 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2rem,6vw,3rem
 .fbtn[data-cat="fashion"].on{background:var(--category-fashion-color);}
 .fbtn[data-cat="film"].on{background:var(--category-film-color);}
 .fbtn[data-cat="games"].on{background:var(--category-games-color);}
-}
 
-/* ── INDEX ── */
-.index{list-style:none;margin:0;padding:0;}
-.entry{border-bottom:1px solid var(--line-color);transition:background .2s;}
+/* ── INDEX: each work is its own bubble; no divider lines ── */
+.index{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.85rem;}
+.entry{
+  /* bubble */
+  position:relative;border-radius:24px;
+  background:var(--bubble-gloss),var(--bubble-tint),var(--bubble-base);
+  border:var(--bubble-border);
+  box-shadow:var(--bubble-ring),var(--bubble-shadow);
+  -webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);
+  transition:transform .2s cubic-bezier(.175,.885,.32,1.275),box-shadow .2s,filter .2s;
+  overflow:hidden;
+}
+.entry:hover{transform:translateY(-2px);box-shadow:var(--bubble-ring),0 16px 36px rgba(2,18,16,0.5);}
+.entry[open]{box-shadow:var(--bubble-ring),0 16px 38px rgba(2,18,16,0.5);}
+.entry.minor{
+  /* flat & quiet */
+  background:var(--bubble-flat-base);
+  border-color:var(--bubble-flat-border);
+  box-shadow:none;
+}
+.entry.major{
+  /* raised & warm-tinted */
+  --bubble-tint:linear-gradient(150deg,rgba(231,135,221,0.13),rgba(255,180,0,0.09) 52%,rgba(122,82,243,0.11));
+  border-color:rgba(190,222,210,0.22);
+  box-shadow:var(--bubble-ring),0 18px 42px rgba(2,18,16,0.5);
+}
+.entry.major:hover,.entry.major[open]{box-shadow:var(--bubble-ring),0 22px 48px rgba(2,18,16,0.55);}
 .entry summary{
   display:grid;grid-template-columns:4.6rem 1fr auto;gap:.9rem;align-items:center;
-  padding:.85rem .4rem;cursor:pointer;list-style:none;border-radius:12px;
+  padding:.95rem 1.1rem;cursor:pointer;list-style:none;border-radius:24px;
 }
 .entry summary::-webkit-details-marker{display:none;}
-.entry summary:hover{background:var(--work-entry-bg);}
 .entry summary:hover .title{color:var(--link-hover-color);}
-.entry .year{font-family:var(--font-detail);font-size:.78rem;color:var(--year-color);padding-top:.25rem;letter-spacing:.02em;}
+.entry .year{font-family:var(--font-detail);font-size:.76rem;color:var(--year-color);text-align:center;letter-spacing:.02em;
+  padding:.18rem .4rem;border-radius:9px;background:rgba(0,0,0,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.06);}
 .entry .title{font-family:var(--font-accent);font-size:1.08rem;color:var(--text-color);line-height:1.25;transition:color .15s;}
 .entry .title em{font-style:italic;}
-.entry.major .title{font-size:1.3rem;font-weight:700;}
-.entry.major{border-bottom:1px solid var(--line-color);}
+
 .entry.minor .title{font-size:.96rem;color:var(--alt-title-color);}
 .entry.minor .year{font-size:.72rem;}
 .artist-tag{font-family:var(--font-detail);font-size:.72rem;color:var(--role-color);font-style:normal;opacity:.85;margin-left:.25em;letter-spacing:.01em;}
@@ -277,18 +435,14 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2rem,6vw,3rem
 .chip.artistic-research{background:var(--category-artistic-research-color);color:#001;text-shadow:none;}
 .chip.fashion{background:var(--category-fashion-color);color:#001;text-shadow:none;}
 .chip.film{background:var(--category-film-color);color:#001;text-shadow:none;}
-.chip.games {
-  background: var(--category-games-color);
-  color: #15131f; 
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.2);
-}
+.chip.games{background:var(--category-games-color);color:#15131f;text-shadow:0 1px 1px rgba(255,255,255,.2);}
 
 .chip{color:#f5f2ff;text-shadow:0 1px 2px rgba(0,0,0,.35);}
 .chip.score{color:#15131f;text-shadow:0 1px 1px rgba(255,255,255,.2);}
 .chip.writing{color:#15131f;text-shadow:0 1px 1px rgba(255,255,255,.2);}
 .chip.participatory{color:#15131f;text-shadow:0 1px 1px rgba(255,255,255,.2);}
 
-.body{padding:.2rem .4rem 1.4rem 5.5rem;max-width:64ch;}
+.body{padding:.2rem 1.2rem 1.4rem 5.7rem;max-width:66ch;}
 .body .media{
   height:200px;border-radius:12px;margin:.2rem 0 1rem;
   background:linear-gradient(135deg,#2a2540,#3a2d52,#1f3a3a);
@@ -313,17 +467,20 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2rem,6vw,3rem
 
 .entry[hidden]{display:none;}
 
-
 /* ── MOBILE ── */
-@media (max-width:600px){
-  body{padding:1.6rem .9rem 4rem;}
-  .entry summary{grid-template-columns:3.4rem 1fr;grid-template-rows:auto auto;gap:.25rem .7rem;}
-  .chips{grid-column:1/-1;justify-content:flex-start;padding-left:4.1rem;max-width:none;}
-  .body{padding-left:4.1rem;}
+@media (max-width:680px){
+  body{padding:1.6rem .8rem 4rem;}
+  .bio{grid-template-columns:1fr;gap:.9rem;padding:.9rem;}
+  .bio .portrait{width:100%;max-width:320px;aspect-ratio:1/1;margin:0 auto;}
   .blurb{max-width:100%;}
 }
+@media (max-width:600px){
+  .entry summary{grid-template-columns:3.4rem 1fr;grid-template-rows:auto auto;gap:.25rem .7rem;padding:.85rem .95rem;}
+  .chips{grid-column:1/-1;justify-content:flex-start;padding-left:4.1rem;max-width:none;}
+  .body{padding:.2rem .95rem 1.3rem 4.1rem;}
+}
 @media (prefers-reduced-motion:reduce){
-  .tile,.avatar{animation:none;}
+  .tile{animation:none;}
   *{scroll-behavior:auto;}
 }
 
@@ -363,10 +520,10 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2rem,6vw,3rem
 [data-tooltip]:focus::after{opacity:1;}
 [data-tooltip]:focus{outline:none;}
 
-/* ── COLOPHON ── */
+/* ── COLOPHON (no bubble) ── */
 .colophon{
   width:100%;
-  max-width:700px;
+  max-width:760px;
   margin:4.5rem auto 0;
   padding:1.25rem 1rem 0;
   border-top:1px dashed var(--line-color);
@@ -375,7 +532,6 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2rem,6vw,3rem
   line-height:1.32;
   text-align:center;
 }
-
 .colophon .row{
   display:flex;
   flex-wrap:wrap;
@@ -383,85 +539,45 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2rem,6vw,3rem
   gap:.18rem .95rem;
   margin:.22rem auto;
 }
+.colophon .row span{opacity:.78;}
+.colophon .row span::before{content:"✦ ";opacity:.45;}
+.colophon .row:nth-child(1){color:var(--year-color);font-size:.72rem;opacity:.82;}
+.colophon .row:nth-child(2){color:var(--category-score-color);opacity:.92;}
+.colophon .row:nth-child(3){color:var(--category-artistic-research-color);opacity:.84;}
+.colophon .row:nth-child(4){color:var(--category-music-color);opacity:.88;font-style:italic;}
+.colophon .row:nth-child(5){color:var(--alt-title-color);opacity:.68;font-size:.7rem;}
+.colophon .row:nth-child(n) span{opacity:inherit;}
 
-/* default item treatment */
-.colophon .row span{
-  opacity:.78;
-}
-
-/* small glyph separators */
-.colophon .row span::before{
-  content:"✦ ";
-  opacity:.45;
-}
-
-/* education / location */
-.colophon .row:nth-child(1){
-  color:var(--year-color);
-  font-size:.72rem;
-  opacity:.82;
-}
-
-/* scoring / audio */
-.colophon .row:nth-child(2){
-  color:var(--category-score-color);
-  opacity:.92;
-}
-
-/* research / code */
-.colophon .row:nth-child(3){
-  color:var(--category-artistic-research-color);
-  opacity:.84;
-}
-
-/* online creator / public theory */
-.colophon .row:nth-child(4){
-  color:var(--category-music-color);
-  opacity:.88;
-  font-style:italic;
-}
-
-/* methods / adjacent practices */
-.colophon .row:nth-child(5){
-  color:var(--alt-title-color);
-  opacity:.68;
-  font-size:.7rem;
-}
-
-/* let row opacity control the line instead of flattening every span */
-.colophon .row:nth-child(n) span{
-  opacity:inherit;
-}
-
-/* Container for your mini-gallery */
+/* ── IN-DETAIL MEDIA (kept from live: horizontal scroll, skinned) ── */
 .media-group {
   display: flex;
-  flex-wrap: nowrap;            /* was: wrap — this is the key change */
+  flex-wrap: nowrap;
   gap: 12px;
   margin: 0.2rem 0 1rem;
   align-items: flex-start;
-  overflow-x: auto;             /* horizontal scroll when items overflow */
+  overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;        /* Firefox */
-  padding-bottom: 6px;          /* breathing room so scrollbar doesn't kiss the images */
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-color) transparent;
+  padding-bottom: 6px;
 }
-
-/* thin scrollbar for Chromium/WebKit */
-.media-group::-webkit-scrollbar { height: 6px; }
+.media-group::-webkit-scrollbar { height: 8px; }
+.media-group::-webkit-scrollbar-track{background:rgba(0,0,0,.15);border-radius:20px;}
 .media-group::-webkit-scrollbar-thumb {
-  background: var(--line-color);
-  border-radius: 3px;
+  background: linear-gradient(160deg,var(--scrollbar-color),var(--line-hover-color));
+  border-radius: 20px;
 }
-
+.media-group::-webkit-scrollbar-thumb:hover{background:var(--link-hover-color);}
 .media-group .media {
-  flex: 0 0 auto;               /* was 0 1 auto — don't let items shrink, let the row scroll instead */
+  flex: 0 0 auto;
   width: auto;
   height: auto;
   max-height: 200px;
   object-fit: contain;
   margin: 0;
   cursor: zoom-in;
+  border-radius:10px;
 }
 
 /* Firefox-ish first-open details jump fix */
@@ -490,6 +606,44 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2rem,6vw,3rem
   border-radius: 10px;
   box-shadow: 0 10px 50px rgba(0,0,0,.6);
 }
+
+.blurb em{font-style:normal;color:var(--h4-color);}
+.blurb em.intermedia{color:#a195c9;}
+.blurb em.music{color:#cf9bbd;}
+.blurb em.writing{color:#cdc096;}
+.blurb em.tech{color:#94bacb;}
+.blurb em.research{color:#cba29c;}
+.blurb em.participatory{color:#cda966;}
+@media (prefers-color-scheme:light){
+  .blurb em.intermedia{color:#6a5a99;}
+  .blurb em.music{color:#a85a85;}
+  .blurb em.writing{color:#7e6f3c;}
+  .blurb em.tech{color:#487f97;}
+  .blurb em.research{color:#b06b63;}
+  .blurb em.participatory{color:#94713a;}
+}
+
+.bio{
+  --bubble-base:rgba(28,20,44,0.58);
+  --bubble-tint:linear-gradient(150deg,
+                  rgba(122,82,243,0.18),
+                  rgba(101,255,232,0.12) 50%,
+                  rgba(255,180,0,0.08) 84%,
+                  rgba(255,111,198,0.13));
+  display:grid;grid-template-columns:minmax(220px,0.82fr) 1.18fr;gap:1.1rem;
+  align-items:stretch;
+  padding:1rem;margin:1.4rem 0;
+}
+@media (prefers-color-scheme:light){
+  .bio{
+    --bubble-base:rgba(231,223,246,0.64);
+    --bubble-tint:linear-gradient(150deg,
+                    rgba(122,82,243,0.22),
+                    rgba(101,255,232,0.18) 50%,
+                    rgba(255,180,0,0.10) 84%,
+                    rgba(255,111,198,0.16));
+  }
+}
 </style>
 </head>
 <body>
@@ -504,7 +658,6 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2rem,6vw,3rem
 this site is for neurodivergents, punk academics, subculturists. navigable and usable enough for everyone else but not exactly for them. 
 -->
 
-
 <!-- goo filters from your live site -->
 <svg class="goo-defs" xmlns="http://www.w3.org/2000/svg"><defs>
   <filter id="goo-sm"><feTurbulence type="fractalNoise" baseFrequency="0.028 0.042" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.5" xChannelSelector="R" yChannelSelector="G"/></filter>
@@ -513,18 +666,33 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
 
 <div class="wrap">
 
+  <!-- ROW 1 · name / other names / tagline pills (no bubble — name leads, pills right) -->
   <header class="intro">
-     <img class="avatar" src="xyh01.jpg" alt="再">
-    <h1>xyh tamura</h1>
-    <div class="othernames">Cy Tamura · Cye Tamura · 田村再</div>
-    <div class="tagline">transdisciplinary artist-researcher · singer-songwriter · creative technologist</div>
-    <div class="blurb">
-      xyh is a Filipino/Ilonggo-Japanese creator working through intermedia art, experimental pop, electronic literature, science and technology, research, and theory. Their work orbits issues of selfhood, media, posthuman relations, ecological-technological worlds, and the ways cultures metabolize systems.
+    <div class="titleblock">
+      <h1>xyh tamura</h1>
+      <div class="othernames">Cy Tamura · Cye Tamura · 田村再</div>
     </div>
-
+    <div class="tagline" aria-label="practice">
+      <span class="tpill">transdisciplinary artist-researcher</span>
+      <span class="tpill">singer-songwriter</span>
+      <span class="tpill">creative technologist</span>
+    </div>
   </header>
 
-  <nav class="socials" aria-label="links">
+  <!-- ROW 2 · photo + blurb (bubble; row on desktop, column when narrow) -->
+  <section class="bio bubble raised" aria-label="about">
+    <figure class="portrait">
+      <img src="xyh01.jpg" alt="Xyh Tamura — portrait against a painterly iridescent field">
+    </figure>
+    <div class="bio-copy">
+ <p class="blurb">
+  xyh is a Filipino/Ilonggo-Japanese creator working through <em class="intermedia">intermedia art</em>, <em class="music">experimental pop</em>, <em class="writing">electronic literature</em>, <em class="tech">science, technology, and its studies</em>, <em class="research">theory and philosophy</em>, and <em class="participatory">social action</em>. Their work orbits issues of selfhood, media, posthuman relations, ecological-technological worlds, and the ways cultures metabolize systems.
+</p>
+    </div>
+  </section>
+
+  <!-- ROW 3 · socials (transparent bubble; wrap + center, no horizontal scroll) -->
+  <nav class="socials bubble flat" aria-label="links">
     <a class="glass" href="mailto:xyhtamura0@gmail.com">email</a>
     <a class="glass" href="https://www.instagram.com/xyh.tamura/" target="_blank" rel="noopener">instagram</a>
     <a class="glass" href="https://open.spotify.com/artist/6sC8YWzht783z5DhjB1j0N" target="_blank" rel="noopener">spotify</a>
@@ -534,8 +702,9 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
 	<a class="glass" href="https://www.imdb.com/name/nm9964342/" target="_blank" rel="noopener">imdb</a>
   </nav>
 
-  <!-- vibe mosaic: swap tiles for <img>/<video>; goo applied to t2 & t5 -->
-<section class="gallery" aria-label="selected images">
+  <!-- ROW 4 · gallery (NOT bubbled — tiles already read as bubbles) -->
+
+  <section class="gallery" aria-label="selected images">
     <div class="tile t1"><video src="card/per.mp4" autoplay loop muted playsinline></video></div>
     <a href="https://vimeo.com/1019003508" target="_blank" rel="noopener" class="tile t2"><img src="card/manifest.jpeg" alt=""></a>
     <div class="tile t3"><img src="card/threefloor.jpeg" alt=""></div>
@@ -554,10 +723,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
     <div class="tile t2"><video src="card/sl.mp4" autoplay loop muted playsinline></video></div>
     <a href="https://xyhtamura.github.io/istorya-sang-balatyagon/" target="_blank" class="tile t3"><video src="card/map.mp4" autoplay loop muted playsinline></video></a>
     <a href="https://journals.ub.uni-koeln.de/index.php/phidi/article/view/11659" target="_blank" class="tile t4"><img src="card/frominte.jpeg" alt=""></a>
-</section>
+  </section>
 
 
-  <nav class="filter" aria-label="filter by category">
+  <!-- ROW 5 · filter (transparent bubble; pills wrap + center) -->
+  <nav class="filter bubble flat" aria-label="filter by category">
     <span class="lbl">filter</span>
 <button class="fbtn on" data-cat="all">all</button>
 <button class="fbtn" data-cat="intermedia" data-tooltip="works transcending disciplines and combining multiple media forms">intermedia</button>
@@ -578,7 +748,9 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
 <button class="fbtn" data-cat="management">management</button>
   </nav>
 
-<main class="index">
+  <!-- ROW 6 · list of works (each <details class="entry"> is its own bubble) -->
+  <main class="index">
+
 
 <details class="entry major" data-cats="tech" id="hindcasts">
   <summary>
@@ -1992,9 +2164,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
     </div>
   </div>
 </details>
-</main>
+
+  </main>
 </div>
 
+<!-- ROW 7 · footer (no bubble) -->
 <footer class="colophon" aria-label="colophon">
   <div class="row">
     <span>based in Metro Manila</span>
@@ -2031,8 +2205,6 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
     <span>virtual worldbuilding</span>
   </div>
 </footer>
-
-
 
 <script>
 const btns=document.querySelectorAll('.fbtn');
@@ -2077,7 +2249,6 @@ const closeLb = () => {
 lb.addEventListener('click', closeLb);
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLb(); });
 </script>
-
 
 </body>
 </html>
