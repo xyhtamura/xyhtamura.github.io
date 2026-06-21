@@ -298,12 +298,15 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2.2rem,6.5vw,
 /* the outward links — frutiger glass, multichrome, alternating; dark text reads
    high-contrast against the bright bubbles */
 .socials .glass{
-  font-family:var(--font-heading);font-weight:900;font-size:.84rem;white-space:nowrap;
-  color:#172011;padding:.42rem .9rem;border-radius:16px;
+  font-family:var(--font-heading);font-weight:700;font-size:.84rem;white-space:nowrap;
+  color:#350bbd;padding:.42rem .9rem;border-radius:16px;
     background:
     radial-gradient(circle at 34% 20%,rgba(250,255,255,.7),#a1a1a9 20%,transparent 30%),
     linear-gradient(145deg,#5a00f2, #3de8d6 55%,#f2ce09);
-	text-shadow: 1px 1px 0px rgba(250, 255, 255, 0.7);
+/* A deep, soft shadow tucked at the top, plus a crisp light highlight on the bottom */
+text-shadow: 
+  0 -1px 1px rgba(15, 63, 20, 0.4), 
+  0 1px 0px rgba(250, 255, 255, 0.6);
 
   box-shadow:inset 0 2px 1px rgba(255,255,255,.4),inset 0 -8px 12px rgba(77,59,122,.22),0 6px 13px rgba(0,0,0,.2);
 }
@@ -317,7 +320,7 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2.2rem,6.5vw,
     radial-gradient(circle at 34% 20%,rgba(255,255,250,.7), #a1a1a9 20%,transparent 30%),
     linear-gradient(145deg,#44d6c1,#c17963 55%,#f424ac);
 }
-.socials .glass:hover{transform:translateY(-2px) scale(1.04);color:#0a1207;filter:saturate(1.2) brightness(1.06);}
+.socials .glass:hover{transform:translateY(-2px) scale(1.04);color: #3e0be6;filter:saturate(1.2) brightness(1.06);}
 
 /* ── GALLERY (NOT bubbled — tiles are already bubbles) ── */
 .gallery{
