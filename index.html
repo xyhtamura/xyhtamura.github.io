@@ -81,7 +81,7 @@
      dark translucent base keeps text contrast high;
      multichrome tint = teal → violet → green (unexpected, non-analogous);
      gloss on top for the frutiger-aero bubble read. */
-  --bubble-base:rgba(20,28,28,0.55);
+  --bubble-base:rgba(20,28,28,0.35);
   --bubble-tint:linear-gradient(150deg,
                   rgba(101,255,232,0.12),
                   rgba(122,82,243,0.13) 46%,
@@ -133,11 +133,12 @@
   --btn-amber:rgba(255,217,120,0.3);
   --btn-glass-shine:rgba(191,218,245,0.35);
   --btn-glass-shadow:rgba(6,4,36,0.4);
+  --alt-title-color: #3b5240;
 
   /* light-scheme bubbles: pale gradient, dark text — contrast preserved */
-  --bubble-base:rgba(247,250,236,0.62);
+  --bubble-base:rgba(247,250,236,0.22);
   --bubble-tint:linear-gradient(150deg,
-                  rgba(101,255,232,0.30),
+                  rgba(101,255,232,0.20),
                   rgba(122,82,243,0.16) 46%,
                   rgba(141,226,120,0.26) 82%,
                   rgba(231,135,221,0.18));
@@ -145,7 +146,7 @@
   --bubble-border:1px solid rgba(70,96,80,0.20);
   --bubble-ring:inset 0 1px 0 rgba(255,255,255,0.5);
   --bubble-shadow:0 12px 28px rgba(40,60,40,0.16);
-  --bubble-glass-base:rgba(255,255,255,0.22);
+  --bubble-glass-base:rgba(255,255,255,0.152);
   --wash-cyan:rgba(93,182,189,0.22);
   --wash-violet:rgba(96,50,205,0.12);
   --wash-green:rgba(50,164,33,0.14);
@@ -210,7 +211,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--scrollbar-color) var(--scrollbar
 .bubble.flat{
   background:var(--bubble-flat-base);
   border:0px;
-  box-shadow:none;
+  box-shadow: none;
   -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
 }
 /* hue variants — override only the tint layer */
@@ -395,15 +396,17 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2.2rem,6.5vw,
 }
 .entry:hover{transform:translateY(-2px);box-shadow:var(--bubble-ring),0 16px 36px rgba(2,18,16,0.5);}
 .entry[open]{box-shadow:var(--bubble-ring),0 16px 38px rgba(2,18,16,0.5);}
-.entry.minor{
-  /* flat & quiet */
-  background:var(--bubble-flat-base);
-  border-color:var(--bubble-flat-border);
-  box-shadow:none;
+.entry.minor {
+  /* Swaps the flat background for your glassy, translucent bubble token */
+  background: var(--bubble-gloss), var(--bubble-flat), var(--bubble-glass-base);
+  border: var(--bubble-border);
+  box-shadow: var(--bubble-ring), var(--bubble-shadow);
+  -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(7px);
 }
 .entry.major{
   /* raised & warm-tinted */
-  --bubble-tint:linear-gradient(150deg,rgba(231,135,221,0.13),rgba(255,180,0,0.09) 52%,rgba(122,82,243,0.11));
+  --bubble-tint:linear-gradient(150deg,rgba(52, 235, 232,0.33),rgba(255,180,0,0.29) 52%,rgba(122,82,243,0.21));
   border-color:rgba(190,222,210,0.22);
   box-shadow:var(--bubble-ring),0 18px 42px rgba(2,18,16,0.5);
 }
