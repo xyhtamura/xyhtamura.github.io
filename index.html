@@ -450,7 +450,7 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2.2rem,6.5vw,
 .chip.writing{color:#15131f;text-shadow:0 1px 1px rgba(255,255,255,.2);}
 .chip.participatory{color:#15131f;text-shadow:0 1px 1px rgba(255,255,255,.2);}
 
-.body{padding:.2rem 1.2rem 1.4rem 5.7rem;max-width:66ch;   display:flex;flex-direction:column;align-items:center;
+.body{padding:.2rem 1.2rem 1.4rem 5.7rem;max-width:66ch;   display:flex;flex-direction:column;align-items:flex-start;
   position:relative;        /* ← add this line */}
 .body .media{
   height:200px;border-radius:12px;margin:.2rem 0 1rem;
@@ -485,10 +485,10 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2.2rem,6.5vw,
   .bio .portrait{width:100%;max-width:320px;aspect-ratio:1/1;margin:0 auto;}
   .blurb{max-width:100%;}
 }
-@media (max-width:600px){
+@media (max-width: 600px){
   .entry summary{grid-template-columns:3.4rem 1fr;grid-template-rows:auto auto;gap:.25rem .7rem;padding:.85rem .95rem;}
   .chips{grid-column:1/-1;justify-content:flex-start;padding-left:4.1rem;max-width:none;}
-  .body{padding:.2rem .95rem 1.3rem 4.1rem;}
+  .body{padding:.2rem .95rem 1.3rem 4.1rem; align-items: flex-start;} /* Added align-items reset */
 }
 @media (prefers-reduced-motion:reduce){
   .tile{animation:none;}
@@ -2242,7 +2242,7 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   </div>
 </details>
 
-<details class="entry" data-cats="theater music writing" id="magic-staff">
+<details class="entry major" data-cats="theater music writing" id="magic-staff">
   <summary>
     <span class="year">1999</span>
     <span class="title">The Magic Staff <span class="artist-tag">as Cy Tamura</span></span>
