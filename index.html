@@ -278,10 +278,10 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2.2rem,6.5vw,
 .bio .portrait{
   border-radius:20px;overflow:hidden;position:relative;
   aspect-ratio:1/1;min-height:0;align-self:center;
-  box-shadow:0 8px 22px var(--btn-glass-shadow),inset 0 0 0 1px rgba(255,255,255,.12);
+
 }
 .bio .portrait img{
-  width:100%;height:100%;object-fit:cover;display:block;  /* square image → no crop */
+  width:100%;height:100%;object-fit:cover;display:block;    border-radius:52% 48% 57% 43% / 46% 54% 46% 54%;
 }
 .bio .bio-copy{display:flex;flex-direction:column;justify-content:center;padding:.2rem .3rem;}
 .bio .bio-copy .blurb + .blurb {
@@ -450,7 +450,8 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2.2rem,6.5vw,
 .chip.writing{color:#15131f;text-shadow:0 1px 1px rgba(255,255,255,.2);}
 .chip.participatory{color:#15131f;text-shadow:0 1px 1px rgba(255,255,255,.2);}
 
-.body{padding:.2rem 1.2rem 1.4rem 5.7rem;max-width:66ch;}
+.body{padding:.2rem 1.2rem 1.4rem 5.7rem;max-width:66ch;   display:flex;flex-direction:column;align-items:center;
+  position:relative;        /* ← add this line */}
 .body .media{
   height:200px;border-radius:12px;margin:.2rem 0 1rem;
   background:linear-gradient(135deg,#2a2540,#3a2d52,#1f3a3a);
@@ -647,6 +648,70 @@ h1{font-family:var(--font-heading);font-weight:700;font-size:clamp(2.2rem,6.5vw,
                     rgba(255,111,198,0.16));
   }
 }
+
+/* ── IRIDESCENT BLOB FIELD (decorative; sits behind all content) ── */
+.blobfield{position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none;}
+.blob{position:absolute;}
+/* depth tiers — the z-illusion lives here */
+.blob.far {filter:blur(22px);opacity:.34;mix-blend-mode:screen;}
+.blob.mid {filter:blur(9px); opacity:.55;mix-blend-mode:screen;}
+.blob.near{filter:drop-shadow(0 3px 6px rgba(0,0,0,.28));opacity:.92;} /* sharp, sits "on" the glass */
+
+/* iridescent skins — same gradient DNA as the social pills / xyh01.jpg */
+.blob.p1{background:
+  radial-gradient(circle at 32% 22%,rgba(250,255,255,.6),transparent 40%),
+  linear-gradient(145deg,#5a00f2,#3de8d6 55%,#f2ce09);}
+.blob.p2{background:
+  radial-gradient(circle at 32% 22%,rgba(255,250,255,.55),transparent 40%),
+  linear-gradient(145deg,#2a92f5,#26a901 52%,#f424ac);}
+.blob.p3{background:
+  radial-gradient(circle at 32% 22%,rgba(255,255,250,.55),transparent 40%),
+  linear-gradient(145deg,#44d6c1,#c17963 55%,#b378f6);}
+  .blob.p4{background:
+  radial-gradient(circle at 32% 22%,rgba(255,255,255,.58),transparent 40%),
+  linear-gradient(145deg,#ff5fc8,#7b5cff 48%,#2ef6c5 78%,#f8e56b);}
+  .blob.p5{background:
+  radial-gradient(circle at 32% 22%,rgba(245,255,255,.6),transparent 40%),
+  linear-gradient(145deg,#00b7ff,#7cff6b 50%,#ff8a3d 76%,#bf5cff);}
+
+.blob.p6{background:
+  radial-gradient(circle at 32% 22%,rgba(255,250,245,.56),transparent 40%),
+  linear-gradient(145deg,#f75d7a,#ffd36e 45%,#35e6ff 72%,#6134f5);}
+
+.blob.p7{background:
+  radial-gradient(circle at 32% 22%,rgba(250,255,252,.55),transparent 40%),
+  linear-gradient(145deg,#1fe1a5,#2f68ff 48%,#d94fff 74%,#ffe36a);}
+
+
+/* FAR layer — big soft glows anchoring weight at the top */
+.f1{width:90px;height:120px;top:-70px;left:28%;border-radius:46% 54% 62% 38% / 48% 40% 60% 52%;transform:rotate(-8deg);}
+.f2{width:90px;height:130px;top:30px;right:-60px;left:auto;border-radius:63% 37% 45% 55% / 38% 56% 44% 62%;transform:rotate(12deg);}
+.f3{width:80px;height:80px;top:170px;left:-80px;border-radius:55% 45% 35% 65% / 63% 51% 49% 37%;transform:rotate(6deg);}
+
+/* MID layer */
+.m1{width:100px;height:90px;top:-10px;left:-30px;border-radius:60% 40% 47% 53% / 44% 62% 38% 56%;}
+.m2{width:108px;height:100px;top:90px;left:82%;border-radius:38% 62% 41% 59% / 57% 35% 65% 43%;transform:rotate(-10deg);}
+.m3{width:100px;height:98px;top:230px;left:48%;border-radius:51% 49% 64% 36% / 42% 58% 42% 58%;}
+.m4{width:100px;height:90px;top:300px;left:10%;border-radius:57% 43% 39% 61% / 48% 57% 43% 52%;transform:rotate(7deg);}
+
+/* NEAR layer — tiny sharp droplets, the actual flourishes */
+.n1{width:72px;height:66px;top:64px;left:13%;border-radius:46% 54% 58% 42% / 52% 44% 56% 48%;transform:rotate(-6deg);}
+.n2{width:54px;height:58px;top:24px;left:46%;border-radius:62% 38% 45% 55% / 40% 58% 42% 60%;}
+.n3{width:84px;height:78px;top:140px;left:76%;border-radius:40% 60% 52% 48% / 56% 42% 58% 44%;transform:rotate(10deg);}
+.n4{width:60px;height:64px;top:206px;left:24%;border-radius:54% 46% 38% 62% / 60% 50% 50% 40%;}
+.n5{width:26px;height:28px;top:112px;left:60%;border-radius:50% 50% 60% 40% / 44% 56% 44% 56%;}
+
+/* sparse trail down the rest of the page (placed by % of full height) */
+.s1{width:90px;height:95px;top:32%;right:-55px;left:auto;opacity:.26;border-radius:60% 40% 47% 53% / 44% 62% 38% 56%;}
+.s2{width:90px;height:98px;top:55%;left:-40px;opacity:.4;border-radius:42% 58% 63% 37% / 55% 45% 51% 49%;}
+.s3{width:54px;height:50px;top:70%;left:72%;border-radius:52% 48% 44% 56% / 50% 52% 48% 50%;}
+.s4{width:185px;height:170px;top:88%;left:18%;opacity:.24;border-radius:57% 43% 39% 61% / 48% 57% 43% 52%;}
+
+@media (prefers-color-scheme:light){
+  .blob.far,.blob.mid{mix-blend-mode:multiply;}
+  .blob.far{opacity:.3;}
+  .blob.near{filter:drop-shadow(0 3px 5px rgba(40,30,60,.22));}
+}
 </style>
 </head>
 <body>
@@ -667,6 +732,30 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   <filter id="goo-md"><feTurbulence type="fractalNoise" baseFrequency="0.018 0.029" numOctaves="3" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="5" xChannelSelector="R" yChannelSelector="G"/></filter>
 </defs></svg>
 
+
+<!-- decorative iridescent blob field -->
+<!-- decorative iridescent blob field -->
+<div class="blobfield" aria-hidden="true">
+  <!-- far (recede) -->
+  <span class="blob far p6 f1"></span>
+
+
+  <!-- mid -->
+  <span class="blob mid p4 m1"></span>
+  <span class="blob mid p5 m2"></span>
+
+  <!-- near (pop) -->
+
+  <span class="blob near p3 n2"></span>
+
+  <span class="blob near p2 n4"></span>
+  <span class="blob near p1 n5"></span>
+
+  <!-- trail -->
+  <span class="blob far p2 s1"></span>
+
+</div>
+</div>
 <div class="wrap">
 
   <!-- ROW 1 · name / other names / tagline pills (no bubble — name leads, pills right) -->
