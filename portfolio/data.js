@@ -587,7 +587,7 @@ const slides = [
             title: "ooid (.ooid)",
             year: "2026",
             tags: ["Gaussian blobs", "round loss"],
-            blurb: "A layered anisotropic Gaussian blob still and video format[cite: 2]. Byte corruption produces swelling fields, soft lesions, relayering, and shifting fog across alpha paths[cite: 2]. Video uses independent ooid frames in an OOIV container, allowing damage to stay frame-local or be pushed across boundaries[cite: 2].",
+            blurb: "A layered anisotropic Gaussian blob still and video format[cite: 2]. Byte corruption produces swelling fields, soft lesions, relayering, and shifting fog across alpha paths. Video uses independent ooid frames in an OOIV container, allowing damage to stay frame-local or be pushed across boundaries.",
             links: [
               { label: "Open Codec", url: "https://xyhtamura.github.io/sgueltch/goopCodecs/ooid/" }
             ]
@@ -597,7 +597,7 @@ const slides = [
             title: "scute (.scute)",
             year: "2026",
             tags: ["Voronoi seeds", "cellular loss"],
-            blurb: "A Voronoi-cell image codec that constructs territory boundaries from scattered seed coordinates[cite: 2]. Corruption deforms and buckles borders, causing surviving cell territories to aggressively annex missing space[cite: 2]. Record order is intentionally not meaningful, making shuffle operations external to the format grammar[cite: 2].",
+            blurb: "A Voronoi-cell image codec that constructs territory boundaries from scattered seed coordinates[cite: 2]. Corruption deforms and buckles borders, causing surviving cell territories to aggressively annex missing space[cite: 2]. Record order is intentionally not meaningful, making shuffle operations external to the format grammar.",
             links: [
               { label: "Open Codec", url: "https://xyhtamura.github.io/sgueltch/goopCodecs/scute/" }
             ]
@@ -607,7 +607,7 @@ const slides = [
             title: "vermis (.vermis)",
             year: "2026",
             tags: ["Hilbert thread", "flowing loss"],
-            blurb: "A continuous space-filling Hilbert-thread image codec utilizing DPCM color deltas[cite: 2]. The image is sampled along a Hilbert curve and repainted as one continuous filament instead of a square pixel grid[cite: 2]. Corruption accumulates downstream, turning a damaged delta into a travelling stain, bruise, or phase shift through the body of the worm[cite: 2].",
+            blurb: "A continuous space-filling Hilbert-thread image codec utilizing DPCM color deltas[cite: 2]. The image is sampled along a Hilbert curve and repainted as one continuous filament instead of a square pixel grid. Corruption accumulates downstream, turning a damaged delta into a travelling stain, bruise, or phase shift through the body of the worm.",
             links: [
               { label: "Open Codec", url: "https://xyhtamura.github.io/sgueltch/goopCodecs/vermis/" }
             ]
