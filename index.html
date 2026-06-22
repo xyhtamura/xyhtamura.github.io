@@ -14,7 +14,7 @@
 <meta name="description" content="xyh tamura : intermedia artist-researcher, singer-songwriter, and creative technologist">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Averia+Libre:ital,wght@0,400;0,700;1,400&family=Averia+Sans+Libre:ital,wght@0,400;0,700;1,400&family=Quicksand:wght@400;500;700&family=Rubik:ital,wght@0,400;0,500;1,400&family=Lexend+Deca:wght@400;500&family=Dosis:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Averia+Libre:ital,wght@0,400;0,700;1,400&family=Averia+Sans+Libre:ital,wght@0,400;0,700;1,400&family=Quicksand:wght@400;500;700&family=Rubik:ital,wght@0,400;0,500;1,400&family=Lexend+Deca:wght@400;500&family=Dosis:wght@600;700&family=Antonio:wght@300;400&display=swap" rel="stylesheet">
 <style>
 /* ─────────────────────────────────────────────
    TOKENS — pulled from your live index.css, plus
@@ -313,12 +313,12 @@ text-shadow:
 .socials .glass:nth-child(2n){
   background:
     radial-gradient(circle at 34% 20%,rgba(255,250,255,.7),#96abac 20%,transparent 30%),
-    linear-gradient(145deg,#2a92f5,#65d046 52%,#b378f6);
+    linear-gradient(145deg,#f23d40,#65d046 52%,#b378f6);
 }
 .socials .glass:nth-child(3n){
   background:
     radial-gradient(circle at 34% 20%,rgba(255,255,250,.7), #a1a1a9 20%,transparent 30%),
-    linear-gradient(145deg,#44d6c1,#dd8b72 55%,#ed33ad);
+    linear-gradient(145deg,#44d6c1,#dd8b72 55%,#be57eb);
 }
 .socials .glass:hover{transform:translateY(-2px) scale(1.04);color: #3e0be6;filter:saturate(1.2) brightness(1.06);}
 
@@ -420,8 +420,8 @@ text-shadow:
 }
 .entry summary::-webkit-details-marker{display:none;}
 .entry summary:hover .title{color:var(--link-hover-color);}
-.entry .year{font-family:var(--font-detail);font-size:.76rem;color:var(--year-color);text-align:center;letter-spacing:.02em;
-  padding:.18rem .4rem;border-radius:9px;background:rgba(0,0,0,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.06);}
+.entry .year{font-family:var(--font-detail);font-size:.66rem;color:var(--year-color);text-align:center;letter-spacing:.02em;
+  padding:.18rem .4rem;border-radius:9px;background:rgba(0,0,0,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.06); font-stretch: ultra-condensed;}
 .entry .title{font-family:var(--font-accent);font-size:1.08rem;color:var(--text-color);line-height:1.25;transition:color .15s;}
 .entry .title em{font-style:italic;}
 
@@ -489,7 +489,7 @@ text-shadow:
   .blurb{max-width:100%;}
 }
 @media (max-width: 600px){
-  .entry summary{grid-template-columns:3.4rem 1fr;grid-template-rows:auto auto;gap:.25rem .7rem;padding:.85rem .95rem;}
+  .entry summary{grid-template-columns:5.5rem 1fr;grid-template-rows:auto auto;gap:.25rem .7rem;padding:.85rem .95rem;}
   .chips{grid-column:1/-1;justify-content:flex-start;padding-left:4.1rem;max-width:none;}
   .body{padding:.2rem .95rem 1.3rem 4.1rem; align-items: flex-start;} /* Added align-items reset */
 }
@@ -657,7 +657,7 @@ text-shadow:
 .blob{position:absolute;}
 /* depth tiers — the z-illusion lives here */
 .blob.far {filter:blur(22px);opacity:.34;mix-blend-mode:screen;}
-.blob.mid {filter:blur(9px); opacity:.55;mix-blend-mode:screen;}
+.blob.mid {filter:blur(4px); opacity:.55;mix-blend-mode:screen;}
 .blob.near{filter:drop-shadow(0 3px 6px rgba(0,0,0,.28));opacity:.92;} /* sharp, sits "on" the glass */
 
 /* iridescent skins — same gradient DNA as the social pills / xyh01.jpg */
@@ -692,10 +692,10 @@ text-shadow:
 .f3{width:80px;height:80px;top:170px;left:-80px;border-radius:55% 45% 35% 65% / 63% 51% 49% 37%;transform:rotate(6deg);}
 
 /* MID layer */
-.m1{width:100px;height:90px;top:-10px;left:-30px;border-radius:60% 40% 47% 53% / 44% 62% 38% 56%;}
-.m2{width:108px;height:100px;top:90px;left:82%;border-radius:38% 62% 41% 59% / 57% 35% 65% 43%;transform:rotate(-10deg);}
-.m3{width:100px;height:98px;top:230px;left:48%;border-radius:51% 49% 64% 36% / 42% 58% 42% 58%;}
-.m4{width:100px;height:90px;top:300px;left:10%;border-radius:57% 43% 39% 61% / 48% 57% 43% 52%;transform:rotate(7deg);}
+.m1{width:90px;height:90px;top:-10px;left:-30px;border-radius:60% 40% 47% 53% / 44% 62% 38% 56%;}
+.m2{width:98px;height:90px;top:90px;left:82%;border-radius:38% 62% 41% 59% / 57% 35% 65% 43%;transform:rotate(-10deg);}
+.m3{width:90px;height:88px;top:230px;left:48%;border-radius:51% 49% 64% 36% / 42% 58% 42% 58%;}
+.m4{width:90px;height:90px;top:300px;left:10%;border-radius:57% 43% 39% 61% / 48% 57% 43% 52%;transform:rotate(7deg);}
 
 /* NEAR layer — tiny sharp droplets, the actual flourishes */
 .n1{width:72px;height:66px;top:64px;left:13%;border-radius:46% 54% 58% 42% / 52% 44% 56% 48%;transform:rotate(-6deg);}
@@ -737,7 +737,6 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
 
 
 <!-- decorative iridescent blob field -->
-<!-- decorative iridescent blob field -->
 <div class="blobfield" aria-hidden="true">
   <!-- far (recede) -->
   <span class="blob far p6 f1"></span>
@@ -758,7 +757,7 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   <span class="blob far p2 s1"></span>
 
 </div>
-</div>
+
 <div class="wrap">
 
   <!-- ROW 1 · name / other names / tagline pills (no bubble — name leads, pills right) -->
@@ -847,6 +846,112 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   <main class="index">
 
 
+<details class="entry" data-cats="tech artistic-research" id="goopcodecs">
+  <summary>
+    <span class="year">2026→</span>
+    <span class="title">goopCodecs</span>
+    <span class="chips">
+      <span class="chip tech">tech</span>
+      <span class="chip artistic-research">research-art</span>
+    </span>
+  </summary>
+  <div class="body">
+    <p>A suite of custom file formats architected explicitly for databending, mojibake text-editing, and substrate-specific data corruption. Moving away from standard optimization metrics like compression or speed, goopCodecs protects essential file headers while leaving structural bodies highly vulnerable to direct byte manipulation. The resulting errors translate directly into continuous, analog-organic artifacts rather than traditional rigid, grid-based digital crashes.</p>
+    
+<div class="subs">
+      <div class="sub">
+        <h4>ooid (.ooid)</h4>
+        <p>A layered anisotropic Gaussian blob still and video format.</p>
+        <div class="outlinks"><a class="glass visit" href="/sgueltch/goopCodecs/ooid/" target="_blank" rel="noopener">▷ open</a></div>
+      </div>
+      <div class="sub">
+        <h4>scute (.scute)</h4>
+        <p>A warped Voronoi-cell image codec that constructs territory boundaries from scattered seed coordinates.</p>
+        <div class="outlinks"><a class="glass visit" href="/sgueltch/goopCodecs/scute/" target="_blank" rel="noopener">▷ open</a></div>
+      </div>
+      <div class="sub">
+        <h4>vermis (.vermis)</h4>
+        <p>A continuous space-filling Hilbert-thread image codec utilizing DPCM color deltas. </p>
+        <div class="outlinks"><a class="glass visit" href="/sgueltch/goopCodecs/vermis/" target="_blank" rel="noopener">▷ open</a></div>
+      </div>
+    </div>
+
+    <div class="outlinks">
+      <a class="glass visit" href="/sgueltch/goopcodecs/" target="_blank" rel="noopener">▷ open suite</a>
+    </div>
+  </div>
+</details>
+
+<details class="entry major" data-cats="tech artistic-research" id="sgueltch">
+  <summary>
+    <span class="year">2025–26→</span>
+    <span class="title">Sgueltch</span>
+    <span class="chips">
+      <span class="chip tech">tech</span>
+      <span class="chip artistic-research">research-art</span>
+    </span>
+  </summary>
+  <div class="body">
+    <p>An aesthetic philosophy and a tech suite[cite: 1]. Sgueltch is a word between squelch and glitch[cite: 1]. It moves away from traditional glitch art's rigid, pixelated, mechanical disruptions and toward fluid, continuous, biologically-inspired distortion[cite: 1]. Sgueltch asks what digital error can become when it begins from other substrates: ooze, tissue, silt, weather, viscosity, lesion, flocking, breath, and growth[cite: 1]. It values asymmetry, unpredictability, embodiment, and mess-compatible media as a counter-infrastructure and a counter-erroring for an alternate digitality[cite: 1].</p>
+    
+    <div class="subs">
+      <div class="sub">
+        <h4>Pixel Lesions</h4>
+        <p>Pixel sorting as biological infection: lesion-like forms spread across an image like lichen or slime mold[cite: 1].</p>
+        <div class="outlinks"><a class="glass visit" href="/sgueltch/pixel-lesions/" target="_blank" rel="noopener">▷ open</a></div>
+      </div>
+      <div class="sub">
+        <h4>SiltCRT</h4>
+        <p>Shader-based CRT decay reimagined beyond the pixel grid via Voronoi tessellation, turbulence, chromatic bleed[cite: 1]. Inputs and outputs image and video[cite: 1].</p>
+        <div class="outlinks">
+          <a class="glass visit" href="/sgueltch/siltcrt/" target="_blank" rel="noopener">▷ open</a>
+          <a class="glass" href="/siltcrt/block/" target="_blank" rel="noopener">block version ↗</a>
+        </div>
+      </div>
+      <div class="sub">
+        <h4>Gurgulator</h4>
+        <p>Granular resynthesizer for wet, unstable, gurgling textures[cite: 1].</p>
+        <div class="outlinks"><a class="glass visit" href="/sgueltch/gurgulator/" target="_blank" rel="noopener">▷ open</a></div>
+      </div>
+      <div class="sub">
+        <h4>TypeBojangler</h4>
+        <p>type renderer that jitters traits like rotation, spacing, and more[cite: 1].</p>
+        <div class="outlinks"><a class="glass visit" href="/sgueltch/typebojangler/" target="_blank" rel="noopener">▷ open</a></div>
+      </div>
+      <div class="sub">
+        <h4>goopCodecs</h4>
+        <p>A collection of browser-based image, video, and colour-field formats built for databending and substrate-specific visual damage[cite: 2].</p>
+        <div class="outlinks"><a class="glass visit" href="/sgueltch/goopCodecs" target="_blank" rel="noopener">▷ open</a></div>
+      </div>
+    </div>
+    <div class="outlinks">
+      <a class="glass visit" href="/sgueltch/" target="_blank" rel="noopener">▷ the suite</a>
+    </div>
+  </div>
+</details>
+
+
+<details class="entry" data-cats="tech artistic-research" id="tabota">
+  <summary>
+    <span class="year">2025→</span>
+    <span class="title">TaboTa <span class="artist-tag">Tabò-田</span></span>
+    <span class="chips"><span class="chip tech">tech</span><span class="chip artistic-research">research-art</span></span>
+  </summary>
+  <div class="body">
+     <div class="media-group">
+      <img class="media" src="img/tabota.jpg" alt="media">
+
+
+	</div>
+    <p>Tabota is a post-MIDI experimental composition tool and notation language for microtonal, polymetric, and time-based media. The project combines a JSON-based score format with browser-based editors: a piano-roll interface for drawing held tones, glides, freehand pitch contours, and voice assignments, and Cycla, a subdivision grammar builder for designing recursive meters and exporting <code>.cyc</code> time maps. Tabota models a score as a set of translatable temporal and axial regimes: beats, seconds, unordered cues, frequencies, note names, categories, and performance instructions. Its relationship to Scala is expanded sideways: where <code>.scl</code> files describe tuning systems for pitch, Cycla’s <code>.cyc</code> files describe tuning systems for time.</p>
+    <div class="outlinks">
+      <a class="glass visit" href="/tabota/" target="_blank" rel="noopener">▷ docs</a>
+      <a class="glass visit" href="/tabota/tabota_roll.html" target="_blank" rel="noopener">▷ tabota roll</a>
+      <a class="glass visit" href="/tabota/cycla_builder.html" target="_blank" rel="noopener">▷ cycla</a>
+    </div>
+  </div>
+</details>
+
 <details class="entry major" data-cats="tech" id="hindcasts">
   <summary>
     <span class="year">2025–26→</span>
@@ -882,7 +987,7 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   </div>
 </details>
 
-<details class="minor entry" data-cats="intermedia" id="comma-poem-villa">
+<details class="entry" data-cats="intermedia" id="comma-poem-villa">
   <summary>
     <span class="year">2026</span>
     <span class="title">A Comma Poem, after José García Villa’s <em>“I, it, was, that, saw,”</em> before the coming El Niño</span>
@@ -937,7 +1042,7 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   </div>
 </details>
 
-<details class="minor entry" data-cats="intermedia" id="media">
+<details class="entry" data-cats="intermedia" id="media">
   <summary>
     <span class="year">2026</span>
     <span class="title">Media</span>
@@ -964,7 +1069,7 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   </summary>
   <div class="body">
                 <div class="media-group">
-      <img class="media" src="cornice/cornice1.jpg" alt="media">
+      <img class="media" src="/cornice/cornice1.jpg" alt="media">
 
 	</div>
     <p>A browser-based poetic art game and text-based terrarium, modeling a nocturnal balcony at the edge of an impossible post-cyberpunk city. The work combines WASD traversal, click-to-inspect textual specimens, movable world elements, randomized distant vistas, changing weather states, and an interactive sound engine to create a compact, living ecology of terminal life.</p>
@@ -1208,26 +1313,7 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
 </details>
 
 
-<details class="entry" data-cats="tech artistic-research" id="tabota">
-  <summary>
-    <span class="year">2025→</span>
-    <span class="title">TaboTa <span class="artist-tag">Tabò-田</span></span>
-    <span class="chips"><span class="chip tech">tech</span><span class="chip artistic-research">research-art</span></span>
-  </summary>
-  <div class="body">
-     <div class="media-group">
-      <img class="media" src="img/tabota.jpg" alt="media">
 
-
-	</div>
-    <p>Tabota is a post-MIDI experimental composition tool and notation language for microtonal, polymetric, and time-based media. The project combines a JSON-based score format with browser-based editors: a piano-roll interface for drawing held tones, glides, freehand pitch contours, and voice assignments, and Cycla, a subdivision grammar builder for designing recursive meters and exporting <code>.cyc</code> time maps. Tabota models a score as a set of translatable temporal and axial regimes: beats, seconds, unordered cues, frequencies, note names, categories, and performance instructions. Its relationship to Scala is expanded sideways: where <code>.scl</code> files describe tuning systems for pitch, Cycla’s <code>.cyc</code> files describe tuning systems for time.</p>
-    <div class="outlinks">
-      <a class="glass visit" href="/tabota/" target="_blank" rel="noopener">▷ docs</a>
-      <a class="glass visit" href="/tabota/tabota_roll.html" target="_blank" rel="noopener">▷ tabota roll</a>
-      <a class="glass visit" href="/tabota/cycla_builder.html" target="_blank" rel="noopener">▷ cycla</a>
-    </div>
-  </div>
-</details>
 
 
 
@@ -1246,45 +1332,6 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   </div>
 </details>
 
-<details class="entry major" data-cats="tech" id="sgueltch">
-  <summary>
-    <span class="year">2025–26→</span>
-    <span class="title">Sgueltch</span>
-    <span class="chips"><span class="chip tech">tech</span></span>
-  </summary>
-  <div class="body">
-    <p>An aesthetic philosophy and a tech suite. Sgueltch is a word between squelch and glitch. It moves away from traditional glitch art's rigid, pixelated, mechanical disruptions and toward fluid, continuous, biologically-inspired distortion. Sgueltch asks what digital error can become when it begins from other substrates: ooze, tissue, silt, weather, viscosity, lesion, flocking, breath, and growth. It values asymmetry, unpredictability, embodiment, and mess-compatible media as a counter-infrastructure and a counter-erroring for an alternate digitality. </p>
-    <div class="subs">
-      <div class="sub">
-        <h4>Pixel Lesions</h4>
-        <p>Pixel sorting as biological infection: lesion-like forms spread across an image like lichen or slime mold.</p>
-        <div class="outlinks"><a class="glass visit" href="/sgueltch/pixel-lesions/" target="_blank" rel="noopener">▷ open</a></div>
-      </div>
-      <div class="sub">
-        <h4>SiltCRT</h4>
-        <p>Shader-based CRT decay reimagined beyond the pixel grid via Voronoi tessellation, turbulence, chromatic bleed. Inputs and outputs image and video.</p>
-        <div class="outlinks">
-          <a class="glass visit" href="/sgueltch/siltcrt/" target="_blank" rel="noopener">▷ open</a>
-          <a class="glass" href="/siltcrt/block/" target="_blank" rel="noopener">block version ↗</a>
-        </div>
-      </div>
-      <div class="sub">
-        <h4>Gurgulator</h4>
-        <p>Granular resynthesizer for wet, unstable, gurgling textures.</p>
-        <div class="outlinks"><a class="glass visit" href="/sgueltch/gurgulator/" target="_blank" rel="noopener">▷ open</a></div>
-      </div>
-      <div class="sub">
-        <h4>TypeBojangler</h4>
-        <p>type renderer that jitters traits like rotation, spacing, and more. </p>
-        <div class="outlinks"><a class="glass visit" href="/sgueltch/typebojangler/" target="_blank" rel="noopener">▷ open</a></div>
-      </div>
-
-    </div>
-    <div class="outlinks">
-      <a class="glass visit" href="/sgueltch/" target="_blank" rel="noopener">▷ the suite</a>
-    </div>
-  </div>
-</details>
 
 <details class="entry major" data-cats="intermedia music tech" id="eosforos">
   <summary>
@@ -2192,7 +2239,7 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
 
 <details class="entry" data-cats="score" id="ff-podcast">
   <summary>
-    <span class="year">2010 &amp; 2019</span>
+    <span class="year">2010/2019</span>
     <span class="title"><em>FF Podcast</em></span>
     <span class="chips"><span class="chip score">score</span></span>
   </summary>

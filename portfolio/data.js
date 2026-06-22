@@ -521,7 +521,7 @@ const slides = [
         blurb: "An acausal video feedback field that reads a clip completely end-to-end before generating its visual artifacting[cite: 1, 3]. It transforms traditional trailing framesmear into a pre-rendered temporal material: trails can bloom symmetrically or build up entirely ahead of a physical motion event, all while maintaining completely instant, zero-phase scrubbing across the clip[cite: 3]."
       }
     ]
-  }
+  },
 {
     kind: "set",
     main: {
@@ -560,8 +560,62 @@ const slides = [
         ]
       }
     ]
+	
   },
-
+{
+    kind: "set",
+    main: {
+      id: "goopcodecs",
+      title: "goopCodecs",
+      year: "2026→",
+      tags: ["Software Suite", "Databending Codecs", "Substrate Distortion"],
+      media: [
+        { type: "image", src: "../card/manifest.jpeg", label: "goopCodecs format interface" }
+      ],
+      blurb: "A suite of browser-native, custom file formats architected explicitly for databending, mojibake text-editing, and substrate-specific data corruption[cite: 2]. Moving away from standard optimization metrics like compression or speed, goopCodecs protects essential file headers while leaving structural bodies highly vulnerable to direct byte manipulation[cite: 2]. The resulting errors translate directly into continuous, analog-organic artifacts rather than traditional rigid, grid-based digital crashes[cite: 2].",
+      links: [
+        { label: "Open Suite", url: "https://xyhtamura.github.io/sgueltch/goopCodecs.html" }
+      ]
+    },
+    children: [
+      {
+        kind: "panels",
+        label: "Codec Formats Registry",
+        panels: [
+          {
+            id: "ooid",
+            title: "ooid (.ooid)",
+            year: "2026",
+            tags: ["Gaussian blobs", "round loss"],
+            blurb: "A layered anisotropic Gaussian blob still and video format[cite: 2]. Byte corruption produces swelling fields, soft lesions, relayering, and shifting fog across alpha paths[cite: 2]. Video uses independent ooid frames in an OOIV container, allowing damage to stay frame-local or be pushed across boundaries[cite: 2].",
+            links: [
+              { label: "Open Codec", url: "https://xyhtamura.github.io/sgueltch/goopCodecs/ooid/" }
+            ]
+          },
+          {
+            id: "scute",
+            title: "scute (.scute)",
+            year: "2026",
+            tags: ["Voronoi seeds", "cellular loss"],
+            blurb: "A Voronoi-cell image codec that constructs territory boundaries from scattered seed coordinates[cite: 2]. Corruption deforms and buckles borders, causing surviving cell territories to aggressively annex missing space[cite: 2]. Record order is intentionally not meaningful, making shuffle operations external to the format grammar[cite: 2].",
+            links: [
+              { label: "Open Codec", url: "https://xyhtamura.github.io/sgueltch/goopCodecs/scute/" }
+            ]
+          },
+          {
+            id: "vermis",
+            title: "vermis (.vermis)",
+            year: "2026",
+            tags: ["Hilbert thread", "flowing loss"],
+            blurb: "A continuous space-filling Hilbert-thread image codec utilizing DPCM color deltas[cite: 2]. The image is sampled along a Hilbert curve and repainted as one continuous filament instead of a square pixel grid[cite: 2]. Corruption accumulates downstream, turning a damaged delta into a travelling stain, bruise, or phase shift through the body of the worm[cite: 2].",
+            links: [
+              { label: "Open Codec", url: "https://xyhtamura.github.io/sgueltch/goopCodecs/vermis/" }
+            ]
+          }
+        ]
+      }
+    ]
+  },
   {
     kind: "grid",
     sec: {
