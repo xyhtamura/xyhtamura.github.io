@@ -504,59 +504,20 @@ function renderName(text){
   });
 }
 
-/* ---------- pool ----------
-   the database is mostly mainstream pop/news, so a flat random draw rarely
-   lands on the strange stuff. we seed each refill from evocative tags that
-   surface noise-like transmissions — experimental/drone genres plus utility
-   feeds (scanners, air-traffic, weather radio, shortwave) — and blend in a
-   broad random draw so there's always playable breadth. */
-const STRANGE_TAGS=[
-  "experimental","noise","drone","dark ambient","ambient","lo-fi","shortwave",
-  "scanner","police","air traffic control","weather","noaa weather radio",
-  "free form","field recording","industrial","musique concrete","sound art",
-  "minimal","space","static","oldies","am","longwave","plunderphonics","vaporwave"
-];
-const STRANGE_BIAS=0.7;  /* share of each refill that leans weird (tune to taste) */
-
-/* mixed-content reality: an https page can only play https streams, which
-   excludes most http-only fringe/AM stations. served locally (file://) or over
-   http, anything plays — that's where the truly unusual signals open up. */
-const PAGE_HTTPS=(location.protocol==="https:");
-function streamOK(s){
-  if(!s||!s.url_resolved||s.hls||s.lastcheckok!==1) return false;
-  const u=s.url_resolved;
-  return PAGE_HTTPS ? (u.indexOf("https://")===0 && !s.ssl_error) : (u.indexOf("http")===0);
-}
-async function searchStations(qs){
+/* ---------- pool ---------- */
+async function fetchPool(){
   for(const base of MIRRORS){
     try{
-      const r=await fetch(base+"/json/stations/search?"+qs,{mode:"cors"});
+      const r=await fetch(base+"/json/stations/search?hidebroken=true&order=random&limit=700",{mode:"cors"});
       if(!r.ok) continue;
       const data=await r.json();
-      if(Array.isArray(data)) return data;
+      /* keep it permissive — AM, low-bitrate and quiet/dead-air streams all welcome,
+         only require an https stream the browser can actually play */
+      const good=data.filter(s=> s && s.url_resolved &&
+        s.url_resolved.indexOf("https://")===0 && !s.hls && s.lastcheckok===1);
+      if(good.length){ pool=pool.concat(good); return true; }
     }catch(e){ /* next mirror */ }
   }
-  return [];
-}
-function addToPool(list){
-  const seen=new Set(pool.map(s=>s.stationuuid));
-  let n=0;
-  for(const s of list){
-    if(streamOK(s) && !seen.has(s.stationuuid)){ seen.add(s.stationuuid); pool.push(s); n++; }
-  }
-  return n;
-}
-async function fetchPool(){
-  const tag=STRANGE_TAGS[Math.floor(Math.random()*STRANGE_TAGS.length)];
-  const qsStrange="hidebroken=true&order=random&limit=400&tag="+encodeURIComponent(tag);
-  const qsBroad="hidebroken=true&order=random&limit=500";
-  const [strange,broad]=await Promise.all([ searchStations(qsStrange), searchStations(qsBroad) ]);
-  const leadWeird=Math.random()<STRANGE_BIAS;
-  const raw=leadWeird ? strange.concat(broad.slice(0,150)) : broad.concat(strange.slice(0,150));
-  if(addToPool(raw)>0) return true;
-  /* the strange tag may return only http streams we can't play on https —
-     fall back to a plain broad draw so the dial never goes dead */
-  if(addToPool(await searchStations(qsBroad))>0) return true;
   return false;
 }
 function pickStation(){
