@@ -1,384 +1,921 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Antemelos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Almendra+Display&family=Astloch:wght@400;700&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
-    <title>Antemelos</title>
-    <style>
-        :root {
-            --bg-color: #1a1a1a;
-            --text-color: #e0e0e0;
-            --primary-color: #af87ff;
-            --surface-color: #2a2a2a;
-            --border-color: #444;
-        }
-        body {
-            font-family: 'Almendra Display', sans-serif;
-			font-weight: bold;
-			font-size: 1.2rem;
-			letter-spacing: 0.1rem;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 2rem;
-            display: flex;
-            justify-content: center;
-        }
-        .container {
-            max-width: 900px;
-            width: 100%;
-            background-color: var(--surface-color);
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-        h1, h2 {
-            text-align: center;
-            color: var(--primary-color);
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 1rem;
-            margin-top: 0;
-            font-weight: 700;
-        }
-        .controls {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        .actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            justify-content: center;
-        }
-        .control-group { display: flex; flex-direction: column; }
-        label { margin-bottom: 0.5rem; font-weight: bold; }
-        input[type="range"], input[type="number"], select {
-            width: 100%;
-            padding: 0.5rem;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-family: 'Almendra Display', sans-serif;
-        }
-        button {
-            padding: 0.75rem 1rem;
-            font-size: 1rem;
-            font-weight: bold;
-            color: var(--bg-color);
-            background-color: var(--primary-color);
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.2s, color 0.2s;
-            flex-grow: 1;
-            font-family: 'Almendra Display', sans-serif;
-        }
-        button:hover { background-color: #c4a7ff; }
-        button:disabled { background-color: #555; color: #999; cursor: not-allowed; }
-        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-        th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border-color); }
-        th { background-color: rgba(0,0,0,0.2); }
-    </style>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* warm darkness: Tabota's warmth at Eosforos's value */
+  --bg:        #0a0706;
+  --bg2:       #0f0a08;
+  --panel:     #140d0a;
+  --panel-hi:  #1b110c;
+  --border:    #2c1d14;
+  --border-hi: #3c2715;
+
+  /* magma + void, straight off the cover */
+  --ember:     #d8632a;
+  --ember-hot: #f4791f;
+  --magma:     #c84000;
+  --void:      #221a4a;   /* indigo deep */
+  --void-hi:   #3a2c6e;
+
+  --amber:     #c89030;   /* handles (Roil register) */
+  --amber-hi:  #e8b840;
+  --amber-glow:rgba(200,136,32,0.40);
+
+  --phos:      #94c890;   /* the shared green thread — Hz lives here */
+  --phos-hi:   #b6e2ad;
+  --phos-dim:  rgba(148,200,144,0.22);
+
+  --text:      #ddd0bc;
+  --dim:       #7c604c;
+  --faint:     #4a382c;
+
+  --serif: 'Fraunces', Georgia, serif;
+  --mono: 'IBM Plex Mono', 'Courier New', monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:16px}
+body{
+  min-height:100vh;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -8%, #2a1006 0%, transparent 62%),
+    radial-gradient(ellipse 60% 40% at 85% 12%, rgba(34,26,74,0.5) 0%, transparent 55%);
+  padding:1.4rem 0 4rem;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{width:94%;max-width:1080px;margin:0 auto}
+
+/* ── header ───────────────────────────────────────── */
+.head{position:relative;text-align:center;padding:0.6rem 0 1.2rem;margin-bottom:1rem}
+.head .paddy{
+  position:absolute;top:-0.45em;left:50%;transform:translateX(-50%);
+  font-family:var(--serif);font-size:6.4rem;line-height:1;color:var(--ember);
+  opacity:0.07;pointer-events:none;user-select:none;
+  /* the grid dissolving back into gradient */
+  -webkit-mask-image:radial-gradient(ellipse 60% 70% at 50% 50%, #000 8%, transparent 72%);
+  mask-image:radial-gradient(ellipse 60% 70% at 50% 50%, #000 8%, transparent 72%);
+}
+h1{
+  position:relative;font-family:var(--serif);font-weight:400;font-style:italic;
+  font-size:clamp(3.2rem,11vw,5.4rem);letter-spacing:0.01em;line-height:0.95;
+  background:linear-gradient(176deg,#f6c79a 0%,var(--ember-hot) 34%,var(--magma) 78%,#7e2f12 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:0 0 38px rgba(216,99,42,0.18);
+  animation:ember 6s ease-in-out infinite;
+}
+@media(prefers-reduced-motion:reduce){h1{animation:none}}
+@keyframes ember{
+  0%,100%{filter:drop-shadow(0 0 18px rgba(216,99,42,0.20))}
+  40%{filter:drop-shadow(0 0 30px rgba(244,121,31,0.34))}
+  70%{filter:drop-shadow(0 0 12px rgba(200,64,0,0.14))}
+}
+.sub{margin-top:0.5rem;font-size:0.62rem;letter-spacing:0.34em;text-transform:uppercase;color:var(--dim)}
+.sub b{color:var(--phos);font-weight:500}
+
+/* ── transport ────────────────────────────────────── */
+.transport{display:flex;gap:0.5rem;justify-content:center;align-items:center;flex-wrap:wrap;margin-bottom:1rem}
+button{font-family:var(--mono);cursor:pointer;border-radius:2px;transition:background-color .13s,box-shadow .13s,color .13s,border-color .13s}
+button:focus-visible{outline:2px solid var(--phos);outline-offset:2px}
+.btn{
+  background:var(--magma);color:#fff3ea;border:none;
+  padding:0.78rem 1.5rem;font-size:0.7rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;min-height:46px;
+}
+.btn:hover{background:var(--ember-hot);box-shadow:0 0 22px rgba(216,99,42,0.34)}
+.btn.ghost{background:#16100c;color:var(--amber);border:1px solid var(--border-hi)}
+.btn.ghost:hover{background:#20150d;color:var(--amber-hi);box-shadow:0 0 16px var(--amber-glow)}
+.btn.play{min-width:118px}
+.seedbox{display:flex;align-items:center;gap:0.4rem;font-size:0.64rem;letter-spacing:0.12em;color:var(--dim);text-transform:uppercase}
+.seedbox .val{font-family:var(--mono);color:var(--phos);font-size:0.78rem;letter-spacing:0.06em;background:var(--bg);border:1px solid var(--border);border-radius:2px;padding:0.3em 0.55em;min-width:5.4em;text-align:center}
+.reroll{background:#16100c;border:1px solid var(--border-hi);color:var(--amber);width:38px;height:38px;font-size:0.95rem;display:flex;align-items:center;justify-content:center}
+.reroll:hover{background:#20150d;color:var(--amber-hi);box-shadow:0 0 14px var(--amber-glow)}
+
+/* ── signature: plasma + filament ─────────────────── */
+.stage{position:relative;border:1px solid var(--border);border-radius:4px;overflow:hidden;background:#070403;margin-bottom:1rem}
+#stage{display:block;width:100%;height:300px;cursor:crosshair}
+.stage .edge{position:absolute;bottom:6px;font-size:0.56rem;letter-spacing:0.12em;color:var(--faint);font-family:var(--mono);pointer-events:none}
+.stage .edge.l{left:9px}.stage .edge.r{right:9px}
+.stage .top{position:absolute;top:8px;left:10px;font-size:0.56rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--dim);pointer-events:none}
+.stage .gridtoggle{position:absolute;top:6px;right:8px}
+.tinybtn{background:rgba(20,13,10,0.7);border:1px solid var(--border);color:var(--dim);font-family:var(--mono);font-size:0.54rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.3em 0.6em;border-radius:2px}
+.tinybtn:hover{color:var(--phos);border-color:var(--phos-dim)}
+.tinybtn.on{color:var(--phos);border-color:var(--phos-dim)}
+
+/* ── control grid ─────────────────────────────────── */
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:0.8rem;margin-bottom:1rem}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:4px;padding:0.95rem 1rem 1.1rem}
+.card h3{font-family:var(--serif);font-style:italic;font-weight:500;font-size:0.95rem;letter-spacing:0.01em;color:var(--ember);border-bottom:1px solid var(--border);padding-bottom:0.5rem;margin-bottom:0.9rem;display:flex;align-items:center;gap:0.5rem}
+.card h3::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--magma);box-shadow:0 0 7px rgba(200,64,0,0.5);flex-shrink:0}
+
+.ctl{margin-bottom:0.95rem}
+.ctl:last-child{margin-bottom:0}
+.ctl .row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.3rem}
+.ctl label{font-size:0.6rem;letter-spacing:0.13em;text-transform:uppercase;color:var(--dim)}
+.ctl .v{font-family:var(--mono)}
+/* scope-as-door: the value IS the editable field */
+.ctl .v input{
+  font-family:var(--mono);font-size:0.78rem;color:var(--phos);text-align:right;
+  background:transparent;border:none;border-bottom:1px solid var(--phos-dim);
+  width:4.6em;padding:0.05em 0.15em 0.1em;outline:none;-moz-appearance:textfield;
+}
+.ctl .v input::-webkit-outer-spin-button,.ctl .v input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.ctl .v input:focus{border-bottom-color:var(--phos);color:var(--phos-hi)}
+.ctl .v .unit{font-size:0.56rem;color:var(--faint);letter-spacing:0.08em;margin-left:0.15em}
+
+input[type=range]{
+  -webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:3px;cursor:pointer;
+  background:linear-gradient(to right,var(--amber) 0%,var(--amber) var(--fill,0%),var(--bg2) var(--fill,0%),var(--bg2) 100%);
+  outline:none;touch-action:none;display:block;margin-top:0.15rem;
+}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 38% 34%,var(--amber-hi),var(--amber));box-shadow:0 0 7px var(--amber-glow),0 0 0 2px var(--bg)}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border:2px solid var(--bg);border-radius:50%;background:radial-gradient(circle at 38% 34%,var(--amber-hi),var(--amber));box-shadow:0 0 7px var(--amber-glow)}
+input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--phos)}
+
+select{width:100%;background:var(--bg);color:var(--text);border:1px solid var(--border);padding:0.5em 1.8em 0.5em 0.6em;font-family:var(--mono);font-size:0.72rem;letter-spacing:0.04em;cursor:pointer;border-radius:2px;outline:none;-webkit-appearance:none;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23c84000'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 0.6em center}
+select:focus{border-color:var(--ember)}
+
+/* ── presets ──────────────────────────────────────── */
+.presets{display:flex;gap:0.5rem;align-items:center;justify-content:center;flex-wrap:wrap;margin-bottom:1rem}
+.presets .pl{font-size:0.56rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--faint)}
+.preset{background:#15100c;border:1px solid var(--border);color:var(--dim);font-family:var(--serif);font-style:italic;font-size:0.86rem;padding:0.4em 0.9em;border-radius:2px;letter-spacing:0.01em}
+.preset:hover{color:var(--amber-hi);border-color:var(--border-hi);background:#1c130d}
+
+/* ── exports ──────────────────────────────────────── */
+.exports{display:flex;gap:0.7rem;align-items:center;justify-content:center;flex-wrap:wrap;padding-top:0.9rem;border-top:1px solid var(--border)}
+.exports .bend{display:flex;align-items:center;gap:0.4rem;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--dim)}
+.exports select{width:auto}
+.exports .note{flex-basis:100%;text-align:center;font-size:0.56rem;letter-spacing:0.06em;color:var(--faint);margin-top:0.2rem}
+.exports .note b{color:var(--phos);font-weight:500}
+
+footer{text-align:center;margin-top:1.6rem;font-size:0.54rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--faint)}
+.dual{display:grid;grid-template-columns:1fr 1fr;gap:0.7rem}
+</style>
 </head>
 <body>
+<div class="wrap">
+  <header class="head">
+    <div class="paddy" aria-hidden="true">田</div>
+    <h1>Antemelos</h1>
+    <div class="sub">melody before melody · <b>eosforos</b> × <b>tabota</b></div>
+  </header>
 
-    <div class="container">
-        <h1>Antemelos</h1>
-        
-        <div class="controls">
-            <div class="control-group">
-                <label for="numNotes">Number of Notes: <span id="numNotesValue">16</span></label>
-                <input type="range" id="numNotes" min="4" max="64" value="16">
-            </div>
-            <div class="control-group">
-                <label for="leapProb">Leap Probability: <span id="leapProbValue">20%</span></label>
-                <input type="range" id="leapProb" min="0" max="100" value="20">
-            </div>
-             <div class="control-group">
-                <label for="minLeap">Min Leap Size: <span id="minLeapValue">1.33x</span></label>
-                <input type="range" id="minLeap" min="1.2" max="2.0" value="1.33" step="0.01">
-            </div>
-             <div class="control-group">
-                <label for="maxLeap">Max Leap Size: <span id="maxLeapValue">2.00x</span></label>
-                <input type="range" id="maxLeap" min="2.0" max="4.0" value="2.0" step="0.01">
-            </div>
-            <div class="control-group">
-                <label for="minHz">Min Frequency: <span id="minHzValue">82 Hz (E2)</span></label>
-                <input type="range" id="minHz" min="30" max="400" value="82" step="1">
-            </div>
-            <div class="control-group">
-                <label for="maxHz">Max Frequency: <span id="maxHzValue">600 Hz (D5)</span></label>
-                <input type="range" id="maxHz" min="401" max="1200" value="600" step="1">
-            </div>
-            <div class="control-group">
-                <label for="tempo">Tempo (BPM): <span id="tempoValue">90</span></label>
-                <input type="range" id="tempo" min="30" max="180" value="90" step="1">
-            </div>
-            <div class="control-group">
-                <label for="waveform">Waveform</label>
-                <select id="waveform">
-                    <option value="sine">Sine</option>
-                    <option value="sawtooth">Sawtooth</option>
-                    <option value="square">Square</option>
-                    <option value="triangle">Triangle</option>
-                </select>
-            </div>
-            <div class="control-group">
-                <label for="envelope">Envelope</label>
-                <select id="envelope">
-                    <option value="decaying">Decaying</option>
-                    <option value="held">Held</option>
-                </select>
-            </div>
-        </div>
+  <div class="transport">
+    <button class="btn" id="gen">Generate</button>
+    <button class="btn play" id="play">▶ Play</button>
+    <div class="seedbox">seed <span class="val" id="seedVal">—</span></div>
+    <button class="reroll" id="reroll" title="New seed">↻</button>
+  </div>
 
-        <div class="actions">
-             <button id="generateBtn">Generate Melody</button>
-             <button id="playBtn" disabled>▶ Play / ⏹ Stop</button>
-             <button id="copyBtn" disabled>📋 Copy Table</button>
-             <button id="downloadBtn" disabled>⬇️ Download .WAV</button>
-        </div>
+  <div class="stage">
+    <canvas id="stage"></canvas>
+    <div class="top">pitch filament · hz × seconds</div>
+    <div class="gridtoggle"><button class="tinybtn" id="hints" title="Ghosted octave hints (do not bind)">octave hints</button></div>
+    <div class="edge l" id="loHz">—</div>
+    <div class="edge r" id="hiHz">—</div>
+  </div>
 
-        <div id="output">
-            <h2>Generated Melody</h2>
-            <table id="melodyTable">
-                <thead><tr><th>Note #</th><th>Pitch (Hz)</th><th>Duration (s)</th></tr></thead>
-                <tbody id="melodyTableBody"></tbody>
-            </table>
-        </div>
+  <div class="cols">
+    <div class="card">
+      <h3>voice</h3>
+      <div class="ctl" data-p="centerHz" data-min="80" data-max="500" data-step="1" data-unit="Hz">
+        <div class="row"><label>center</label><span class="v"><input type="number"><span class="unit">Hz</span></span></div>
+        <input type="range">
+      </div>
+      <div class="ctl" data-p="ambitusSemis" data-min="4" data-max="36" data-step="1" data-unit="st">
+        <div class="row"><label>ambitus (span)</label><span class="v"><input type="number"><span class="unit">st</span></span></div>
+        <input type="range">
+      </div>
+      <div class="ctl" data-p="a4" data-min="396" data-max="466" data-step="1" data-unit="Hz">
+        <div class="row"><label>a4 reference</label><span class="v"><input type="number"><span class="unit">Hz</span></span></div>
+        <input type="range">
+      </div>
+      <div class="ctl" data-p="vibrato" data-min="0" data-max="1" data-step="0.01" data-unit="">
+        <div class="row"><label>vibrato (voice)</label><span class="v"><input type="number"></span></div>
+        <input type="range">
+      </div>
     </div>
 
-    <script>
-        // --- DOM ELEMENTS ---
-        const sliders = {
-            numNotes: document.getElementById('numNotes'), leapProb: document.getElementById('leapProb'),
-            minLeap: document.getElementById('minLeap'), maxLeap: document.getElementById('maxLeap'),
-            minHz: document.getElementById('minHz'), maxHz: document.getElementById('maxHz'),
-            tempo: document.getElementById('tempo'),
-        };
-        const selects = { waveform: document.getElementById('waveform'), envelope: document.getElementById('envelope') };
-        const valueSpans = {
-            numNotes: document.getElementById('numNotesValue'), leapProb: document.getElementById('leapProbValue'),
-            minLeap: document.getElementById('minLeapValue'), maxLeap: document.getElementById('maxLeapValue'),
-            minHz: document.getElementById('minHzValue'), maxHz: document.getElementById('maxHzValue'),
-            tempo: document.getElementById('tempoValue'),
-        };
-        const buttons = {
-            generate: document.getElementById('generateBtn'), play: document.getElementById('playBtn'),
-            copy: document.getElementById('copyBtn'), download: document.getElementById('downloadBtn'),
-        };
-        const melodyTableBody = document.getElementById('melodyTableBody');
+    <div class="card">
+      <h3>motion</h3>
+      <div class="ctl" data-p="stepSemis" data-min="0.5" data-max="8" data-step="0.1" data-unit="st">
+        <div class="row"><label>step size</label><span class="v"><input type="number"><span class="unit">st</span></span></div>
+        <input type="range">
+      </div>
+      <div class="ctl" data-p="instability" data-min="0" data-max="1" data-step="0.01" data-unit="">
+        <div class="row"><label>instability</label><span class="v"><input type="number"></span></div>
+        <input type="range">
+      </div>
+      <div class="ctl" data-p="glideAmount" data-min="0" data-max="1" data-step="0.01" data-unit="">
+        <div class="row"><label>glide (portamento)</label><span class="v"><input type="number"></span></div>
+        <input type="range">
+      </div>
+      <div class="ctl">
+        <div class="row"><label>glide shape</label></div>
+        <select id="glideShape">
+          <option value="ease-in-out">smooth</option>
+          <option value="linear">linear</option>
+          <option value="exponential">exponential</option>
+          <option value="ease-out">log-like</option>
+        </select>
+      </div>
+    </div>
 
-        // --- GLOBAL STATE ---
-        let audioContext;
-        let currentMelody = [];
-        let isPlaying = false;
-        let activeAudioNodes = []; // <-- BUG FIX: Track active nodes
-        let melodyTimeoutId = null; // <-- BUG FIX: Track the timeout for melody completion
-        const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+    <div class="card">
+      <h3>phrasing</h3>
+      <div class="ctl" data-p="phrases" data-min="1" data-max="10" data-step="1" data-unit="">
+        <div class="row"><label>phrases (breaths)</label><span class="v"><input type="number"></span></div>
+        <input type="range">
+      </div>
+      <div class="dual">
+        <div class="ctl" data-p="notesMin" data-min="1" data-max="10" data-step="1" data-unit="">
+          <div class="row"><label>notes min</label><span class="v"><input type="number"></span></div>
+          <input type="range">
+        </div>
+        <div class="ctl" data-p="notesMax" data-min="1" data-max="12" data-step="1" data-unit="">
+          <div class="row"><label>notes max</label><span class="v"><input type="number"></span></div>
+          <input type="range">
+        </div>
+      </div>
+    </div>
 
-        // --- CONVERSION HELPERS ---
-        const hzToMidi = (hz) => 12 * Math.log2(hz / 440) + 69;
-        const midiToHz = (midi) => 440 * Math.pow(2, (midi - 69) / 12);
-        const freqToNoteName = (hz) => {
-            if (hz <= 0) return "";
-            const midi = Math.round(hzToMidi(hz));
-            return `${NOTE_NAMES[midi % 12]}${Math.floor(midi / 12) - 1}`;
-        };
+    <div class="card">
+      <h3>time</h3>
+      <div class="dual">
+        <div class="ctl" data-p="durMin" data-min="0.15" data-max="2" data-step="0.05" data-unit="s">
+          <div class="row"><label>note min</label><span class="v"><input type="number"><span class="unit">s</span></span></div>
+          <input type="range">
+        </div>
+        <div class="ctl" data-p="durMax" data-min="0.3" data-max="3.5" data-step="0.05" data-unit="s">
+          <div class="row"><label>note max</label><span class="v"><input type="number"><span class="unit">s</span></span></div>
+          <input type="range">
+        </div>
+      </div>
+      <div class="dual">
+        <div class="ctl" data-p="breathMin" data-min="0" data-max="2.5" data-step="0.05" data-unit="s">
+          <div class="row"><label>breath min</label><span class="v"><input type="number"><span class="unit">s</span></span></div>
+          <input type="range">
+        </div>
+        <div class="ctl" data-p="breathMax" data-min="0.2" data-max="4" data-step="0.05" data-unit="s">
+          <div class="row"><label>breath max</label><span class="v"><input type="number"><span class="unit">s</span></span></div>
+          <input type="range">
+        </div>
+      </div>
+    </div>
+  </div>
 
-        // --- UI UPDATE LOGIC ---
-        function updateSliderDisplays() {
-            valueSpans.numNotes.textContent = sliders.numNotes.value;
-            valueSpans.leapProb.textContent = `${sliders.leapProb.value}%`;
-            valueSpans.minLeap.textContent = `${parseFloat(sliders.minLeap.value).toFixed(2)}x`;
-            valueSpans.maxLeap.textContent = `${parseFloat(sliders.maxLeap.value).toFixed(2)}x`;
-            const minFreq = parseFloat(sliders.minHz.value);
-            const maxFreq = parseFloat(sliders.maxHz.value);
-            valueSpans.minHz.textContent = `${Math.round(minFreq)} Hz (${freqToNoteName(minFreq)})`;
-            valueSpans.maxHz.textContent = `${Math.round(maxFreq)} Hz (${freqToNoteName(maxFreq)})`;
-            valueSpans.tempo.textContent = sliders.tempo.value;
+  <div class="presets">
+    <span class="pl">presets</span>
+    <button class="preset" data-preset="whisper">whisper</button>
+    <button class="preset" data-preset="keening">keening</button>
+    <button class="preset" data-preset="drift">drift</button>
+    <button class="preset" data-preset="roilbefore">roil-before-roil</button>
+  </div>
+
+  <div class="exports">
+    <button class="btn ghost" id="expTab">Export .tabota</button>
+    <button class="btn ghost" id="expMidi">Export MIDI</button>
+    <div class="bend">bend
+      <select id="bend">
+        <option value="2">±2</option>
+        <option value="7">±7</option>
+        <option value="12">±12</option>
+        <option value="24" selected>±24</option>
+        <option value="48">±48</option>
+      </select>
+    </div>
+    <div class="note"><b>.tabota</b> is the lossless master — open it in Tabota Roll. <b>MIDI</b> is the lossy convenience rung (mono + channel pitchbend).</div>
+  </div>
+
+  <footer>antemelos · a hertz-native melody before scale, tuning, or form</footer>
+</div>
+
+<script>/* ============================================================================
+   antemelos-core.js  —  the generator, the sampler, the emitters.
+   Pure, DOM-free. Same source runs in the Node harness and the browser shell:
+   "proven in Node" == "what the browser runs".
+
+   Antemelos: melody before melody. A monophonic, hertz-native, scale-free
+   vocal contour. The line is one continuous pitch filament: held tones are
+   flat segments, slides are sloped segments. Emits .tabota (the master) and
+   a lossy MIDI+pitchbend convenience rung.
+============================================================================ */
+(function (root, factory) {
+  if (typeof module !== 'undefined' && module.exports) module.exports = factory();
+  else root.Antemelos = factory();
+}(typeof self !== 'undefined' ? self : this, function () {
+  'use strict';
+
+  /* ---- deterministic PRNG (baked = reproducible; seed travels in the file) -- */
+  function mulberry32(a) {
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  // box-muller, centered, unit variance
+  function gauss(rng) {
+    let u = 0, v = 0;
+    while (u === 0) u = rng();
+    while (v === 0) v = rng();
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+  }
+
+  const log2 = (x) => Math.log(x) / Math.LN2;
+  const r3 = (x) => Math.round(x * 1000) / 1000;
+  const clamp = (x, lo, hi) => x < lo ? lo : x > hi ? hi : x;
+  // soft reflect into [lo,hi] so the voice "bounces" off its ceiling/floor
+  function reflect(x, lo, hi) {
+    const span = hi - lo;
+    if (span <= 0) return lo;
+    let y = x;
+    while (y < lo || y > hi) {
+      if (y < lo) y = lo + (lo - y);
+      if (y > hi) y = hi - (y - hi);
+    }
+    return y;
+  }
+
+  /* ---- shape vocabulary (mirrors Tabota's shapeK; maps to .tabota interp) --- */
+  // u in [0,1] -> eased u in [0,1]
+  function ease(interp, u) {
+    switch (interp) {
+      case 'exponential': return u; // handled geometrically in sampleHz
+      case 'ease-out': return 1 - (1 - u) * (1 - u);
+      case 'ease-in': return u * u;
+      case 'ease-in-out': return u * u * (3 - 2 * u);
+      case 'step': return u < 1 ? 0 : 1;
+      case 'linear':
+      default: return u;
+    }
+  }
+
+  /* ---- the generator: params + seed -> a chain of segments ------------------ */
+  const DEFAULTS = {
+    centerHz: 196,        // ~G3, a low primordial voice
+    ambitusSemis: 14,     // total span, top to bottom (NOT a scale — just a range)
+    a4: 432,             // off-440 by default; this voice predates the standard
+    phrases: 4,
+    notesMin: 3,
+    notesMax: 7,
+    stepSemis: 2.2,       // mean interval magnitude; small = singable
+    instability: 0.35,    // 0 = steady & near-tonal, 1 = wandering & detuned
+    glideAmount: 0.55,    // 0 = stepped tones, 1 = near-constant portamento
+    glideShape: 'ease-in-out',
+    durMin: 0.45,
+    durMax: 1.3,
+    breathMin: 0.4,
+    breathMax: 1.1,
+    vibrato: 0.4          // carried for the synth; not part of the baked pitch
+  };
+
+  function generate(userParams, seed) {
+    const p = Object.assign({}, DEFAULTS, userParams || {});
+    if (seed == null) seed = (Math.random() * 1e9) | 0;
+    const rng = mulberry32(seed >>> 0);
+
+    const centerOct = log2(p.centerHz);
+    const half = (p.ambitusSemis / 12) / 2;
+    const loOct = centerOct - half, hiOct = centerOct + half;
+
+    const segments = [];   // {startTime,endTime,startHz,endHz,interp,kind}
+    const notes = [];      // {time,hz} salient targets (for viz dots / debug)
+    let t = 0;
+    let prevEndOct = centerOct;
+
+    const arcs = ['arch', 'fall', 'rise', 'wave'];
+
+    for (let ph = 0; ph < p.phrases; ph++) {
+      const n = p.notesMin + Math.floor(rng() * (p.notesMax - p.notesMin + 1));
+      const arc = arcs[Math.floor(rng() * arcs.length)];
+
+      // pitch targets for this phrase, in octave space
+      const octs = [];
+      // start near where we left off, pulled gently toward center
+      let cur = reflect(0.6 * prevEndOct + 0.4 * centerOct + (rng() * 2 - 1) * half * 0.3, loOct, hiOct);
+      octs.push(cur);
+      for (let i = 1; i < n; i++) {
+        const frac = i / (n - 1);
+        let bias = 0;
+        const mag = (p.stepSemis / 12);
+        if (arc === 'arch') bias = (frac < 0.5 ? 1 : -1) * mag * 0.6;
+        else if (arc === 'fall') bias = -mag * 0.5;
+        else if (arc === 'rise') bias = mag * 0.5;
+        else /* wave */ bias = Math.sin(frac * Math.PI * 2) * mag * 0.7;
+
+        let step = gauss(rng) * mag * (1 + p.instability * 1.8);
+        if (rng() < p.instability * 0.3) step *= 2.5;            // occasional leap
+        cur = cur + step + bias;
+        cur += (rng() * 2 - 1) * p.instability * 0.045;          // microtonal wobble
+        cur = reflect(cur, loOct, hiOct);
+        octs.push(cur);
+      }
+      prevEndOct = octs[octs.length - 1];
+
+      // durations (chronological seconds), with phrase-final lengthening
+      const durs = octs.map(() => p.durMin + rng() * (p.durMax - p.durMin));
+      durs[durs.length - 1] *= 1.3 + rng() * 0.5;
+
+      // emit hold + (optional) glide per note
+      for (let i = 0; i < n; i++) {
+        const f = Math.pow(2, octs[i]);
+        const d = durs[i];
+        const isLast = (i === n - 1);
+        notes.push({ time: r3(t), hz: r3(f) });
+
+        // glideAmount high -> shorter hold, longer glide into the next note
+        const holdFrac = isLast ? 1 : clamp(1 - p.glideAmount * (0.45 + 0.45 * rng()), 0.12, 1);
+        const holdDur = d * holdFrac;
+        const glideDur = d - holdDur;
+
+        if (holdDur > 0.001) {
+          segments.push({ startTime: t, endTime: t + holdDur, startHz: f, endHz: f, interp: 'linear', kind: 'hold' });
+          t += holdDur;
         }
-
-        // --- CORE MELODY GENERATION ---
-        function generateMelody() {
-            const params = {
-                numNotes: parseInt(sliders.numNotes.value), minMidi: hzToMidi(parseFloat(sliders.minHz.value)),
-                maxMidi: hzToMidi(parseFloat(sliders.maxHz.value)), bpm: parseFloat(sliders.tempo.value),
-                leapProb: parseFloat(sliders.leapProb.value) / 100,
-                minLeapRatio: parseFloat(sliders.minLeap.value), maxLeapRatio: parseFloat(sliders.maxLeap.value)
-            };
-            const baseDuration = 60 / params.bpm;
-            const durationPool = [baseDuration * 0.5, baseDuration, baseDuration * 1.5, baseDuration * 2];
-            currentMelody = [];
-            let lastMidi = params.minMidi + Math.random() * (params.maxMidi - params.minMidi);
-            for (let i = 0; i < params.numNotes; i++) {
-                if (i > 0) {
-                    const isLeap = Math.random() < params.leapProb;
-                    const goUp = Math.random() < 0.5;
-                    const intervalRatio = isLeap ? params.minLeapRatio + Math.random() * (params.maxLeapRatio - params.minLeapRatio) : 1.05 + Math.random() * 0.2;
-                    const intervalSemitones = 12 * Math.log2(intervalRatio);
-                    let nextMidi = goUp ? lastMidi + intervalSemitones : lastMidi - intervalSemitones;
-                    if (nextMidi > params.maxMidi || nextMidi < params.minMidi) {
-                        nextMidi = goUp ? lastMidi - intervalSemitones : lastMidi + intervalSemitones;
-                        nextMidi = Math.max(params.minMidi, Math.min(params.maxMidi, nextMidi));
-                    }
-                    lastMidi = nextMidi;
-                }
-                currentMelody.push({
-                    freq: midiToHz(lastMidi),
-                    duration: durationPool[Math.floor(Math.random() * durationPool.length)]
-                });
-            }
-            displayMelody();
-            buttons.play.disabled = false; buttons.copy.disabled = false; buttons.download.disabled = false;
+        if (!isLast && glideDur > 0.001) {
+          const f2 = Math.pow(2, octs[i + 1]);
+          segments.push({ startTime: t, endTime: t + glideDur, startHz: f, endHz: f2, interp: p.glideShape, kind: 'glide' });
+          t += glideDur;
         }
+      }
 
-        function displayMelody() {
-            melodyTableBody.innerHTML = '';
-            currentMelody.forEach((note, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `<td>${index + 1}</td><td>${note.freq.toFixed(2)} Hz</td><td>${note.duration.toFixed(2)} s</td>`;
-                melodyTableBody.appendChild(row);
-            });
-        }
-        
-        // --- AUDIO HANDLING ---
-        function togglePlayback() {
-            if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            if (isPlaying) {
-                stopMelody();
-            } else {
-                playMelody();
-            }
-        }
+      // breath
+      if (ph < p.phrases - 1) t += p.breathMin + rng() * (p.breathMax - p.breathMin);
+    }
 
-        function playMelody() {
-            if (currentMelody.length === 0) return;
-            isPlaying = true;
-            buttons.play.textContent = "⏹ Stop";
-            buttons.generate.disabled = true;
-            let currentTime = audioContext.currentTime + 0.1;
-            currentMelody.forEach(note => {
-                const osc = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                osc.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                osc.type = selects.waveform.value;
-                osc.frequency.setValueAtTime(note.freq, currentTime);
-                gainNode.gain.setValueAtTime(0, currentTime);
-                if (selects.envelope.value === 'decaying') {
-                    gainNode.gain.linearRampToValueAtTime(0.7, currentTime + 0.02);
-                    gainNode.gain.exponentialRampToValueAtTime(0.0001, currentTime + note.duration);
-                } else {
-                    gainNode.gain.linearRampToValueAtTime(0.7, currentTime + 0.02);
-                    gainNode.gain.setValueAtTime(0.7, currentTime + note.duration - 0.05);
-                    gainNode.gain.linearRampToValueAtTime(0, currentTime + note.duration);
-                }
-                osc.start(currentTime);
-                osc.stop(currentTime + note.duration);
-                activeAudioNodes.push({ osc, gainNode }); // BUG FIX: Track node
-                currentTime += note.duration;
-            });
-            const totalDuration = currentMelody.reduce((sum, note) => sum + note.duration, 0);
-            melodyTimeoutId = setTimeout(() => { if (isPlaying) stopMelody(); }, (totalDuration + 0.2) * 1000);
-        }
+    let minHz = Infinity, maxHz = -Infinity;
+    for (const s of segments) {
+      minHz = Math.min(minHz, s.startHz, s.endHz);
+      maxHz = Math.max(maxHz, s.startHz, s.endHz);
+    }
+    return {
+      segments, notes, seed: seed >>> 0,
+      totalDur: t, minHz, maxHz, a4: p.a4, params: p
+    };
+  }
 
-        function stopMelody() {
-            if (melodyTimeoutId) clearTimeout(melodyTimeoutId); // BUG FIX: Clear scheduled stop
-            activeAudioNodes.forEach(node => { // BUG FIX: Stop each node individually
-                const stopTime = audioContext.currentTime + 0.05;
-                node.gainNode.gain.cancelScheduledValues(0);
-                node.gainNode.gain.linearRampToValueAtTime(0, stopTime);
-                node.osc.stop(stopTime);
-            });
-            activeAudioNodes = []; // Clear the tracking array
-            isPlaying = false;
-            buttons.play.textContent = "▶ Play";
-            buttons.generate.disabled = false;
+  /* ---- sampler: Hz at time t (null in a rest). One source of truth for
+         audio curves, the visual filament, and MIDI bend. ---------------------- */
+  function sampleHz(segments, t) {
+    // segments are time-ordered & non-overlapping
+    for (let i = 0; i < segments.length; i++) {
+      const s = segments[i];
+      if (t >= s.startTime && t <= s.endTime) {
+        const dur = s.endTime - s.startTime;
+        if (dur <= 0) return s.startHz;
+        const u = (t - s.startTime) / dur;
+        if (s.interp === 'exponential') {
+          // geometric interpolation in Hz (perceptually even glide)
+          return s.startHz * Math.pow(s.endHz / s.startHz, u);
         }
+        const e = ease(s.interp, u);
+        return s.startHz + (s.endHz - s.startHz) * e;
+      }
+    }
+    return null; // rest
+  }
 
-        // --- UTILITY FUNCTIONS ---
-        function copyTableToClipboard() {
-            let tableText = "Note\tFrequency (Hz)\tDuration (s)\n";
-            currentMelody.forEach((note, index) => {
-                tableText += `${index + 1}\t${note.freq.toFixed(2)}\t${note.duration.toFixed(2)}\n`;
-            });
-            navigator.clipboard.writeText(tableText).then(() => {
-                const originalText = buttons.copy.textContent;
-                buttons.copy.textContent = "Copied!";
-                setTimeout(() => { buttons.copy.textContent = originalText; }, 2000);
-            });
+  // group consecutive sounding segments into phrases (gaps split them)
+  function phrasesOf(segments) {
+    const out = [];
+    let cur = null;
+    for (const s of segments) {
+      if (cur && Math.abs(s.startTime - cur.end) < 1e-6) {
+        cur.end = s.endTime; cur.segs.push(s);
+      } else {
+        cur = { start: s.startTime, end: s.endTime, segs: [s] };
+        out.push(cur);
+      }
+    }
+    return out;
+  }
+
+  /* ---- emit .tabota (THE MASTER) ------------------------------------------- */
+  // Strictly valid against tabota_schema.json v1.5:
+  //  - one chronological/frequency section (seconds clock, Hz axis)
+  //  - melody = chain of LineEvents
+  //  - modeSettings omitted on purpose (schema oneOf is non-exclusive); the
+  //    frequency context lives in metadata.antemelos instead.
+  function toTabota(model, meta) {
+    meta = meta || {};
+    const events = model.segments.map((s, i) => ({
+      type: 'line',
+      id: 'seg' + i,
+      startTime: r3(s.startTime),
+      endTime: r3(s.endTime),
+      startYValue: r3(s.startHz),
+      endYValue: r3(s.endHz),
+      interpolation: s.interp
+    }));
+    return {
+      projectName: meta.projectName || 'Antemelos line',
+      languageVersion: '1.5',
+      author: meta.author || 'Antemelos',
+      created: meta.created || new Date().toISOString(),
+      metadata: {
+        description: 'A hertz-native, scale-free monophonic vocal line generated by Antemelos (Eosforos). One continuous pitch filament over a seconds clock; held tones are flat segments, slides are sloped segments.',
+        tags: ['antemelos', 'eosforos', 'microtonal', 'vocal', 'chronological', 'frequency'],
+        antemelos: {
+          seed: model.seed,
+          a4: model.a4,
+          hzRange: [r3(model.minHz), r3(model.maxHz)],
+          generator: 'antemelos-v2',
+          params: model.params
         }
-        
-        async function downloadWav() {
-            const totalDuration = currentMelody.reduce((sum, note) => sum + note.duration, 0);
-            if (totalDuration === 0) return;
-            const offlineCtx = new OfflineAudioContext(1, 44100 * totalDuration, 44100);
-            let currentTime = 0;
-            currentMelody.forEach(note => {
-                const osc = offlineCtx.createOscillator();
-                const gainNode = offlineCtx.createGain();
-                osc.connect(gainNode); gainNode.connect(offlineCtx.destination);
-                osc.type = selects.waveform.value;
-                osc.frequency.setValueAtTime(note.freq, currentTime);
-                gainNode.gain.setValueAtTime(0, currentTime);
-                 if (selects.envelope.value === 'decaying') {
-                    gainNode.gain.linearRampToValueAtTime(0.5, currentTime + 0.02);
-                    gainNode.gain.exponentialRampToValueAtTime(0.0001, currentTime + note.duration);
-                } else {
-                    gainNode.gain.linearRampToValueAtTime(0.5, currentTime + 0.02);
-                    gainNode.gain.setValueAtTime(0.5, currentTime + note.duration - 0.05);
-                    gainNode.gain.linearRampToValueAtTime(0, currentTime + note.duration);
-                }
-                osc.start(currentTime);
-                currentTime += note.duration;
-            });
-            const renderedBuffer = await offlineCtx.startRendering();
-            const wavData = bufferToWav(renderedBuffer);
-            const blob = new Blob([wavData], { type: 'audio/wav' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none'; a.href = url; a.download = 'antemelos_melody.wav';
-            document.body.appendChild(a); a.click();
-            window.URL.revokeObjectURL(url); document.body.removeChild(a);
+      },
+      score: [{
+        sectionId: 'antemelos-line',
+        temporalRegime: 'chronological',
+        regimeSettings: { duration: r3(model.totalDur), units: 'seconds' },
+        axisMode: 'frequency',
+        defaultEventType: 'line',
+        events
+      }]
+    };
+  }
+
+  /* ---- emit MIDI + pitchbend (LOSSY convenience rung) ----------------------- */
+  // SMF format 0, one channel. Per phrase: one sustained note (base = nearest
+  // semitone to the phrase's mean), continuous pitchbend tracks the contour.
+  // bendRange in semitones is written via RPN 0,0 so the receiver agrees.
+  function toMidi(model, bendRange, opts) {
+    opts = opts || {};
+    bendRange = bendRange || 24;
+    const a4 = model.a4 || 432;
+    const PPQ = 480, US_PER_QTR = 500000;        // 0.5s/qtr
+    const ticksPerSec = PPQ / (US_PER_QTR / 1e6); // 960
+    const sec2tick = (s) => Math.max(0, Math.round(s * ticksPerSec));
+    const ctrlRate = 60; // bend samples / sec
+
+    const noteFreq = (m) => a4 * Math.pow(2, (m - 69) / 12);
+
+    // absolute-tick event list: {tick, bytes:[...]}
+    const evs = [];
+    const push = (tick, bytes) => evs.push({ tick, bytes });
+
+    // tempo meta + RPN bend range at t=0 (channel 0)
+    push(0, [0xFF, 0x51, 0x03, (US_PER_QTR >> 16) & 0xFF, (US_PER_QTR >> 8) & 0xFF, US_PER_QTR & 0xFF]);
+    push(0, [0xB0, 101, 0]); push(0, [0xB0, 100, 0]);
+    push(0, [0xB0, 6, clamp(bendRange | 0, 1, 96)]); push(0, [0xB0, 38, 0]);
+
+    const phrases = phrasesOf(model.segments);
+    for (const ph of phrases) {
+      // mean Hz over the phrase -> base note
+      let acc = 0, cnt = 0;
+      for (let s = ph.start; s <= ph.end; s += 1 / ctrlRate) {
+        const hz = sampleHz(model.segments, s); if (hz) { acc += log2(hz); cnt++; }
+      }
+      const meanHz = Math.pow(2, acc / Math.max(cnt, 1));
+      const base = clamp(Math.round(69 + 12 * log2(meanHz / a4)), 0, 127);
+      const baseF = noteFreq(base);
+
+      push(sec2tick(ph.start), [0x90, base, 84]); // note on
+      let lastVal = -1;
+      for (let s = ph.start; s <= ph.end + 1e-9; s += 1 / ctrlRate) {
+        const hz = sampleHz(model.segments, Math.min(s, ph.end)); if (!hz) continue;
+        const semis = 12 * log2(hz / baseF);
+        let val = Math.round(8192 + (semis / bendRange) * 8192);
+        val = clamp(val, 0, 16383);
+        if (val !== lastVal) {
+          push(sec2tick(s), [0xE0, val & 0x7F, (val >> 7) & 0x7F]);
+          lastVal = val;
         }
+      }
+      push(sec2tick(ph.end), [0x80, base, 0]); // note off
+    }
 
-        function bufferToWav(buffer) {
-            const numChannels = 1, sampleRate = buffer.sampleRate, numFrames = buffer.length, bitsPerSample = 16;
-            const blockAlign = numChannels * bitsPerSample / 8, byteRate = sampleRate * blockAlign, dataSize = numFrames * blockAlign;
-            const wavBuffer = new ArrayBuffer(44 + dataSize);
-            const view = new DataView(wavBuffer);
-            const writeString = (v, o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
-            writeString(view, 0, 'RIFF'); view.setUint32(4, 36 + dataSize, true); writeString(view, 8, 'WAVE');
-            writeString(view, 12, 'fmt '); view.setUint32(16, 16, true); view.setUint16(20, 1, true);
-            view.setUint16(22, numChannels, true); view.setUint32(24, sampleRate, true); view.setUint32(28, byteRate, true);
-            view.setUint16(32, blockAlign, true); view.setUint16(34, bitsPerSample, true);
-            writeString(view, 36, 'data'); view.setUint32(40, dataSize, true);
-            let offset = 44;
-            for (let i = 0; i < numFrames; i++) {
-                const sample = Math.max(-1, Math.min(1, buffer.getChannelData(0)[i]));
-                view.setInt16(offset, sample < 0 ? sample * 0x8000 : sample * 0x7FFF, true);
-                offset += 2;
-            }
-            return view;
+    // sort stable by tick, then serialize as a single MTrk with VLQ deltas
+    evs.sort((a, b) => a.tick - b.tick);
+    const track = [];
+    let prev = 0;
+    const vlq = (n) => {
+      const bytes = [n & 0x7F]; n >>= 7;
+      while (n > 0) { bytes.unshift((n & 0x7F) | 0x80); n >>= 7; }
+      return bytes;
+    };
+    for (const e of evs) {
+      const d = e.tick - prev; prev = e.tick;
+      track.push.apply(track, vlq(d));
+      track.push.apply(track, e.bytes);
+    }
+    track.push(0x00, 0xFF, 0x2F, 0x00); // end of track
+
+    const u32 = (n) => [(n >> 24) & 0xFF, (n >> 16) & 0xFF, (n >> 8) & 0xFF, n & 0xFF];
+    const head = [0x4D, 0x54, 0x68, 0x64, 0, 0, 0, 6, 0, 0, 0, 1, (PPQ >> 8) & 0xFF, PPQ & 0xFF];
+    const trkHead = [0x4D, 0x54, 0x72, 0x6B].concat(u32(track.length));
+    return new Uint8Array(head.concat(trkHead).concat(track));
+  }
+
+  return { mulberry32, generate, sampleHz, phrasesOf, toTabota, toMidi, ease, DEFAULTS };
+}));
+</script>
+<script>
+(function(){
+  'use strict';
+  const A = window.Antemelos;
+  const $ = (s,r)=> (r||document).querySelector(s);
+  const $$ = (s,r)=> Array.from((r||document).querySelectorAll(s));
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ---- state ----
+  const params = Object.assign({}, A.DEFAULTS);
+  let seed = (Math.random()*1e9)|0;
+  let model = null;
+  let showHints = false;
+
+  // ---- presets ----
+  const PRESETS = {
+    whisper:    {centerHz:222,ambitusSemis:8, stepSemis:1.4,instability:0.15,glideAmount:0.35,glideShape:'ease-in-out',phrases:4,notesMin:2,notesMax:5,durMin:0.3,durMax:0.85,breathMin:0.5,breathMax:1.2,vibrato:0.25,a4:432},
+    keening:    {centerHz:300,ambitusSemis:18,stepSemis:3.0,instability:0.5, glideAmount:0.85,glideShape:'ease-in-out',phrases:4,notesMin:3,notesMax:7,durMin:0.8,durMax:2.2,breathMin:0.5,breathMax:1.3,vibrato:0.6, a4:432},
+    drift:      {centerHz:180,ambitusSemis:12,stepSemis:2.5,instability:0.6, glideAmount:0.7, glideShape:'ease-in-out',phrases:3,notesMin:2,notesMax:4,durMin:1.2,durMax:3.0,breathMin:1.0,breathMax:2.5,vibrato:0.35,a4:426},
+    roilbefore: {centerHz:160,ambitusSemis:30,stepSemis:5.0,instability:0.95,glideAmount:0.5, glideShape:'linear',     phrases:6,notesMin:3,notesMax:9,durMin:0.25,durMax:0.9,breathMin:0.3,breathMax:0.9,vibrato:0.5, a4:419}
+  };
+
+  // ---- control wiring (slider <-> editable value, scope-as-door) ----
+  function bindCtl(ctl){
+    const key=ctl.dataset.p, min=+ctl.dataset.min, max=+ctl.dataset.max, step=+ctl.dataset.step;
+    const range=$('input[type=range]',ctl), num=$('.v input',ctl);
+    range.min=min; range.max=max; range.step=step;
+    num.min=min; num.max=max; num.step=step;
+    function fill(){const pct=((+range.value-min)/(max-min))*100; range.style.setProperty('--fill',pct+'%');}
+    function set(v,from){
+      v=Math.min(max,Math.max(min,v));
+      params[key]=v;
+      if(from!=='range') range.value=v;
+      if(from!=='num') num.value=(step<1)? (Math.round(v/step)*step).toFixed(2).replace(/0$/,'').replace(/\.$/,'') : v;
+      fill();
+      // keep notes min<=max
+      if(key==='notesMin'&&params.notesMax<v) setCtl('notesMax',v);
+      if(key==='notesMax'&&params.notesMin>v) setCtl('notesMin',v);
+      if(key==='durMin'&&params.durMax<v) setCtl('durMax',v);
+      regenerate();
+    }
+    range.addEventListener('input',()=>set(+range.value,'range'));
+    num.addEventListener('input',()=>{ if(num.value!=='') set(+num.value,'num'); });
+    num.addEventListener('blur',()=>{ num.value=params[key]; });
+    ctl._set=(v)=>{ range.value=v; num.value=(step<1)?(+v).toFixed(2):v; fill(); };
+  }
+  const CTLS={};
+  $$('.ctl[data-p]').forEach(c=>{CTLS[c.dataset.p]=c; bindCtl(c);});
+  function setCtl(k,v){ params[k]=v; if(CTLS[k]) CTLS[k]._set(v); }
+
+  function syncAllCtls(){ for(const k in CTLS) CTLS[k]._set(params[k]); $('#glideShape').value=params.glideShape; }
+
+  $('#glideShape').addEventListener('change',e=>{params.glideShape=e.target.value; regenerate();});
+
+  // ---- generate ----
+  let regenT=null;
+  function regenerate(){ // debounce while dragging
+    if(regenT) cancelAnimationFrame(regenT);
+    regenT=requestAnimationFrame(()=>{ model=A.generate(params,seed); draw(); updateEdges(); });
+  }
+  function freshSeed(){ seed=(Math.random()*1e9)|0; $('#seedVal').textContent=String(seed).padStart(5,'0').slice(0,8); }
+
+  $('#gen').addEventListener('click',()=>{ freshSeed(); model=A.generate(params,seed); draw(); updateEdges(); });
+  $('#reroll').addEventListener('click',()=>{ freshSeed(); model=A.generate(params,seed); draw(); updateEdges(); });
+
+  $$('.preset').forEach(b=>b.addEventListener('click',()=>{
+    Object.assign(params,PRESETS[b.dataset.preset]); syncAllCtls(); freshSeed();
+    model=A.generate(params,seed); draw(); updateEdges();
+  }));
+
+  $('#hints').addEventListener('click',()=>{ showHints=!showHints; $('#hints').classList.toggle('on',showHints); draw(); });
+
+  function updateEdges(){
+    if(!model) return;
+    const pad=1.06;
+    $('#loHz').textContent=Math.round(model.minHz/pad)+' Hz';
+    $('#hiHz').textContent=Math.round(model.maxHz*pad)+' Hz';
+  }
+
+  // ============ VISUAL: plasma + filament ============
+  const cv=$('#stage'), ctx=cv.getContext('2d');
+  let W=0,H=0,dpr=Math.min(window.devicePixelRatio||1,2);
+  function resize(){ const r=cv.getBoundingClientRect(); W=r.width; H=r.height; cv.width=W*dpr; cv.height=H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0); draw(); }
+  window.addEventListener('resize',resize);
+
+  // log-hz mapping with padding
+  function hzBounds(){ const pad=1.06; return {lo:Math.log(model.minHz/pad), hi:Math.log(model.maxHz*pad)}; }
+  function xOf(t){ return (t/model.totalDur)*W; }
+  function yOf(hz){ const b=hzBounds(); const u=(Math.log(hz)-b.lo)/(b.hi-b.lo); return H-(u*(H-24))-12; }
+
+  // drifting plasma blobs
+  const blobs=[
+    {x:0.25,y:0.35,r:0.55,c:'216,99,42',vx:0.013,vy:0.009,ph:0},
+    {x:0.72,y:0.55,r:0.5, c:'34,26,74', vx:-0.011,vy:0.012,ph:1.7},
+    {x:0.55,y:0.2, r:0.42,c:'200,64,0', vx:0.008,vy:-0.01,ph:3.1},
+    {x:0.85,y:0.78,r:0.45,c:'58,44,110',vx:-0.009,vy:-0.008,ph:4.4}
+  ];
+  function drawPlasma(time){
+    ctx.fillStyle='#070403'; ctx.fillRect(0,0,W,H);
+    ctx.globalCompositeOperation='lighter';
+    for(const b of blobs){
+      const t=reduceMotion?0:time*0.001;
+      const cx=(b.x+Math.sin(t*b.vx*6+b.ph)*0.12)*W;
+      const cy=(b.y+Math.cos(t*b.vy*6+b.ph)*0.12)*H;
+      const rad=b.r*Math.max(W,H)*(0.85+0.15*Math.sin(t*0.4+b.ph));
+      const g=ctx.createRadialGradient(cx,cy,0,cx,cy,rad);
+      g.addColorStop(0,'rgba('+b.c+',0.42)');
+      g.addColorStop(0.5,'rgba('+b.c+',0.12)');
+      g.addColorStop(1,'rgba('+b.c+',0)');
+      ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    }
+    ctx.globalCompositeOperation='source-over';
+    // dissolving 田 watermark — paddy before cultivation
+    ctx.save();
+    ctx.globalAlpha=0.05; ctx.fillStyle='#e8b840';
+    ctx.font='italic '+Math.min(W,H)*0.62+'px Fraunces, serif';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('田',W*0.5,H*0.52);
+    ctx.restore();
+    // film grain whisper
+    ctx.globalAlpha=0.025; ctx.fillStyle='#000';
+    for(let i=0;i<3;i++){ ctx.fillRect(0,(time*0.02+i*4)%H,W,1); }
+    ctx.globalAlpha=1;
+  }
+
+  function drawHints(){
+    if(!showHints||!model) return;
+    const b=hzBounds();
+    // octave gridlines from a4 reference (ghosted, non-binding)
+    const a4=model.a4;
+    ctx.strokeStyle='rgba(148,200,144,0.10)'; ctx.lineWidth=1; ctx.setLineDash([2,5]);
+    for(let oct=-4;oct<=4;oct++){
+      const hz=a4*Math.pow(2,oct);
+      if(Math.log(hz)<b.lo||Math.log(hz)>b.hi) continue;
+      const y=yOf(hz);
+      ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
+    }
+    ctx.setLineDash([]);
+  }
+
+  function drawFilament(){
+    if(!model||!model.segments.length) return;
+    const segs=model.segments;
+    // glow underlay + bright core, drawn per sounding run (gaps break the stroke)
+    function strokeRun(run,width,col,glow){
+      ctx.lineCap='round'; ctx.lineJoin='round';
+      ctx.shadowColor=glow; ctx.shadowBlur=glow?14:0;
+      ctx.strokeStyle=col; ctx.lineWidth=width;
+      ctx.beginPath();
+      let started=false;
+      for(const s of run){
+        const steps=Math.max(2,Math.round((s.endTime-s.startTime)*40));
+        for(let k=0;k<=steps;k++){
+          const t=s.startTime+(s.endTime-s.startTime)*(k/steps);
+          const hz=A.sampleHz(segs,t);
+          if(hz==null) continue;
+          const x=xOf(t),y=yOf(hz);
+          if(!started){ctx.moveTo(x,y);started=true;} else ctx.lineTo(x,y);
         }
+      }
+      ctx.stroke(); ctx.shadowBlur=0;
+    }
+    // split into runs at gaps
+    const runs=[]; let cur=null;
+    for(const s of segs){
+      if(cur&&Math.abs(s.startTime-cur[cur.length-1].endTime)<1e-6) cur.push(s);
+      else { cur=[s]; runs.push(cur); }
+    }
+    for(const run of runs){
+      strokeRun(run,7,'rgba(216,99,42,0.22)','rgba(244,121,31,0.5)'); // ember glow
+      strokeRun(run,2.2,'#f4c79a',null);                               // bright core
+    }
+    // salient note dots
+    ctx.fillStyle='rgba(232,184,64,0.9)';
+    for(const n of model.notes){
+      const x=xOf(n.time),y=yOf(n.hz);
+      ctx.beginPath(); ctx.arc(x,y,2.2,0,Math.PI*2); ctx.fill();
+    }
+  }
 
-        // --- EVENT LISTENERS ---
-        buttons.generate.addEventListener('click', generateMelody);
-        buttons.play.addEventListener('click', togglePlayback);
-        buttons.copy.addEventListener('click', copyTableToClipboard);
-        buttons.download.addEventListener('click', downloadWav);
-        Object.values(sliders).forEach(slider => slider.addEventListener('input', updateSliderDisplays));
+  let playhead=null; // {start, dur}
+  function drawPlayhead(time){
+    if(!playhead) return;
+    const el=(audio.ctx.currentTime-playhead.start)/playhead.dur;
+    if(el<0||el>1){ return; }
+    const x=el*W;
+    ctx.strokeStyle='rgba(182,226,173,0.85)'; ctx.lineWidth=1.5;
+    ctx.shadowColor='rgba(148,200,144,0.7)'; ctx.shadowBlur=8;
+    ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); ctx.shadowBlur=0;
+  }
 
-        // --- INITIALIZATION ---
-        updateSliderDisplays();
-    </script>
+  function draw(time){
+    time=time||0;
+    drawPlasma(time); drawHints(); drawFilament(); drawPlayhead(time);
+  }
+  // ambient animation loop (cheap; plasma + playhead)
+  function loop(time){ draw(time); requestAnimationFrame(loop); }
+
+  // ============ AUDIO: a primordial voice ============
+  const audio={ctx:null,master:null};
+  function ensureCtx(){
+    if(!audio.ctx){
+      audio.ctx=new (window.AudioContext||window.webkitAudioContext)();
+      audio.master=audio.ctx.createGain(); audio.master.gain.value=0.9; audio.master.connect(audio.ctx.destination);
+    }
+    if(audio.ctx.state==='suspended') audio.ctx.resume();
+    return audio.ctx;
+  }
+  let nodes=[];
+  function stopVoice(){
+    const c=audio.ctx; if(!c) return;
+    nodes.forEach(n=>{ try{ if(n.stop) n.stop(); }catch(e){} try{n.disconnect&&n.disconnect();}catch(e){} });
+    nodes=[]; playhead=null;
+    $('#play').textContent='▶ Play';
+  }
+  function buildNoise(c){
+    const len=c.sampleRate*2, buf=c.createBuffer(1,len,c.sampleRate), d=buf.getChannelData(0);
+    for(let i=0;i<len;i++) d[i]=Math.random()*2-1;
+    const src=c.createBufferSource(); src.buffer=buf; src.loop=true; return src;
+  }
+  function play(){
+    if(!model||!model.segments.length) { model=A.generate(params,seed); }
+    const c=ensureCtx();
+    stopVoice();
+    const t0=c.currentTime+0.06, dur=model.totalDur;
+    const rate=120, N=Math.max(2,Math.ceil(dur*rate));
+    const freqCurve=new Float32Array(N), ampCurve=new Float32Array(N);
+    let lastF=A.sampleHz(model.segments,0)||model.minHz;
+    for(let i=0;i<N;i++){
+      const t=(i/(N-1))*dur;
+      const hz=A.sampleHz(model.segments,t);
+      if(hz!=null){ freqCurve[i]=hz; lastF=hz; ampCurve[i]=1; }
+      else { freqCurve[i]=lastF; ampCurve[i]=0; }
+    }
+    // soften amp transitions (breath edges)
+    for(let pass=0;pass<2;pass++){ const tmp=ampCurve.slice(); for(let i=1;i<N-1;i++) ampCurve[i]=(tmp[i-1]+tmp[i]*2+tmp[i+1])/4; }
+
+    // voice graph
+    const oscA=c.createOscillator(); oscA.type='sawtooth';
+    const oscB=c.createOscillator(); oscB.type='sawtooth'; oscB.detune.value=7;
+    const sum=c.createGain(); sum.gain.value=0.5;
+    oscA.connect(sum); oscB.connect(sum);
+    // formants (vowel-ish), parallel bandpass + a little direct
+    const f1=c.createBiquadFilter(); f1.type='bandpass'; f1.frequency.value=720; f1.Q.value=6;
+    const f2=c.createBiquadFilter(); f2.type='bandpass'; f2.frequency.value=1150; f2.Q.value=7;
+    const g1=c.createGain(); g1.gain.value=0.9; const g2=c.createGain(); g2.gain.value=0.6;
+    const direct=c.createGain(); direct.gain.value=0.32;
+    sum.connect(f1); f1.connect(g1); sum.connect(f2); f2.connect(g2); sum.connect(direct);
+    const lp=c.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=2800; lp.Q.value=0.4;
+    g1.connect(lp); g2.connect(lp); direct.connect(lp);
+    const amp=c.createGain(); amp.gain.value=0; lp.connect(amp); amp.connect(audio.master);
+
+    // vibrato
+    const lfo=c.createOscillator(); lfo.type='sine'; lfo.frequency.value=5.2;
+    const lfoG=c.createGain(); lfoG.gain.value=params.vibrato*22; // cents
+    lfo.connect(lfoG); lfoG.connect(oscA.detune); lfoG.connect(oscB.detune);
+
+    // breath noise (gated by amp)
+    const noise=buildNoise(c); const nbp=c.createBiquadFilter(); nbp.type='bandpass'; nbp.frequency.value=2400; nbp.Q.value=0.6;
+    const ng=c.createGain(); ng.gain.value=0; noise.connect(nbp); nbp.connect(ng); ng.connect(audio.master);
+
+    // schedule
+    oscA.frequency.setValueCurveAtTime(freqCurve,t0,dur);
+    oscB.frequency.setValueCurveAtTime(freqCurve,t0,dur);
+    amp.gain.setValueCurveAtTime(ampCurve.map(v=>v*0.5),t0,dur);
+    ng.gain.setValueCurveAtTime(ampCurve.map(v=>v*0.018),t0,dur);
+
+    [oscA,oscB,lfo,noise].forEach(o=>o.start(t0));
+    const stopAt=t0+dur+0.15;
+    [oscA,oscB,lfo,noise].forEach(o=>o.stop(stopAt));
+    nodes=[oscA,oscB,lfo,noise,sum,f1,f2,g1,g2,direct,lp,amp,lfoG,nbp,ng];
+
+    playhead={start:t0,dur:dur};
+    $('#play').textContent='■ Stop';
+    oscA.onended=()=>{ if(playhead&&playhead.start===t0){ stopVoice(); } };
+  }
+  $('#play').addEventListener('click',()=>{
+    if(playhead) stopVoice(); else play();
+  });
+
+  // ============ EXPORTS ============
+  function dl(blob,name){ const u=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=u; a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(u),2000); }
+  $('#expTab').addEventListener('click',()=>{
+    if(!model) model=A.generate(params,seed);
+    const doc=A.toTabota(model,{author:'Xyh'});
+    dl(new Blob([JSON.stringify(doc,null,2)],{type:'application/json'}),'antemelos_'+model.seed+'.tabota');
+  });
+  $('#expMidi').addEventListener('click',()=>{
+    if(!model) model=A.generate(params,seed);
+    const bytes=A.toMidi(model,+$('#bend').value);
+    dl(new Blob([bytes],{type:'audio/midi'}),'antemelos_'+model.seed+'.mid');
+  });
+
+  // ============ INIT ============
+  syncAllCtls();
+  $('#seedVal').textContent=String(seed).padStart(5,'0').slice(0,8);
+  model=A.generate(params,seed);
+  resize(); updateEdges();
+  requestAnimationFrame(loop);
+})();
+</script>
 </body>
 </html>
