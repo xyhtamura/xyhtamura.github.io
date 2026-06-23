@@ -14,11 +14,13 @@
   --glaze:#efa13c; --fat:#ecdac9; --bone:#f5ecdd;
   --sheen-1:#2fe6d0; --sheen-2:#c6f23a; --sheen-3:#9b5de5;
   --phosphor:#62f1c8; --phosphor-dim:#2f8f74; --screen:#0e1f1a; --screen-2:#163029;
-  --ink:#2a0f24; --amber:#ffcaa0;
+  --ink:#2a0f24; --amber:#ffcaa0; --darkmeat:#2b0a0a;
 
   /* design canvas — everything is authored at this fixed size, then scaled */
-  --DW:520px; --DH:760px;
+  --DW:520px; --DH:676px;
 }
+
+  /* body and background styles */
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
 body{
@@ -32,6 +34,19 @@ body{
   overflow:hidden;
 }
 
+.sky{ position:fixed; inset:0; z-index:0; overflow:hidden;
+  animation:hue-drift 120s ease-in-out infinite alternate;
+  background:
+    linear-gradient(180deg, rgba(150,240,120,0) 53%, rgba(150,240,120,.44) 56%, rgba(150,240,120,0) 59.5%),
+    linear-gradient(180deg,#241657 0%,#2a2b63 23%,#6b3b86 42%,#ff9a4e 51.5%,#ff6a39 55.5%,#5a2746 64%,#163a44 80%,#0d1f29 100%); }
+.sky::after{ content:""; position:absolute; inset:0; pointer-events:none; opacity:.10; mix-blend-mode:soft-light;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E"); background-size:200px 200px; }
+.suntrack{ position:absolute; inset:0; animation:sun-sweep 80s ease-in-out infinite alternate; }
+.sun{ position:absolute; left:0; top:55%; width:58%; height:50%; transform:translate(-50%,-50%);
+  background:radial-gradient(closest-side, rgba(255,234,184,.9), rgba(255,138,68,.48) 44%, transparent 72%); filter:blur(2px); }
+@keyframes sun-sweep{ from{transform:translateX(16%)} to{transform:translateX(84%)} }
+@keyframes hue-drift{ 0%{filter:hue-rotate(-12deg)} 100%{filter:hue-rotate(20deg)} }
+
 /* fills the viewport and centers the scaled canvas */
 .fit{ position:fixed; inset:0; display:flex; align-items:center; justify-content:center; overflow:hidden; }
 
@@ -43,16 +58,23 @@ body{
   display:flex; flex-direction:column; align-items:center; gap:8px;
 }
 
-/* ---------- brand (scales with the ham) ---------- */
-.brand{ text-align:center; line-height:.86; flex:0 0 auto; }
-.brand h1{
-  font-size:38px; font-weight:700; margin:0; letter-spacing:-.02em;
+
+/* ---------- folded-in nameplate (crown of the ham) ---------- */
+.nameplate{ text-align:center; line-height:.84; flex:0 0 auto; margin-bottom:1px; transform: translate(18px, 15px);}
+.nameplate h1{
+  display: inline-block; /* Add this to shrink the background to the text width */
+  font-size:37px; font-weight:700; margin:0; letter-spacing:-.02em;
   background:linear-gradient(95deg,var(--flesh-lit) 0%,var(--glaze) 38%,var(--sheen-2) 60%,var(--sheen-1) 78%,var(--sheen-3) 100%);
   -webkit-background-clip:text; background-clip:text; color:transparent;
-  filter:drop-shadow(0 2px 0 rgba(42,15,36,.5)); transform:skewX(-3deg);
+  filter:drop-shadow(0 1px 0 rgba(42,15,36,.6)) drop-shadow(0 0 6px rgba(42,15,36,.35));
+  transform:skewX(-3deg);
+  filter: drop-shadow(0 2px 0 var(--darkmeat)) drop-shadow(0 4px 8px rgba(43, 10, 10, 0.4));
+  
+  transform: skewX(-3deg);
 }
-.brand p{ margin:3px 0 0; font-size:11px; color:#caa7c4; letter-spacing:.18em;
-  text-transform:lowercase; font-family:"Share Tech Mono",monospace;}
+.nameplate p{ margin:2px 0 0; font-size:10px; color:#f3e3d6; letter-spacing:.06em;
+  font-family:"Share Tech Mono",monospace; text-shadow:0 1px 1px rgba(42,15,36,.55);}
+.nameplate a{ color:var(--sheen-1); text-decoration:none; border-bottom:1px solid rgba(47,230,208,.45); }
 
 /* ---------- the ham device ---------- */
 .ham{
@@ -143,7 +165,7 @@ body{
 .btns{ display:flex; gap:10px; flex:1; }
 .jelly{
   flex:1; border:none; cursor:pointer; position:relative;
-  font-family:"Fredoka",sans-serif; font-weight:600; font-size:12px; color:#fff;
+  font-family:"Fredoka",sans-serif; font-weight:600; font-size:12px; color:var(--darkmeat);
   padding:12px 5px 11px; border-radius:50% 50% 48% 52% / 56% 56% 44% 44%;
   background:
     radial-gradient(120% 80% at 35% 22%, rgba(255,255,255,.85) 0%, transparent 36%),
@@ -288,25 +310,38 @@ body{
 .log-foot .credit a{ color:#9a7a94; }
 .log-foot .wrap{ flex:0 0 auto; padding:9px 14px; }
 
-/* ---------- credit strip below the ham (scales as one of the outer elements) ---------- */
-.credit-strip{ flex:0 0 auto; font-family:"Share Tech Mono",monospace; font-size:10px; color:#6e5168;
-  text-align:center; line-height:1.5; }
-.credit-strip a{ color:#9a7a94; }
-
+/* ---------- folded-in legend (rides under the utility pills) ---------- */
+.legend{ font-family:"Share Tech Mono",monospace; font-size:9.5px; color:var(--bone);
+  text-align:center; line-height:1.4; margin-top:1px; opacity:.9; }
+.legend a{ color:#9b5de5; text-decoration:none; border-bottom:1px solid rgba(155,93,229,.4); }
 @media (prefers-reduced-motion: reduce){
   .ham,.sheen,.gloss,.bars i,.heart,.ticker.scroll .tk-track{ animation:none !important; }
+}
+
+
+.nameplate a:visited { 
+  color: var(--sheen-1); 
+  border-bottom-color: rgba(155, 93, 229, 0.45); 
+}
+
+
+.legend a:visited { 
+  color: var(--sheen-1); 
+  border-bottom-color: rgba(122, 63, 140, 0.4); 
+}
+
+
+.log-foot .credit a:visited { 
+  color: var(--sheen-1); 
 }
 </style>
 </head>
 <body>
 
+<div class="sky"><div class="suntrack"><div class="sun"></div></div></div>
+
 <div class="fit">
   <div class="stage" id="stage">
-
-    <div class="brand">
-      <h1>DriftHam</h1>
-      <p>leave it on &middot; let it drift</p>
-    </div>
 
     <div class="ham" id="ham">
       <!-- texture layers -->
@@ -322,6 +357,7 @@ body{
       <div class="gloss"></div>
 
       <div class="layer-ui">
+
         <!-- VFD readout: frequency + signal + meta + status -->
         <div class="screen" id="screen">
           <div class="scr-top">
@@ -395,6 +431,10 @@ body{
             <button class="pill" id="btnLog">tasting log<span class="ct" id="logct">0</span></button>
             <button class="pill wrap" id="btnWrap">wrap it up &darr;</button>
           </div>
+		  <div class="legend">
+            stations via <a href="https://www.radio-browser.info/" target="_blank" rel="noopener">radio&#8209;browser</a>
+            &middot; wrap to save your log
+          </div>
         </div>
 
         <!-- now-playing name, pinned to the bottom of the ham -->
@@ -403,6 +443,10 @@ body{
         </div>
       </div>
 
+	          <div class="nameplate">
+          <h1>DriftHam</h1>
+          <p>online radio drifter by <a href="https://xyhtamura.github.io" target="_blank" rel="noopener">xyh</a></p>
+        </div>
       <!-- log overlay -->
       <div class="logwrap" id="logwrap">
         <div class="log-head">
@@ -421,10 +465,7 @@ body{
       </div>
     </div>
 
-    <div class="credit-strip">
-      stations via <a href="https://www.radio-browser.info/" target="_blank" rel="noopener">radio&#8209;browser</a>
-      &middot; session only &middot; wrap it up to keep your log
-    </div>
+
 
   </div>
 </div>
@@ -436,7 +477,7 @@ body{
    contain semantics — when the viewport is wider than tall, height is the
    limiting side (ham grows to the viewport height); when it's taller than
    wide, width is the limiting side. min() of the two ratios does exactly that. */
-const DESIGN_W=520, DESIGN_H=760, MARGIN=14;
+const DESIGN_W=520, DESIGN_H=676, MARGIN=14;
 const stageEl=document.getElementById("stage");
 function fit(){
   const availW=window.innerWidth-MARGIN*2;
