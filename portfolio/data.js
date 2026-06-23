@@ -475,6 +475,22 @@ const slides = [
       description: "Creative tools, instruments, software, web systems, experimental interfaces, and speculative technical prototypes."
     }
   },
+
+{
+  kind: "piece",
+  piece: {
+    id: "driftham",
+    title: "DriftHam",
+    year: "2026",
+    tags: ["internet radio", "generative listening", "browser-native", "radio-browser", "listening toy"],
+    blurb: "An internet-radio drift device housed inside a breathing, glazed ham interface. DriftHam pulls live stations from the Radio-Browser community database, tunes into one, holds it for a randomized interval, then wanders onward by crossfade or hard cut. Rather than behaving like a conventional radio player, it acts as a generative listening toy: users can cure a station in place, drift onward manually, savor stations, write taste notes, and export the session as a plain-text tasting log.",
+    links: [
+      { label: "Launch App", url: "https://xyhtamura.github.io/driftham" }
+    ]
+  }
+},
+
+
   {
 kind: "piece",
 piece: {
