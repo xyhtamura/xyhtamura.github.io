@@ -857,5 +857,73 @@ $("btnLogClose").addEventListener("click",()=>{ $("logwrap").classList.remove("o
 syncRange(); updateButtons();
 fetchPool();   /* preload a pool quietly so first TUNE IN plays without waiting */
 </script>
+<script>
+(function() {
+  const skyEl = document.querySelector(".sky");
+  const sunEl = document.querySelector(".sun");
+
+  // A simple hash function to turn the station's unique ID into a usable number
+  function getStationHash(str) {
+    let h = 0;
+    for (let i = 0; i < str.length; i++) {
+      h = Math.imul(31, h) + str.charCodeAt(i) | 0;
+    }
+    return Math.abs(h);
+  }
+
+  function updateAtmosphere(st) {
+    if (!st) return;
+
+    // Generate a seed based on the station UUID (or name as a fallback)
+    const seed = getStationHash(st.stationuuid || st.name || "static");
+
+    // Derive a palette of hues
+    const h1 = seed % 360;               // Deep space hue
+    const h2 = (seed + 40) % 360;        // Mid-sky hue
+    const h3 = (seed + 80) % 360;        // Horizon/glare hue
+    const sunHue = (seed + 160) % 360;   // Sun core hue
+
+    // Derive dynamic saturations using different parts of the seed
+    // We constrain the math so it always results in a good-looking range
+    const s1 = 35 + (seed % 35);               // Space/upper sky: 35% to 70%
+    const s2 = 40 + ((seed >> 1) % 35);        // Mid-sky: 40% to 75%
+    const s3 = 60 + ((seed >> 2) % 30);        // Horizon flare: 60% to 90%
+    const sunSat = 75 + ((seed >> 3) % 25);    // Sun core: 75% to 100%
+
+    // Rebuild the complex sky gradient with dynamic hues AND saturations
+    skyEl.style.background = `
+      linear-gradient(180deg, rgba(150,240,120,0) 53%, rgba(150,240,120,.44) 56%, rgba(150,240,120,0) 59.5%),
+      linear-gradient(180deg,
+        hsl(${h1}, ${s1}%, 15%) 0%,
+        hsl(${h1}, ${Math.max(10, s1 - 10)}%, 25%) 23%,
+        hsl(${h2}, ${s2}%, 35%) 42%,
+        hsl(${h3}, ${s3}%, 65%) 51.5%,
+        hsl(${h3}, ${Math.min(100, s3 + 5)}%, 60%) 55.5%,
+        hsl(${(h3 + 40) % 360}, ${Math.max(10, s2 - 10)}%, 25%) 64%,
+        #163a44 80%,
+        #0d1f29 100%
+      )
+    `;
+
+    // Update the sun 
+    sunEl.style.background = `
+      radial-gradient(closest-side,
+        hsl(${sunHue}, ${sunSat}%, 80%),
+        hsl(${sunHue}, ${sunSat}%, 50%) 44%,
+        transparent 72%
+      )
+    `;
+  }
+
+  // Intercept the existing 'promote' function
+  if (typeof promote === "function") {
+    const originalPromote = promote;
+    promote = function(st, a) {
+      originalPromote(st, a);
+      updateAtmosphere(st);
+    };
+  }
+})();
+</script>
 </body>
 </html>
