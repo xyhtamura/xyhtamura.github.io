@@ -476,6 +476,20 @@ const slides = [
     }
   },
   {
+kind: "piece",
+piece: {
+id: "binlod",
+title: "Binlod",
+year: "2026",
+tags: ["granular MIDI", "event generator", "composition tool", "Tabota", "rhythm"],
+blurb: "An event-domain granular MIDI generator that turns input note-ons into seeded clouds of grain-events while preserving each original note as a pinned anchor. Rather than granulating audio, Binlod granulates musical events, using density, spread, profile shape, velocity jitter, and seed controls to create baked rhythmic textures for drums, instruments, or other MIDI-driven systems.",
+links: [
+{ label: "Launch App", url: "https://xyhtamura.github.io/binlod" }
+]
+}
+},
+
+  {
     kind: "piece",
     piece: {
       id: "tabota",
