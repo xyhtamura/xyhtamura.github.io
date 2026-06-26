@@ -433,14 +433,13 @@
             </p>
 
             <div class="grid">
-                <!-- Left: Web stitcher -->
                 <div class="panel">
                     <div class="panel-title"><span>Web</span> Stitch</div>
 
                     <div class="drop-zone" id="dropZone">
                         <div class="drop-zone-icon">🧵</div>
                         <div class="drop-zone-text">Drop files here or click to browse</div>
-                        <div class="drop-zone-subtext">Any text-ish files</div>
+                        <div class="drop-zone-subtext">Any text-ish files (Accumulative)</div>
                     </div>
 
                     <input type="file" id="fileInput" multiple style="display: none;">
@@ -464,7 +463,6 @@
                             Clear Selection
                         </button>
 
-                        <!-- Desktop Stitcher download -->
                         <a class="bat-link" href="stitcher.bat" download>
                             <span>⇩</span> Stitcher.bat
                         </a>
@@ -473,7 +471,6 @@
                     <div class="status" id="status"></div>
                 </div>
 
-                <!-- Right: context + explanation -->
                 <div class="panel">
                     
                     <div class="aside">
@@ -536,7 +533,14 @@
         });
 
         function handleFiles(files) {
-            selectedFiles = Array.from(files);
+            if (files.length === 0) return;
+            
+            // Accumulate: push new files onto the existing array
+            selectedFiles = [...selectedFiles, ...Array.from(files)];
+            
+            // Reset input element value so the same file can be chosen again via file picker if needed
+            fileInput.value = ''; 
+            
             updateFileList();
             stitchBtn.disabled = selectedFiles.length === 0;
             status.classList.remove('visible');
@@ -550,11 +554,12 @@
             }
 
             fileList.classList.add('visible');
-            fileList.innerHTML = selectedFiles.map(f =>
-                `<div class="file-item"><span class="icon">📄</span>${f.name}</div>`
+            fileList.innerHTML = selectedFiles.map((f, index) =>
+                `<div class="file-item"><span class="icon">📄</span>#${index + 1}: ${f.name}</div>`
             ).join('');
         }
 
+        // Clear Selection now correctly handles flushing the accumulated list
         clearBtn.addEventListener('click', () => {
             selectedFiles = [];
             fileInput.value = '';
