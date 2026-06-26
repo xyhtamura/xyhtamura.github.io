@@ -847,7 +847,40 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
 
   <!-- ROW 6 · list of works (each <details class="entry"> is its own bubble) -->
   <main class="index">
-  
+ <details class="entry" data-cats="tech" id="bakezuri">
+  <summary>
+    <span class="year">2026</span>
+    <span class="title">Bakezuri / 化け摺り</span>
+    <span class="chips"><span class="chip tech">tech</span></span>
+  </summary>
+  <div class="body">
+    <div class="media-group">
+      <img class="media" src="img/bakezuri.jpg" alt="Bakezuri screenshot">
+    </div>
+    <p>Bakezuri is a single-file browser instrument for experimental image-making, built around a CPU float-field simulation of wet ink. It treats riso image separation and suminagashi marbling as two states of one shared engine: an image is cut into ink passes and halftone grids, then deposited into a mutable bath where diffusion, fixation, water repulsion, grain, misregistration, and sequence produce non-identical pulls. It outputs a .png, which snapshots the process, .bakezuri, saving the process of the user on the image, and .urumizuri, a native, uncompressed binary format that preserves the actual matrix of fixation states for hex based databending. </p>
+    <div class="outlinks">
+      <a class="glass visit" href="https://xyhtamura.github.io/bakezuri" target="_blank" rel="noopener">▷ Launch App</a>
+      <a class="glass visit" href="https://xyhtamura.github.io/sgueltch/goopCodecs/uzumizuri" target="_blank" rel="noopener">wet-state goopCodec</a>
+    </div>
+  </div>
+</details>
+ <details class="entry" data-cats="tech" id="cornerfit">
+  <summary>
+    <span class="year">2026</span>
+    <span class="title">cornerfit</span>
+    <span class="chips"><span class="chip tech">tech</span></span>
+  </summary>
+  <div class="body">
+    <div class="media-group">
+      <img class="media" src="img/cornerfit.jpg" alt="cornerfit screenshot">
+    </div>
+    <p>A zero-dependency JavaScript library and companion web tool that computes the largest safe content rectangle inside any CSS border-radius, including irregular per-corner elliptical radii. It returns the fitted frame, ready-to-use padding insets, and per-side maximum lengths, with full handling of percentage radii and the browser's overflow-clamp behavior.</p>
+    <div class="outlinks">
+      <a class="glass visit" href="https://xyhtamura.github.io/cornerfit" target="_blank" rel="noopener">▷ Launch App</a>
+      <a class="glass visit" href="https://github.com/xyhtamura/cornerfit" target="_blank" rel="noopener">repo / ソースコード</a>
+    </div>
+  </div>
+</details>
 
 <details class="entry minor" data-cats="tech" id="cornerfit">
   <summary>
@@ -914,10 +947,15 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
         <p>A continuous space-filling Hilbert-thread image codec utilizing DPCM color deltas. </p>
         <div class="outlinks"><a class="glass visit" href="/sgueltch/goopCodecs/vermis/" target="_blank" rel="noopener">▷ open</a></div>
       </div>
+	  <div class="sub">
+  <h4>urumizuri (.urumizuri)</h4>
+  <p>A wet-state snapshot codec that stores Bakezuri’s fluid ink matrix as byte-editable material data.</p>
+  <div class="outlinks"><a class="glass visit" href="/sgueltch/goopCodecs/urumizuri/" target="_blank" rel="noopener">▷ open</a></div>
+</div>
     </div>
 
     <div class="outlinks">
-      <a class="glass visit" href="/sgueltch/goopcodecs/" target="_blank" rel="noopener">▷ open suite</a>
+      <a class="glass visit" href="/sgueltch/goopCodecs/" target="_blank" rel="noopener">▷ open suite</a>
     </div>
   </div>
 </details>

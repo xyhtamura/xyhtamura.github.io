@@ -641,7 +641,17 @@ links: [
             links: [
               { label: "Open Codec", url: "https://xyhtamura.github.io/sgueltch/goopCodecs/vermis/" }
             ]
-          }
+          },
+		  {
+  id: "urumizuri",
+  title: "urumizuri (.urumizuri)",
+  year: "2026",
+  tags: ["wet-state codec", "fluid databending"],
+  blurb: "A wet-state snapshot codec that stores Bakezuri’s fluid ink bath as an uncompressed, byte-editable matrix of fixation states and pigment loads. Corruption acts on the material structure of the bath itself, producing shears, scars, dry gaps, channel faults, and other performable damage before the field is reopened in Bakezuri.",
+  links: [
+    { label: "Open Codec", url: "https://xyhtamura.github.io/sgueltch/goopCodecs/urumizuri/" }
+  ]
+},
         ]
       }
     ]
@@ -653,6 +663,16 @@ links: [
       label: "Creative Code, Instruments, & Software Utilities",
     },
     pieces: [
+	{
+  title: "Bakezuri / 化け摺り",
+  year: "2026",
+  tags: ["wet printing", "image separation", "suminagashi", "riso", "goopCodec"],
+  blurb: "A browser-based wet-printing instrument that stages a sliding membrane between riso-style image separation and suminagashi-like ink-on-water flow. Bakezuri turns quantized grids, palettes, and halftone screens into material fields that can bleed, misregister, fix, repel, and re-perform.",
+  links: [
+    { label: "Launch Instrument", url: "https://xyhtamura.github.io/bakezuri/" },
+    { label: "Open urumizuri Codec", url: "https://xyhtamura.github.io/sgueltch/goopCodecs/urumizuri/" }
+  ]
+},
       {
         title: "Cytophone",
         year: "2026",
