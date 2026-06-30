@@ -3,6 +3,14 @@
 ============================================================ */
 const pad2 = n => String(n).padStart(2, "0");
 
+/* ------------------------------------------------------------
+   CONFIG — global defaults for the new set grammar.
+   Flip DEFAULT_CHROME to "none" if you want sets to render as
+   continuous fields by default instead of walled-off blocks.
+------------------------------------------------------------ */
+const DEFAULT_CHROME  = "dividers"; // "dividers" | "none"
+const DEFAULT_LAYOUT  = "stack";    // "stack" | "row" | "grid" | <number> | [..spans]
+
 const IMG_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>`;
 
 function renderMediaItem(m) {
@@ -51,7 +59,7 @@ function renderMediaItem(m) {
       ${m.label ? `<div class="media-overlay">${m.label}</div>` : ""}
     </div>`;
   }
-  
+
   return "";
 }
 
@@ -98,7 +106,7 @@ function renderExhibitions(exhibitions, fontSize = "0.75rem", gap = "0.3rem") {
       let content = "";
       // Use custom type capitalized nicely, or fallback to "Presented at"
       const prefix = ex.type ? ex.type : "Presented at";
-      
+
       if (!ex.venue && ex.event) {
         // Condition 1: No venue, but event exists
         content = `${prefix} <em>${ex.event}</em>`;
@@ -113,7 +121,7 @@ function renderExhibitions(exhibitions, fontSize = "0.75rem", gap = "0.3rem") {
       // Append custom details text and/or the year if present
       const detailsHTML = ex.details ? `<span class="ex-details" style="margin-left:.25rem; margin-right:.25rem;">${ex.details}</span>` : "";
       const yearHTML = ex.year ? `(${ex.year})` : "";
-      
+
       if (!content && !detailsHTML && !yearHTML) return "";
 
       return `
@@ -171,40 +179,173 @@ function renderPanelCard(p) {
   </article>`;
 }
 
+/* ---- Block renderers (shared by standalone slides + set children) ---- */
+
 /**
- * Render a set child block (grid, panels, or a single piece-like entry).
- * Used both inside `set` and as a standalone slide kind.
+ * Full "piece" body (title / meta / tags / media / blurb / exhibitions / links).
+ * heading: "h2" for standalone slides, "h3" for set children.
  */
-function renderSetChild(child) {
-  const label = child.label
-    ? `<div class="grid-header" style="font-size:.85rem; color:var(--text-dim); margin-bottom:1.2rem;">${child.label}</div>`
+function renderPieceBody(p, { heading = "h2", titleStyle = "" } = {}) {
+  p = p || {};
+  const tag = heading === "h3" ? "h3" : "h2";
+  const mediaHTML = (p.media || []).map(renderMediaItem).join("");
+  const collabHTML = p.collaborators
+    ? `<span class="tag tag-collab" style="border-color:var(--mg);color:var(--mg);">With ${p.collaborators}</span>`
     : "";
-  if (child.kind === "grid") {
-    return `${label}<div class="academic-grid">${(child.pieces || []).map(renderGridCard).join("")}</div>`;
+  return `
+    <${tag} class="piece-title"${titleStyle ? ` style="${titleStyle}"` : ""}>${p.title || ""}</${tag}>
+    <div class="piece-meta" style="margin-bottom:.4rem;">${p.year || ""}</div>
+    <div class="piece-tags" style="margin-bottom:1.1rem;">${renderTags(p.tags)}${collabHTML}</div>
+    <div class="media-strip">${mediaHTML}</div>
+    <p class="piece-blurb">${p.blurb || ""}</p>
+    ${renderExhibitions(p.exhibitions, "0.75rem", "0.5rem")}
+    ${renderLinks(p.links)}`;
+}
+
+function renderGridBlock(node, headerText, headerStyle = "") {
+  const header = headerText
+    ? `<div class="grid-header"${headerStyle ? ` style="${headerStyle}"` : ""}>${headerText}</div>`
+    : "";
+  return `${header}<div class="academic-grid">${(node.pieces || []).map(renderGridCard).join("")}</div>`;
+}
+
+function renderPanelsBlock(node, headerText, headerStyle = "") {
+  const header = headerText
+    ? `<div class="grid-header"${headerStyle ? ` style="${headerStyle}"` : ""}>${headerText}</div>`
+    : "";
+  return `${header}<div class="panel-grid">${(node.panels || []).map(renderPanelCard).join("")}</div>`;
+}
+
+/* ============================================================
+   RECURSIVE SET ENGINE
+
+   A "set" is just a container. Two independent axes control it:
+
+     layout  — how children share space:
+                 "stack"  (vertical, default)
+                 "row"    (horizontal, wraps)
+                 "grid"   (responsive auto-fit columns)
+                 <number> (that many equal columns, e.g. 3)
+                 [2,1,..] (explicit fr spans per column)
+               a child may also carry `span: N` to span N columns
+               in grid / number / array layouts.
+
+     chrome  — whether children read as separate works:
+                 "dividers" (lead gets a rule, children labelled + gapped)
+                 "none"     (continuous field: no lead rule, labels
+                             suppressed, tighter gap)
+               chrome INHERITS into nested sets unless a child set
+               sets its own. So `chrome:"none"` on an outer set makes
+               the whole nested tree continuous in one line.
+
+   `children` may contain nodes of kind grid / panels / piece / set,
+   so sets nest arbitrarily deep. Legacy `pieces[]` (no children) is
+   still rendered as a grid, exactly as before.
+============================================================ */
+
+function setChildrenContainerStyle(layout, gap) {
+  if (Array.isArray(layout)) {
+    const cols = layout.map(n => `${n}fr`).join(" ");
+    return `display:grid; grid-template-columns:${cols}; gap:${gap}; align-items:start;`;
   }
-  if (child.kind === "panels") {
-    return `${label}<div class="panel-grid">${(child.panels || []).map(renderPanelCard).join("")}</div>`;
+  if (typeof layout === "number") {
+    return `display:grid; grid-template-columns:repeat(${layout}, 1fr); gap:${gap}; align-items:start;`;
   }
-  // single piece-like child inside a set
-  if (child.kind === "piece") {
-    const p = child.piece || {};
-    const mediaHTML = (p.media || []).map(renderMediaItem).join("");
-    const collabHTML = p.collaborators
-      ? `<span class="tag tag-collab" style="border-color:var(--mg);color:var(--mg);">With ${p.collaborators}</span>`
+  if (layout === "grid") {
+    return `display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:${gap}; align-items:start;`;
+  }
+  if (layout === "row") {
+    return `display:flex; flex-direction:row; flex-wrap:wrap; gap:${gap}; align-items:start;`;
+  }
+  // "stack" (default)
+  return `display:flex; flex-direction:column; gap:${gap};`;
+}
+
+function renderSetBlock(node, ctx = {}) {
+  const depth  = ctx.depth || 0;
+  // chrome is inherited from parent unless this set declares its own
+  const chrome = node.chrome ?? ctx.chrome ?? DEFAULT_CHROME;
+  const layout = node.layout ?? DEFAULT_LAYOUT;
+  const lead   = node.lead || node.main || null;
+  const isNone = chrome === "none";
+
+  // ---- lead ("description + pics of whole") ----
+  let leadHTML = "";
+  if (lead) {
+    const leadStyle = isNone
+      ? "padding-bottom:1.2rem; margin-bottom:1.5rem;"
+      : "padding-bottom:2rem; border-bottom:1px dashed var(--border-hi); margin-bottom:2rem;";
+    const mediaHTML = (lead.media || []).map(renderMediaItem).join("");
+    const collabHTML = lead.collaborators
+      ? `<span class="tag tag-collab" style="border-color:var(--mg);color:var(--mg);">With ${lead.collaborators}</span>`
       : "";
-    return `${label}
-      <div${p.id ? ` id="work-${p.id}"` : ""}>
-        <h3 class="piece-title" style="font-size:clamp(1.2rem,3vw,2rem);">${p.title || ""}</h3>
-        <div class="piece-meta" style="margin-bottom:.4rem;">${p.year || ""}</div>
-        <div class="piece-tags" style="margin-bottom:1.1rem;">${renderTags(p.tags)}${collabHTML}</div>
+    // At depth 0 the anchor lives on the slide div, so don't duplicate the id here.
+    const idAttr = (depth > 0 && lead.id) ? ` id="work-${lead.id}"` : "";
+    leadHTML = `
+      <div class="set-main-body"${idAttr} style="${leadStyle}">
+        <h2 class="piece-title">${lead.title || ""}</h2>
+        <div class="piece-meta" style="margin-bottom:.4rem;">${lead.year || ""}</div>
+        <div class="piece-tags" style="margin-bottom:1.1rem;">${renderTags(lead.tags)}${collabHTML}</div>
         <div class="media-strip">${mediaHTML}</div>
-        <p class="piece-blurb">${p.blurb || ""}</p>
-        ${renderExhibitions(p.exhibitions, "0.75rem", "0.5rem")}
-        ${renderLinks(p.links)}
+        <p class="piece-blurb">${lead.blurb || ""}</p>
+        ${renderExhibitions(lead.exhibitions, "0.75rem", "0.5rem")}
+        ${renderLinks(lead.links)}
       </div>`;
+  }
+
+  // ---- children ----
+  let childrenHTML = "";
+  const gap = isNone ? "1.1rem" : "2rem";
+  const spanCapable = Array.isArray(layout) || typeof layout === "number" || layout === "grid";
+
+  if (node.children && node.children.length) {
+    const childCtx = { depth: depth + 1, chrome };
+    const cells = node.children.map(child => {
+      const spanStyle = (spanCapable && child && child.span)
+        ? ` style="grid-column: span ${child.span};"`
+        : "";
+      return `<div class="set-child"${spanStyle}>${renderNode(child, childCtx)}</div>`;
+    }).join("");
+    childrenHTML = `<div class="set-children" style="${setChildrenContainerStyle(layout, gap)}">${cells}</div>`;
+  } else if (node.pieces && node.pieces.length) {
+    // Legacy fallback: a set with a bare pieces[] becomes a grid.
+    const label = isNone
+      ? ""
+      : `<div class="grid-header" style="font-size:.85rem; color:var(--text-dim); margin-bottom:1.2rem;">Suite Tools &amp; Environments</div>`;
+    childrenHTML = `${label}<div class="academic-grid">${node.pieces.map(renderGridCard).join("")}</div>`;
+  }
+
+  return `<div class="set-container" style="display:flex; flex-direction:column; width:100%;">${leadHTML}${childrenHTML}</div>`;
+}
+
+/**
+ * Render any content node (grid / panels / piece / set) as a set child.
+ * Recurses on nested sets. `ctx.chrome` is the PARENT set's chrome, which
+ * decides whether this child shows its own label.
+ */
+function renderNode(node, ctx = {}) {
+  if (!node) return "";
+  const parentChrome = ctx.chrome || DEFAULT_CHROME;
+  const showLabel = parentChrome !== "none";
+  const labelStyle = "font-size:.85rem; color:var(--text-dim); margin-bottom:1.2rem;";
+  const headerText = showLabel ? (node.label || "") : "";
+  const labelHTML  = headerText ? `<div class="grid-header" style="${labelStyle}">${headerText}</div>` : "";
+
+  if (node.kind === "grid")   return renderGridBlock(node, headerText, labelStyle);
+  if (node.kind === "panels") return renderPanelsBlock(node, headerText, labelStyle);
+  if (node.kind === "piece") {
+    const p = node.piece || {};
+    return `${labelHTML}<div${p.id ? ` id="work-${p.id}"` : ""}>${renderPieceBody(p, { heading: "h3", titleStyle: "font-size:clamp(1.2rem,3vw,2rem);" })}</div>`;
+  }
+  if (node.kind === "set") {
+    // pass parent chrome so nested sets can inherit it
+    return renderSetBlock(node, { depth: (ctx.depth || 0), chrome: ctx.chrome });
   }
   return "";
 }
+
+// Back-compat alias (older code/data referred to renderSetChild).
+const renderSetChild = renderNode;
 
 /* ---- Main slide factory ---- */
 
@@ -242,73 +383,29 @@ function makeSlideEl(obj, gi) {
   } else if (obj.kind === "piece") {
     const piece = obj.piece || {};
     if (piece.id && !obj.id) div.id = "work-" + piece.id;
-    const mediaHTML = (piece.media || []).map(renderMediaItem).join("");
-    const collabHTML = piece.collaborators
-      ? `<span class="tag tag-collab" style="border-color:var(--mg);color:var(--mg);">With ${piece.collaborators}</span>`
-      : "";
     div.innerHTML = `
       <div class="ghost-num" aria-hidden="true">${num}</div>
-      <div class="piece-body">
-        <h2 class="piece-title">${piece.title || ""}</h2>
-        <div class="piece-meta" style="margin-bottom:.4rem;">${piece.year || ""}</div>
-        <div class="piece-tags" style="margin-bottom:1.1rem;">${renderTags(piece.tags)}${collabHTML}</div>
-        <div class="media-strip">${mediaHTML}</div>
-        <p class="piece-blurb">${piece.blurb || ""}</p>
-        ${renderExhibitions(piece.exhibitions, "0.75rem", "0.5rem")}
-        ${renderLinks(piece.links)}
-      </div>`;
+      <div class="piece-body">${renderPieceBody(piece, { heading: "h2" })}</div>`;
 
   } else if (obj.kind === "grid") {
     const sec = obj.sec || {};
+    const headerText = sec.label || obj.label || "";
     div.innerHTML = `
       <div class="ghost-num" aria-hidden="true">${num}</div>
-      <div class="grid-header">${sec.label || obj.label || ""}</div>
-      <div class="academic-grid">${(obj.pieces || []).map(renderGridCard).join("")}</div>`;
+      ${renderGridBlock(obj, headerText, "")}`;
 
   } else if (obj.kind === "panels") {
-    // Standalone panels slide — multiple panel cards per slide
+    // Standalone panels slide — header from obj.label only (unchanged behavior)
     div.innerHTML = `
       <div class="ghost-num" aria-hidden="true">${num}</div>
-      ${obj.label ? `<div class="grid-header">${obj.label}</div>` : ""}
-      <div class="panel-grid">${(obj.panels || []).map(renderPanelCard).join("")}</div>`;
+      ${renderPanelsBlock(obj, obj.label || "", "")}`;
 
   } else if (obj.kind === "set") {
-    const main = obj.main || {};
-    if (main.id && !obj.id) div.id = "work-" + main.id;
-    const mediaHTML = (main.media || []).map(renderMediaItem).join("");
-    const collabHTML = main.collaborators
-      ? `<span class="tag tag-collab" style="border-color:var(--mg);color:var(--mg);">With ${main.collaborators}</span>`
-      : "";
-    const mainHTML = `
-      <div class="set-main-body" style="padding-bottom:2rem; border-bottom:1px dashed var(--border-hi); margin-bottom:2rem;">
-        <h2 class="piece-title">${main.title || ""}</h2>
-        <div class="piece-meta" style="margin-bottom:.4rem;">${main.year || ""}</div>
-        <div class="piece-tags" style="margin-bottom:1.1rem;">${renderTags(main.tags)}${collabHTML}</div>
-        <div class="media-strip">${mediaHTML}</div>
-        <p class="piece-blurb">${main.blurb || ""}</p>
-        ${renderExhibitions(main.exhibitions, "0.75rem", "0.5rem")}
-        ${renderLinks(main.links)}
-      </div>`;
-
-    // Support children array (grid / panels / piece) or legacy obj.pieces fallback
-    let childrenHTML = "";
-    if (obj.children && obj.children.length > 0) {
-      childrenHTML = obj.children.map(child =>
-        `<div style="margin-bottom:2rem;">${renderSetChild(child)}</div>`
-      ).join("");
-    } else if (obj.pieces && obj.pieces.length > 0) {
-      // Legacy: treat obj.pieces as a grid child
-      childrenHTML = `
-        <div class="grid-header" style="font-size:.85rem; color:var(--text-dim); margin-bottom:1.2rem;">Suite Tools &amp; Environments</div>
-        <div class="academic-grid">${obj.pieces.map(renderGridCard).join("")}</div>`;
-    }
-
+    const lead = obj.lead || obj.main || {};
+    if (lead.id && !obj.id) div.id = "work-" + lead.id;
     div.innerHTML = `
       <div class="ghost-num" aria-hidden="true">${num}</div>
-      <div class="set-container" style="display:flex; flex-direction:column; width:100%;">
-        ${mainHTML}
-        ${childrenHTML}
-      </div>`;
+      ${renderSetBlock(obj, { depth: 0 })}`;
   }
 
   return div;
@@ -332,13 +429,13 @@ const mobileSelEl = document.getElementById("mobileSel");
 function buildDOM() {
   mainArea.innerHTML = "";
   slideEls = [];
-  
+
   const observerOptions = {
     root: mainArea,
-    rootMargin: "-45% 0px -45% 0px", 
+    rootMargin: "-45% 0px -45% 0px",
     threshold: 0
   };
-  
+
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -389,7 +486,7 @@ function updateUI() {
 
 function buildNav() {
   document.getElementById("pName").textContent = PORTFOLIO.name || "Portfolio";
-  
+
   const introBtn = document.createElement("button");
   introBtn.className = "section-tab";
   introBtn.textContent = "Intro";
