@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DriftGlass - a lens that wanders</title>
+<link rel="icon" type="image/svg+xml" href="./favicon.svg">
+<style>
+:root{
+  --DW:520px;
+  --DH:760px;
+  --ink:#09212a;
+  --deep:#061217;
+  --glass:#7fe8df;
+  --glass-2:#bdf8ee;
+  --glass-3:#6cc0ff;
+  --violet:#8969ff;
+  --pink:#e778c9;
+  --lime:#c7f65c;
+  --amber:#ffbd62;
+  --bone:#eef7ed;
+  --screen:#091318;
+  --screen-2:#0f2a2f;
+  --phosphor:#7fffe6;
+  --dim:#7da2a0;
+  --shadow:#051014;
+  --danger:#ff7b7b;
+}
+
+@font-face{
+  font-family:"Saveloy";
+  src:url("../fonts/Saveloy.ttf") format("truetype");
+  font-weight:normal;
+  font-style:normal;
+  font-display:swap;
+}
+
+@font-face{
+  font-family:"Karrik Local";
+  src:url("../fonts/Karrik-Regular.woff2") format("woff2");
+  font-weight:normal;
+  font-style:normal;
+  font-display:swap;
+}
+
+@font-face{
+  font-family:"Blue Screen";
+  src:url("../fonts/bluescreen.ttf") format("truetype");
+  font-weight:normal;
+  font-style:normal;
+  font-display:swap;
+}
+
+*{ box-sizing:border-box; }
+html,body{ margin:0; height:100%; }
+body{
+  font-family:"Karrik Local","Trebuchet MS",system-ui,sans-serif;
+  color:var(--bone);
+  background:#071116;
+  overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+button,input,select{ font:inherit; }
+button{ -webkit-tap-highlight-color:transparent; }
+a{ color:inherit; }
+
+.sky{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  overflow:hidden;
+  background:
+    radial-gradient(95% 75% at 15% 15%, rgba(127,255,230,.22), transparent 58%),
+    radial-gradient(70% 50% at 86% 24%, rgba(231,120,201,.19), transparent 58%),
+    radial-gradient(100% 65% at 52% 105%, rgba(255,189,98,.26), transparent 58%),
+    linear-gradient(170deg,#08161c 0%,#142c35 42%,#1e213b 72%,#0b1118 100%);
+  animation:sky-breathe 80s ease-in-out infinite alternate;
+}
+.sky::before{
+  content:"";
+  position:absolute;
+  inset:-18%;
+  opacity:.34;
+  background:
+    conic-gradient(from 12deg at 42% 42%, transparent 0 12%, rgba(127,255,230,.30) 14%, transparent 19% 31%, rgba(199,246,92,.24) 35%, transparent 43% 62%, rgba(137,105,255,.24) 66%, transparent 73% 100%);
+  filter:blur(24px);
+  animation:slow-roll 44s linear infinite;
+}
+.sky::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity:.15;
+  mix-blend-mode:screen;
+  background:
+    repeating-linear-gradient(105deg, transparent 0 24px, rgba(255,255,255,.07) 25px 26px, transparent 27px 58px),
+    radial-gradient(80% 70% at 50% 0%, rgba(255,255,255,.12), transparent 70%);
+}
+@keyframes sky-breathe{ from{ filter:hue-rotate(-8deg) saturate(.95); } to{ filter:hue-rotate(16deg) saturate(1.14); } }
+@keyframes slow-roll{ to{ transform:rotate(1turn); } }
+
+.fit{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  z-index:1;
+}
+.stage{
+  width:var(--DW);
+  height:var(--DH);
+  transform-origin:center center;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+}
+
+.nameplate{
+  flex:0 0 auto;
+  text-align:center;
+  line-height:.86;
+  transform:translateY(6px);
+  text-shadow:0 2px 8px rgba(0,0,0,.38);
+}
+.nameplate h1{
+  margin:0;
+  font-family:"Saveloy","Karrik Local",system-ui,sans-serif;
+  font-size:45px;
+  font-weight:700;
+  letter-spacing:0;
+  transform:skewX(-4deg);
+  background:linear-gradient(95deg,#dbfffd 0%,var(--glass) 28%,var(--lime) 54%,var(--amber) 75%,var(--pink) 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  filter:drop-shadow(0 2px 0 rgba(0,30,35,.65)) drop-shadow(0 8px 18px rgba(0,0,0,.32));
+}
+.nameplate p{
+  margin:5px 0 0;
+  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-size:11px;
+  letter-spacing:.08em;
+  color:#dffaf3;
+  opacity:.88;
+}
+
+.glass{
+  position:relative;
+  width:520px;
+  height:676px;
+  flex:0 0 auto;
+  overflow:hidden;
+  padding:70px 58px 74px;
+  border-radius:42% 58% 48% 52% / 35% 41% 59% 65%;
+  background:
+    radial-gradient(110% 85% at 26% 7%, rgba(255,255,255,.62), transparent 43%),
+    radial-gradient(80% 80% at 82% 82%, rgba(137,105,255,.28), transparent 58%),
+    radial-gradient(70% 55% at 16% 74%, rgba(199,246,92,.20), transparent 60%),
+    linear-gradient(150deg, rgba(130,245,230,.88), rgba(65,141,168,.92) 44%, rgba(42,57,112,.92) 100%);
+  box-shadow:
+    inset 0 0 0 2px rgba(255,255,255,.22),
+    inset 20px 16px 46px rgba(255,255,255,.22),
+    inset -22px -26px 60px rgba(6,16,28,.58),
+    0 36px 52px rgba(0,0,0,.48),
+    0 6px 16px rgba(0,0,0,.34);
+  filter:drop-shadow(0 8px 24px rgba(66,255,229,.10));
+  animation:glass-breathe 10s ease-in-out infinite;
+}
+@keyframes glass-breathe{
+  0%,100%{ border-radius:42% 58% 48% 52% / 35% 41% 59% 65%; }
+  50%{ border-radius:47% 53% 43% 57% / 39% 37% 63% 61%; }
+}
+.glass .grain,
+.glass .rim,
+.glass .glare,
+.glass .prism{
+  position:absolute;
+  pointer-events:none;
+}
+.glass .grain{
+  inset:0;
+  z-index:1;
+  opacity:.18;
+  mix-blend-mode:overlay;
+  background-image:
+    radial-gradient(circle at 20% 18%, rgba(255,255,255,.18) 0 1px, transparent 2px),
+    radial-gradient(circle at 70% 45%, rgba(255,255,255,.16) 0 1px, transparent 2px),
+    repeating-linear-gradient(38deg, transparent 0 18px, rgba(255,255,255,.07) 19px 20px, transparent 21px 42px);
+  background-size:84px 84px, 112px 112px, auto;
+}
+.glass .rim{
+  z-index:2;
+  inset:7px;
+  border-radius:inherit;
+  box-shadow:
+    inset 0 0 0 2px rgba(255,255,255,.22),
+    inset 0 0 38px rgba(127,255,230,.26),
+    inset -18px -22px 42px rgba(8,22,36,.34);
+}
+.glass .glare{
+  z-index:3;
+  left:11%;
+  top:4%;
+  width:62%;
+  height:28%;
+  border-radius:50%;
+  background:radial-gradient(closest-side, rgba(255,255,255,.62), rgba(255,255,255,.10) 48%, transparent 74%);
+  filter:blur(4px);
+  opacity:.58;
+  animation:glare-drift 12s ease-in-out infinite;
+}
+.glass .prism{
+  z-index:3;
+  inset:-30%;
+  opacity:.30;
+  mix-blend-mode:color-dodge;
+  filter:blur(8px);
+  background:linear-gradient(118deg, transparent 18%, rgba(127,255,230,.75) 29%, transparent 37%, rgba(199,246,92,.65) 51%, transparent 61%, rgba(231,120,201,.58) 72%, transparent 84%);
+  animation:prism-slide 17s ease-in-out infinite;
+}
+@keyframes glare-drift{ 50%{ transform:translate(8%,4%) scale(1.08); } }
+@keyframes prism-slide{
+  0%,100%{ transform:translate(-5%,-4%) rotate(0deg); }
+  50%{ transform:translate(6%,8%) rotate(8deg); }
+}
+
+.layer-ui{
+  position:relative;
+  z-index:4;
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  gap:8px;
+}
+
+.viewer{
+  position:relative;
+  flex:0 0 auto;
+  height:210px;
+  border-radius:26px 20px 31px 18px;
+  overflow:hidden;
+  background:
+    radial-gradient(120% 100% at 50% 0%, #18363e, var(--screen) 70%),
+    #071116;
+  box-shadow:
+    inset 0 4px 18px rgba(0,0,0,.78),
+    inset 0 0 0 3px rgba(4,18,23,.92),
+    inset 0 0 46px rgba(127,255,230,.12),
+    0 2px 0 rgba(255,255,255,.28),
+    0 12px 22px rgba(0,0,0,.28);
+}
+.viewer::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:4;
+  pointer-events:none;
+  background:
+    radial-gradient(130% 80% at 32% 0%, rgba(255,255,255,.25), transparent 42%),
+    linear-gradient(120deg, transparent 5%, rgba(255,255,255,.15) 18%, transparent 28% 51%, rgba(127,255,230,.10) 59%, transparent 70%);
+  mix-blend-mode:screen;
+}
+.viewer::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:5;
+  pointer-events:none;
+  opacity:.30;
+  background:
+    repeating-linear-gradient(0deg, rgba(0,0,0,.36) 0 1px, transparent 1px 4px),
+    radial-gradient(120% 90% at 50% 50%, transparent 62%, rgba(0,0,0,.34) 100%);
+}
+.viewer.flash{
+  animation:screen-flash .52s ease-out;
+}
+@keyframes screen-flash{
+  0%{ filter:brightness(1.55) saturate(1.35); }
+  100%{ filter:none; }
+}
+.cam{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  opacity:0;
+  transform:scale(1.018);
+  transition:opacity .8s ease, transform 5s linear;
+  z-index:1;
+}
+.cam.active{
+  opacity:1;
+  transform:scale(1.055);
+}
+.viewer-empty{
+  position:absolute;
+  inset:0;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  text-align:center;
+  color:#9fc9c5;
+  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-size:13px;
+  letter-spacing:.05em;
+  text-shadow:0 0 10px rgba(127,255,230,.28);
+}
+.viewer.live .viewer-empty{ display:none; }
+.viewer-badge{
+  position:absolute;
+  z-index:6;
+  left:14px;
+  top:12px;
+  max-width:260px;
+  padding:5px 8px 4px;
+  border-radius:11px;
+  color:#cffff5;
+  background:rgba(4,17,21,.54);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.14), 0 4px 12px rgba(0,0,0,.24);
+  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-size:10px;
+  letter-spacing:.06em;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.readout{
+  flex:0 0 auto;
+  min-height:70px;
+  border-radius:16px 18px 15px 20px;
+  padding:10px 13px 9px;
+  background:
+    radial-gradient(120% 90% at 30% 0%, var(--screen-2), var(--screen) 70%),
+    var(--screen);
+  box-shadow:
+    inset 0 3px 10px rgba(0,0,0,.72),
+    inset 0 0 0 2px rgba(5,18,20,.92),
+    inset 0 0 28px rgba(127,255,230,.10),
+    0 2px 0 rgba(255,255,255,.18),
+    0 6px 14px rgba(0,0,0,.28);
+  overflow:hidden;
+}
+.readout-top{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:10px;
+}
+.locator{
+  min-width:0;
+  color:var(--phosphor);
+  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-size:17px;
+  letter-spacing:.05em;
+  text-shadow:0 0 9px rgba(127,255,230,.56);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.locator small{
+  margin-left:4px;
+  color:#6db4ab;
+  font-size:10px;
+}
+.aperture-bars{
+  flex:0 0 auto;
+  display:flex;
+  align-items:flex-end;
+  height:22px;
+  gap:3px;
+}
+.aperture-bars i{
+  display:block;
+  width:4px;
+  height:30%;
+  border-radius:2px;
+  background:linear-gradient(var(--phosphor),#3b928b);
+  box-shadow:0 0 5px rgba(127,255,230,.58);
+}
+.live .aperture-bars i{ animation:bar 1.2s ease-in-out infinite; }
+.aperture-bars i:nth-child(2){ animation-delay:.17s; }
+.aperture-bars i:nth-child(3){ animation-delay:.37s; }
+.aperture-bars i:nth-child(4){ animation-delay:.26s; }
+.aperture-bars i:nth-child(5){ animation-delay:.52s; }
+@keyframes bar{ 0%,100%{ height:24%; } 42%{ height:92%; } 72%{ height:46%; } }
+.meta,.status{
+  font-family:"Blue Screen","Share Tech Mono",monospace;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.meta{
+  margin-top:7px;
+  min-height:14px;
+  color:#82aaa7;
+  font-size:11px;
+}
+.meta .tag{ color:#b6ff62; }
+.status{
+  margin-top:4px;
+  min-height:13px;
+  color:#ffc982;
+  font-size:11px;
+  letter-spacing:.05em;
+}
+.status::before{ content:"> "; color:var(--amber); }
+
+.organs{
+  flex:0 0 auto;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.dial{
+  position:relative;
+  width:62px;
+  height:62px;
+  flex:0 0 auto;
+}
+.dial svg{
+  display:block;
+  width:62px;
+  height:62px;
+}
+.dial .cap{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--phosphor);
+  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-size:11px;
+  text-shadow:0 0 6px rgba(127,255,230,.62);
+  pointer-events:none;
+}
+.btns{
+  flex:1;
+  display:grid;
+  grid-template-columns:1.08fr 1fr 1fr;
+  gap:8px;
+}
+.crystal{
+  min-width:0;
+  min-height:52px;
+  border:0;
+  cursor:pointer;
+  color:#07171c;
+  padding:8px 4px 7px;
+  border-radius:46% 54% 48% 52% / 56% 54% 46% 44%;
+  font-weight:700;
+  font-size:11px;
+  line-height:1;
+  text-transform:uppercase;
+  background:
+    radial-gradient(120% 85% at 32% 18%, rgba(255,255,255,.92), transparent 36%),
+    radial-gradient(150% 120% at 76% 98%, rgba(0,0,0,.28), transparent 54%),
+    var(--btn,#84f1df);
+  box-shadow:
+    inset 0 -3px 8px rgba(0,0,0,.26),
+    inset 0 2px 5px rgba(255,255,255,.54),
+    0 7px 13px rgba(0,0,0,.28);
+  transition:transform .12s ease, filter .16s ease, box-shadow .16s ease;
+}
+.crystal small{
+  display:block;
+  margin-top:3px;
+  color:rgba(7,23,28,.74);
+  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-size:9px;
+  font-weight:400;
+  text-transform:none;
+}
+.crystal:hover{ filter:brightness(1.08) saturate(1.08); }
+.crystal:active{ transform:translateY(2px) scale(.98); }
+.crystal:disabled{ cursor:not-allowed; filter:grayscale(.35) brightness(.82); opacity:.65; }
+.crystal.open{ --btn:linear-gradient(160deg,#96fff0,#45b7ef); }
+.crystal.skip{ --btn:linear-gradient(160deg,#ffc66d,#f37a62); }
+.crystal.anchor{ --btn:linear-gradient(160deg,#d6a6ff,#8066ff); }
+.crystal[aria-pressed="true"]{
+  filter:brightness(1.12) saturate(1.2);
+  box-shadow:
+    inset 0 0 0 2px rgba(255,255,255,.68),
+    inset 0 -3px 8px rgba(0,0,0,.28),
+    0 0 18px rgba(127,255,230,.54);
+}
+
+.controls{
+  flex:0 0 auto;
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+.ctl-row{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-height:28px;
+}
+.ctl-label{
+  flex:0 0 42px;
+  color:#e9fffa;
+  opacity:.88;
+  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-size:11px;
+  letter-spacing:.04em;
+}
+.range-wrap{
+  position:relative;
+  flex:1;
+  height:28px;
+}
+.range-track{
+  position:absolute;
+  left:0;
+  right:0;
+  top:12px;
+  height:5px;
+  border-radius:10px;
+  background:rgba(4,19,25,.45);
+  box-shadow:inset 0 1px 4px rgba(0,0,0,.56), 0 1px 0 rgba(255,255,255,.14);
+}
+.range-fill{
+  position:absolute;
+  top:12px;
+  height:5px;
+  border-radius:10px;
+  background:linear-gradient(90deg,var(--glass),var(--lime),var(--amber));
+  box-shadow:0 0 9px rgba(127,255,230,.45);
+}
+.range-wrap input[type="range"]{
+  position:absolute;
+  inset:0;
+  width:100%;
+  margin:0;
+  pointer-events:none;
+  appearance:none;
+  -webkit-appearance:none;
+  background:transparent;
+}
+.range-wrap input[type="range"]::-webkit-slider-thumb{
+  pointer-events:auto;
+  appearance:none;
+  -webkit-appearance:none;
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  border:0;
+  background:
+    radial-gradient(circle at 35% 25%, #fff 0 18%, transparent 34%),
+    linear-gradient(150deg,#9bfff2,#5ed8ff 58%,#7c6cff);
+  box-shadow:0 2px 7px rgba(0,0,0,.42), 0 0 0 2px rgba(4,18,23,.66);
+}
+.range-wrap input[type="range"]::-moz-range-thumb{
+  pointer-events:auto;
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  border:0;
+  background:#8effef;
+  box-shadow:0 2px 7px rgba(0,0,0,.42), 0 0 0 2px rgba(4,18,23,.66);
+}
+.readval{
+  flex:0 0 80px;
+  color:#d7fff7;
+  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-size:11px;
+  text-align:right;
+}
+.select-wrap{
+  flex:1;
+  position:relative;
+}
+.select-wrap select{
+  width:100%;
+  height:28px;
+  border:0;
+  border-radius:14px;
+  padding:0 30px 0 12px;
+  color:#dffff7;
+  background:
+    linear-gradient(180deg, rgba(8,34,41,.88), rgba(7,20,27,.94));
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.14), inset 0 2px 8px rgba(0,0,0,.42);
+  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-size:11px;
+  outline:none;
+  appearance:none;
+}
+.select-wrap::after{
+  content:"v";
+  position:absolute;
+  right:10px;
+  top:50%;
+  transform:translateY(-50%);
+  color:#94e5db;
+  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-size:10px;
+  pointer-events:none;
+}
+
+.tastebar{
+  flex:0 0 auto;
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+.glint{
+  flex:0 0 70px;
+  min-height:34px;
+  border:0;
+  cursor:pointer;
+  border-radius:18px 14px 17px 15px;
+  color:#07171c;
+  background:
+    radial-gradient(100% 80% at 32% 20%, rgba(255,255,255,.8), transparent 42%),
+    linear-gradient(150deg,#f6ff8d,#56f0c7 58%,#6ba7ff);
+  box-shadow:inset 0 -3px 7px rgba(0,0,0,.24), 0 5px 10px rgba(0,0,0,.25);
+  font-weight:700;
+  font-size:11px;
+  text-transform:uppercase;
+}
+.glint[aria-pressed="true"]{
+  background:
+    radial-gradient(100% 80% at 32% 20%, rgba(255,255,255,.9), transparent 42%),
+    linear-gradient(150deg,#fff372,#ff9bcb 54%,#8d7cff);
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.68), 0 0 18px rgba(255,243,114,.5);
+}
+.note{
+  flex:1;
+  min-width:0;
+  height:34px;
+  border:0;
+  border-radius:17px;
+  padding:0 13px;
+  color:#e7fff9;
+  background:rgba(6,22,28,.68);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.13), inset 0 2px 8px rgba(0,0,0,.45);
+  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-size:11px;
+  outline:none;
+}
+.note::placeholder{ color:#78a6a2; opacity:.82; }
+
+.utility{
+  flex:0 0 auto;
+  display:flex;
+  align-items:center;
+  gap:7px;
+}
+.pill{
+  border:0;
+  cursor:pointer;
+  min-height:28px;
+  padding:7px 11px 6px;
+  border-radius:14px;
+  color:#d9fff7;
+  background:rgba(6,22,28,.58);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.13), 0 3px 8px rgba(0,0,0,.18);
+  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-size:10px;
+  letter-spacing:.04em;
+}
+.pill:active{ transform:translateY(1px); }
+.pill .ct{
+  margin-left:4px;
+  color:var(--lime);
+}
+.utility .spacer{
+  flex:1;
+  min-width:0;
+  color:#b7e7df;
+  opacity:.72;
+  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-size:10px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.ticker{
+  position:relative;
+  flex:0 0 31px;
+  overflow:hidden;
+  border-radius:16px 15px 18px 14px;
+  background:rgba(6,19,25,.64);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.12), inset 0 2px 8px rgba(0,0,0,.42);
+}
+.ticker-track{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  white-space:nowrap;
+  color:#e9fff9;
+  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-size:12px;
+  letter-spacing:.05em;
+  text-shadow:0 0 8px rgba(127,255,230,.42);
+}
+.ticker.marquee .ticker-track{
+  justify-content:flex-start;
+  animation:ticker var(--dur,14s) linear infinite;
+}
+.tk-seg{ padding:0 16px; }
+.ticker.marquee .tk-seg{ padding-right:70px; }
+@keyframes ticker{ to{ transform:translateX(-50%); } }
+
+.credit-strip{
+  flex:0 0 auto;
+  width:520px;
+  padding:0 18px;
+  text-align:center;
+  color:#cff3ee;
+  opacity:.72;
+  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-size:10px;
+  line-height:1.35;
+  text-shadow:0 2px 8px rgba(0,0,0,.5);
+}
+.credit-strip a{
+  color:#b8fff2;
+  text-decoration:none;
+  border-bottom:1px solid rgba(184,255,242,.34);
+}
+
+.logwrap{
+  position:absolute;
+  z-index:8;
+  inset:70px 58px 74px;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  border-radius:24px 18px 25px 17px;
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(18px) scale(.98);
+  transition:opacity .18s ease, transform .18s ease;
+  background:linear-gradient(180deg, rgba(7,22,30,.98), rgba(8,15,26,.98));
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.12), 0 18px 28px rgba(0,0,0,.42);
+}
+.logwrap.open{
+  opacity:1;
+  pointer-events:auto;
+  transform:none;
+}
+.log-head{
+  flex:0 0 auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px 14px;
+  border-bottom:1px solid rgba(255,255,255,.09);
+}
+.log-head h2{
+  margin:0;
+  color:#e7fff9;
+  font-size:15px;
+  font-weight:700;
+}
+.log-head .ct{
+  margin-left:6px;
+  color:#a8d7d2;
+  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-size:12px;
+}
+.log-x{
+  width:30px;
+  height:30px;
+  border:0;
+  border-radius:10px;
+  cursor:pointer;
+  color:#e7fff9;
+  background:rgba(255,255,255,.08);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.09);
+}
+.log{
+  flex:1;
+  min-height:0;
+  overflow-y:auto;
+}
+.log-empty{
+  padding:28px 16px;
+  color:#89aaa6;
+  text-align:center;
+  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-size:12px;
+}
+.entry{
+  display:flex;
+  gap:10px;
+  padding:12px 14px;
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+.e-star{
+  flex:0 0 22px;
+  color:#fff372;
+  font-size:15px;
+  line-height:1.1;
+  text-shadow:0 0 8px rgba(255,243,114,.5);
+}
+.e-star.off{ color:#315250; text-shadow:none; }
+.e-body{ min-width:0; flex:1; }
+.e-name{
+  color:#e7fff9;
+  font-size:12px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.e-meta,.e-note{
+  margin-top:4px;
+  color:#87aaa6;
+  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-size:10px;
+  line-height:1.35;
+}
+.e-note{ color:#ffd59d; }
+.log-foot{
+  flex:0 0 auto;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:10px 12px;
+  border-top:1px solid rgba(255,255,255,.08);
+}
+.log-foot .credit{
+  flex:1;
+  min-width:0;
+  color:#83aaa5;
+  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-size:10px;
+  line-height:1.35;
+}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+    scroll-behavior:auto !important;
+  }
+}
+</style>
+</head>
+<body>
+<div class="sky" aria-hidden="true"></div>
+
+<main class="fit">
+  <div class="stage" id="stage">
+    <div class="nameplate">
+      <h1>DriftGlass</h1>
+      <p>a lens that wanders</p>
+    </div>
+
+    <section class="glass" aria-label="DriftGlass public webcam drifter">
+      <div class="grain" aria-hidden="true"></div>
+      <div class="rim" aria-hidden="true"></div>
+      <div class="glare" aria-hidden="true"></div>
+      <div class="prism" aria-hidden="true"></div>
+
+      <div class="layer-ui">
+        <div class="viewer" id="viewer">
+          <div class="viewer-empty" id="viewerEmpty">press open glass<br>to start drifting</div>
+          <img class="cam" id="camA" alt="">
+          <img class="cam" id="camB" alt="">
+          <div class="viewer-badge" id="screenBadge">cold glass</div>
+        </div>
+
+        <div class="readout" id="readout">
+          <div class="readout-top">
+            <div class="locator" id="locator">--<small>PUBLIC</small></div>
+            <div class="aperture-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+          </div>
+          <div class="meta" id="meta">official public webcam pool loaded</div>
+          <div class="status" id="status">off</div>
+        </div>
+
+        <div class="organs">
+          <div class="dial" aria-hidden="true">
+            <svg viewBox="0 0 78 78">
+              <defs>
+                <linearGradient id="ringGrad" x1="0" x2="1">
+                  <stop offset="0" stop-color="#7fffe6"/>
+                  <stop offset=".55" stop-color="#c7f65c"/>
+                  <stop offset="1" stop-color="#ffbd62"/>
+                </linearGradient>
+              </defs>
+              <circle cx="39" cy="39" r="30" fill="rgba(5,18,22,.62)" stroke="rgba(255,255,255,.14)" stroke-width="7"/>
+              <circle id="ring" cx="39" cy="39" r="30" fill="none" stroke="url(#ringGrad)" stroke-linecap="round" stroke-width="7" transform="rotate(-90 39 39)" stroke-dasharray="188.5" stroke-dashoffset="188.5"/>
+              <line id="needle" x1="39" y1="39" x2="39" y2="14" stroke="#e7fff9" stroke-width="3" stroke-linecap="round"/>
+              <circle cx="39" cy="39" r="8" fill="#07171c" stroke="#7fffe6" stroke-width="2"/>
+            </svg>
+            <div class="cap" id="dialcap"></div>
+          </div>
+          <div class="btns">
+            <button class="crystal open" id="btnOpen">OPEN<small>glass</small></button>
+            <button class="crystal skip" id="btnSkip" disabled>DRIFT<small>on</small></button>
+            <button class="crystal anchor" id="btnAnchor" aria-pressed="false" disabled>ANCHOR<small>hold</small></button>
+          </div>
+        </div>
+
+        <div class="controls">
+          <div class="ctl-row">
+            <span class="ctl-label">drift</span>
+            <div class="range-wrap" aria-label="drift duration range">
+              <div class="range-track"></div>
+              <div class="range-fill" id="rangeFill"></div>
+              <input id="rmin" type="range" min="10" max="300" step="5" value="25" aria-label="minimum drift seconds">
+              <input id="rmax" type="range" min="10" max="300" step="5" value="95" aria-label="maximum drift seconds">
+            </div>
+            <span class="readval" id="rangeVal">0:25-1:35</span>
+          </div>
+          <div class="ctl-row">
+            <span class="ctl-label">lens</span>
+            <span class="select-wrap">
+              <select id="mode" aria-label="lens bias">
+                <option value="all">pure drift</option>
+                <option value="wild">wild weather</option>
+                <option value="road">road glass</option>
+                <option value="ridge">ridge glass</option>
+                <option value="gate">thresholds</option>
+              </select>
+            </span>
+            <button class="pill" id="btnSource">source</button>
+          </div>
+        </div>
+
+        <div class="tastebar">
+          <button class="glint" id="btnGlint" aria-pressed="false">GLINT</button>
+          <input class="note" id="note" type="text" maxlength="120" placeholder="etch a note..." autocomplete="off">
+        </div>
+
+        <div class="utility">
+          <button class="pill" id="btnLog">view log<span class="ct" id="logct">0</span></button>
+          <button class="pill" id="btnWrap">wrap it up</button>
+          <span class="spacer">only intentionally public sources</span>
+        </div>
+
+        <div class="ticker" id="ticker">
+          <div class="ticker-track" id="tickerTrack"><span class="tk-seg">no glass opened yet</span></div>
+        </div>
+      </div>
+
+      <div class="logwrap" id="logwrap">
+        <div class="log-head">
+          <h2>viewing log<span class="ct" id="logctHead">0</span></h2>
+          <button class="log-x" id="btnLogClose" aria-label="close log">x</button>
+        </div>
+        <div class="log" id="log">
+          <div class="log-empty" id="logEmpty">nothing seen yet. open the glass and drift.</div>
+        </div>
+        <div class="log-foot">
+          <div class="credit">Curated from official public webcam pages. Static webcams refresh inside the lens.</div>
+          <button class="pill" id="btnWrap2">wrap</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="credit-strip">
+      public source pool: <a href="https://www.nps.gov/yell/learn/photosmultimedia/webcams.htm" target="_blank" rel="noopener">Yellowstone National Park webcams</a>
+    </div>
+  </div>
+</main>
+
+<script>
+const DESIGN_W=520, DESIGN_H=760, MARGIN=14;
+const stageEl=document.getElementById("stage");
+function fit(){
+  const availW=window.innerWidth-MARGIN*2;
+  const availH=window.innerHeight-MARGIN*2;
+  const s=Math.min(availW/DESIGN_W, availH/DESIGN_H);
+  stageEl.style.transform="scale("+s+")";
+}
+window.addEventListener("resize",fit,{passive:true});
+window.addEventListener("orientationchange",fit);
+fit();
+
+const SOURCE_ROOT="https://www.nps.gov/yell/learn/photosmultimedia/webcams.htm";
+const FEEDS=[
+  {id:"mammoth_arch",name:"North Entrance - Roosevelt Arch",place:"Yellowstone National Park, Montana",provider:"National Park Service",type:"image",refresh:60,url:"https://www.nps.gov/webcams-yell/mammoth_arch.jpg",page:"https://www.nps.gov/media/webcam/view.htm?id=81B468BC-1DD8-B71B-0BBA4C383E179188&r=%2Fyell%2Flearn%2Fphotosmultimedia%2Fwebcams.htm",tags:["gate","road","mountain","weather"]},
+  {id:"mammoth_electric",name:"North Entrance - Electric Peak",place:"Yellowstone National Park, Montana",provider:"National Park Service",type:"image",refresh:60,url:"https://www.nps.gov/webcams-yell/mammoth_electric.jpg",page:"https://www.nps.gov/media/webcam/view.htm?id=81B468AB-1DD8-B71B-0BE84D8E8E0F1112&r=%2Fyell%2Flearn%2Fphotosmultimedia%2Fwebcams.htm",tags:["wild","ridge","mountain","weather"]},
+  {id:"mammoth_parade",name:"Mammoth Hot Springs - Travertine Terraces",place:"Yellowstone National Park, Wyoming",provider:"National Park Service",type:"image",refresh:60,url:"https://www.nps.gov/webcams-yell/mammoth_parade.jpg",page:"https://www.nps.gov/media/webcam/view.htm?id=696F20E1-F421-B232-FE72D6D85B157422&r=%2Fyell%2Flearn%2Fphotosmultimedia%2Fwebcams.htm",tags:["thermal","wild","weather","quiet"]},
+  {id:"washburn_ne",name:"Mount Washburn - Northeastern View",place:"Yellowstone National Park, Wyoming",provider:"National Park Service",type:"image",refresh:60,url:"https://www.nps.gov/webcams-yell/washburn_ne.jpg",page:"https://www.nps.gov/media/webcam/view.htm?id=81B46891-1DD8-B71B-0B6575944D4DECD5&r=%2Fyell%2Flearn%2Fphotosmultimedia%2Fwebcams.htm",tags:["ridge","wild","mountain","weather"]},
+  {id:"washburn_sw",name:"Mount Washburn - Southern View",place:"Yellowstone National Park, Wyoming",provider:"National Park Service",type:"image",refresh:60,url:"https://www.nps.gov/webcams-yell/washburn_sw.jpg",page:"https://www.nps.gov/media/webcam/view.htm?id=81B4689E-1DD8-B71B-0B8741319EA29FD3&r=%2Fyell%2Flearn%2Fphotosmultimedia%2Fwebcams.htm",tags:["ridge","wild","mountain","smoke"]},
+  {id:"west_gate",name:"West Entrance - Out of the Park",place:"West Yellowstone, Montana",provider:"National Park Service",type:"image",refresh:60,url:"https://www.nps.gov/webcams-yell/west_gate.jpg",page:"https://www.nps.gov/media/webcam/view.htm?id=81B468C8-1DD8-B71B-0BFE5983E4D2E421&r=%2Fyell%2Flearn%2Fphotosmultimedia%2Fwebcams.htm",tags:["gate","road","night","weather"]},
+  {id:"west_into",name:"West Entrance - Into the Park",place:"West Yellowstone, Montana",provider:"National Park Service",type:"image",refresh:60,url:"https://www.nps.gov/webcams-yell/west_into.jpg",page:"https://www.nps.gov/media/webcam/view.htm?id=81B468D6-1DD8-B71B-0B9C2E324EF5F9F8&r=%2Fyell%2Flearn%2Fphotosmultimedia%2Fwebcams.htm",tags:["gate","road","forest","night"]},
+  {id:"east_out",name:"East Entrance - Out of Park",place:"Yellowstone National Park, Wyoming",provider:"National Park Service",type:"image",refresh:60,url:"https://www.nps.gov/webcams-yell/east_out.jpg",page:"https://www.nps.gov/media/webcam/view.htm?id=45FDA0AC-0A10-4ACA-A0C6-44F440575AE1&r=%2Fyell%2Flearn%2Fphotosmultimedia%2Fwebcams.htm",tags:["gate","road","forest","weather"]},
+  {id:"east_in",name:"East Entrance - Into Park",place:"Yellowstone National Park, Wyoming",provider:"National Park Service",type:"image",refresh:60,url:"https://www.nps.gov/webcams-yell/east_in.jpg",page:"https://www.nps.gov/media/webcam/view.htm?id=E3772256-9585-4859-A1FD-FC47F15F7226&r=%2Fyell%2Flearn%2Fphotosmultimedia%2Fwebcams.htm",tags:["gate","road","forest","weather"]}
+];
+
+const LIVE_TIMEOUT_MS=9000, MAX_TRIES=7, RING_C=2*Math.PI*30;
+const TK_SPEED=42, TK_GAP=70;
+let playing=false, anchored=false, switching=false;
+let cur=null, driftRAF=null, refreshTimer=null;
+let activePane=0, intervalMin=25, intervalMax=95;
+const recent=[];
+const history=[];
+
+const $=id=>document.getElementById(id);
+const el={
+  viewer:$("viewer"), camA:$("camA"), camB:$("camB"), badge:$("screenBadge"),
+  readout:$("readout"), locator:$("locator"), meta:$("meta"), status:$("status"),
+  ring:$("ring"), needle:$("needle"), dialcap:$("dialcap"),
+  open:$("btnOpen"), skip:$("btnSkip"), anchor:$("btnAnchor"), source:$("btnSource"),
+  mode:$("mode"), glint:$("btnGlint"), note:$("note"),
+  ticker:$("ticker"), tickerTrack:$("tickerTrack"),
+  log:$("log"), logEmpty:$("logEmpty"), logct:$("logct"), logctHead:$("logctHead")
+};
+
+function setStatus(t){ el.status.textContent=t; }
+function fmtClock(sec){
+  const m=Math.floor(sec/60), s=sec%60;
+  return m+":"+String(s).padStart(2,"0");
+}
+function esc(s){
+  return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+}
+function hash(str){
+  let h=0;
+  for(let i=0;i<str.length;i++) h=Math.imul(31,h)+str.charCodeAt(i)|0;
+  return Math.abs(h);
+}
+function tagged(feed,mode){
+  if(mode==="all") return true;
+  if(mode==="wild") return feed.tags.some(t=>["wild","weather","thermal","mountain","forest"].includes(t));
+  if(mode==="road") return feed.tags.includes("road");
+  if(mode==="ridge") return feed.tags.includes("ridge")||feed.tags.includes("mountain");
+  if(mode==="gate") return feed.tags.includes("gate");
+  return true;
+}
+function cacheBust(url){
+  const join=url.indexOf("?")===-1 ? "?" : "&";
+  return url+join+"dg="+Date.now()+"-"+Math.floor(Math.random()*100000);
+}
+function sourceUrl(feed){ return (feed&&feed.page)||SOURCE_ROOT; }
+
+function renderName(text){
+  el.ticker.classList.remove("marquee");
+  el.tickerTrack.style.removeProperty("--dur");
+  el.tickerTrack.innerHTML="";
+  const a=document.createElement("span");
+  a.className="tk-seg";
+  a.textContent=text||"untitled glass";
+  el.tickerTrack.appendChild(a);
+  requestAnimationFrame(()=>{
+    const avail=el.ticker.clientWidth-32;
+    if(a.offsetWidth>avail){
+      const unit=a.offsetWidth+TK_GAP;
+      const b=a.cloneNode(true);
+      el.tickerTrack.appendChild(b);
+      el.tickerTrack.style.setProperty("--dur",(unit/TK_SPEED)+"s");
+      el.ticker.classList.add("marquee");
+    }
+  });
+}
+
+function probeImage(feed){
+  return new Promise(res=>{
+    let done=false;
+    const img=new Image();
+    const timeout=setTimeout(()=>finish(false),LIVE_TIMEOUT_MS);
+    function finish(ok){
+      if(done) return;
+      done=true;
+      clearTimeout(timeout);
+      img.onload=null;
+      img.onerror=null;
+      res(ok ? {ok:true,src:img.src,width:img.naturalWidth,height:img.naturalHeight} : {ok:false});
+    }
+    img.onload=()=>finish(img.naturalWidth>80 && img.naturalHeight>60);
+    img.onerror=()=>finish(false);
+    img.decoding="async";
+    img.referrerPolicy="no-referrer-when-downgrade";
+    img.src=cacheBust(feed.url);
+  });
+}
+
+function pickFeed(){
+  const mode=el.mode.value;
+  let pool=FEEDS.filter(f=>tagged(f,mode));
+  if(!pool.length) pool=FEEDS.slice();
+  for(let guard=0;guard<18;guard++){
+    const f=pool[Math.floor(Math.random()*pool.length)];
+    if(recent.indexOf(f.id)===-1 || pool.length<4 || guard>10) return f;
+  }
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+function pushRecent(id){
+  recent.push(id);
+  while(recent.length>5) recent.shift();
+}
+
+function showImage(src,feed,isRefresh){
+  const next=activePane ? el.camA : el.camB;
+  const prev=activePane ? el.camB : el.camA;
+  activePane=activePane ? 0 : 1;
+  next.alt=feed.name;
+  next.src=src;
+  next.classList.add("active");
+  prev.classList.remove("active");
+  el.viewer.classList.add("live","flash");
+  setTimeout(()=>el.viewer.classList.remove("flash"),560);
+  if(!isRefresh) updateAtmosphere(feed);
+}
+
+function updateAtmosphere(feed){
+  const seed=hash(feed.id||feed.name||"glass");
+  const h1=seed%360;
+  const h2=(seed+72)%360;
+  const h3=(seed+148)%360;
+  document.documentElement.style.setProperty("--glass","hsl("+h1+", 88%, 73%)");
+  document.documentElement.style.setProperty("--glass-3","hsl("+h2+", 92%, 68%)");
+  document.documentElement.style.setProperty("--pink","hsl("+h3+", 88%, 72%)");
+}
+
+async function gotoFeed(reason){
+  if(switching||!playing) return;
+  switching=true;
+  stopRefresh();
+  setStatus(reason==="hunt"?"warming the glass...":"finding another window...");
+  let feed=null, loaded=null;
+  for(let tries=0;tries<MAX_TRIES;tries++){
+    feed=pickFeed();
+    setStatus(tries ? "testing the next public view..." : "opening a public view...");
+    loaded=await probeImage(feed);
+    if(loaded.ok) break;
+  }
+  if(!loaded||!loaded.ok){
+    switching=false;
+    setStatus("no public views answered. retrying soon.");
+    refreshTimer=setTimeout(()=>gotoFeed("hunt"),1200);
+    return;
+  }
+  promote(feed,loaded.src);
+  switching=false;
+}
+
+function promote(feed,src){
+  const old=cur;
+  cur={feed:feed,tunedAt:Date.now(),liked:false,note:"",refreshes:0};
+  if(old) logLeave(old);
+  pushRecent(feed.id);
+  showImage(src,feed,false);
+  renderCard(feed);
+  resetTaste();
+  startRefresh();
+  if(!anchored) startDrift(); else holdDial();
+  setStatus(anchored ? "anchored on this view" : "public view loaded");
+}
+
+function renderCard(feed){
+  renderName(feed.name);
+  el.locator.innerHTML=esc(codeFor(feed))+"<small>"+esc(feed.type.toUpperCase())+"</small>";
+  const tags=feed.tags.slice(0,4).join(" / ");
+  el.meta.innerHTML=esc(feed.place)+"  <span class=\"tag\">"+esc(tags)+"</span>";
+  el.badge.textContent=feed.provider+" / "+feed.refresh+"s refresh";
+  el.readout.classList.add("live");
+}
+function codeFor(feed){
+  const n=hash(feed.id)%900+100;
+  return "GLS-"+n;
+}
+function clearCard(){
+  cur=null;
+  renderName("no glass opened yet");
+  el.locator.innerHTML="--<small>PUBLIC</small>";
+  el.meta.textContent="official public webcam pool loaded";
+  el.badge.textContent="cold glass";
+  el.viewer.classList.remove("live");
+  el.readout.classList.remove("live");
+  el.camA.classList.remove("active");
+  el.camB.classList.remove("active");
+  el.camA.removeAttribute("src");
+  el.camB.removeAttribute("src");
+}
+
+function startRefresh(){
+  stopRefresh();
+  if(!cur) return;
+  const wait=Math.max(30000,(cur.feed.refresh||60)*1000);
+  refreshTimer=setInterval(refreshCurrent,wait);
+}
+function stopRefresh(){
+  if(refreshTimer){
+    clearInterval(refreshTimer);
+    clearTimeout(refreshTimer);
+    refreshTimer=null;
+  }
+}
+async function refreshCurrent(){
+  if(!cur||switching) return;
+  const id=cur.feed.id;
+  const loaded=await probeImage(cur.feed);
+  if(!cur||cur.feed.id!==id) return;
+  if(loaded.ok){
+    cur.refreshes++;
+    showImage(loaded.src,cur.feed,true);
+    setStatus(anchored ? "anchored view refreshed" : "view refreshed");
+  }
+}
+
+function startDrift(){
+  stopDrift();
+  const dur=(intervalMin+Math.random()*(intervalMax-intervalMin))*1000;
+  const t0=performance.now();
+  (function tick(t){
+    const k=Math.min(1,(t-t0)/dur);
+    renderDial(k,Math.max(0,Math.ceil((dur-(t-t0))/1000)));
+    if(k>=1){ driftRAF=null; gotoFeed("drift"); return; }
+    driftRAF=requestAnimationFrame(tick);
+  })(t0);
+}
+function stopDrift(){
+  if(driftRAF) cancelAnimationFrame(driftRAF);
+  driftRAF=null;
+}
+function renderDial(k,secsLeft){
+  el.ring.style.strokeDashoffset=RING_C*(1-k);
+  el.needle.setAttribute("transform","rotate("+(k*360)+" 39 39)");
+  el.dialcap.textContent=secsLeft!=null ? secsLeft : "";
+}
+function holdDial(){
+  el.ring.style.strokeDashoffset=0;
+  el.needle.setAttribute("transform","rotate(0 39 39)");
+  el.dialcap.textContent="hold";
+}
+function clearDial(){
+  el.ring.style.strokeDashoffset=RING_C;
+  el.needle.setAttribute("transform","rotate(0 39 39)");
+  el.dialcap.textContent="";
+}
+
+function resetTaste(){
+  el.glint.setAttribute("aria-pressed","false");
+  el.note.value="";
+}
+el.glint.addEventListener("click",()=>{
+  if(!cur) return;
+  cur.liked=!cur.liked;
+  el.glint.setAttribute("aria-pressed",cur.liked?"true":"false");
+});
+el.note.addEventListener("input",()=>{
+  if(cur) cur.note=el.note.value;
+});
+
+function snapshot(c){
+  const f=c.feed;
+  return {
+    id:f.id,name:f.name,place:f.place,provider:f.provider,tags:f.tags.join(", "),
+    type:f.type,url:f.url,page:sourceUrl(f),tunedAt:c.tunedAt,leftAt:Date.now(),
+    liked:!!c.liked,note:(c.note||"").trim(),refreshes:c.refreshes||0
+  };
+}
+function logLeave(c){
+  if(!c||!c.feed) return;
+  history.push(snapshot(c));
+  renderHistory();
+}
+function renderHistory(){
+  el.logct.textContent=history.length;
+  el.logctHead.textContent=history.length;
+  if(!history.length){
+    el.logEmpty.style.display="block";
+    return;
+  }
+  el.logEmpty.style.display="none";
+  el.log.querySelectorAll(".entry").forEach(n=>n.remove());
+  for(let i=history.length-1;i>=0;i--){
+    const h=history[i];
+    const div=document.createElement("div");
+    div.className="entry";
+    const dur=Math.max(1,Math.round((h.leftAt-h.tunedAt)/1000));
+    const meta=[h.place,h.type,fmtClock(dur),h.tags].filter(Boolean).join("  /  ");
+    div.innerHTML=
+      '<div class="e-star'+(h.liked?'':' off')+'">*</div>'+
+      '<div class="e-body"><div class="e-name">'+esc(h.name)+'</div>'+
+      '<div class="e-meta">'+esc(meta)+'</div>'+
+      (h.note?'<div class="e-note">'+esc(h.note)+'</div>':'')+'</div>';
+    el.log.appendChild(div);
+  }
+}
+
+function tstamp(ms){
+  const d=new Date(ms);
+  return d.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit",second:"2-digit"});
+}
+function buildLog(){
+  const rows=history.slice();
+  if(cur) rows.push(snapshot(cur));
+  const now=new Date();
+  let out="DriftGlass viewing log\n";
+  out+="exported "+now.toLocaleString()+"\n";
+  out+="views drifted through: "+rows.length+"   /   glinted: "+rows.filter(r=>r.liked).length+"\n";
+  out+="".padEnd(64,"=")+"\n\n";
+  rows.forEach(r=>{
+    const span=tstamp(r.tunedAt)+"-"+tstamp(r.leftAt);
+    const dur=Math.max(1,Math.round((r.leftAt-r.tunedAt)/1000));
+    out+="["+span+"]  "+(r.liked?"* glinted":"         ")+"   "+r.name+"\n";
+    out+="    "+[r.place,r.provider,r.type.toUpperCase(),r.tags].filter(Boolean).join(" / ")+"\n";
+    out+="    watched "+fmtClock(dur)+"; refreshed "+r.refreshes+" time(s)\n";
+    if(r.note) out+="    note: "+r.note+"\n";
+    out+="    source page: "+r.page+"\n";
+    out+="    image: "+r.url+"\n\n";
+  });
+  return out;
+}
+function wrapUp(){
+  if(!history.length&&!cur){
+    setStatus("nothing to wrap yet. drift a little first.");
+    return;
+  }
+  const blob=new Blob([buildLog()],{type:"text/plain;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  const stamp=new Date().toISOString().slice(0,16).replace(/[:T]/g,"-");
+  a.href=url;
+  a.download="driftglass-log-"+stamp+".txt";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+
+function updateButtons(){
+  el.open.innerHTML=playing ? "CLOSE<small>glass</small>" : "OPEN<small>glass</small>";
+  el.skip.disabled=!playing;
+  el.anchor.disabled=!playing;
+  el.anchor.setAttribute("aria-pressed",anchored?"true":"false");
+}
+el.open.addEventListener("click",()=>{
+  if(playing){ stopAll(); return; }
+  playing=true;
+  anchored=false;
+  updateButtons();
+  gotoFeed("hunt");
+});
+function stopAll(){
+  playing=false;
+  anchored=false;
+  switching=false;
+  stopDrift();
+  stopRefresh();
+  if(cur) logLeave(cur);
+  clearDial();
+  clearCard();
+  resetTaste();
+  setStatus("off");
+  updateButtons();
+}
+el.skip.addEventListener("click",()=>{
+  if(!playing) return;
+  stopDrift();
+  gotoFeed("drift");
+});
+el.anchor.addEventListener("click",()=>{
+  if(!playing) return;
+  anchored=!anchored;
+  if(anchored){
+    stopDrift();
+    holdDial();
+    setStatus("anchored on this view");
+  }else{
+    setStatus("drift released");
+    startDrift();
+  }
+  updateButtons();
+});
+el.source.addEventListener("click",()=>{
+  const url=cur ? sourceUrl(cur.feed) : SOURCE_ROOT;
+  window.open(url,"_blank","noopener");
+});
+el.mode.addEventListener("change",()=>{
+  setStatus("lens bias set: "+el.mode.options[el.mode.selectedIndex].text);
+});
+$("btnWrap").addEventListener("click",wrapUp);
+$("btnWrap2").addEventListener("click",wrapUp);
+$("btnLog").addEventListener("click",()=>$("logwrap").classList.add("open"));
+$("btnLogClose").addEventListener("click",()=>$("logwrap").classList.remove("open"));
+
+const rmin=$("rmin"), rmax=$("rmax"), rfill=$("rangeFill"), rval=$("rangeVal");
+function syncRange(){
+  let a=+rmin.value, b=+rmax.value;
+  if(a>b-5){
+    if(document.activeElement===rmin){ a=b-5; rmin.value=a; }
+    else { b=a+5; rmax.value=b; }
+  }
+  intervalMin=a;
+  intervalMax=b;
+  const lo=(a-10)/290*100, hi=(b-10)/290*100;
+  rfill.style.left=lo+"%";
+  rfill.style.width=(hi-lo)+"%";
+  rval.textContent=fmtClock(a)+"-"+fmtClock(b);
+}
+rmin.addEventListener("input",syncRange);
+rmax.addEventListener("input",syncRange);
+
+syncRange();
+updateButtons();
+clearDial();
+renderName("no glass opened yet");
+</script>
+</body>
+</html>

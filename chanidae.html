@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Cormorant+SC:wght@500;600;700&display=swap" rel="stylesheet">
+    <title>chanidae</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Cormorant Garamond', serif;
+            background: #0a192f; /* Deep ocean blue background */
+			
+        }
+        
+        .slides-container {
+            position: relative;
+            height: 100vh;
+            width: 100%;
+        }
+        
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end; /* Default: text at bottom */
+            align-items: center;
+            padding-bottom: 100px;
+            box-sizing: border-box;
+            opacity: 0;
+            transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.8s ease;
+            transform: translateY(100px);
+            will-change: transform, opacity;
+        }
+        
+        /* Class for center-aligned slides */
+        .slide.center-content {
+            justify-content: center;
+            padding-bottom: 0;
+        }
+        
+        .slide.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .slide.exiting {
+            transform: translateY(-100px);
+        }
+        
+        .slide-content {
+            text-align: center;
+            color: #f2e9df;
+            font-size: 2rem;
+            padding: 20px;
+
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        }
+        
+        .nav-buttons {
+            position: fixed;
+            top: 50%;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            transform: translateY(-50%);
+            z-index: 100;
+        }
+        
+        .nav-button {
+            background: rgba(255,255,255,0.3);
+            border: none;
+            color: white;
+            width: 50px;
+            height: 40px;
+            border-radius: 40%;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .nav-button:hover {
+            background: rgba(255,255,255,0.5);
+        }
+		
+		.slide.top-bottom {
+    justify-content: space-between;
+    padding: 100px 0;
+    align-items: center; /* This ensures horizontal centering */
+        }
+        
+        .slide .top {
+            align-self: flex-start;
+            text-align: center;
+            width: 100%;
+            color: white;
+            font-size: 2rem;
+            padding: 20px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+			    margin: 0 auto;
+    box-sizing: border-box; 
+        }
+        
+.slide .bottom {
+            align-self: flex-end;
+    text-align: center;
+    width: 100%;
+    color: white;
+    font-size: 2rem;
+    padding: 20px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+    margin: 0 auto;
+    box-sizing: border-box; 
+}
+        
+        /* Navigation Dots at Top */
+        .scroll-nav-dots {
+            position: fixed;
+            top: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            z-index: 200;
+            padding: 0 20px;
+        }
+        
+        .scroll-nav-dot {
+            width: 8px;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            margin: 0 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .scroll-nav-dot:hover {
+            background: rgba(255,255,255,0.6);
+            transform: scale(1.2);
+        }
+        
+        .scroll-nav-dot.active {
+            background: rgba(255,255,255,0.8);
+            transform: scale(1.3);
+        }
+        
+        /* Progress text */
+        .progress-text {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.9rem;
+            z-index: 200;
+        }
+    </style>
+</head>
+<body>
+<div class="slides-container">
+    <div class="slide active center-content" style="background: linear-gradient(0deg, #051120 0%, #051120 90%, transparent 100%)">
+        <div class="slide-content"><h1>Chanidae</h1></div>
+    </div>
+    <div class="slide" style="background: linear-gradient(0deg, #051120 0%, #051120 90%, transparent 100%)">
+        <div class="slide-content">[thunder crashing]</div>
+    </div>
+    <div class="slide" style="background: linear-gradient(0deg, #0a1a30 0%, #0a1a30 90%, transparent 100%)"></div>
+    <div class="slide" style="background: linear-gradient(0deg, #0f223d 0%, #0f223d 90%, transparent 100%)">
+        <div class="slide-content">[overhead like rolling]</div>
+    </div>
+    <div class="slide" style="background: linear-gradient(0deg, #142b4a 0%, #142b4a 90%, transparent 100%)">
+        <div class="slide-content">[waves in the distance]</div>
+    </div>
+    <div class="slide" style="background: linear-gradient(0deg, #193457 0%, #193457 90%, transparent 100%)">
+        <div class="slide-content">Do you hear that?</div>
+    </div>
+    <div class="slide" style="background: linear-gradient(0deg, #1e3d64 0%, #1e3d64 90%, transparent 100%)"></div>
+    <div class="slide" style="background: linear-gradient(0deg, #234671 0%, #234671 90%, transparent 100%)">
+        <div class="slide-content">That shore belongs</div>
+    </div>
+    <div class="slide" style="background: linear-gradient(0deg, #284f7e 0%, #284f7e 90%, transparent 100%)">
+        <div class="slide-content">to another age.</div>
+    </div>
+    <div class="slide" style="background: linear-gradient(0deg, #2d588b 0%, #2d588b 90%, transparent 100%)">
+        <div class="slide-content">Land retreating</div>
+    </div> 
+    <div class="slide" style="background: linear-gradient(0deg, #326198 0%, #326198 90%, transparent 100%)">
+        <div class="slide-content">and reclaiming. On</div>
+    </div> 
+    <div class="slide" style="background: linear-gradient(0deg, #376aa5 0%, #376aa5 90%, transparent 100%)">
+        <div class="slide-content">its own, sand would have gathered there.</div>
+    </div> 
+    <div class="slide center-content" style="background: linear-gradient(0deg, #3c73b2 0%, #3c73b2 90%, transparent 100%)">
+        <div class="slide-content">BASECORACAY</div>
+    </div> 
+    <div class="slide" style="background: linear-gradient(0deg, #417cbf 0%, #417cbf 90%, transparent 100%)">
+        <div class="slide-content">It's all the same. You've</div>
+    </div> 
+    <div class="slide" style="background: linear-gradient(0deg, #4685cc 0%, #4685cc 90%, transparent 100%)">
+        <div class="slide-content">not lived long enough</div>
+    </div> 
+    <div class="slide" style="background: linear-gradient(0deg, #4b8ed9 0%, #4b8ed9 90%, transparent 100%)">
+        <div class="slide-content">to feel it in your gut. the law</div>
+    </div> 
+    <div class="slide" style="background: linear-gradient(0deg, #5097e6 0%, #5097e6 90%, transparent 100%)">
+        <div class="slide-content">of sympathy: that which rhymes</div>
+    </div> 
+    <div class="slide" style="background: linear-gradient(0deg, #55a0f3 0%, #55a0f3 90%, transparent 100%)">
+        <div class="slide-content">with something else times</div>
+    </div> 
+    <div class="slide" style="background: linear-gradient(0deg, #5aa9ff 0%, #5aa9ff 90%, transparent 100%)">
+        <div class="slide-content">with it. </div>
+    </div> 
+    <div class="slide center-content" style="background: linear-gradient(0deg, #1a3a6a 0%, #1a3a6a 90%, transparent 100%)">
+        <div class="slide-content">[Fort Santiago, which used]</div>
+    </div> 
+    <div class="slide center-content" style="background: linear-gradient(0deg, #1f436f 0%, #1f436f 90%, transparent 100%)">
+        <div class="slide-content">[to, in the Spanish Era, watch the mouth]</div>
+    </div> 
+    <div class="slide center-content" style="background: linear-gradient(0deg, #244c74 0%, #244c74 90%, transparent 100%)">
+        <div class="slide-content">[of the river.]</div>
+    </div> 
+    <div class="slide center-content" style="background: linear-gradient(0deg, #295579 0%, #295579 90%, transparent 100%)">
+        <div class="slide-content"></div>
+    </div> 
+    <div class="slide center-content" style="background: linear-gradient(0deg, #2e5e7e 0%, #2e5e7e 90%, transparent 100%)">
+        <div class="slide-content">[A wall with so much]</div>
+    </div> 
+    <div class="slide center-content" style="background: linear-gradient(0deg, #336783 0%, #336783 90%, transparent 100%)">
+        <div class="slide-content">[air, labyrinthine]</div>
+    </div> 
+    <div class="slide center-content" style="background: linear-gradient(0deg, #387088 0%, #387088 90%, transparent 100%)">
+        <div class="slide-content">[air that watches the sea, Mall]</div>
+    </div> 
+    <div class="slide center-content" style="background: linear-gradient(0deg, #3d798d 0%, #3d798d 90%, transparent 100%)">
+        <div class="slide-content">[of Asia. variegiated wall]</div>
+    </div> 
+    <div class="slide center-content" style="background: linear-gradient(0deg, #428292 0%, #428292 90%, transparent 100%)">
+        <div class="slide-content">[of mangroves and reefs]</div>
+    </div> 
+    <div class="slide" style="background: linear-gradient(0deg, #478b97 0%, #478b97 90%, transparent 100%)">
+        <div class="slide-content">In the time before you, that</div>
+    </div> 
+    <div class="slide" style="background: linear-gradient(0deg, #4c949c 0%, #4c949c 90%, transparent 100%)">
+        <div class="slide-content">was how it was. And that is my problem.</div>
+    </div> 
+    <div class="slide" style="background: linear-gradient(0deg, #519da1 0%, #519da1 90%, transparent 100%)">
+        <div class="slide-content">I remember it all</div>
+    </div> 
+    <div class="slide" style="background: linear-gradient(0deg, #56a6a6 0%, #56a6a6 90%, transparent 100%)">
+        <div class="slide-content">because my body does not</div>
+    </div> 
+    <div class="slide" style="background: linear-gradient(0deg, #5bafab 0%, #5bafab 90%, transparent 100%)">
+        <div class="slide-content">let me forget. I was here before your father</div>
+    </div> 
+    <div class="slide" style="background: linear-gradient(0deg, #60b8b0 0%, #60b8b0 90%, transparent 100%)">
+        <div class="slide-content">and his ancestors found this place.</div>
+    </div> 
+    <div class="slide" style="background: linear-gradient(0deg, #65c1b5 0%, #65c1b5 90%, transparent 100%)">
+        <div class="slide-content">Before the other chanids</div>
+    </div> 
+    <div class="slide" style="background: linear-gradient(0deg, #6acaba 0%, #6acaba 90%, transparent 100%)">
+        <div class="slide-content">vanished. You see,</div>
+    </div> 
+    <div class="slide" style="background: linear-gradient(0deg, #6fd3bf 0%, #6fd3bf 90%, transparent 100%)">
+        <div class="slide-content"></div>
+    </div> 
+    <div class="slide" style="background: linear-gradient(0deg, #74dcc4 0%, #74dcc4 90%, transparent 100%)">
+        <div class="slide-content" style="color:#290c0d;">I was one of the lucky ones. It</div>
+    </div> 
+    <div class="slide" style="background: linear-gradient(0deg, #79e5c9 0%, #79e5c9 90%, transparent 100%)">
+        <div class="slide-content" style="color:#290c0d;"><i>allowed</i> me</div>
+    </div> 
+    <div class="slide" style="background: linear-gradient(0deg, #7eeece 0%, #7eeece 90%, transparent 100%)">
+        <div class="slide-content" style="color:#290c0d;"> to breathe air. It <i>allowed</i> me</div>
+    </div> 
+    <div class="slide" style="background: linear-gradient(0deg, #83f7d3 0%, #83f7d3 90%, transparent 100%)">
+        <div class="slide-content" style="color:#290c0d;">to walk on land. <i>It</i> gave me legs.</div>
+    </div> 
+    <div class="slide" style="background: linear-gradient(0deg, #1e3d64 0%, #1e3d64 90%, transparent 100%)">
+        <div class="slide-content">But what of that world?</div>
+    </div> 
+    <div class="slide" style="background: linear-gradient(0deg, #23466b 0%, #23466b 90%, transparent 100%)">
+        <div class="slide-content">[waves breaking]</div>
+    </div>
+    <div class="slide" style="background: linear-gradient(0deg, #284f72 0%, #284f72 90%, transparent 100%)">
+        <div class="slide-content">[bombarding Manila]</div>
+    </div>
+    <div class="slide" style="background: linear-gradient(0deg, #284f72 0%, #284f72 90%, transparent 100%)">
+        <div class="slide-content">[like thunder underwater.]</div>
+    </div>
+    <div class="slide" style="background: linear-gradient(0deg, #2d5879 0%, #2d5879 90%, transparent 100%)">
+        <div class="slide-content">to return to <i>it</i>...</div>
+    </div> 		
+    <div class="slide center-content" style="background: linear-gradient(0deg, #326180 0%, #326180 90%, transparent 100%)">
+        <div class="slide-content">[intermittent drops]</div>
+    </div> 
+    <div class="slide center-content" style="background: linear-gradient(0deg, #376a87 0%, #376a87 90%, transparent 100%)">
+        <div class="slide-content">[of pregnant globes of rain]</div>
+    </div> 			
+    <div class="slide" style="background: linear-gradient(0deg, #3c738e 0%, #3c738e 90%, transparent 100%)">
+        <div class="slide-content"><i>that</i>, would mean, to feel its waves</div>
+    </div> 	
+    <div class="slide" style="background: linear-gradient(0deg, #417c95 0%, #417c95 90%, transparent 100%)">
+        <div class="slide-content">through my fins, millions of bones in my flesh, and oh,</div>
+    </div> 	
+    <div class="slide top-bottom" style="background: linear-gradient(0deg, #46859c 0%, #46859c 90%, transparent 100%)">
+        <div class="top">♪ Saan ka man ♪</div>
+        <div class="bottom">to no longer recall the passing</div>
+    </div> 	
+    <div class="slide top-bottom" style="background: linear-gradient(0deg, #4b8ea3 0%, #4b8ea3 90%, transparent 100%)">
+        <div class="top">♪ naroroon ngayon ♪</div>
+        <div class="bottom">of wave after wave of</div>
+    </div> 	
+    <div class="slide top-bottom" style="background: linear-gradient(0deg, #5097aa 0%, #5097aa 90%, transparent 100%)">
+        <div class="top">♪ Kaytagal mo nang nawala ♪</div>
+        <div class="bottom">bodies. But all that is silly.</div>
+    </div> 	
+    <div class="slide top-bottom" style="background: linear-gradient(0deg, #55a0b1 0%, #55a0b1 90%, transparent 100%)">
+        <div class="top">♪ Babalik at babalik ka rin. ♪</div>
+        <div class="bottom">I will not survive these waters.</div>
+    </div> 	
+</div>
+
+<!-- Navigation Dots at Top -->
+<div class="scroll-nav-dots"></div>
+
+<!-- Progress Text -->
+<div class="progress-text">1/52</div>
+
+<!-- Navigation Buttons -->
+<div class="nav-buttons">
+    <button class="nav-button" id="prev-btn">←</button>
+    <button class="nav-button" id="next-btn">→</button>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const slides = document.querySelectorAll('.slide');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const scrollNavDots = document.querySelector('.scroll-nav-dots');
+        const progressText = document.querySelector('.progress-text');
+        
+        let currentSlide = 0;
+        const totalSlides = slides.length;
+        
+        // Create navigation dots
+        for (let i = 0; i < totalSlides; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'scroll-nav-dot';
+            dot.dataset.index = i;
+            dot.addEventListener('click', () => {
+                goToSlide(i);
+            });
+            scrollNavDots.appendChild(dot);
+        }
+        
+        const navDots = document.querySelectorAll('.scroll-nav-dot');
+        
+        // Initialize navigation
+        updateNavigation();
+        
+        function updateNavigation() {
+            // Update dots
+            navDots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentSlide);
+            });
+            
+            // Update progress text
+            progressText.textContent = `${currentSlide + 1}/${totalSlides}`;
+        }
+        
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active', 'exiting');
+                if (i === index) {
+                    setTimeout(() => {
+                        slide.classList.add('active');
+                    }, 20);
+                }
+            });
+            
+            currentSlide = index;
+            updateNavigation();
+        }
+        
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                slides[currentSlide].classList.add('exiting');
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+        }
+        
+        function prevSlide() {
+            if (currentSlide > 0) {
+                slides[currentSlide].classList.add('exiting');
+                currentSlide--;
+                showSlide(currentSlide);
+            }
+        }
+        
+        function goToSlide(index) {
+            if (index >= 0 && index < totalSlides) {
+                slides[currentSlide].classList.add('exiting');
+                showSlide(index);
+            }
+        }
+        
+        // Navigation buttons
+        nextBtn.addEventListener('click', nextSlide);
+        prevBtn.addEventListener('click', prevSlide);
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'Home') goToSlide(0);
+            if (e.key === 'End') goToSlide(totalSlides - 1);
+        });
+        
+        // Touch swipe
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        }, false);
+        
+        document.addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, false);
+        
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) nextSlide();
+            if (touchEndX > touchStartX + 50) prevSlide();
+        }
+        
+        // Mouse wheel
+        document.addEventListener('wheel', function(e) {
+            // Add a small delay to prevent too rapid scrolling
+            if (this.wheelTimeout) {
+                clearTimeout(this.wheelTimeout);
+            }
+            
+            this.wheelTimeout = setTimeout(() => {
+                if (e.deltaY > 0) nextSlide();
+                else if (e.deltaY < 0) prevSlide();
+            }, 100);
+        });
+    });
+</script>
+</body>
+</html>

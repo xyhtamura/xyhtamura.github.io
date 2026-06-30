@@ -664,10 +664,19 @@ links: [
     },
     pieces: [
 	{
+  title: "Horn of Plenty",
+  year: "2026",
+  tags: ["audio texture synthesis", "acausal", "granular synthesis", "audio substrate", "hindcasts"],
+  blurb: "Horn of Plenty is an audio texture synthesis tool that processes sound samples into longer textures. It stationarizes the sample, producing an even, statistical sound layer that can be sampled at any arbitrary length without noticeable looping.",
+  links: [
+    { label: "Launch Instrument", url: "https://xyhtamura.github.io/hindcasts/horn-of-plenty/" }
+  ]
+},
+	{
   title: "Bakezuri / 化け摺り",
   year: "2026",
   tags: ["wet printing", "image separation", "suminagashi", "riso", "goopCodec"],
-  blurb: "A browser-based wet-printing instrument that stages a sliding membrane between riso-style image separation and suminagashi-like ink-on-water flow. Bakezuri turns quantized grids, palettes, and halftone screens into material fields that can bleed, misregister, fix, repel, and re-perform.",
+  blurb: "A browser-based wet-printing instrument that stages a sliding membrane between riso-style image separation and suminagashi-like ink-on-water flow.",
   links: [
     { label: "Launch Instrument", url: "https://xyhtamura.github.io/bakezuri/" },
     { label: "Open urumizuri Codec", url: "https://xyhtamura.github.io/sgueltch/goopCodecs/urumizuri/" }

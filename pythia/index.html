@@ -1,9 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pythia</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -20,7 +21,7 @@
             </div>
             <div class="title-row">
                 <h1>Pythia</h1>
-                <span class="build-tag">pneuma · granular</span>
+                <span class="build-tag">pneuma Â· granular</span>
             </div>
             <p class="tagline">non-live, <em>precognitive</em> or <em>paracognitive</em> granular delay.</p>
         </header>
@@ -28,14 +29,14 @@
         <div class="io-panel">
             <div class="input-group" id="control-input-group">
                 <h3><span class="idx">01</span>&nbsp;Control Signal</h3>
-                <p class="note">drives the effect — its amplitude envelope becomes the shape of what happens</p>
+                <p class="note">drives the effect â€” its amplitude envelope becomes the shape of what happens</p>
                 <input type="file" id="control-input" accept="audio/*">
                 <p class="drop-hint">or drop a file here</p>
                 <span class="loaded-file" id="control-file-display"></span>
             </div>
             <div class="input-group" id="source-input-group">
                 <h3><span class="idx">02</span>&nbsp;Source Signal</h3>
-                <p class="note">the material — scattered, granularized, redistributed in time</p>
+                <p class="note">the material â€” scattered, granularized, redistributed in time</p>
                 <input type="file" id="source-input" accept="audio/*">
                 <p class="drop-hint">or drop a file here</p>
                 <span class="loaded-file" id="source-file-display"></span>
@@ -81,12 +82,12 @@
             <input type="checkbox" id="self-sample-checkbox">
             <label for="self-sample-checkbox">
                 Use Control as Source
-                <span class="note-inline">&nbsp;— control and source become the same file</span>
+                <span class="note-inline">&nbsp;â€” control and source become the same file</span>
             </label>
         </div>
 
         <div class="mode-selector">
-            <span class="mode-label">mode —</span>
+            <span class="mode-label">mode â€”</span>
             <div class="radio-group">
                 <input type="radio" id="mode-continuous" name="mode" value="continuous" checked>
                 <label for="mode-continuous">Delay</label>
@@ -164,11 +165,11 @@
                     <div id="level-meter" class="meter-bar"></div>
                 </div>
                 <div class="meter-scale">
-                    <span>—</span>
+                    <span>â€”</span>
                     <span>25</span>
                     <span>50</span>
                     <span>75</span>
-                    <span>—</span>
+                    <span>â€”</span>
                 </div>
             </div>
         </div>
@@ -182,3 +183,4 @@
     <script src="pythia.js"></script>
 </body>
 </html>
+
