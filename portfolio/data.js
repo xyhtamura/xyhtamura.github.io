@@ -664,6 +664,16 @@ links: [
     },
     pieces: [
 	{
+  title: "aliquoto",
+  year: "2026",
+  tags: ["additive synthesis", "acausal grammar", "audio worklet", "spectral math", "hindcasts"],
+  blurb: "A pure additive synthesizer that allows users to sculpt complex timbres by writing spectral series as naked mathematics using summations, envelopes, and conditionals[cite: 3, 4]. Operating with an offline equation parser and a phase-exact AudioWorklet engine, it frees electronic sound from standard integer lattices by enabling arbitrary fractional, irrational, subharmonic, and drift-modulated partial ratios.",
+  links: [
+    { label: "Launch Instrument", url: "https://xyhtamura.github.io/aliquoto/" },
+    { label: "Open Document", url: "https://xyhtamura.github.io/hindcasts/aliquoto/README.md" }
+  ]
+},
+	{
   title: "Horn of Plenty",
   year: "2026",
   tags: ["audio texture synthesis", "acausal", "granular synthesis", "audio substrate", "hindcasts"],
