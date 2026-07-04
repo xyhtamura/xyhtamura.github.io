@@ -1,0 +1,1558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Put Many Pictures Together</title>
+<link rel="icon" type="image/svg+xml" href="./favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Yuyu&display=swap" rel="stylesheet">
+<style>:root{
+  /* keep these names because the existing JS expects them */
+  --ink:#171321;
+  --paper:#fff3d7;
+  --amber:#f6b94f;
+  --aqua:#66d6bd;
+  --blurple:#a987ff;
+
+  /* psychic classroom skin */
+  --desk:#f1d4a8;
+  --desk-2:#d8b9f6;
+  --desk-3:#aee8dd;
+  --card:#fff8dc;
+  --card-2:#ffe6f1;
+  --card-3:#e2fff7;
+  --pencil:#2b2233;
+  --red-pencil:#db5a78;
+  --blue-pen:#4b6fd7;
+  --violet-pen:#7d57c8;
+  --green-stamp:#3f9a7e;
+  --faint:#7d6d83;
+  --shadow:#5e4a6c;
+  --tape:rgba(255,237,143,.74);
+  --text:var(--pencil);
+  --text-dim:#786982;
+  --steel:#9886a6;
+  --glow:rgba(169,135,255,.35);
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html,
+body{
+  height:100%;
+}
+
+body{
+  margin:0;
+  color:var(--text);
+  font-family:
+    "Atkinson Hyperlegible",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  overflow:hidden;
+
+  background:
+    radial-gradient(circle at 8% 16%, rgba(255,230,241,.82), transparent 27%),
+    radial-gradient(circle at 84% 10%, rgba(102,214,189,.52), transparent 24%),
+    radial-gradient(circle at 72% 82%, rgba(169,135,255,.46), transparent 30%),
+    radial-gradient(circle at 20% 88%, rgba(246,185,79,.42), transparent 24%),
+    linear-gradient(135deg, #f8dcad 0%, #eac4d8 42%, #c9d8ff 100%);
+}
+
+/* ---- scrollbars ---- */
+
+*{
+  scrollbar-width:thin;
+  scrollbar-color:var(--violet-pen) rgba(255,255,255,.36);
+}
+
+::-webkit-scrollbar{
+  width:14px;
+  height:14px;
+}
+
+::-webkit-scrollbar-track{
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.58), rgba(255,255,255,.22));
+  border-left:1px solid rgba(43,34,51,.16);
+  border-radius:999px;
+}
+
+::-webkit-scrollbar-thumb{
+  background:
+    linear-gradient(180deg, #ff9fc0, #a987ff 48%, #66d6bd);
+  border:3px solid rgba(255,248,220,.92);
+  border-radius:999px;
+}
+
+::-webkit-scrollbar-thumb:hover{
+  background:
+    linear-gradient(180deg, #ff7fa9, #8e6aff 48%, #42cbae);
+}
+
+button,
+input{
+  font-family:inherit;
+}
+
+.app{
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+}
+
+/* ---- topbar ---- */
+
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:20px;
+  padding:15px 22px 13px;
+  flex:0 0 auto;
+  background:
+    radial-gradient(circle at 12% 30%, rgba(255,255,255,.8), transparent 18%),
+    radial-gradient(circle at 70% 40%, rgba(102,214,189,.24), transparent 22%),
+    linear-gradient(90deg, rgba(255,248,220,.92), rgba(255,230,241,.9));
+  border-bottom:2px solid rgba(43,34,51,.82);
+  box-shadow:
+    0 4px 0 rgba(43,34,51,.12),
+    0 0 32px rgba(169,135,255,.22);
+}
+
+.brand-block{
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+  min-width:0;
+}
+
+.brand{
+  font-family:"Yuyu", serif;
+  font-size:clamp(32px, 4vw, 52px);
+  line-height:.98;
+  margin:0;
+  letter-spacing:.01em;
+  color:var(--pencil);
+  text-shadow:
+    1px 1px 0 #fff8dc,
+    3px 3px 0 rgba(255,159,192,.45),
+    5px 5px 0 rgba(102,214,189,.26),
+    0 0 18px rgba(169,135,255,.34);
+}
+
+.tagline{
+  margin:0;
+  color:var(--text-dim);
+  font-size:12.5px;
+}
+
+.topbar-meta{
+  flex:0 0 auto;
+  font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size:13px;
+  color:var(--pencil);
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.92), rgba(226,255,247,.88));
+  border:2px solid rgba(43,34,51,.8);
+  border-radius:18px 13px 20px 12px;
+  padding:7px 11px;
+  box-shadow:
+    4px 4px 0 rgba(43,34,51,.18),
+    0 0 18px rgba(102,214,189,.24);
+  transform:rotate(1deg);
+}
+
+.topbar-actions{
+  flex:0 0 auto;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  flex-wrap:wrap;
+  gap:10px;
+}
+
+.home-link{
+  display:inline-flex;
+  align-items:center;
+  color:var(--blue-pen);
+  font-size:13px;
+  font-weight:700;
+  text-decoration:none;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.9), rgba(255,230,241,.86));
+  border:2px solid rgba(43,34,51,.78);
+  border-radius:16px 10px 18px 11px;
+  padding:7px 10px;
+  box-shadow:
+    3px 3px 0 rgba(43,34,51,.16),
+    0 0 14px rgba(169,135,255,.18);
+}
+
+.home-link:hover{
+  filter:brightness(1.04);
+  transform:translate(-1px,-1px);
+}
+
+.home-link:focus-visible{
+  outline:3px solid var(--red-pencil);
+  outline-offset:3px;
+}
+
+/* ---- workspace ---- */
+
+.workspace{
+  flex:1;
+  min-height:0;
+  display:flex;
+}
+
+.rail{
+  width:330px;
+  flex:0 0 330px;
+  padding:18px 16px 20px;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  background:
+    radial-gradient(circle at 20% 8%, rgba(255,255,255,.65), transparent 18%),
+    radial-gradient(circle at 80% 28%, rgba(169,135,255,.28), transparent 22%),
+    radial-gradient(circle at 18% 84%, rgba(102,214,189,.26), transparent 25%),
+    linear-gradient(180deg, rgba(255,243,215,.92), rgba(255,230,241,.88));
+  border-right:2px solid rgba(43,34,51,.8);
+  box-shadow:inset -8px 0 24px rgba(43,34,51,.08);
+}
+
+.panel{
+  position:relative;
+  background:
+    radial-gradient(circle at 92% 10%, rgba(169,135,255,.22), transparent 26%),
+    radial-gradient(circle at 7% 92%, rgba(102,214,189,.18), transparent 24%),
+    linear-gradient(145deg, rgba(255,255,255,.72), rgba(255,248,220,.9));
+  border:2px solid rgba(43,34,51,.82);
+  border-radius:24px 17px 28px 18px;
+  padding:18px 14px 15px;
+  display:flex;
+  flex-direction:column;
+  gap:11px;
+  box-shadow:
+    5px 5px 0 rgba(43,34,51,.15),
+    0 0 24px rgba(169,135,255,.15);
+}
+
+.panel::before{
+  content:"";
+  position:absolute;
+  top:-10px;
+  left:28px;
+  width:78px;
+  height:20px;
+  background:
+    linear-gradient(90deg, transparent 0 9px, rgba(255,255,255,.24) 9px 12px, transparent 12px 21px),
+    var(--tape);
+  border:1px solid rgba(92,75,54,.12);
+  border-radius:9px 6px 10px 6px;
+  transform:rotate(-2deg);
+  pointer-events:none;
+  box-shadow:0 2px 8px rgba(43,34,51,.08);
+}
+
+.panel:nth-of-type(2){
+  background:
+    radial-gradient(circle at 88% 15%, rgba(102,214,189,.22), transparent 27%),
+    radial-gradient(circle at 8% 85%, rgba(255,159,192,.2), transparent 24%),
+    linear-gradient(145deg, rgba(255,255,255,.72), rgba(255,230,241,.9));
+}
+
+.panel:nth-of-type(2)::before{
+  left:auto;
+  right:34px;
+  transform:rotate(2.5deg);
+}
+
+.panel:nth-of-type(3){
+  background:
+    radial-gradient(circle at 82% 15%, rgba(246,185,79,.28), transparent 28%),
+    radial-gradient(circle at 12% 86%, rgba(169,135,255,.22), transparent 24%),
+    linear-gradient(145deg, rgba(255,255,255,.72), rgba(226,255,247,.9));
+}
+
+.panel:nth-of-type(3)::before{
+  left:86px;
+  transform:rotate(.8deg);
+}
+
+.eyebrow{
+  font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-size:11px;
+  color:var(--violet-pen);
+  margin:0;
+  padding-bottom:5px;
+  border-bottom:1px dashed rgba(43,34,51,.32);
+}
+
+/* ---- add photos ---- */
+
+.drop-hint{
+  border:2px dashed var(--blue-pen);
+  border-radius:22px 14px 24px 16px;
+  padding:17px 12px;
+  text-align:center;
+  font-size:13px;
+  color:var(--text-dim);
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  align-items:center;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255,255,255,.72), transparent 26%),
+    radial-gradient(circle at 82% 76%, rgba(102,214,189,.22), transparent 32%),
+    rgba(255,255,255,.44);
+  box-shadow:inset 0 0 20px rgba(169,135,255,.08);
+}
+
+.drop-hint p{
+  margin:0;
+}
+
+.btn{
+  border:2px solid rgba(43,34,51,.86);
+  cursor:pointer;
+  padding:9px 13px;
+  font-size:13.5px;
+  font-weight:700;
+  border-radius:17px 10px 19px 11px;
+  transition:
+    transform .12s ease,
+    box-shadow .12s ease,
+    filter .12s ease,
+    background .12s ease;
+  box-shadow:
+    3px 3px 0 rgba(43,34,51,.24),
+    0 0 14px rgba(169,135,255,.12);
+}
+
+.btn:hover{
+  transform:translate(-1px,-1px);
+  box-shadow:
+    4px 4px 0 rgba(43,34,51,.24),
+    0 0 18px rgba(169,135,255,.24);
+  filter:brightness(1.04);
+}
+
+.btn:active{
+  transform:translate(2px,2px);
+  box-shadow:
+    1px 1px 0 rgba(43,34,51,.24),
+    0 0 8px rgba(169,135,255,.16);
+}
+
+.btn:focus-visible{
+  outline:3px solid var(--red-pencil);
+  outline-offset:3px;
+}
+
+.btn-primary{
+  background:
+    linear-gradient(135deg, #ffe68f, #ffb7ce);
+  color:var(--pencil);
+}
+
+.btn-secondary{
+  background:
+    linear-gradient(135deg, #aef7e5, #c8b8ff);
+  color:var(--pencil);
+}
+
+.btn-ghost{
+  background:
+    linear-gradient(135deg, #ffffff, #efe8ff);
+  color:var(--pencil);
+}
+
+.btn-text{
+  background:transparent;
+  color:var(--blue-pen);
+  border:none;
+  box-shadow:none;
+  text-decoration:underline;
+  padding:4px 2px;
+  align-self:flex-start;
+  font-weight:400;
+}
+
+.btn-text:hover{
+  transform:none;
+  box-shadow:none;
+  filter:brightness(1.05);
+}
+
+.btn[disabled]{
+  opacity:.42;
+  cursor:not-allowed;
+  filter:grayscale(.2);
+}
+
+.thumb-strip{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  max-height:150px;
+  overflow-y:auto;
+  padding:6px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.38), rgba(226,255,247,.34));
+  border:1px dotted rgba(43,34,51,.32);
+  border-radius:17px 11px 19px 12px;
+}
+
+.thumb{
+  position:relative;
+  width:50px;
+  height:50px;
+  border-radius:13px 8px 15px 9px;
+  overflow:hidden;
+  background:#fff;
+  flex:0 0 auto;
+  border:2px solid #fff;
+  outline:1px solid rgba(43,34,51,.42);
+  box-shadow:
+    2px 2px 0 rgba(43,34,51,.14),
+    0 0 12px rgba(102,214,189,.16);
+}
+
+.thumb img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+.thumb-remove{
+  position:absolute;
+  top:1px;
+  right:1px;
+  width:17px;
+  height:17px;
+  border-radius:50%;
+  border:1px solid var(--pencil);
+  background:#fff;
+  color:var(--red-pencil);
+  font-size:12px;
+  line-height:1;
+  cursor:pointer;
+}
+
+/* ---- arrange ---- */
+
+.mode-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+
+.mode-btn{
+  font-size:12.5px;
+  padding:9px 8px;
+  border-radius:16px 10px 18px 11px;
+  border:2px solid rgba(43,34,51,.84);
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.92), rgba(255,243,215,.82));
+  color:var(--pencil);
+  cursor:pointer;
+  box-shadow:2px 2px 0 rgba(43,34,51,.2);
+}
+
+.mode-btn:hover{
+  transform:translate(-1px,-1px);
+  box-shadow:
+    3px 3px 0 rgba(43,34,51,.2),
+    0 0 15px rgba(169,135,255,.18);
+}
+
+.mode-btn.active{
+  background:
+    radial-gradient(circle at 25% 20%, rgba(255,255,255,.82), transparent 34%),
+    linear-gradient(135deg, #ffb7ce, #c8b8ff 48%, #aef7e5);
+  color:var(--pencil);
+  border-color:var(--violet-pen);
+  box-shadow:
+    inset 0 0 0 2px rgba(255,255,255,.62),
+    2px 2px 0 rgba(43,34,51,.2),
+    0 0 20px rgba(169,135,255,.28);
+}
+
+.slider-label{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:space-between;
+  gap:4px 8px;
+  font-size:12.5px;
+  color:var(--text-dim);
+}
+
+.slider-label input[type=range]{
+  flex:0 0 100%;
+  accent-color:var(--violet-pen);
+}
+
+.mono{
+  font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color:var(--pencil);
+}
+
+.hint{
+  font-size:11.5px;
+  color:var(--text-dim);
+  font-style:italic;
+  margin:0;
+  border-left:4px solid rgba(219,90,120,.48);
+  padding-left:8px;
+}
+
+.bg-row{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+  padding-top:2px;
+}
+
+.label-inline{
+  font-size:12px;
+  color:var(--text-dim);
+}
+
+.swatch{
+  width:24px;
+  height:24px;
+  border-radius:50%;
+  border:2px solid rgba(43,34,51,.82);
+  background:var(--sw);
+  cursor:pointer;
+  padding:0;
+  box-shadow:
+    2px 2px 0 rgba(43,34,51,.16),
+    0 0 10px rgba(169,135,255,.16);
+}
+
+.swatch.active{
+  outline:2px solid var(--red-pencil);
+  outline-offset:2px;
+  box-shadow:
+    2px 2px 0 rgba(43,34,51,.16),
+    0 0 16px rgba(219,90,120,.4);
+}
+
+.transparent-swatch{
+  background:repeating-conic-gradient(#888 0% 25%, #bbb 0% 50%) 0 / 8px 8px;
+  color:#333;
+  font-size:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.color-picker-label{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  color:var(--text-dim);
+  font-size:12px;
+}
+
+.color-input{
+  width:30px;
+  height:30px;
+  padding:0;
+  border:2px solid rgba(43,34,51,.82);
+  border-radius:11px 8px 13px 9px;
+  background:#fff;
+  cursor:pointer;
+  box-shadow:
+    2px 2px 0 rgba(43,34,51,.16),
+    0 0 10px rgba(169,135,255,.16);
+}
+
+.color-input::-webkit-color-swatch-wrapper{
+  padding:3px;
+}
+
+.color-input::-webkit-color-swatch{
+  border:none;
+  border-radius:7px 5px 9px 6px;
+}
+
+.color-input::-moz-color-swatch{
+  border:none;
+  border-radius:7px 5px 9px 6px;
+}
+
+.color-input.active{
+  outline:2px solid var(--red-pencil);
+  outline-offset:2px;
+  box-shadow:
+    2px 2px 0 rgba(43,34,51,.16),
+    0 0 16px rgba(219,90,120,.4);
+}
+
+.freeform-controls{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+/* ---- export ---- */
+
+.dims{
+  font-size:12px;
+  color:var(--text-dim);
+  background:rgba(255,255,255,.48);
+  border:1px dotted rgba(43,34,51,.34);
+  border-radius:14px 9px 16px 10px;
+  padding:6px 8px;
+}
+
+.export-btns{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.status{
+  min-height:14px;
+  font-size:11.5px;
+  color:var(--red-pencil);
+  margin:0;
+}
+
+/* ---- stage ---- */
+
+.stage-frame{
+  flex:1;
+  min-width:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:26px;
+  position:relative;
+  background:
+    radial-gradient(circle at 22% 18%, rgba(255,255,255,.36), transparent 24%),
+    radial-gradient(circle at 78% 78%, rgba(169,135,255,.22), transparent 28%),
+    radial-gradient(circle at 50% 50%, rgba(102,214,189,.14), transparent 42%);
+}
+
+.stage-wrap{
+  position:relative;
+  padding:16px;
+  border-radius:30px 20px 34px 22px;
+  background:
+    radial-gradient(circle at 15% 18%, rgba(255,255,255,.52), transparent 22%),
+    radial-gradient(circle at 84% 72%, rgba(255,183,206,.26), transparent 28%),
+    linear-gradient(135deg, #ffe8a8, #cdbbff 48%, #aeeedf);
+  border:2px solid rgba(43,34,51,.84);
+  box-shadow:
+    8px 8px 0 rgba(43,34,51,.18),
+    0 0 34px rgba(169,135,255,.34),
+    inset 0 0 0 3px rgba(255,255,255,.22);
+}
+
+.stage-wrap::before{
+  content:"CONTACT SHEET";
+  position:absolute;
+  top:-17px;
+  left:20px;
+  z-index:2;
+  padding:4px 9px 3px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.94), rgba(226,255,247,.9));
+  border:2px solid rgba(43,34,51,.82);
+  border-radius:14px 9px 16px 10px;
+  font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size:11px;
+  letter-spacing:.08em;
+  color:var(--pencil);
+  animation:none;
+  box-shadow:
+    3px 3px 0 rgba(43,34,51,.16),
+    0 0 14px rgba(102,214,189,.24);
+}
+
+.stage{
+  position:relative;
+  z-index:1;
+  overflow:hidden;
+  border-radius:22px 14px 26px 16px;
+  background:var(--paper);
+  border:2px solid rgba(43,34,51,.82);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.64),
+    inset 0 0 30px rgba(43,34,51,.08);
+}
+
+.stage.transparent-bg{
+  background:repeating-conic-gradient(#d4d4d4 0% 25%, #f5f5f5 0% 50%) 0 / 20px 20px;
+}
+
+.stage-img{
+  position:absolute;
+  pointer-events:none;
+  background:#fff;
+  border:1px solid rgba(43,34,51,.38);
+  border-radius:12px 8px 14px 9px;
+  overflow:hidden;
+  box-shadow:
+    2px 2px 0 rgba(43,34,51,.15),
+    0 0 0 3px rgba(255,255,255,.78),
+    0 0 14px rgba(102,214,189,.12);
+}
+
+.stage-img img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+  user-select:none;
+  pointer-events:none;
+}
+
+.stage-img.freeform-mode{
+  pointer-events:auto;
+  cursor:grab;
+}
+
+.stage-img.freeform-mode.dragging{
+  cursor:grabbing;
+}
+
+.stage-remove{
+  position:absolute;
+  top:-10px;
+  right:-10px;
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  border:2px solid rgba(43,34,51,.84);
+  background:#fff;
+  color:var(--red-pencil);
+  cursor:pointer;
+  font-size:13px;
+  line-height:1;
+  opacity:0;
+  transition:opacity .15s ease;
+  z-index:5;
+  pointer-events:auto;
+  box-shadow:
+    2px 2px 0 rgba(43,34,51,.2),
+    0 0 10px rgba(219,90,120,.22);
+}
+
+.stage-img:hover .stage-remove{
+  opacity:1;
+}
+
+.resize-handle{
+  position:absolute;
+  right:-8px;
+  bottom:-8px;
+  width:16px;
+  height:16px;
+  border-radius:50%;
+  background:var(--violet-pen);
+  border:2px solid #fff;
+  outline:1px solid var(--pencil);
+  cursor:nwse-resize;
+  z-index:5;
+  display:none;
+  pointer-events:auto;
+  box-shadow:0 0 10px rgba(169,135,255,.42);
+}
+
+.stage-img.freeform-mode .resize-handle{
+  display:block;
+}
+
+.empty-state{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  pointer-events:none;
+  color:var(--text-dim);
+  font-size:14px;
+  text-align:center;
+  padding:20px;
+}
+
+.empty-state p{
+  max-width:280px;
+  margin:0;
+  padding:13px 15px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.94), rgba(255,230,241,.88));
+  border:2px dashed var(--violet-pen);
+  border-radius:22px 14px 24px 16px;
+  box-shadow:
+    4px 4px 0 rgba(43,34,51,.16),
+    0 0 24px rgba(169,135,255,.2);
+  transform:rotate(-1deg);
+}
+
+.drag-overlay{
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(255,255,255,.72), transparent 24%),
+    radial-gradient(circle at 20% 20%, rgba(255,183,206,.72), transparent 30%),
+    radial-gradient(circle at 84% 78%, rgba(102,214,189,.62), transparent 32%),
+    rgba(255,243,215,.9);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  font-family:"Yuyu", serif;
+  font-size:46px;
+  color:var(--pencil);
+  z-index:50;
+  border:8px dashed var(--red-pencil);
+  pointer-events:none;
+}
+
+.drag-overlay p{
+  margin:0;
+  padding:17px 22px 10px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.96), rgba(226,255,247,.92));
+  border:3px solid rgba(43,34,51,.86);
+  border-radius:26px 17px 30px 19px;
+  box-shadow:
+    7px 7px 0 rgba(43,34,51,.22),
+    0 0 32px rgba(169,135,255,.34);
+  transform:rotate(-2deg);
+}
+
+body.dragging-file .drag-overlay{
+  display:flex;
+}
+
+/* ---- responsive ---- */
+
+@media (max-width:860px){
+  body{
+    overflow:auto;
+  }
+
+  .workspace{
+    flex-direction:column;
+    overflow-y:auto;
+  }
+
+  .topbar{
+    align-items:flex-start;
+  }
+
+  .topbar-actions{
+    align-self:flex-end;
+  }
+
+  .rail{
+    width:100%;
+    flex:0 0 auto;
+    border-right:none;
+    border-bottom:2px solid rgba(43,34,51,.8);
+    max-height:none;
+  }
+
+  .stage-frame{
+    padding:18px;
+    min-height:340px;
+  }
+
+  .stage-wrap{
+    padding:12px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+  <div class="brand-block">
+    <h1 class="brand">Put Many Pictures Together</h1>
+    <p class="tagline">a quick contact-sheet maker for when you are out in the world</p>
+  </div>
+  <div class="topbar-actions">
+    <a class="home-link" href="https://xyhtamura.github.io/">xyhtamura.github.io</a>
+    <span class="topbar-meta" id="countReadout">0 photos</span>
+  </div>
+</header>
+
+  <div class="workspace">
+    <aside class="rail">
+
+     <section class="panel">
+  <p class="eyebrow">1. Get pictures</p>
+  <div class="drop-hint">
+    <p>Drop many pictures here</p>
+    <p>or paste pictures from somewhere else</p>
+    <button id="browseBtn" class="btn btn-ghost">Choose pictures</button>
+    <input type="file" id="fileInput" accept="image/*" multiple hidden>
+  </div>
+  <div class="thumb-strip" id="thumbStrip"></div>
+  <button id="clearAllBtn" class="btn btn-text">Clear the table</button>
+</section>
+
+<section class="panel">
+  <p class="eyebrow">2. Put them together</p>
+  <div class="mode-grid">
+    <button class="mode-btn active" data-mode="justified">Make rows</button>
+    <button class="mode-btn" data-mode="square">Make a square</button>
+    <button class="mode-btn" data-mode="row">One long line</button>
+    <button class="mode-btn" data-mode="column">Stack them</button>
+    <button class="mode-btn" data-mode="freeform" style="grid-column:1 / span 2;">Move by hand</button>
+  </div>
+
+  <label class="slider-label" id="gapSliderWrap">
+    <span>Space between pictures</span><span id="gapReadout" class="mono">12</span>
+    <input type="range" id="gapSlider" min="0" max="80" value="12">
+  </label>
+
+  <label class="slider-label" id="sizeSliderWrap">
+    <span id="sizeLabelText">Row size</span><span id="sizeReadout" class="mono">260</span>
+    <input type="range" id="sizeSlider" min="60" max="600" value="260">
+  </label>
+
+  <p class="hint" id="squareHint" style="display:none;">The row size adjusts itself so the whole thing becomes roughly square.</p>
+
+  <div class="freeform-controls" id="freeformControls" style="display:none;">
+    <button id="resetFreeformBtn" class="btn btn-ghost">Put back in rows</button>
+    <p class="hint">Drag a picture to move it. Drag its corner dot to resize. Nothing is ever cropped.</p>
+  </div>
+
+  <div class="bg-row">
+    <span class="label-inline">Table color</span>
+    <button class="swatch" data-bg="paper" style="--sw:var(--paper);" title="Paper"></button>
+    <button class="swatch" data-bg="ink" style="--sw:var(--ink);" title="Ink"></button>
+    <button class="swatch" data-bg="amber" style="--sw:var(--amber);" title="Amber"></button>
+    <button class="swatch" data-bg="aqua" style="--sw:var(--aqua);" title="Aqua"></button>
+    <button class="swatch" data-bg="blurple" style="--sw:var(--blurple);" title="Blurple"></button>
+    <button class="swatch transparent-swatch" data-bg="transparent" title="Transparent">✕</button>
+    <label class="color-picker-label">
+      <span>Pick</span>
+      <input type="color" id="customBgInput" class="color-input" value="#f2ece0" aria-label="Choose a custom table color">
+    </label>
+  </div>
+</section>
+
+<section class="panel">
+  <p class="eyebrow">3. Take it out</p>
+  <label class="slider-label">
+    <span>Output size</span><span id="scaleReadout" class="mono">100%</span>
+    <input type="range" id="scaleSlider" min="25" max="200" value="100">
+  </label>
+  <p class="dims mono" id="dimsReadout">— × — px</p>
+  <div class="export-btns">
+    <button id="downloadPngBtn" class="btn btn-primary" disabled>Save PNG</button>
+    <button id="downloadJpgBtn" class="btn btn-secondary" disabled>Save JPG</button>
+    <button id="copyBtn" class="btn btn-ghost" disabled>Copy picture</button>
+  </div>
+  <p class="status mono" id="statusMsg"></p>
+</section>
+
+    </aside>
+
+    <main class="stage-frame" id="stageFrame">
+      <div class="stage-wrap" id="stageWrap">
+        <div class="stage" id="stage"></div>
+      </div>
+<div class="empty-state" id="emptyState">
+  <p>Drop pictures here, or paste with Ctrl / ⌘ + V</p>
+</div>
+    </main>
+  </div>
+</div>
+
+<div class="drag-overlay" id="dragOverlay"><p>put them here</p></div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- constants ----------
+  const REF_WIDTH = 1200;
+  const MAX_DIM = 8000;
+  const MAX_AREA = 60000000;
+  const BG_COLORS = { paper:'#f2ece0', ink:'#10151a', amber:'#e2a13d', aqua:'#35b28c', blurple:'#9a72d1' };
+
+  // ---------- state ----------
+  let images = [];          // {id, img, url, natW, natH, aspect, x, y, w, h}
+  let nextId = 1;
+  let mode = 'justified';
+  let lastAutoMode = 'justified';
+  let gap = 12;
+  let targetSize = 260;
+  let bgMode = 'paper';
+  let customBgColor = '#f2ece0';
+  let currentScale = 1;
+  let stageUnits = { w: 900, h: 560 };
+  let previewScale = 1;
+  const stageEls = new Map();
+  let statusTimer = null;
+
+  // ---------- dom refs ----------
+  const el = id => document.getElementById(id);
+  const fileInput = el('fileInput');
+  const browseBtn = el('browseBtn');
+  const thumbStrip = el('thumbStrip');
+  const clearAllBtn = el('clearAllBtn');
+  const countReadout = el('countReadout');
+  const modeButtons = Array.from(document.querySelectorAll('.mode-btn'));
+  const gapSlider = el('gapSlider');
+  const gapReadout = el('gapReadout');
+  const sizeSlider = el('sizeSlider');
+  const sizeReadout = el('sizeReadout');
+  const sizeSliderWrap = el('sizeSliderWrap');
+  const sizeLabelText = el('sizeLabelText');
+  const squareHint = el('squareHint');
+  const freeformControls = el('freeformControls');
+  const resetFreeformBtn = el('resetFreeformBtn');
+  const bgSwatches = Array.from(document.querySelectorAll('.swatch'));
+  const customBgInput = el('customBgInput');
+  const scaleSlider = el('scaleSlider');
+  const scaleReadout = el('scaleReadout');
+  const dimsReadout = el('dimsReadout');
+  const downloadPngBtn = el('downloadPngBtn');
+  const downloadJpgBtn = el('downloadJpgBtn');
+  const copyBtn = el('copyBtn');
+  const statusMsg = el('statusMsg');
+  const stageFrame = el('stageFrame');
+  const stageWrap = el('stageWrap');
+  const stageEl = el('stage');
+  const emptyState = el('emptyState');
+  const dragOverlay = el('dragOverlay');
+
+  // ---------- layout math ----------
+  function computeRows(imgs, containerW, targetH, gapPx){
+    const rows = [];
+    let row = [], aspectSum = 0;
+    for (const im of imgs){
+      row.push(im);
+      aspectSum += im.aspect;
+      const widthAtTarget = aspectSum * targetH + gapPx * (row.length - 1);
+      if (widthAtTarget >= containerW){
+        rows.push({ items: row, height: (containerW - gapPx * (row.length - 1)) / aspectSum, partial:false });
+        row = []; aspectSum = 0;
+      }
+    }
+    if (row.length){
+      rows.push({ items: row, height: targetH, partial:true });
+    }
+    return rows;
+  }
+
+  function rowsTotalHeight(rows, gapPx){
+    if (!rows.length) return 0;
+    return rows.reduce((s,r)=>s+r.height,0) + gapPx * (rows.length - 1);
+  }
+
+  function applyRows(rows, gapPx){
+    let y = 0;
+    for (const r of rows){
+      let x = 0;
+      for (const im of r.items){
+        im.h = r.height;
+        im.w = im.aspect * r.height;
+        im.x = x; im.y = y;
+        x += im.w + gapPx;
+      }
+      y += r.height + gapPx;
+    }
+    return Math.max(y - gapPx, 0);
+  }
+
+  function solveSquareTargetHeight(imgs, containerW, gapPx){
+    let lo = 8, hi = containerW * 1.5;
+    for (let i=0;i<24;i++){
+      const mid = (lo+hi)/2;
+      const rows = computeRows(imgs, containerW, mid, gapPx);
+      const h = rowsTotalHeight(rows, gapPx);
+      if (h > containerW) hi = mid; else lo = mid;
+    }
+    return (lo+hi)/2;
+  }
+
+  function recomputeLayout(m){
+    m = m || mode;
+    if (!images.length){
+      stageUnits = { w:900, h:560 };
+      return;
+    }
+    if (m === 'justified'){
+      const rows = computeRows(images, REF_WIDTH, targetSize, gap);
+      const h = applyRows(rows, gap);
+      stageUnits = { w: REF_WIDTH, h };
+    } else if (m === 'square'){
+      const th = solveSquareTargetHeight(images, REF_WIDTH, gap);
+      const rows = computeRows(images, REF_WIDTH, th, gap);
+      const h = applyRows(rows, gap);
+      stageUnits = { w: REF_WIDTH, h };
+    } else if (m === 'row'){
+      let x = 0;
+      images.forEach(im=>{ im.h = targetSize; im.w = im.aspect * targetSize; im.x = x; im.y = 0; x += im.w + gap; });
+      stageUnits = { w: Math.max(x - gap, 1), h: targetSize };
+    } else if (m === 'column'){
+      let y = 0;
+      images.forEach(im=>{ im.w = targetSize; im.h = targetSize / im.aspect; im.x = 0; im.y = y; y += im.h + gap; });
+      stageUnits = { w: targetSize, h: Math.max(y - gap, 1) };
+    } else if (m === 'freeform'){
+      updateFreeformBounds();
+    }
+  }
+
+  function updateFreeformBounds(){
+    if (!images.length){ stageUnits = { w:900, h:560 }; return; }
+    let maxX = 0, maxY = 0;
+    images.forEach(im=>{ maxX = Math.max(maxX, im.x + im.w); maxY = Math.max(maxY, im.y + im.h); });
+    stageUnits = { w: Math.max(maxX, 40), h: Math.max(maxY, 40) };
+  }
+
+  // ---------- image loading ----------
+  function loadImageFile(file){
+    return new Promise((resolve, reject)=>{
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = ()=>{
+        resolve({
+          id: 'im' + (nextId++), img, url,
+          natW: img.naturalWidth, natH: img.naturalHeight,
+          aspect: img.naturalWidth / img.naturalHeight,
+          x:0, y:0, w:0, h:0
+        });
+      };
+      img.onerror = ()=>{ URL.revokeObjectURL(url); reject(new Error('load failed')); };
+      img.src = url;
+    });
+  }
+
+  async function addFiles(fileList){
+    const files = Array.from(fileList).filter(f=>f.type && f.type.startsWith('image/'));
+    if (!files.length) return;
+    const results = await Promise.allSettled(files.map(loadImageFile));
+    const loaded = results.filter(r=>r.status==='fulfilled').map(r=>r.value);
+    if (!loaded.length){ setStatus("Couldn't read that as an image."); return; }
+    loaded.forEach(rec=>{
+      if (mode === 'freeform'){
+        const idx = images.length;
+        const cascade = (idx % 8) * 24;
+        rec.w = 260; rec.h = 260 / rec.aspect;
+        rec.x = 20 + cascade; rec.y = 20 + cascade;
+      }
+      images.push(rec);
+    });
+    if (mode === 'freeform') updateFreeformBounds(); else recomputeLayout();
+    renderStage();
+    renderThumbStrip();
+    updateExportUI();
+    updateEmptyState();
+  }
+
+  function removeImage(id){
+    const idx = images.findIndex(im=>im.id===id);
+    if (idx === -1) return;
+    URL.revokeObjectURL(images[idx].url);
+    images.splice(idx,1);
+    if (mode === 'freeform') updateFreeformBounds(); else recomputeLayout();
+    renderStage();
+    renderThumbStrip();
+    updateExportUI();
+    updateEmptyState();
+  }
+
+  // ---------- rendering ----------
+  function makeImageEl(rec){
+    const wrap = document.createElement('div');
+    wrap.className = 'stage-img';
+
+    const img = document.createElement('img');
+    img.src = rec.url;
+    img.draggable = false;
+    img.alt = '';
+    wrap.appendChild(img);
+
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'stage-remove';
+    removeBtn.textContent = '\u00D7';
+    removeBtn.title = 'Remove';
+    removeBtn.addEventListener('click', (e)=>{ e.stopPropagation(); removeImage(rec.id); });
+    wrap.appendChild(removeBtn);
+
+    const handle = document.createElement('div');
+    handle.className = 'resize-handle';
+    wrap.appendChild(handle);
+
+    wrap.addEventListener('pointerdown', (e)=>{
+      if (mode !== 'freeform') return;
+      if (e.target === handle || e.target === removeBtn) return;
+      e.preventDefault();
+      const startX = e.clientX, startY = e.clientY;
+      const origX = rec.x, origY = rec.y;
+      wrap.setPointerCapture(e.pointerId);
+      wrap.classList.add('dragging');
+      function onMove(ev){
+        const dx = (ev.clientX - startX) / previewScale;
+        const dy = (ev.clientY - startY) / previewScale;
+        rec.x = Math.max(0, origX + dx);
+        rec.y = Math.max(0, origY + dy);
+        wrap.style.left = (rec.x * previewScale) + 'px';
+        wrap.style.top = (rec.y * previewScale) + 'px';
+      }
+      function onUp(){
+        wrap.releasePointerCapture(e.pointerId);
+        wrap.classList.remove('dragging');
+        wrap.removeEventListener('pointermove', onMove);
+        wrap.removeEventListener('pointerup', onUp);
+        updateFreeformBounds();
+        renderStage();
+        updateExportUI();
+      }
+      wrap.addEventListener('pointermove', onMove);
+      wrap.addEventListener('pointerup', onUp);
+    });
+
+    handle.addEventListener('pointerdown', (e)=>{
+      if (mode !== 'freeform') return;
+      e.preventDefault(); e.stopPropagation();
+      const startX = e.clientX;
+      const origW = rec.w;
+      handle.setPointerCapture(e.pointerId);
+      function onMove(ev){
+        const dx = (ev.clientX - startX) / previewScale;
+        const newW = Math.max(30, origW + dx);
+        rec.w = newW; rec.h = newW / rec.aspect;
+        wrap.style.width = (rec.w * previewScale) + 'px';
+        wrap.style.height = (rec.h * previewScale) + 'px';
+      }
+      function onUp(){
+        handle.releasePointerCapture(e.pointerId);
+        handle.removeEventListener('pointermove', onMove);
+        handle.removeEventListener('pointerup', onUp);
+        updateFreeformBounds();
+        renderStage();
+        updateExportUI();
+      }
+      handle.addEventListener('pointermove', onMove);
+      handle.addEventListener('pointerup', onUp);
+    });
+
+    return wrap;
+  }
+
+  function renderStage(){
+    const availW = Math.max(stageFrame.clientWidth - 60, 100);
+    const availH = Math.max(stageFrame.clientHeight - 20, 100);
+    const w = stageUnits.w || 1, h = stageUnits.h || 1;
+    previewScale = Math.min(availW / w, availH / h);
+    previewScale = Math.min(Math.max(previewScale, 0.02), 4);
+
+    stageEl.style.width = (w * previewScale) + 'px';
+    stageEl.style.height = (h * previewScale) + 'px';
+    stageEl.classList.toggle('transparent-bg', bgMode === 'transparent');
+    stageEl.style.background = bgMode === 'transparent' ? '' : getTableColor();
+
+    const seen = new Set();
+    images.forEach(rec=>{
+      seen.add(rec.id);
+      let node = stageEls.get(rec.id);
+      if (!node){ node = makeImageEl(rec); stageEls.set(rec.id, node); stageEl.appendChild(node); }
+      node.style.left = (rec.x * previewScale) + 'px';
+      node.style.top = (rec.y * previewScale) + 'px';
+      node.style.width = (rec.w * previewScale) + 'px';
+      node.style.height = (rec.h * previewScale) + 'px';
+      node.classList.toggle('freeform-mode', mode === 'freeform');
+    });
+    for (const [id, node] of stageEls){
+      if (!seen.has(id)){ node.remove(); stageEls.delete(id); }
+    }
+  }
+
+  function renderThumbStrip(){
+    thumbStrip.innerHTML = '';
+    images.forEach(rec=>{
+      const div = document.createElement('div');
+      div.className = 'thumb';
+      const img = document.createElement('img');
+      img.src = rec.url; img.alt = '';
+      div.appendChild(img);
+      const btn = document.createElement('button');
+      btn.className = 'thumb-remove';
+      btn.textContent = '\u00D7';
+      btn.title = 'Remove';
+      btn.addEventListener('click', ()=>removeImage(rec.id));
+      div.appendChild(btn);
+      thumbStrip.appendChild(div);
+    });
+    countReadout.textContent = images.length + (images.length === 1 ? ' photo' : ' photos');
+  }
+
+  function updateEmptyState(){
+    emptyState.style.display = images.length ? 'none' : 'flex';
+  }
+
+  function updateControlsForMode(){
+    const showSize = mode === 'justified' || mode === 'row' || mode === 'column';
+    sizeSliderWrap.style.display = showSize ? '' : 'none';
+    squareHint.style.display = mode === 'square' ? '' : 'none';
+    el('gapSliderWrap').style.display = mode === 'freeform' ? 'none' : '';
+    freeformControls.style.display = mode === 'freeform' ? '' : 'none';
+    if (mode === 'justified') sizeLabelText.textContent = 'Target row height';
+    if (mode === 'row') sizeLabelText.textContent = 'Row height';
+    if (mode === 'column') sizeLabelText.textContent = 'Column width';
+  }
+
+  function getTableColor(){
+    return bgMode === 'custom' ? customBgColor : (BG_COLORS[bgMode] || '#ffffff');
+  }
+
+  function syncBgControls(){
+    bgSwatches.forEach(b=>b.classList.toggle('active', b.dataset.bg === bgMode));
+    customBgInput.classList.toggle('active', bgMode === 'custom');
+  }
+
+  // ---------- export ----------
+  function computeExportPlan(scaleFactor){
+    if (!images.length) return null;
+    let maxRatio = 0;
+    images.forEach(im=>{
+      const r = im.w / im.natW;
+      if (r > maxRatio) maxRatio = r;
+    });
+    if (maxRatio <= 0) return null;
+    let pxPerUnit = (1 / maxRatio) * scaleFactor;
+    let outW = stageUnits.w * pxPerUnit;
+    let outH = stageUnits.h * pxPerUnit;
+    let capped = false;
+    if (outW > MAX_DIM || outH > MAX_DIM){
+      const s = Math.min(MAX_DIM / outW, MAX_DIM / outH);
+      pxPerUnit *= s; outW *= s; outH *= s; capped = true;
+    }
+    if (outW * outH > MAX_AREA){
+      const s = Math.sqrt(MAX_AREA / (outW * outH));
+      pxPerUnit *= s; outW *= s; outH *= s; capped = true;
+    }
+    return { pxPerUnit, outW: Math.max(1, Math.round(outW)), outH: Math.max(1, Math.round(outH)), capped };
+  }
+
+  function buildExportCanvas(plan, format){
+    const canvas = document.createElement('canvas');
+    canvas.width = plan.outW; canvas.height = plan.outH;
+    const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = true;
+    if ('imageSmoothingQuality' in ctx) ctx.imageSmoothingQuality = 'high';
+    const needsFill = bgMode !== 'transparent' || format === 'jpg';
+    if (needsFill){
+      ctx.fillStyle = bgMode === 'transparent' ? '#ffffff' : getTableColor();
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+    images.forEach(im=>{
+      ctx.drawImage(im.img, im.x * plan.pxPerUnit, im.y * plan.pxPerUnit, im.w * plan.pxPerUnit, im.h * plan.pxPerUnit);
+    });
+    return canvas;
+  }
+
+  function triggerDownload(blob, filename){
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 2000);
+  }
+
+  function updateExportUI(){
+    const plan = computeExportPlan(currentScale);
+    if (!plan){
+      dimsReadout.textContent = '— × — px';
+      downloadPngBtn.disabled = true; downloadJpgBtn.disabled = true; copyBtn.disabled = true;
+      return;
+    }
+    downloadPngBtn.disabled = false; downloadJpgBtn.disabled = false; copyBtn.disabled = false;
+    dimsReadout.textContent = plan.outW + ' × ' + plan.outH + ' px';
+    if (plan.capped) setStatus('Output capped to stay within browser size limits.');
+  }
+
+  function setStatus(msg, timeout){
+    statusMsg.textContent = msg;
+    clearTimeout(statusTimer);
+    statusTimer = setTimeout(()=>{ statusMsg.textContent = ''; }, timeout || 4000);
+  }
+
+  async function copyToClipboard(){
+    try{
+      const plan = computeExportPlan(currentScale);
+      if (!plan) return;
+      const canvas = buildExportCanvas(plan, 'png');
+      const blob = await new Promise(res=>canvas.toBlob(res, 'image/png'));
+      await navigator.clipboard.write([ new ClipboardItem({ 'image/png': blob }) ]);
+      setStatus('Copied to clipboard.');
+    } catch(err){
+      setStatus("Couldn't copy — try Download PNG instead.");
+    }
+  }
+
+  // ---------- wiring ----------
+  browseBtn.addEventListener('click', ()=>fileInput.click());
+  fileInput.addEventListener('change', ()=>{
+    if (fileInput.files.length) addFiles(fileInput.files);
+    fileInput.value = '';
+  });
+
+  clearAllBtn.addEventListener('click', ()=>{
+    if (!images.length) return;
+    if (!confirm("Clear all photos? This can't be undone.")) return;
+    images.forEach(im=>URL.revokeObjectURL(im.url));
+    images = [];
+    recomputeLayout();
+    renderStage();
+    renderThumbStrip();
+    updateExportUI();
+    updateEmptyState();
+  });
+
+  modeButtons.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const m = btn.dataset.mode;
+      if (m !== 'freeform') lastAutoMode = m;
+      mode = m;
+      modeButtons.forEach(b=>b.classList.toggle('active', b === btn));
+      updateControlsForMode();
+      recomputeLayout();
+      renderStage();
+      updateExportUI();
+    });
+  });
+
+  gapSlider.addEventListener('input', ()=>{
+    gap = +gapSlider.value;
+    gapReadout.textContent = gap;
+    if (mode !== 'freeform'){ recomputeLayout(); renderStage(); updateExportUI(); }
+  });
+
+  sizeSlider.addEventListener('input', ()=>{
+    targetSize = +sizeSlider.value;
+    sizeReadout.textContent = targetSize;
+    if (mode !== 'freeform'){ recomputeLayout(); renderStage(); updateExportUI(); }
+  });
+
+  resetFreeformBtn.addEventListener('click', ()=>{
+    recomputeLayout(lastAutoMode);
+    updateFreeformBounds();
+    renderStage();
+    updateExportUI();
+  });
+
+  bgSwatches.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      bgMode = btn.dataset.bg;
+      syncBgControls();
+      renderStage();
+      updateExportUI();
+    });
+  });
+
+  customBgInput.addEventListener('input', ()=>{
+    customBgColor = customBgInput.value;
+    bgMode = 'custom';
+    syncBgControls();
+    renderStage();
+    updateExportUI();
+  });
+
+  scaleSlider.addEventListener('input', ()=>{
+    currentScale = (+scaleSlider.value) / 100;
+    scaleReadout.textContent = scaleSlider.value + '%';
+    updateExportUI();
+  });
+
+  downloadPngBtn.addEventListener('click', ()=>{
+    const plan = computeExportPlan(currentScale);
+    if (!plan) return;
+    const canvas = buildExportCanvas(plan, 'png');
+    canvas.toBlob(blob=>{ triggerDownload(blob, 'mosaic.png'); setStatus('Downloaded PNG.'); }, 'image/png');
+  });
+
+  downloadJpgBtn.addEventListener('click', ()=>{
+    const plan = computeExportPlan(currentScale);
+    if (!plan) return;
+    const canvas = buildExportCanvas(plan, 'jpg');
+    canvas.toBlob(blob=>{ triggerDownload(blob, 'mosaic.jpg'); setStatus('Downloaded JPG.'); }, 'image/jpeg', 0.92);
+  });
+
+  copyBtn.addEventListener('click', copyToClipboard);
+
+  // paste
+  document.addEventListener('paste', (e)=>{
+    const items = e.clipboardData && e.clipboardData.items;
+    if (!items) return;
+    const files = [];
+    for (const item of items){
+      if (item.kind === 'file' && item.type && item.type.startsWith('image/')){
+        const f = item.getAsFile();
+        if (f) files.push(f);
+      }
+    }
+    if (files.length){ e.preventDefault(); addFiles(files); }
+  });
+
+  // drag and drop (whole window)
+  let dragCounter = 0;
+  document.addEventListener('dragenter', (e)=>{
+    if (e.dataTransfer && Array.from(e.dataTransfer.types || []).includes('Files')){
+      dragCounter++;
+      document.body.classList.add('dragging-file');
+    }
+  });
+  document.addEventListener('dragover', (e)=>{ e.preventDefault(); });
+  document.addEventListener('dragleave', ()=>{
+    dragCounter = Math.max(0, dragCounter - 1);
+    if (dragCounter === 0) document.body.classList.remove('dragging-file');
+  });
+  document.addEventListener('drop', (e)=>{
+    e.preventDefault();
+    dragCounter = 0;
+    document.body.classList.remove('dragging-file');
+    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length){
+      addFiles(e.dataTransfer.files);
+    }
+  });
+
+  let resizeTimer;
+  window.addEventListener('resize', ()=>{
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(renderStage, 80);
+  });
+
+  // ---------- init ----------
+  updateControlsForMode();
+  syncBgControls();
+  recomputeLayout();
+  renderStage();
+  renderThumbStrip();
+  updateExportUI();
+  updateEmptyState();
+
+})();
+</script>
+</body>
+</html>

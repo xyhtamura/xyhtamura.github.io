@@ -664,6 +664,15 @@ links: [
     },
     pieces: [
 	{
+  title: "Put Many Pictures Together",
+  year: "2026",
+  tags: ["image utilities", "layout tools", "html5 canvas", "client-side", "responsive design"],
+  blurb: "A simple, browser-based utility that lets you quickly compile multiple images into customized grid sheets, columns, or freeform collages for fast clipboard copying and high-resolution layout exporting[cite: 3].",
+  links: [
+    { label: "Launch App", url: "https://xyhtamura.github.io/putmanypicturestogether" }
+  ]
+},
+	{
   title: "Cella",
   year: "2026",
   tags: ["additive synthesis", "resonator bank", "audio worklet", "spectral math", "microtonal"],
@@ -672,12 +681,12 @@ links: [
     { label: "Launch Instrument", url: "https://xyhtamura.github.io/cella/" },
     { label: "Open Document", url: "https://xyhtamura.github.io/cella/README.md" }
   ]
-}
+},
 	{
   title: "aliquoto",
   year: "2026",
   tags: ["additive synthesis", "acausal grammar", "audio worklet", "spectral math", "hindcasts"],
-  blurb: "A pure additive synthesizer that allows users to sculpt complex timbres by writing spectral series as naked mathematics using summations, envelopes, and conditionals[cite: 3, 4]. Operating with an offline equation parser and a phase-exact AudioWorklet engine, it frees electronic sound from standard integer lattices by enabling arbitrary fractional, irrational, subharmonic, and drift-modulated partial ratios.",
+  blurb: "A pure additive synthesizer that allows users to sculpt complex timbres by writing spectral series as naked mathematics using summations, envelopes, and conditionals. Operating with an offline equation parser and a phase-exact AudioWorklet engine, it frees electronic sound from standard integer lattices by enabling arbitrary fractional, irrational, subharmonic, and drift-modulated partial ratios.",
   links: [
     { label: "Launch Instrument", url: "https://xyhtamura.github.io/aliquoto/" },
     { label: "Open Document", url: "https://xyhtamura.github.io/hindcasts/aliquoto/README.md" }
