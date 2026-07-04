@@ -664,6 +664,16 @@ links: [
     },
     pieces: [
 	{
+  title: "Cella",
+  year: "2026",
+  tags: ["additive synthesis", "resonator bank", "audio worklet", "spectral math", "microtonal"],
+  blurb: "Cella is a resonant additive synthesizer that maps custom mathematical equations directly onto a noise-driven resonator bank. Users can interactively paint partials that act as maxima for Gaussian, Lorentzian, or Voigt distributions, test macro-detunings across custom microtonal systems, and effortlessly render generative compositions directly to offline WAV files.",
+  links: [
+    { label: "Launch Instrument", url: "https://xyhtamura.github.io/cella/" },
+    { label: "Open Document", url: "https://xyhtamura.github.io/cella/README.md" }
+  ]
+}
+	{
   title: "aliquoto",
   year: "2026",
   tags: ["additive synthesis", "acausal grammar", "audio worklet", "spectral math", "hindcasts"],
