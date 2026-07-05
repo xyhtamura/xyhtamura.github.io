@@ -475,7 +475,15 @@ const slides = [
       description: "Creative tools, instruments, software, web systems, experimental interfaces, and speculative technical prototypes."
     }
   },
-
+{
+  title: "Moire",
+  year: "2026",
+  tags: ["phase modulation", "synthesizer", "audio worklet", "mathematical grammar", "live codegen"],
+  blurb: "A phase-modulation synthesizer that completely dissolves the traditional skeuomorphic algorithm chart into a system of live equations, enabling users to program custom directed graphs, feedback loops, and multi-operator index families using pure mathematical notation[cite: 4, 5].",
+  links: [
+    { label: "Launch Instrument", url: "https://xyhtamura.github.io/moire" }
+  ]
+},
 {
   kind: "piece",
   piece: {
@@ -518,9 +526,6 @@ links: [
       ]
     }
   },
-    // --------------------------------------------------
-  // SECTION: SGUELTCH SUITE
-  // --------------------------------------------------
   {
     kind: "set",
     main: {
@@ -663,6 +668,15 @@ links: [
       label: "Creative Code, Instruments, & Software Utilities",
     },
     pieces: [
+	{
+  title: "CyberScotoma",
+  year: "2026",
+  tags: ["video processing", "datamosh", "acausal rendering", "voronoi", "motion estimation"],
+  blurb: "An offline, acausal video effect that maps non-grid Voronoi field partitions onto sequentially computed motion vectors, dragging donor frame tissue seamlessly forward through unowned motion to produce highly controlled, non-macroblock datamosh fields[cite: 6, 7].",
+  links: [
+    { label: "Launch App", url: "https://xyhtamura.github.io/cyberscotoma" }
+  ]
+},
 	{
   title: "Put Many Pictures Together",
   year: "2026",
