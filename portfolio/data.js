@@ -669,12 +669,21 @@ links: [
     },
     pieces: [
 	{
+  title: "Remanence",
+  year: "2026",
+  tags: ["audio processing", "video processing", "acausal rendering", "tape print-through", "hindcasts"],
+  blurb: "An audio+video print-through effect for the Hindcasts suite, modeling a wound tape reel whose neighboring wraps imprint ghost copies onto each other. The same acausal reel engine creates pre-echo, post-echo, drift, fold, wear, and VHS-like transport damage, with WAV/WebM export.",
+  links: [
+    { label: "Launch App", url: "https://xyhtamura.github.io/hindcasts/remanence/" }
+  ]
+},
+	{
   title: "CyberScotoma",
   year: "2026",
   tags: ["video processing", "datamosh", "acausal rendering", "voronoi", "motion estimation"],
-  blurb: "An offline, acausal video effect that maps non-grid Voronoi field partitions onto sequentially computed motion vectors, dragging donor frame tissue seamlessly forward through unowned motion to produce highly controlled, non-macroblock datamosh fields[cite: 6, 7].",
+  blurb: "A non-grid, acausal datamosh tool that turns scintillating scotoma into a video effect. Drawn bloom curves latch Voronoi regions, then motion-field grafts and optional donor clips let future or foreign frames bleed backward into the present.",
   links: [
-    { label: "Launch App", url: "https://xyhtamura.github.io/cyberscotoma" }
+    { label: "Launch App", url: "https://xyhtamura.github.io/sgueltch/cyberscotoma/" }
   ]
 },
 	{
