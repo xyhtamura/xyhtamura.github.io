@@ -1,0 +1,891 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Necromakina, an industrial goth electronic body party at Mono by Phono on July 24, 2026." />
+  <meta name="theme-color" content="#e8e5da" />
+  <title>NECROMAKINA</title>
+
+  <style>
+    @font-face {
+      font-family: "MachineLearning";
+      src: url("machinelearning.otf") format("opentype");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Achron";
+      src: url("achron.otf") format("opentype");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root {
+      --bone: #e8e5da;
+      --bone-2: #d5d1c4;
+      --bone-3: #b8b3a6;
+      --tar: #050407;
+      --tar-2: #111014;
+      --ink: #09080b;
+      --chrome: #aeb4b0;
+      --concrete: #6e6c66;
+      --slime: #5cff86;
+      --slime-2: #b9ffc9;
+      --bruise: #170020;
+      --f-ml: "MachineLearning", Impact, "Arial Black", sans-serif;
+      --f-ac: "Achron", "Arial Narrow", "Arial Black", sans-serif;
+      --f-mono: "Cascadia Code", "JetBrains Mono", "IBM Plex Mono", Consolas, ui-monospace, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: var(--tar);
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: var(--f-mono);
+      background:
+        repeating-linear-gradient(90deg, rgba(5, 4, 7, .035) 0 1px, transparent 1px 4.25rem),
+        repeating-linear-gradient(0deg, rgba(5, 4, 7, .035) 0 1px, transparent 1px .38rem),
+        linear-gradient(180deg, var(--bone) 0, var(--bone) 29rem, var(--bone-2) 47rem, #706d67 74rem, #19171b 104rem, var(--tar) 132rem);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: auto 0 0;
+      height: 58vh;
+      z-index: 0;
+      pointer-events: none;
+      background: linear-gradient(0deg, rgba(5, 4, 7, .98), rgba(5, 4, 7, .78) 34%, transparent);
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, rgba(92, 255, 134, .13), transparent 12rem),
+        repeating-linear-gradient(0deg, rgba(255, 255, 255, .12) 0 1px, transparent 1px 4px);
+      mix-blend-mode: multiply;
+      opacity: .38;
+    }
+
+    .page {
+      position: relative;
+      z-index: 2;
+      min-height: 100vh;
+    }
+
+    .signal {
+      position: fixed;
+      top: 0;
+      right: .85rem;
+      z-index: 3;
+      width: 7.4rem;
+      color: var(--slime);
+      font-size: .68rem;
+      line-height: 1.48;
+      opacity: .35;
+      pointer-events: none;
+      text-shadow: 0 0 10px rgba(92, 255, 134, .5);
+      word-break: break-all;
+      animation: signal-crawl 28s linear infinite;
+    }
+
+    .hero {
+      position: relative;
+      min-height: 100svh;
+      width: min(86rem, calc(100% - 3rem));
+      margin: 0 auto;
+      padding: 4.8rem 0 4rem;
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(20rem, .72fr);
+      gap: 3rem;
+      align-items: center;
+      isolation: isolate;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 1.5rem -6rem 0 auto;
+      width: min(44rem, 58%);
+      background-image: url("giger.png");
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+      filter: grayscale(1) contrast(1.45);
+      mix-blend-mode: multiply;
+      opacity: .34;
+      z-index: -1;
+      clip-path: polygon(18% 0, 100% 0, 88% 100%, 0 100%);
+    }
+
+    .hero-copy {
+      position: relative;
+      z-index: 2;
+    }
+
+    .kicker {
+      display: inline-block;
+      margin: 0 0 1.25rem;
+      padding: .42rem 1rem;
+      border: 1px solid rgba(5, 4, 7, .82);
+      border-left: .5rem solid var(--ink);
+      background: rgba(232, 229, 218, .68);
+      color: var(--ink);
+      font-size: .82rem;
+      line-height: 1.35;
+      text-transform: uppercase;
+      box-shadow: .35rem .35rem 0 rgba(5, 4, 7, .88);
+    }
+
+    .logo {
+      position: relative;
+      margin: 0;
+      color: var(--ink);
+      font-family: var(--f-ml);
+      font-size: 8.8rem;
+      font-weight: 400;
+      line-height: .74;
+      text-transform: uppercase;
+      text-shadow:
+        .035em .045em 0 rgba(92, 255, 134, .38),
+        0 .11em 0 rgba(5, 4, 7, .12);
+    }
+
+    .logo span {
+      display: block;
+    }
+
+    .logo::after {
+      content: "NECRO\A MAKINA";
+      position: absolute;
+      left: .035em;
+      top: .02em;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(5, 4, 7, .48);
+      clip-path: polygon(0 8%, 100% 4%, 100% 30%, 0 38%);
+      opacity: .55;
+      pointer-events: none;
+      white-space: pre;
+    }
+
+    .lead {
+      max-width: 42rem;
+      margin: 1.4rem 0 0;
+      color: #171519;
+      font-size: 1.08rem;
+      line-height: 1.75;
+    }
+
+    .lead b {
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .facts {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      max-width: 39rem;
+      margin: 2rem 0 0;
+      border: 1px solid rgba(5, 4, 7, .82);
+      background: rgba(232, 229, 218, .62);
+      box-shadow: .5rem .5rem 0 rgba(5, 4, 7, .88);
+    }
+
+    .facts div {
+      min-height: 5.6rem;
+      padding: .95rem;
+      border-right: 1px solid rgba(5, 4, 7, .22);
+    }
+
+    .facts div:last-child {
+      border-right: 0;
+    }
+
+    .facts dt {
+      margin: 0 0 .55rem;
+      color: #29262a;
+      font-size: .76rem;
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
+
+    .facts dd {
+      margin: 0;
+      color: var(--ink);
+      font-family: var(--f-ac);
+      font-size: 1.8rem;
+      line-height: 1;
+    }
+
+    .facts .sub {
+      display: block;
+      margin-top: .42rem;
+      color: #4d494c;
+      font-size: .72rem;
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
+
+    .genres {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .55rem;
+      max-width: 43rem;
+      margin: 1.7rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .genres li {
+      padding: .42rem .68rem;
+      border: 1px solid rgba(5, 4, 7, .64);
+      background: rgba(232, 229, 218, .5);
+      color: var(--ink);
+      font-family: var(--f-ac);
+      font-size: .96rem;
+      text-transform: uppercase;
+    }
+
+    .material-panel {
+      position: relative;
+      min-height: 34rem;
+      border: 1px solid rgba(5, 4, 7, .62);
+      background:
+        linear-gradient(180deg, rgba(232, 229, 218, .08), rgba(5, 4, 7, .08)),
+        url("giger.png") center / cover no-repeat;
+      filter: grayscale(.8) contrast(1.28);
+      box-shadow:
+        -1rem 1rem 0 rgba(5, 4, 7, .9),
+        inset 0 0 0 1px rgba(232, 229, 218, .38);
+      mix-blend-mode: multiply;
+      overflow: hidden;
+    }
+
+    .material-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(90deg, transparent 0 2.5rem, rgba(92, 255, 134, .14) 2.5rem 2.56rem, transparent 2.56rem 5.5rem),
+        linear-gradient(180deg, transparent, rgba(5, 4, 7, .6));
+      opacity: .48;
+    }
+
+    .material-panel::after {
+      content: "becoming cyborg";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: .78rem .9rem;
+      background: rgba(5, 4, 7, .86);
+      color: var(--bone);
+      font-size: .74rem;
+      line-height: 1.35;
+      text-transform: uppercase;
+    }
+
+    .materials {
+      width: min(86rem, calc(100% - 3rem));
+      margin: 0 auto;
+      padding: 3rem 0 4.2rem;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: .75rem;
+    }
+
+    .material {
+      min-height: 9.2rem;
+      padding: .9rem;
+      border: 1px solid rgba(5, 4, 7, .4);
+      background: rgba(232, 229, 218, .38);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .material b {
+      color: var(--ink);
+      font-family: var(--f-ac);
+      font-size: 1.12rem;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .material span {
+      display: block;
+      height: 2.4rem;
+      border: 1px solid rgba(5, 4, 7, .34);
+    }
+
+    .material p {
+      margin: 0;
+      color: #3e3b3d;
+      font-size: .82rem;
+      line-height: 1.45;
+    }
+
+    .swatch-bone { background: linear-gradient(135deg, #f1efe6, #c7c2b4); }
+    .swatch-chrome { background: linear-gradient(135deg, #f6f8f4, #818984 42%, #d6dbd4 58%, #555a59); }
+    .swatch-tar { background: linear-gradient(135deg, #020203, #17141a 48%, #000); }
+    .swatch-concrete { background: linear-gradient(135deg, #9a978e, #5f5d58 50%, #c5c0b5); }
+    .swatch-slime { background: linear-gradient(135deg, #1c2a20, var(--slime) 46%, #e7ffe8); }
+
+    .ticker {
+      position: relative;
+      z-index: 2;
+      overflow: hidden;
+      border-block: 1px solid rgba(5, 4, 7, .68);
+      background: rgba(5, 4, 7, .92);
+      color: var(--bone);
+    }
+
+    .ticker-track {
+      display: flex;
+      width: max-content;
+      animation: ticker 26s linear infinite;
+    }
+
+    .ticker span {
+      display: block;
+      padding: .92rem 1.4rem;
+      white-space: nowrap;
+      font-family: var(--f-ac);
+      font-size: .92rem;
+      text-transform: uppercase;
+    }
+
+    .ticker i {
+      color: var(--slime);
+      font-style: normal;
+      padding: 0 .3rem;
+    }
+
+    .moodboard {
+      position: relative;
+      z-index: 2;
+      width: min(86rem, calc(100% - 3rem));
+      margin: 0 auto;
+      padding: 5rem 0 6rem;
+      color: var(--bone);
+    }
+
+    .mood-copy {
+      max-width: 36rem;
+      margin-bottom: 2rem;
+    }
+
+    .section-label {
+      margin: 0 0 1rem;
+      color: var(--slime);
+      font-size: .82rem;
+      line-height: 1.35;
+      text-transform: uppercase;
+    }
+
+    .moodboard h2,
+    .pegs h2 {
+      margin: 0;
+      color: var(--bone);
+      font-family: var(--f-ml);
+      font-size: 4.4rem;
+      font-weight: 400;
+      line-height: .86;
+      text-transform: uppercase;
+    }
+
+    .moodboard p {
+      color: #c9c5ba;
+      font-size: 1rem;
+      line-height: 1.75;
+    }
+
+    .image-stack {
+      position: relative;
+      min-height: 53rem;
+      margin-top: -4rem;
+    }
+
+    .mood-img {
+      position: absolute;
+      margin: 0;
+      border: 1px solid rgba(232, 229, 218, .46);
+      background: var(--tar);
+      box-shadow: 0 1.1rem 3.2rem rgba(0, 0, 0, .55);
+      overflow: hidden;
+      filter: grayscale(.18) contrast(1.12);
+    }
+
+    .mood-img img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .mood-img::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(180deg, rgba(92, 255, 134, .13), transparent 34%, rgba(5, 4, 7, .24)),
+        repeating-linear-gradient(0deg, rgba(255, 255, 255, .08) 0 1px, transparent 1px 5px);
+      mix-blend-mode: screen;
+      opacity: .34;
+    }
+
+    .mood-img.one {
+      width: 22rem;
+      height: 27rem;
+      left: 2%;
+      top: 8rem;
+      transform: rotate(-5deg);
+      z-index: 4;
+    }
+
+    .mood-img.two {
+      width: 18rem;
+      height: 14rem;
+      left: 22%;
+      top: 2rem;
+      transform: rotate(6deg);
+      z-index: 5;
+    }
+
+    .mood-img.three {
+      width: 20rem;
+      height: 20rem;
+      left: 40%;
+      top: 6rem;
+      transform: rotate(-2deg);
+      z-index: 3;
+    }
+
+    .mood-img.four {
+      width: 18rem;
+      height: 28rem;
+      right: 4%;
+      top: .5rem;
+      transform: rotate(4deg);
+      z-index: 4;
+    }
+
+    .mood-img.five {
+      width: 19rem;
+      height: 24rem;
+      left: 10%;
+      top: 27rem;
+      transform: rotate(3deg);
+      z-index: 6;
+    }
+
+    .mood-img.six {
+      width: 22rem;
+      height: 17rem;
+      left: 33%;
+      top: 30rem;
+      transform: rotate(-6deg);
+      z-index: 7;
+    }
+
+    .mood-img.seven {
+      width: 18rem;
+      height: 23rem;
+      right: 13%;
+      top: 25rem;
+      transform: rotate(7deg);
+      z-index: 5;
+    }
+
+    .mood-img.eight {
+      width: 17rem;
+      height: 17rem;
+      right: 0;
+      top: 36rem;
+      transform: rotate(-4deg);
+      z-index: 8;
+    }
+
+    .mood-img.nine {
+      width: 20rem;
+      height: 25rem;
+      left: 47%;
+      top: 16rem;
+      transform: rotate(2deg);
+      z-index: 6;
+    }
+
+    .pegs {
+      position: relative;
+      z-index: 2;
+      background:
+        linear-gradient(180deg, rgba(5, 4, 7, .2), rgba(5, 4, 7, .96) 5rem),
+        var(--tar);
+      color: var(--bone);
+      padding: 5rem 0 5.5rem;
+    }
+
+    .pegs-inner {
+      width: min(86rem, calc(100% - 3rem));
+      margin: 0 auto;
+    }
+
+    .peg-head {
+      max-width: 46rem;
+      margin-bottom: 2rem;
+    }
+
+    .peg-head p {
+      margin: 1rem 0 0;
+      color: #bcb7ad;
+      font-size: .98rem;
+      line-height: 1.7;
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .video-card {
+      border: 1px solid rgba(232, 229, 218, .18);
+      border-radius: 6px;
+      background: rgba(232, 229, 218, .035);
+      overflow: hidden;
+      box-shadow: 0 1rem 2.4rem rgba(0, 0, 0, .42);
+    }
+
+    .video-card h3 {
+      margin: 0;
+      padding: .9rem 1rem;
+      border-bottom: 1px solid rgba(232, 229, 218, .15);
+      color: var(--slime-2);
+      font-family: var(--f-ac);
+      font-size: 1.2rem;
+      font-weight: 400;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .embed {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      background: #000;
+    }
+
+    .embed iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .foot {
+      position: relative;
+      z-index: 2;
+      padding: 1.5rem;
+      border-top: 1px solid rgba(92, 255, 134, .34);
+      background: #020203;
+      color: var(--bone);
+      text-align: center;
+    }
+
+    .foot .mark {
+      font-family: var(--f-ml);
+      font-size: 1.7rem;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .foot .line {
+      margin-top: .7rem;
+      color: var(--slime);
+      font-size: .76rem;
+      line-height: 1.45;
+      text-transform: uppercase;
+    }
+
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    @keyframes signal-crawl {
+      from { transform: translateY(-22%); }
+      to { transform: translateY(12%); }
+    }
+
+    @media (max-width: 1100px) {
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+      }
+
+      .hero::before {
+        width: 90%;
+        inset: 4rem -8rem auto auto;
+        height: 34rem;
+      }
+
+      .logo {
+        font-size: 6.6rem;
+      }
+
+      .material-panel {
+        width: min(100%, 32rem);
+        min-height: 24rem;
+      }
+
+      .materials,
+      .video-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .image-stack {
+        min-height: 70rem;
+      }
+
+      .mood-img.three { left: 48%; }
+      .mood-img.four { right: 6%; top: 20rem; }
+      .mood-img.seven { right: 2%; top: 42rem; }
+      .mood-img.eight { right: 28%; top: 51rem; }
+      .mood-img.nine { left: 35%; top: 18rem; }
+    }
+
+    @media (max-width: 700px) {
+      .signal {
+        display: none;
+      }
+
+      .hero,
+      .materials,
+      .moodboard,
+      .pegs-inner {
+        width: min(100% - 2rem, 86rem);
+      }
+
+      .hero {
+        min-height: auto;
+        padding: 3rem 0 3.5rem;
+      }
+
+      .hero::before {
+        inset: 3rem -5rem auto auto;
+        height: 28rem;
+        opacity: .2;
+      }
+
+      .logo {
+        font-size: 4.05rem;
+        line-height: .82;
+      }
+
+      .lead {
+        font-size: 1rem;
+      }
+
+      .facts,
+      .materials,
+      .video-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .facts div {
+        border-right: 0;
+        border-bottom: 1px solid rgba(5, 4, 7, .22);
+      }
+
+      .facts div:last-child {
+        border-bottom: 0;
+      }
+
+      .material-panel {
+        min-height: 20rem;
+      }
+
+      .moodboard h2,
+      .pegs h2 {
+        font-size: 3rem;
+      }
+
+      .image-stack {
+        min-height: 77rem;
+        margin-top: 0;
+      }
+
+      .mood-img.one { width: 15rem; height: 19rem; left: 0; top: 2rem; }
+      .mood-img.two { width: 13rem; height: 10rem; left: 42%; top: 0; }
+      .mood-img.three { width: 14rem; height: 14rem; left: 28%; top: 12rem; }
+      .mood-img.four { width: 13rem; height: 20rem; right: 0; top: 24rem; }
+      .mood-img.five { width: 14rem; height: 18rem; left: 0; top: 34rem; }
+      .mood-img.six { width: 16rem; height: 12rem; left: 26%; top: 48rem; }
+      .mood-img.seven { width: 13rem; height: 17rem; right: 0; top: 57rem; }
+      .mood-img.eight { width: 12rem; height: 12rem; right: 38%; top: 63rem; }
+      .mood-img.nine { width: 13rem; height: 16rem; left: 36%; top: 31rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ticker-track,
+      .signal {
+        animation: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="signal" aria-hidden="true">01001110 NECROMAKINA 24072026 EBM INDUSTRIAL TECHNO ELECTRO HARDSTYLE CYBERGOTH DARK AMBIENT ALTDRAG BONE CHROME TAR CONCRETE SLIME 10110</div>
+
+  <main class="page">
+    <section class="hero" aria-labelledby="event-title">
+      <div class="hero-copy">
+        <!-- <span class="kicker">industrial party / goth electronics / alt</span>-->
+        <h1 class="logo" id="event-title"><span>Necro</span><span>Makina</span></h1>
+        <!-- <p class="lead"><b>Bone, chrome, tar, concrete, slime.</b> A black-on-bone event surface for EBM, industrial, techno, electro, hardstyle, cybergoth, and dark ambient.</p> -->
+
+        <dl class="facts">
+          <div>
+            <dt>Where</dt>
+            <dd>Mono</dd>
+            <span class="sub">by phono</span>
+          </div>
+          <div>
+            <dt>When</dt>
+            <dd>Jul 24</dd>
+            <span class="sub">2026 / tentative</span>
+          </div>
+          <div>
+            <dt>Doors</dt>
+            <dd>11 PM</dd>
+            <span class="sub">late floor</span>
+          </div>
+        </dl>
+
+        <ul class="genres" aria-label="Genres">
+          <li>EBM</li>
+          <li>Industrial</li>
+          <li>Techno</li>
+          <li>Electro</li>
+          <li>Hardstyle</li>
+          <li>Cybergoth</li>
+          <li>Dark Ambient</li>
+        </ul>
+      </div>
+
+      <div class="material-panel" aria-hidden="true"></div>
+    </section>
+<!--
+    <section class="materials" aria-label="Materials">
+      <article class="material">
+        <b>Bone</b>
+        <span class="swatch-bone"></span>
+        <p>Sick white, fossil light, porous ritual surface.</p>
+      </article>
+      <article class="material">
+        <b>Chrome</b>
+        <span class="swatch-chrome"></span>
+        <p>Cold reflected edges, machine jewelry, flash.</p>
+      </article>
+      <article class="material">
+        <b>Tar</b>
+        <span class="swatch-tar"></span>
+        <p>Black gradient rising from below the page.</p>
+      </article>
+      <article class="material">
+        <b>Concrete</b>
+        <span class="swatch-concrete"></span>
+        <p>Bridge pressure, hard acoustics, room weight.</p>
+      </article>
+      <article class="material">
+        <b>Slime</b>
+        <span class="swatch-slime"></span>
+        <p>Green signal, biohazard gloss, terminal leak.</p>
+      </article>
+    </section>
+	-->
+
+    <section class="ticker" aria-hidden="true">
+      <div class="ticker-track">
+        <span>xenomorphic bone machine <i>/</i> cybergore <i>/</i> tar and concrete <i>/</i> technobody horror <i>/</i> chrome ritual <i>/</i> </span>
+        <span>xenomorphic bone machine <i>/</i> cybergore <i>/</i> tar and concrete <i>/</i> technobody horror <i>/</i> chrome ritual <i>/</i> </span>
+      </div>
+    </section>
+<!--
+    <section class="moodboard" aria-labelledby="mood-title">
+      <div class="mood-copy">
+        <p class="section-label">mood matter</p>
+        <h2 id="mood-title">biomechanical floor organism</h2>
+        <p>The page is also the poster: a stack of references, wet machine texture, concrete darkness, bone-light typography, and a little green signal rot.</p>
+      </div>
+-->
+      <div class="image-stack" aria-label="Haphazard moodboard image stack">
+        <figure class="mood-img one"><img src="moodimg/cablehallway.jpg" alt="Cable-filled hallway mood reference" /></figure>
+        <figure class="mood-img two"><img src="moodimg/cables.jpeg" alt="Dense cables mood reference" /></figure>
+        <figure class="mood-img three"><img src="moodimg/cobrah.jpg" alt="Serpentine biomechanical mood reference" /></figure>
+        <figure class="mood-img four"><img src="moodimg/industrial.jpg" alt="Industrial vertical structure mood reference" /></figure>
+        <figure class="mood-img five"><img src="moodimg/lain.jpg" alt="Electronic anime mood reference" /></figure>
+        <figure class="mood-img six"><img src="moodimg/mask.jpg" alt="Mask and body styling mood reference" /></figure>
+        <figure class="mood-img seven"><img src="moodimg/mtg.jpg" alt="Bone and machine fantasy mood reference" /></figure>
+        <figure class="mood-img eight"><img src="moodimg/scorn.jpg" alt="Biomechanical game mood reference" /></figure>
+        <figure class="mood-img nine"><img src="moodimg/videogamecap.jpg" alt="Dark game environment mood reference" /></figure>
+      </div>
+    </section>
+
+    <section class="pegs" aria-labelledby="pegs-title">
+      <div class="pegs-inner">
+        <!-- <div class="peg-head">
+          <p class="section-label">three pegs</p>
+          <h2 id="pegs-title">dance references</h2>
+          <p>Embedded as atmosphere anchors: cybergoth under-bridge motion, blade party edge, and Club Hel machine descent.</p>
+        </div> -->
+
+        <div class="video-grid">
+          <article class="video-card">
+            <h3>Cybergoth</h3>
+            <div class="embed">
+              <iframe src="https://www.youtube-nocookie.com/embed/gPbVRpRgHso" title="Cybergoth inspiration video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+          </article>
+          <article class="video-card">
+            <h3>Blade</h3>
+            <div class="embed">
+              <iframe src="https://www.youtube-nocookie.com/embed/BtpqWSmH5gE" title="Blade dance party inspiration video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+          </article>
+          <article class="video-card">
+            <h3>Matrix</h3>
+            <div class="embed">
+              <iframe src="https://www.youtube-nocookie.com/embed/0N1yfXxMYi4" title="Matrix Club Hel inspiration video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <div class="mark">Necromakina</div>
+      <div class="line">Mono by Phono / July 24, 2026 / 11 PM / first tentative date</div>
+    </footer>
+  </main>
+</body>
+</html>
