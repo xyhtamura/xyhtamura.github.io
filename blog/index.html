@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Blog entries by Xyh Tamura on research, practice, poetics, technology, and creative work.">
+  <meta name="keywords" content="Xyh Tamura, blog, research, practice, artistic research, poetics">
+  <meta property="og:title" content="Blog - Xyh Tamura">
+  <meta property="og:description" content="Blog entries by Xyh Tamura.">
+  <meta property="og:url" content="https://xyhtamura.github.io/blog/">
+  <title>Blog - Xyh Tamura</title>
+  <style>
+    :root{
+      --bg:#f4efe8;
+      --bg2:#ece4da;
+      --ink:#1a1818;
+      --muted:#6f655f;
+      --line:rgba(92,74,63,.24);
+      --accent:#5b4fd1;
+      --accent-2:#138a7a;
+      --accent-3:#b86a4b;
+      --max:880px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+
+    body{
+      margin:0;
+      font-family:Georgia, "Iowan Old Style", "Times New Roman", serif;
+      color:var(--ink);
+      line-height:1.7;
+      background:
+        radial-gradient(circle at top left, rgba(91,79,209,.08), transparent 34%),
+        radial-gradient(circle at top right, rgba(19,138,122,.07), transparent 30%),
+        linear-gradient(180deg, var(--bg2) 0%, var(--bg) 38%, #f7f2ec 100%);
+      text-rendering:optimizeLegibility;
+      -webkit-font-smoothing:antialiased;
+    }
+
+    .site-wrap{
+      min-height:100vh;
+      padding:72px 20px 96px;
+    }
+
+    .index{
+      max-width:var(--max);
+      margin:0 auto;
+    }
+
+    .masthead{
+      padding:0 0 38px;
+      border-bottom:1px solid var(--line);
+    }
+
+    .eyebrow{
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:.78rem;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      color:var(--accent-2);
+      margin-bottom:18px;
+      font-weight:700;
+    }
+
+    h1{
+      font-size:3.75rem;
+      line-height:1.02;
+      font-weight:600;
+      letter-spacing:0;
+      margin:0 0 16px;
+    }
+
+    .intro{
+      max-width:58ch;
+      margin:0;
+      color:#2a2523;
+      font-size:1.08rem;
+    }
+
+    .posts{
+      margin:0;
+      padding:0;
+      list-style:none;
+    }
+
+    .post-link{
+      display:grid;
+      grid-template-columns:minmax(150px, .32fr) 1fr;
+      gap:24px;
+      padding:28px 0;
+      color:inherit;
+      text-decoration:none;
+      border-bottom:1px solid var(--line);
+      transition:background-color .18s ease, color .18s ease;
+    }
+
+    .post-link:hover{
+      background-color:rgba(255,255,255,.28);
+    }
+
+    .post-date{
+      font-family:Arial, Helvetica, sans-serif;
+      color:var(--muted);
+      font-size:.92rem;
+    }
+
+    .post-title{
+      display:block;
+      margin:0 0 8px;
+      color:var(--accent);
+      font-size:1.35rem;
+      line-height:1.18;
+      font-weight:700;
+    }
+
+    .post-link:hover .post-title{
+      color:var(--accent-2);
+    }
+
+    .post-desc{
+      display:block;
+      max-width:62ch;
+      color:#2a2523;
+      font-size:1rem;
+    }
+
+    .footer{
+      margin-top:46px;
+      padding-top:22px;
+      font-family:Arial, Helvetica, sans-serif;
+      color:var(--muted);
+      font-size:.93rem;
+    }
+
+    .footer a{
+      color:var(--accent);
+      text-decoration:none;
+      border-bottom:1px solid transparent;
+      transition:.2s ease;
+    }
+
+    .footer a:hover{
+      color:var(--accent-2);
+      border-bottom-color:currentColor;
+    }
+
+    ::selection{
+      background:rgba(91,79,209,.18);
+    }
+
+    @media (max-width: 700px){
+      .site-wrap{
+        padding:40px 18px 64px;
+      }
+
+      h1{
+        font-size:2.65rem;
+      }
+
+      .intro,
+      .post-desc{
+        font-size:1rem;
+      }
+
+      .post-link{
+        grid-template-columns:1fr;
+        gap:8px;
+        padding:24px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="site-wrap">
+    <main class="index">
+      <header class="masthead">
+        <div class="eyebrow">Xyh Tamura</div>
+        <h1>Blog</h1>
+        <p class="intro">
+          Notes and essays on research, practice, poetics, technology, and the situated self.
+        </p>
+      </header>
+
+      <ul class="posts">
+        <li>
+          <a class="post-link" href="../mapping-research-practice-self.html">
+            <span class="post-date">March 09, 2026</span>
+            <span>
+              <span class="post-title">Mapping Research, Practice, and Self</span>
+              <span class="post-desc">
+                A theoretical mapping of knowledge production, artistic making, and positionality across current research-practice contexts.
+              </span>
+            </span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="footer">
+        Main page: <a href="../">xyhtamura.github.io</a>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

@@ -3,7 +3,7 @@
 
   <url>
     <loc>https://xyhtamura.github.io/</loc>
-    <lastmod>2026-03-20</lastmod>
+    <lastmod>2026-07-09</lastmod>
     <priority>1.00</priority>
   </url>
   
@@ -17,6 +17,18 @@
     <loc>https://xyhtamura.github.io/mapping-research-practice-self.html</loc>
     <lastmod>2026-03-09</lastmod>
     <priority>0.90</priority>
+  </url>
+
+  <url>
+    <loc>https://xyhtamura.github.io/blog/</loc>
+    <lastmod>2026-07-09</lastmod>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://xyhtamura.github.io/sl/arbzn.html</loc>
+    <lastmod>2026-07-09</lastmod>
+    <priority>0.70</priority>
   </url>
 
   <url>
