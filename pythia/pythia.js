@@ -29,6 +29,7 @@ window.onload = () => {
 
     // State toolbar
     const windowSelect   = document.getElementById('window-type');
+    const presetSelect   = document.getElementById('preset-select');
     const saveStateBtn   = document.getElementById('save-state');
     const loadStateInput = document.getElementById('load-state');
     const timeSyncSelect = document.getElementById('time-sync');
@@ -130,10 +131,13 @@ window.onload = () => {
     // Scatter = 1 → pure granular (current Pythia); Scatter = 0 → pure clean tap.
     const granGain     = audioContext.createGain();
     const cleanTapGain = audioContext.createGain();
+    const preEchoGain  = audioContext.createGain();
     const cleanDelay   = audioContext.createDelay(5);   // maxDelay matches Time range
+    preEchoGain.gain.value = 0;
     granGain.connect(wetGain);
     cleanDelay.connect(cleanTapGain);
     cleanTapGain.connect(wetGain);
+    preEchoGain.connect(wetGain);
 
     // Feedback loop on the whole wet bus (regeneration). The cycle is legal because
     // it contains a DelayNode. feedbackGain < 1 and the safety limiter bound runaway.
@@ -165,8 +169,9 @@ window.onload = () => {
     // ── Playback state ────────────────────────────────────────────────────────
     let isPlaying      = false;
     let isBouncing     = false;
-    let isSelfSampling = false;
+    let isSelfSampling = !!selfSampleCheckbox.checked;
     let startTime      = 0;
+    let transportPosition = 0;
     let nextGrainInterval = 0;
 
     const DEFAULT_PARAMS = {
@@ -189,6 +194,7 @@ window.onload = () => {
     let monitorControl = false;
     let timeSync       = 'free';
     let applyingTimeSync = false;
+    let applyingPreset = false;
     let pingPong       = false;
     let liveGrainIndex = 0;
     // Grain amplitude window: 'linear' = the classic attack/decay ramps (default,
@@ -220,6 +226,9 @@ window.onload = () => {
     let controlWaveformCache = null;     // offscreen canvas — teal
     let ampWaveformCache     = null;     // offscreen canvas — ember sidechain read view
     let sourceWaveformCache  = null;
+    let preEchoPreviewNodes  = [];
+    let controlFileName      = '';
+    let externalSourceFileName = '';
 
     // Shared viz timeline [vizT0, vizT1] in seconds. The original clip is [0, D];
     // head = pre-echo room (negative time), tail = feedback ring-out estimate. The
@@ -227,18 +236,33 @@ window.onload = () => {
     let vizT0 = 0, vizT1 = 1;
     const computeVizWindow = () => {
         const D = controlBuffer ? controlBuffer.duration : 1;
-        const head = Math.max(0, -params.time);
-        let tail = 0;
+        let head = Math.max(0, -params.time);
+        let tail = Math.max(0, params.time);
         if (params.feedback > 0.01) {
             const f       = Math.min(0.95, params.feedback);
             const repeats = Math.log(0.001) / Math.log(f);          // passes to -60 dB
             const step    = Math.max(0.05, Math.abs(params.time));
-            tail = Math.min(8, repeats * step);
+            const room    = Math.min(8, repeats * step);
+            if (params.time < 0) head += room;
+            else tail += room;
         }
         vizT0 = -head;
         vizT1 = D + tail;
     };
     const tToX = (t, w) => ((t - vizT0) / (vizT1 - vizT0)) * w;
+    const xToT = (x, w) => vizT0 + (x / Math.max(1, w)) * (vizT1 - vizT0);
+    const wrapSeconds = (t, d) => d > 0 ? ((t % d) + d) % d : 0;
+    const clampTransportTime = (t) => {
+        if (!controlBuffer) return 0;
+        const maxT = Math.max(0, controlBuffer.duration - (1 / audioContext.sampleRate));
+        return Math.max(0, Math.min(maxT, t));
+    };
+    const currentTransportTime = () => {
+        if (!controlBuffer) return 0;
+        return isPlaying
+            ? wrapSeconds(audioContext.currentTime - startTime, controlBuffer.duration)
+            : clampTransportTime(transportPosition);
+    };
 
     // ── Pre-computation ───────────────────────────────────────────────────────
     const analyzeControlBuffer = () => {
@@ -370,9 +394,7 @@ window.onload = () => {
 
         ctx.drawImage(controlWaveformCache, 0, 0);
 
-        if (!isPlaying) return;
-
-        const t = (audioContext.currentTime - startTime) % controlBuffer.duration;
+        const t = currentTransportTime();
         const x = tToX(t, w);
 
         // Playhead line — acid green
@@ -404,9 +426,7 @@ window.onload = () => {
 
         ctx.drawImage(ampWaveformCache, 0, 0);
 
-        const t = isPlaying
-            ? (audioContext.currentTime - startTime) % controlBuffer.duration
-            : 0;
+        const t = currentTransportTime();
         const readT = ((t - params.sidechainLookahead) % controlBuffer.duration
                        + controlBuffer.duration) % controlBuffer.duration;
         const x     = tToX(t, w);
@@ -453,6 +473,16 @@ window.onload = () => {
 
         ctx.drawImage(sourceWaveformCache, 0, 0);
 
+        const playheadX = tToX(currentTransportTime(), w);
+        ctx.strokeStyle = 'rgba(194,220,50,0.32)';
+        ctx.lineWidth   = 1;
+        ctx.beginPath();
+        ctx.moveTo(playheadX, 0);
+        ctx.lineTo(playheadX, h);
+        ctx.stroke();
+
+        if (!isPlaying) return;
+
         // Prune expired grains
         activeGrains = activeGrains.filter(g => (now - g.firedAt) < g.duration);
 
@@ -484,54 +514,83 @@ window.onload = () => {
         }
     };
 
-    // ── Drag and drop ─────────────────────────────────────────────────────────
-    const setupDragDrop = (zone, onFile) => {
-        zone.addEventListener('dragenter', (e) => { e.preventDefault(); zone.classList.add('drag-over'); });
-        zone.addEventListener('dragover',  (e) => { e.preventDefault(); });
-        zone.addEventListener('dragleave', (e) => {
-            // Only remove if leaving the zone entirely, not a child element
-            if (!zone.contains(e.relatedTarget)) zone.classList.remove('drag-over');
-        });
-        zone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            zone.classList.remove('drag-over');
-            const file = e.dataTransfer.files[0];
-            if (file && file.type.startsWith('audio/')) onFile(file);
-        });
-    };
+    // ── File loading + drag/drop ──────────────────────────────────────────────
+    const AUDIO_FILE_RE = /\.(wav|wave|mp3|m4a|aac|ogg|oga|flac|aif|aiff|webm)$/i;
+    const isLikelyAudioFile = (file) => !!file && (
+        (file.type && file.type.startsWith('audio/')) ||
+        AUDIO_FILE_RE.test(file.name || '')
+    );
 
-    setupDragDrop(document.getElementById('control-input-group'), async (file) => {
-        try {
-            controlBuffer = await loadAudioFile(file);
-            analyzeControlBuffer();
-            if (isSelfSampling) { sourceBuffer = controlBuffer; sourceFileDisplay.textContent = file.name; }
-            controlWaveformCache = null;
-            sourceWaveformCache  = null;
-            controlFileDisplay.textContent = file.name;
-            refreshWaveformCaches();
-            checkReadyState();
-        } catch (err) { console.error('Control drag-drop error:', err); }
-    });
-
-    setupDragDrop(document.getElementById('source-input-group'), async (file) => {
-        if (isSelfSampling) return;
-        try {
-            externalSourceBuffer = await loadAudioFile(file);
-            sourceBuffer        = externalSourceBuffer;
-            sourceWaveformCache = null;
-            sourceFileDisplay.textContent = file.name;
-            refreshWaveformCaches();
-            checkReadyState();
-        } catch (err) { console.error('Source drag-drop error:', err); }
-    });
-
-    // ── File loading ──────────────────────────────────────────────────────────
     const loadAudioFile = (file) => new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = (e) => audioContext.decodeAudioData(e.target.result, resolve, reject);
         reader.onerror = reject;
         reader.readAsArrayBuffer(file);
     });
+
+    const loadControlFile = async (file, context = 'Control load') => {
+        try {
+            controlBuffer = await loadAudioFile(file);
+            controlFileName = file.name;
+            analyzeControlBuffer();
+            if (isSelfSampling) {
+                sourceBuffer = controlBuffer;
+                sourceFileDisplay.textContent = controlFileName;
+            }
+            controlWaveformCache = null;
+            sourceWaveformCache  = null;
+            controlFileDisplay.textContent = controlFileName;
+            refreshWaveformCaches();
+            checkReadyState();
+        } catch (err) { console.error(`${context} error:`, err); }
+    };
+
+    const loadSourceFile = async (file, context = 'Source load') => {
+        if (isSelfSampling) return;
+        try {
+            externalSourceBuffer = await loadAudioFile(file);
+            externalSourceFileName = file.name;
+            sourceBuffer        = externalSourceBuffer;
+            sourceWaveformCache = null;
+            sourceFileDisplay.textContent = externalSourceFileName;
+            refreshWaveformCaches();
+            checkReadyState();
+        } catch (err) { console.error(`${context} error:`, err); }
+    };
+
+    const setupDragDrop = (zone, onFile, canAccept = () => true) => {
+        let dragDepth = 0;
+        zone.addEventListener('dragenter', (e) => {
+            e.preventDefault();
+            dragDepth++;
+            if (canAccept()) zone.classList.add('drag-over');
+        });
+        zone.addEventListener('dragover',  (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = canAccept() ? 'copy' : 'none';
+        });
+        zone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dragDepth = Math.max(0, dragDepth - 1);
+            if (dragDepth === 0) zone.classList.remove('drag-over');
+        });
+        zone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dragDepth = 0;
+            zone.classList.remove('drag-over');
+            if (!canAccept()) return;
+            const file = Array.from(e.dataTransfer.files || []).find(isLikelyAudioFile);
+            if (file) onFile(file);
+        });
+    };
+
+    setupDragDrop(document.getElementById('control-input-group'), (file) => {
+        loadControlFile(file, 'Control drag-drop');
+    });
+
+    setupDragDrop(document.getElementById('source-input-group'), (file) => {
+        loadSourceFile(file, 'Source drag-drop');
+    }, () => !isSelfSampling);
 
     const checkReadyState = () => {
         const ready = isSelfSampling ? !!controlBuffer : (!!controlBuffer && !!sourceBuffer);
@@ -543,30 +602,14 @@ window.onload = () => {
 
     controlInput.addEventListener('change', async (e) => {
         if (!e.target.files[0]) return;
-        try {
-            controlBuffer = await loadAudioFile(e.target.files[0]);
-            analyzeControlBuffer();
-            if (isSelfSampling) { sourceBuffer = controlBuffer; sourceFileDisplay.textContent = e.target.files[0].name; }
-            controlWaveformCache = null;
-            sourceWaveformCache  = null;
-            controlFileDisplay.textContent = e.target.files[0].name;
-            refreshWaveformCaches();
-            checkReadyState();
-        } catch (err) { console.error('Control load error:', err); }
+        await loadControlFile(e.target.files[0], 'Control load');
+        e.target.value = '';
     });
 
     sourceInput.addEventListener('change', async (e) => {
         if (!e.target.files[0]) return;
-        try {
-            externalSourceBuffer = await loadAudioFile(e.target.files[0]);
-            if (!isSelfSampling) {
-                sourceBuffer        = externalSourceBuffer;
-                sourceWaveformCache = null;
-                sourceFileDisplay.textContent = e.target.files[0].name;
-                refreshWaveformCaches();
-            }
-            checkReadyState();
-        } catch (err) { console.error('Source load error:', err); }
+        await loadSourceFile(e.target.files[0], 'Source load');
+        e.target.value = '';
     });
 
     // ── UI ────────────────────────────────────────────────────────────────────
@@ -574,21 +617,29 @@ window.onload = () => {
         thresholdGroup.classList.toggle('hidden', !gateEnabled);
     };
 
+    const markPresetCustom = () => {
+        if (!applyingPreset && presetSelect) presetSelect.value = 'custom';
+    };
+
     gateCheckbox.addEventListener('change', () => {
+        markPresetCustom();
         gateEnabled = gateCheckbox.checked;
         updateGateUI();
     });
 
     loopRadios.forEach(r => r.addEventListener('change', (e) => {
+        markPresetCustom();
         loopClip = (e.target.value === 'loop');
     }));
 
     sourceDryCheckbox.addEventListener('change', () => {
+        markPresetCustom();
         sourceDry = sourceDryCheckbox.checked;
         sourceDryGain.gain.setTargetAtTime(sourceDry ? 1 : 0, audioContext.currentTime, 0.02);
     });
 
     monitorCtrlCheckbox.addEventListener('change', () => {
+        markPresetCustom();
         monitorControl = monitorCtrlCheckbox.checked;
         controlMonitorGain.gain.setTargetAtTime(monitorControl ? 1 : 0, audioContext.currentTime, 0.02);
     });
@@ -601,20 +652,29 @@ window.onload = () => {
 
     if (pingPongCheckbox) {
         pingPongCheckbox.addEventListener('change', () => {
+            markPresetCustom();
             pingPong = pingPongCheckbox.checked;
             updatePingPong();
         });
     }
 
-    selfSampleCheckbox.addEventListener('change', () => {
+    const updateSelfSampling = () => {
         isSelfSampling = selfSampleCheckbox.checked;
         sourceInputGroup.style.opacity = isSelfSampling ? '0.5' : '1';
         sourceInput.disabled           = isSelfSampling;
         // Lookahead is always active — not gated to self-sampling
         sourceBuffer        = isSelfSampling ? controlBuffer : externalSourceBuffer;
         sourceWaveformCache = null;
+        sourceFileDisplay.textContent = isSelfSampling
+            ? (controlFileName || '')
+            : (externalSourceFileName || '');
         refreshWaveformCaches();
         checkReadyState();
+    };
+
+    selfSampleCheckbox.addEventListener('change', () => {
+        markPresetCustom();
+        updateSelfSampling();
     });
 
     const syncDivisions = {
@@ -676,12 +736,15 @@ window.onload = () => {
 
         updateBlend();
         updateDelays();
+        updateFeedback();
+        if (isPlaying) rebuildPreEchoPreview();
         if (vizEnabled) refreshWaveformCaches();
         updateTimeSyncUI();
     };
 
     if (timeSyncSelect) {
         timeSyncSelect.addEventListener('change', (e) => {
+            markPresetCustom();
             timeSync = e.target.value;
             if (timeSync === 'free') updateTimeSyncUI();
             else applyTimeSync();
@@ -690,6 +753,7 @@ window.onload = () => {
 
     Object.keys(sliders).forEach(key => {
         sliders[key].addEventListener('input', (e) => {
+            markPresetCustom();
             const v = parseFloat(e.target.value);
             params[key] = v;
             updateParamDisplay(key);
@@ -708,7 +772,8 @@ window.onload = () => {
             if (key === 'scatter')  updateBlend();
             if (key === 'feedback') updateFeedback();
             if (key === 'damping' || key === 'feedbackGrain') updateDamping();
-            if (key === 'time') { updateBlend(); updateDelays(); }
+            if (key === 'time') { updateBlend(); updateDelays(); updateFeedback(); }
+            if ((key === 'time' || key === 'feedback') && isPlaying) rebuildPreEchoPreview();
             // Time (head) and feedback (tail) reshape the shared viz timeline
             if ((key === 'time' || key === 'feedback') && vizEnabled) refreshWaveformCaches();
             // Preview the sidechain readhead immediately when it changes, even when paused.
@@ -744,17 +809,14 @@ window.onload = () => {
     });
 
     // ── Scatter axis (granular ↔ regular) ─────────────────────────────────────
-    // Equal-power crossfade between the clean DelayNode tap and the granulator bus.
-    // scatter = 0 → pristine tap; scatter = 1 → full granular cloud.
-    // The clean DelayNode can't produce pre-echo (negative time) in realtime, so for
-    // time < 0 we fall back to the granulator regardless of scatter — a preview
-    // approximation; the offline bounce does clean pre-echo in sample-domain.
+    // Equal-power crossfade between the clean tap and the granulator bus.
+    // Positive Time uses DelayNode; negative Time uses the pre-echo preview tap bank.
     const updateBlend = () => {
-        let clean = Math.cos(params.scatter * 0.5 * Math.PI);
-        let gran  = Math.sin(params.scatter * 0.5 * Math.PI);
-        if (params.time < 0) { clean = 0; gran = 1; }
+        const clean = Math.cos(params.scatter * 0.5 * Math.PI);
+        const gran  = Math.sin(params.scatter * 0.5 * Math.PI);
         const now = audioContext.currentTime;
-        cleanTapGain.gain.setTargetAtTime(clean, now, 0.02);
+        cleanTapGain.gain.setTargetAtTime(params.time < 0 ? 0 : clean, now, 0.02);
+        preEchoGain.gain.setTargetAtTime(params.time < 0 ? clean : 0, now, 0.02);
         granGain.gain.setTargetAtTime(gran, now, 0.02);
     };
 
@@ -762,13 +824,13 @@ window.onload = () => {
         const now = audioContext.currentTime;
         // Only non-negative delays are realisable on a live stream (clean tap).
         cleanDelay.delayTime.setTargetAtTime(Math.max(0, params.time), now, 0.02);
-        // Feedback repeat spacing uses |time| so repeats stay positive even under
-        // negative (pre-echo) time — the realtime approximation.
+        // Positive-time feedback uses this causal loop; negative-time repeats are
+        // rendered by the pre-echo preview tap bank above.
         fbDelay.delayTime.setTargetAtTime(Math.max(0.03, Math.abs(params.time)), now, 0.02);
     };
 
     const updateFeedback = () => {
-        const f = Math.min(0.95, Math.max(0, params.feedback));   // clamp < 1
+        const f = params.time < 0 ? 0 : Math.min(0.95, Math.max(0, params.feedback));
         feedbackGain.gain.setTargetAtTime(f, audioContext.currentTime, 0.02);
     };
 
@@ -935,23 +997,109 @@ window.onload = () => {
     };
 
     // ── Start / Stop ──────────────────────────────────────────────────────────
+    const stopBufferSource = (node) => {
+        if (!node) return;
+        try { node.stop(); } catch (err) { /* source may already have been stopped */ }
+        try { node.disconnect(); } catch (err) { /* already disconnected */ }
+    };
+
+    const stopPreEchoPreview = () => {
+        for (const tap of preEchoPreviewNodes) {
+            stopBufferSource(tap.source);
+            try { tap.gain.disconnect(); } catch (err) { /* already disconnected */ }
+        }
+        preEchoPreviewNodes = [];
+    };
+
+    const startPreEchoPreview = (when, offset) => {
+        stopPreEchoPreview();
+        if (!sourceBuffer || params.time >= 0) return;
+
+        const step = Math.max(0.03, Math.abs(params.time));
+        const f = Math.min(0.95, Math.max(0, params.feedback));
+        const repeats = f > 0.001
+            ? Math.min(32, 1 + Math.ceil(Math.log(0.001) / Math.log(f)))
+            : 1;
+        let tapGain = 1;
+
+        for (let i = 1; i <= repeats; i++) {
+            const source = audioContext.createBufferSource();
+            const gain = audioContext.createGain();
+            source.buffer = sourceBuffer;
+            source.loop = true;
+            gain.gain.value = tapGain;
+            source.connect(gain).connect(preEchoGain);
+            source.start(when, wrapSeconds(offset + step * i, sourceBuffer.duration));
+            preEchoPreviewNodes.push({ source, gain });
+            tapGain *= f;
+        }
+    };
+
+    const rebuildPreEchoPreview = () => {
+        if (!isPlaying) return;
+        startPreEchoPreview(audioContext.currentTime, currentTransportTime());
+    };
+
+    const startBufferSources = (when, offset) => {
+        const controlOffset = wrapSeconds(offset, controlBuffer.duration);
+        const sourceOffset = sourceBuffer ? wrapSeconds(offset, sourceBuffer.duration) : 0;
+
+        controlSourceNode        = audioContext.createBufferSource();
+        controlSourceNode.buffer = controlBuffer;
+        controlSourceNode.loop   = true;
+        controlSourceNode.connect(analyserNode);
+        controlSourceNode.connect(controlMonitorGain);
+
+        sourceNode        = audioContext.createBufferSource();
+        sourceNode.buffer = sourceBuffer;
+        sourceNode.loop   = true;
+        sourceNode.connect(cleanDelay);
+        sourceNode.connect(sourceDryGain);
+
+        controlSourceNode.start(when, controlOffset);
+        sourceNode.start(when, sourceOffset);
+        startPreEchoPreview(when, offset);
+    };
+
+    const resetLiveScheduler = (when) => {
+        nextGrainTime = when;
+        liveGrainIndex = 0;
+        activeGrains  = [];
+        calculateNextGrainInterval();
+    };
+
+    const redrawTransportCanvases = () => {
+        if (!vizEnabled) return;
+        renderControlCanvas();
+        renderDelayCanvas();
+        renderSourceCanvas();
+    };
+
+    const seekToTransportTime = (t) => {
+        if (!controlBuffer) return;
+        transportPosition = clampTransportTime(t);
+
+        if (isPlaying) {
+            const now = audioContext.currentTime;
+            stopBufferSource(controlSourceNode);
+            stopBufferSource(sourceNode);
+            controlSourceNode = null;
+            sourceNode = null;
+            startTime = now - transportPosition;
+            resetLiveScheduler(now);
+            startBufferSources(now, transportPosition);
+            scheduleGrains();
+        }
+
+        redrawTransportCanvases();
+    };
+
     const start = () => {
         if (isPlaying || !controlBuffer || !sourceBuffer) return;
         if (audioContext.state === 'suspended') audioContext.resume();
 
         analyserNode         = audioContext.createAnalyser();
         analyserNode.fftSize = parseInt(bufferSizeSelect.value, 10);
-
-        controlSourceNode        = audioContext.createBufferSource();
-        controlSourceNode.buffer = controlBuffer;
-        controlSourceNode.loop   = true;
-
-        // Continuous source playback feeding the clean DelayNode tap and the dry bus.
-        sourceNode        = audioContext.createBufferSource();
-        sourceNode.buffer = sourceBuffer;
-        sourceNode.loop   = true;
-        sourceNode.connect(cleanDelay);
-        sourceNode.connect(sourceDryGain);
 
         sliders.mix.dispatchEvent(new Event('input'));
         updateBlend();
@@ -960,20 +1108,14 @@ window.onload = () => {
         updateDamping();
         updatePingPong();
 
-        // analyserNode is the Control Level meter tap only — it is NOT wired into
-        // the dry bus. Control is only audible via the separate Monitor Control tap.
-        controlSourceNode.connect(analyserNode);
-        controlSourceNode.connect(controlMonitorGain);
         dryGain.connect(masterOut);
         wetGain.connect(masterOut);
 
-        startTime     = audioContext.currentTime;
-        nextGrainTime = startTime;
-        liveGrainIndex = 0;
-        activeGrains  = [];
-        calculateNextGrainInterval();
-        controlSourceNode.start(startTime);
-        sourceNode.start(startTime);
+        const offset = clampTransportTime(transportPosition);
+        const now = audioContext.currentTime;
+        startTime = now - offset;
+        resetLiveScheduler(now);
+        startBufferSources(now, offset);
 
         isPlaying              = true;
         playButton.textContent = 'Stop Pythia';
@@ -985,26 +1127,53 @@ window.onload = () => {
     const stop = () => {
         if (!isPlaying) return;
 
+        transportPosition = currentTransportTime();
         if (schedulerTimer !== null) { clearInterval(schedulerTimer); schedulerTimer = null; }
-        controlSourceNode.stop();
+        stopBufferSource(controlSourceNode);
         controlSourceNode      = null;
-        if (sourceNode) { sourceNode.stop(); sourceNode = null; }
+        stopBufferSource(sourceNode);
+        sourceNode             = null;
+        stopPreEchoPreview();
         analyserNode           = null;
         isPlaying              = false;
         activeGrains           = [];
         playButton.textContent = 'Start Pythia';
         levelMeter.style.width = '0%';
 
-        // Redraw waveforms without overlays
-        if (vizEnabled) {
-            if (controlWaveformCache && controlCanvas)
-                controlCanvas.getContext('2d').drawImage(controlWaveformCache, 0, 0);
-            if (ampWaveformCache && delayCanvas)
-                renderDelayCanvas(); // paused draw keeps shared-timeline sidechain guide
-            if (sourceWaveformCache && sourceCanvas)
-                sourceCanvas.getContext('2d').drawImage(sourceWaveformCache, 0, 0);
-        }
+        redrawTransportCanvases();
     };
+
+    const seekFromCanvasEvent = (canvas, e) => {
+        if (!controlBuffer) return;
+        const rect = canvas.getBoundingClientRect();
+        const width = canvas.width || rect.width || 1;
+        const x = ((e.clientX - rect.left) / Math.max(1, rect.width)) * width;
+        seekToTransportTime(clampTransportTime(xToT(x, width)));
+    };
+
+    let activeSeekCanvas = null;
+    [controlCanvas, delayCanvas, sourceCanvas].forEach((canvas) => {
+        if (!canvas) return;
+        canvas.addEventListener('pointerdown', (e) => {
+            if (e.button !== 0 || !controlBuffer) return;
+            e.preventDefault();
+            activeSeekCanvas = canvas;
+            canvas.setPointerCapture(e.pointerId);
+            seekFromCanvasEvent(canvas, e);
+        });
+        canvas.addEventListener('pointermove', (e) => {
+            if (activeSeekCanvas !== canvas) return;
+            e.preventDefault();
+            seekFromCanvasEvent(canvas, e);
+        });
+        const finishSeek = (e) => {
+            if (activeSeekCanvas !== canvas) return;
+            if (canvas.hasPointerCapture(e.pointerId)) canvas.releasePointerCapture(e.pointerId);
+            activeSeekCanvas = null;
+        };
+        canvas.addEventListener('pointerup', finishSeek);
+        canvas.addEventListener('pointercancel', finishSeek);
+    });
 
     playButton.addEventListener('click', () => { if (!isPlaying) start(); else stop(); });
 
@@ -1460,12 +1629,109 @@ window.onload = () => {
         windowType: 'linear',
         params: { ...DEFAULT_PARAMS },
     };
+    const PRESET_BASE = {
+        version: STATE_VERSION,
+        loopClip: true,
+        gateEnabled: false,
+        sourceDry: true,
+        monitorControl: false,
+        timeSync: 'free',
+        pingPong: false,
+        windowType: 'hann',
+    };
+    const makePreset = (overrides = {}) => ({
+        ...PRESET_BASE,
+        ...overrides,
+        params: { polarity: 0, ...(overrides.params || {}) },
+    });
+    const PRESETS = {
+        classic: CLASSIC_PRESET,
+        slapback: makePreset({
+            params: { time: 0.11, scatter: 0, feedback: 0.10, damping: 0.2, mix: 0.35 },
+        }),
+        anticipatoryDelay: makePreset({
+            loopClip: false,
+            params: { time: -0.35, scatter: 0, feedback: 0.55, damping: 0.15, mix: 0.45 },
+        }),
+        pingPongPneuma: makePreset({
+            timeSync: '1/4',
+            pingPong: true,
+            params: { bpm: 120, scatter: 0.15, feedback: 0.55, damping: 0.35, panSpray: 0.6, mix: 0.45 },
+        }),
+        dubOuroboros: makePreset({
+            timeSync: '1/8d',
+            params: { bpm: 120, scatter: 0.3, feedback: 0.8, damping: 0.7, feedbackGrain: 0.2, mix: 0.5 },
+        }),
+        oracleChorus: makePreset({
+            params: { time: 0.04, scatter: 0.5, grainSize: 60, grainDensity: 40, pitchSpray: 0.3, panSpray: 0.8, feedback: 0.05, mix: 0.5 },
+        }),
+        stereoVapor: makePreset({
+            params: { scatter: 1, grainSize: 200, grainDensity: 30, densityJitter: 0.4, pitchSpray: 1.5, panSpray: 1, feedback: 0.1, mix: 0.6 },
+        }),
+        shimmerVapor: makePreset({
+            params: { pitch: 12, scatter: 1, grainSize: 250, feedback: 0.6, damping: 0.4, panSpray: 0.5, mix: 0.4 },
+        }),
+        disintegratingEcho: makePreset({
+            params: { time: 0.5, scatter: 0.1, feedback: 0.75, feedbackGrain: 0.8, damping: 0.3, mix: 0.5 },
+        }),
+        glassHalo: makePreset({
+            params: { time: 0.08, scatter: 0.8, grainSize: 90, grainDensity: 55, pitch: 7, pitchSpray: 0.2, panSpray: 1, feedback: 0.12, damping: 0.2, mix: 0.45 },
+        }),
+        tapeMirage: makePreset({
+            timeSync: '1/16',
+            params: { bpm: 120, scatter: 0.35, grainSize: 110, grainDensity: 25, pitchSpray: 0.8, panSpray: 0.35, feedback: 0.65, feedbackGrain: 0.45, damping: 0.55, mix: 0.5 },
+        }),
+        verbatimPreEcho: makePreset({
+            loopClip: false,
+            params: { time: -0.4, scatter: 0, feedback: 0.3, mix: 0.4 },
+        }),
+        anticipationBloom: makePreset({
+            loopClip: false,
+            params: { time: -0.8, scatter: 1, grainSize: 180, grainDensity: 35, pitchSpray: 0.5, panSpray: 0.7, feedback: 0.5, mix: 0.5 },
+        }),
+        preDuck: makePreset({
+            timeSync: '1/8',
+            params: { polarity: -1, sidechainLookahead: -0.15, bpm: 120, scatter: 0.2, feedback: 0.5, damping: 0.4, mix: 0.5 },
+        }),
+        duckGateGaps: makePreset({
+            gateEnabled: true,
+            params: { polarity: -1, threshold: 0.18, scatter: 1, grainSize: 120, grainDensity: 30, panSpray: 0.4, mix: 0.6 },
+        }),
+        negativeShimmer: makePreset({
+            loopClip: false,
+            params: { time: -0.6, scatter: 1, grainSize: 220, grainDensity: 32, pitch: 7, pitchSpray: 0.4, panSpray: 0.75, feedback: 0.45, feedbackGrain: 0.35, damping: 0.45, mix: 0.5 },
+        }),
+        reverseRoom: makePreset({
+            loopClip: false,
+            params: { time: -1.2, scatter: 0.4, grainSize: 260, grainDensity: 28, feedback: 0.65, feedbackGrain: 0.5, damping: 0.5, panSpray: 0.45, mix: 0.55 },
+        }),
+    };
+    const applyPreset = (key) => {
+        const preset = PRESETS[key];
+        if (!preset) return;
+        applyingPreset = true;
+        if (presetSelect) presetSelect.value = key;
+        try {
+            applyState(preset);
+        } finally {
+            applyingPreset = false;
+        }
+    };
     if (presetClassicBtn) {
-        presetClassicBtn.addEventListener('click', () => applyState(CLASSIC_PRESET));
+        presetClassicBtn.addEventListener('click', () => applyPreset('classic'));
+    }
+    if (presetSelect) {
+        presetSelect.addEventListener('change', (e) => {
+            if (e.target.value === 'custom') return;
+            applyPreset(e.target.value);
+        });
     }
 
     if (windowSelect) {
-        windowSelect.addEventListener('change', (e) => { windowType = e.target.value; });
+        windowSelect.addEventListener('change', (e) => {
+            markPresetCustom();
+            windowType = e.target.value;
+        });
     }
 
     if (saveStateBtn) {
@@ -1496,6 +1762,7 @@ window.onload = () => {
 
     // ── Init ──────────────────────────────────────────────────────────────────
     updateGateUI();
+    updateSelfSampling();
     updateTimeSyncUI();
     updatePingPong();
 };

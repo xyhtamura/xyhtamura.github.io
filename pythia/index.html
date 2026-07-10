@@ -79,7 +79,7 @@
         </div>
 
         <div class="option-group">
-            <input type="checkbox" id="self-sample-checkbox">
+            <input type="checkbox" id="self-sample-checkbox" checked>
             <label for="self-sample-checkbox">
                 Use Control as Source
                 <span class="note-inline">&nbsp;â€” control and source become the same file</span>
@@ -124,6 +124,35 @@
         </div>
 
         <div class="state-toolbar">
+            <label class="preset-label">
+                <span class="section-label">preset</span>
+                <select id="preset-select">
+                    <option value="custom" selected>custom</option>
+                    <optgroup label="producer staples">
+                        <option value="classic">Pneuma (Classic)</option>
+                        <option value="slapback">Slapback</option>
+                        <option value="anticipatoryDelay">Anticipatory Delay</option>
+                        <option value="pingPongPneuma">Ping-Pong Pneuma</option>
+                        <option value="dubOuroboros">Dub Ouroboros</option>
+                        <option value="oracleChorus">Oracle Chorus</option>
+                    </optgroup>
+                    <optgroup label="granular character">
+                        <option value="stereoVapor">Stereo Vapor</option>
+                        <option value="shimmerVapor">Shimmer Vapor</option>
+                        <option value="disintegratingEcho">Disintegrating Echo</option>
+                        <option value="glassHalo">Glass Halo</option>
+                        <option value="tapeMirage">Tape Mirage</option>
+                    </optgroup>
+                    <optgroup label="precognitive">
+                        <option value="verbatimPreEcho">Verbatim Pre-Echo</option>
+                        <option value="anticipationBloom">Anticipation Bloom</option>
+                        <option value="preDuck">Pre-Duck</option>
+                        <option value="duckGateGaps">Duck-Gate Gaps</option>
+                        <option value="negativeShimmer">Negative Shimmer</option>
+                        <option value="reverseRoom">Reverse Room</option>
+                    </optgroup>
+                </select>
+            </label>
             <label class="window-type-label">
                 <span class="section-label">grain window</span>
                 <select id="window-type">

@@ -360,11 +360,13 @@ input[type="file"]::file-selector-button:hover {
     border-bottom: 1px solid var(--line);
     flex-wrap: wrap;
 }
+.preset-label,
 .window-type-label {
     display: flex;
     align-items: center;
     gap: 10px;
 }
+.preset-label select,
 .window-type-label select {
     font-family: 'DM Mono', monospace;
     font-size: 0.72rem;
@@ -382,9 +384,9 @@ input[type="file"]::file-selector-button:hover {
     background-position: right 8px center;
     transition: border-color 0.15s;
 }
-.window-type-label select:hover  { border-color: var(--acid); }
-.window-type-label select:focus  { outline: 1px solid var(--acid); outline-offset: 1px; }
-.window-type-label select option { background: var(--bg-1); }
+.preset-label select:hover, .window-type-label select:hover  { border-color: var(--acid); }
+.preset-label select:focus, .window-type-label select:focus  { outline: 1px solid var(--acid); outline-offset: 1px; }
+.preset-label select option, .window-type-label select option { background: var(--bg-1); }
 
 .state-buttons {
     display: flex;
@@ -439,6 +441,8 @@ canvas {
     height: 72px;
     background: var(--bg-2);
     border: 1px solid var(--line);
+    cursor: crosshair;
+    touch-action: none;
 }
 
 .input-group.drag-over {
