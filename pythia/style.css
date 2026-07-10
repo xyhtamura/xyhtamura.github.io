@@ -391,7 +391,7 @@ input[type="file"]::file-selector-button:hover {
     align-items: center;
     gap: 8px;
 }
-#save-state, .load-state-label {
+#preset-classic, #save-state, .load-state-label {
     font-family: 'DM Mono', monospace;
     font-size: 0.68rem;
     letter-spacing: 0.06em;
@@ -404,6 +404,7 @@ input[type="file"]::file-selector-button:hover {
     cursor: pointer;
     transition: border-color 0.15s, color 0.15s;
 }
+#preset-classic:hover { border-color: var(--ember); color: var(--cream); }
 #save-state:hover, .load-state-label:hover {
     border-color: var(--acid);
     color: var(--cream);
@@ -512,7 +513,8 @@ canvas {
   align-items: center;
   gap: 6px;
 }
-.radio-group input[type="radio"] {
+.radio-group input[type="radio"],
+.radio-group input[type="checkbox"] {
   accent-color: var(--acid);
   cursor: pointer;
 }
@@ -522,7 +524,8 @@ canvas {
   cursor: pointer;
   transition: color 0.12s;
 }
-.radio-group input[type="radio"]:checked + label {
+.radio-group input[type="radio"]:checked + label,
+.radio-group input[type="checkbox"]:checked + label {
   color: var(--cream);
 }
 .mode-label--clip {
@@ -609,6 +612,13 @@ canvas {
   letter-spacing: 0.02em;
   white-space: nowrap;
 }
+.slider-group label .hint {
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  margin-left: 6px;
+}
 
 .val {
   text-align: right;
@@ -622,6 +632,20 @@ canvas {
   color: var(--dimmer);
   margin-left: 1px;
 }
+
+.slider-group select {
+  width: 100%;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--cream);
+  background: var(--bg-2);
+  border: 1px solid var(--line-hi);
+  border-radius: var(--r);
+  padding: 8px 10px;
+}
+.slider-group select:hover { border-color: var(--acid); }
+.slider-group select:focus { outline: 1px solid var(--acid); outline-offset: 1px; }
+.slider-group select option { background: var(--bg-1); }
 
 /* ─────────────────────────── Range Slider — playhead style */
 input[type="range"] {
@@ -726,7 +750,7 @@ input[type="range"]:disabled::-moz-range-thumb {
   letter-spacing: 0.04em;
 }
 
-/* ─────────────────────────── Recordings */
+/* ─────────────────────────── Bounces */
 .recordings-container {
   margin-top: 20px;
   padding-top: 18px;
@@ -778,7 +802,8 @@ input[type="range"]:disabled::-moz-range-thumb {
     color: var(--cream);
     font-size: 0.74rem;
   }
-  .slider-group input[type="range"] { grid-column: 1; }
+  .slider-group input[type="range"],
+  .slider-group select { grid-column: 1; }
   .val { text-align: right; grid-column: 2; grid-row: 2; }
 
   .playback-controls { grid-template-columns: 1fr; }
