@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A draft essay by Xyh Tamura on Vaporwave, knowledge production, community archives, and little art histories." />
+  <meta name="keywords" content="Xyh Tamura, Vaporwave, art history, knowledge production, internet culture, online communities, archives" />
+  <meta property="og:title" content="Vaporwave, Knowledge Production, and Little Art Histories - Xyh Tamura" />
+  <meta property="og:description" content="A web-first draft on how Vaporwave communities produce their own criticism, histories, archives, guides, and canons." />
+  <meta property="og:url" content="https://xyhtamura.github.io/blog/vaporwave-knowledge-production-little-art-histories.html" />
+  <title>Vaporwave, Knowledge Production, and Little Art Histories - Xyh Tamura</title>
+  <style>
+    :root{
+      --vw-paper:rgba(255,250,249,.88);
+      --vw-ink:#211f2d;
+      --vw-muted:#60656f;
+      --vw-line:rgba(45,52,68,.22);
+      --vw-pink:#f27bb5;
+      --vw-cyan:#18bfc9;
+      --vw-violet:#7251df;
+      --vw-blue:#264e78;
+      --vw-green:#4f765e;
+      --vw-cream:#fff8e9;
+      --vw-shadow:0 10px 28px rgba(24,31,48,.13);
+      --vw-radius:8px;
+    }
+
+    .vaporwave-post{
+      max-width:1060px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.52), rgba(255,255,255,.18) 22rem),
+        linear-gradient(135deg, rgba(24,191,201,.08), rgba(242,123,181,.08) 55%, rgba(79,118,94,.08)),
+        var(--vw-paper);
+    }
+
+    .vaporwave-post h1{
+      max-width:16ch;
+    }
+
+    .vaporwave-post h2{
+      margin-top:54px;
+    }
+
+    .lede{
+      max-width:66ch;
+    }
+
+    .vw-toc{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(142px, 1fr));
+      gap:8px;
+      margin:30px 0 40px;
+      padding:0;
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:.88rem;
+    }
+
+    .vw-toc a{
+      display:flex;
+      align-items:center;
+      min-height:38px;
+      padding:8px 12px;
+      color:#35434a;
+      border:1px solid rgba(24,191,201,.28);
+      border-radius:999px;
+      background:rgba(255,255,255,.46);
+      line-height:1.3;
+    }
+
+    .vw-toc a:hover,
+    .vw-toc a:focus-visible{
+      color:#25204e;
+      background:rgba(255,242,249,.76);
+    }
+
+    .vw-hero{
+      display:grid;
+      grid-template-columns:minmax(250px, .42fr) 1fr;
+      gap:18px;
+      align-items:stretch;
+      margin:36px 0 42px;
+    }
+
+    .vw-hero-image,
+    .vw-hero-note,
+    .vw-card,
+    .vw-source-card,
+    .vw-role-map,
+    .vw-archive,
+    .vw-note,
+    .vw-sources-later{
+      border:1px solid var(--vw-line);
+      border-radius:var(--vw-radius);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.62), rgba(255,255,255,.18)),
+        rgba(255,248,233,.42);
+      box-shadow:var(--vw-shadow);
+      overflow:hidden;
+    }
+
+    .vw-hero-image{
+      margin:0;
+      background:#17151f;
+    }
+
+    .vw-hero-image img,
+    .vw-source-card img{
+      display:block;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
+
+    .vw-hero-image img{
+      aspect-ratio:1 / 1;
+    }
+
+    .vw-hero-note{
+      display:grid;
+      align-content:center;
+      gap:16px;
+      padding:24px;
+      background:
+        linear-gradient(135deg, rgba(24,191,201,.14), rgba(242,123,181,.12) 48%, rgba(114,81,223,.1)),
+        rgba(255,255,255,.46);
+    }
+
+    .vw-hero-note p{
+      margin:0;
+      max-width:60ch;
+    }
+
+    .vw-tags{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin:0;
+      padding:0;
+      list-style:none;
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:.8rem;
+    }
+
+    .vw-tags li{
+      padding:6px 10px;
+      border:1px solid rgba(114,81,223,.25);
+      border-radius:999px;
+      color:#2e2a50;
+      background:rgba(255,255,255,.58);
+    }
+
+    .vw-mode-map{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:12px;
+      margin:30px 0 38px;
+    }
+
+    .vw-card{
+      position:relative;
+      min-width:0;
+      min-height:210px;
+      padding:46px 18px 18px;
+    }
+
+    .vw-card::before{
+      content:attr(data-step);
+      position:absolute;
+      top:16px;
+      left:18px;
+      width:24px;
+      height:24px;
+      display:grid;
+      place-items:center;
+      border-radius:50%;
+      color:#fffef7;
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:.76rem;
+      font-weight:700;
+      background:linear-gradient(145deg, var(--vw-violet), var(--vw-cyan));
+    }
+
+    .vw-card h3,
+    .vw-source-card h3,
+    .vw-archive h3{
+      margin:0 0 10px;
+      color:#25204e;
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:.92rem;
+      line-height:1.35;
+      text-transform:uppercase;
+    }
+
+    .vw-card p,
+    .vw-source-card p,
+    .vw-archive p{
+      margin:0;
+      font-size:.96rem;
+      line-height:1.62;
+    }
+
+    .vw-relation{
+      margin:36px 0 42px;
+      padding:24px 0;
+      border-top:1px solid var(--vw-line);
+      border-bottom:1px solid var(--vw-line);
+    }
+
+    .vw-relation svg{
+      display:block;
+      width:100%;
+      height:auto;
+      max-width:800px;
+      margin:0 auto;
+    }
+
+    .vw-label{
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:17px;
+      font-weight:700;
+      fill:#211f2d;
+    }
+
+    .vw-small{
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:12px;
+      fill:#60656f;
+    }
+
+    .vw-caption{
+      max-width:66ch;
+      margin:16px auto 0;
+      color:var(--vw-muted);
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:.88rem;
+      line-height:1.58;
+      text-align:center;
+    }
+
+    .cite{
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:.72em;
+      line-height:0;
+      margin-left:.08em;
+      vertical-align:super;
+    }
+
+    .cite a{
+      color:#5335cf;
+      border-bottom:0;
+    }
+
+    .cite a:hover{
+      color:#0d7a70;
+    }
+
+    .vw-source-grid{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:12px;
+      margin:30px 0 38px;
+    }
+
+    .vw-source-card{
+      display:flex;
+      flex-direction:column;
+      min-width:0;
+      margin:0;
+      background:rgba(255,255,255,.48);
+    }
+
+    .vw-source-card img{
+      aspect-ratio:4 / 3;
+      background:#181a20;
+    }
+
+    .vw-source-card:nth-child(4) img{
+      aspect-ratio:4 / 5;
+      object-position:top center;
+    }
+
+    .vw-source-card figcaption{
+      margin:0;
+      padding:14px;
+      color:#273238;
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:.86rem;
+      line-height:1.5;
+      border-top:1px solid var(--vw-line);
+      background:rgba(255,255,255,.64);
+    }
+
+    .vw-note{
+      margin:28px 0 34px;
+      padding:18px 20px;
+      border-left:6px solid var(--vw-cyan);
+    }
+
+    .vw-note p:last-child{
+      margin-bottom:0;
+    }
+
+    .vw-archive{
+      margin:30px 0 38px;
+      padding:18px;
+    }
+
+    .vw-archive-grid{
+      display:grid;
+      grid-template-columns:repeat(5, minmax(0, 1fr));
+      gap:8px;
+      margin:0;
+      padding:0;
+      list-style:none;
+    }
+
+    .vw-archive-grid li{
+      min-width:0;
+      padding:14px 12px;
+      border:1px solid rgba(45,52,68,.18);
+      border-radius:var(--vw-radius);
+      background:rgba(255,255,255,.58);
+    }
+
+    .vw-archive-grid strong{
+      display:block;
+      margin-bottom:6px;
+      color:#25204e;
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:.78rem;
+      text-transform:uppercase;
+    }
+
+    .vw-archive-grid span{
+      display:block;
+      color:#303942;
+      font-size:.92rem;
+      line-height:1.48;
+    }
+
+    @media (max-width: 900px){
+      .vw-hero,
+      .vw-mode-map,
+      .vw-source-grid{
+        grid-template-columns:1fr 1fr;
+      }
+
+      .vw-hero-note{
+        grid-column:1 / -1;
+      }
+
+      .vw-archive-grid{
+        grid-template-columns:repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 700px){
+      .vw-hero,
+      .vw-mode-map,
+      .vw-source-grid,
+      .vw-archive-grid{
+        grid-template-columns:1fr;
+      }
+
+      .vw-hero-note{
+        padding:18px;
+      }
+
+      .vw-label{
+        font-size:14px;
+      }
+
+      .vw-small{
+        font-size:11px;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="blog.css">
+</head>
+<body>
+  <div class="site-wrap">
+    <article class="post vaporwave-post">
+      <div class="eyebrow">Blog Post</div>
+      <h1>Vaporwave, Knowledge Production, and Little Art Histories</h1>
+      <div class="meta">
+        By <strong>Xyh Tamura</strong> &middot; September 09, 2024 &middot;
+        <a href="https://xyhtamura.github.io">xyhtamura.github.io</a>
+      </div>
+
+      <p class="lede">
+        Vaporwave is difficult to research because it is not only a genre, and not only
+        a visual style. It is also an internet community that has produced many of its
+        own explanations, canons, timelines, lists, arguments, and archives. That makes
+        it useful for thinking about how art historical knowledge is produced online.
+        <sup class="cite"><a id="cite-born-haworth" href="#ref-born-haworth">4</a>, <a id="cite-hine" href="#ref-hine">5</a></sup>
+      </p>
+
+      <nav class="vw-toc" aria-label="Post sections">
+        <a href="#starting-point">Starting point</a>
+        <a href="#vaporwave">What vaporwave is</a>
+        <a href="#external">External research</a>
+        <a href="#internal">Internal research</a>
+        <a href="#little-histories">Little art histories</a>
+        <a href="#researching">Researching it</a>
+        <a href="#conclusion">Conclusion</a>
+        <a href="#references">References</a>
+      </nav>
+
+      <figure class="vw-hero">
+        <div class="vw-hero-image">
+          <img src="vaporwave-assets/floral-shoppe.jpg" alt="A vaporwave image with a classical bust, pink background, checkerboard floor, and Japanese-style text." />
+        </div>
+        <figcaption class="vw-hero-note">
+          <p>
+            I am using Vaporwave here as a case of distributed art history. The important
+            thing is not only that people made music and images. It is that people also
+            made guides to the music and images. They explained it while it was happening.
+          </p>
+          <ul class="vw-tags" aria-label="Working descriptions of Vaporwave">
+            <li>music genre</li>
+            <li>visual aesthetic</li>
+            <li>internet subculture</li>
+            <li>archive problem</li>
+            <li>community criticism</li>
+          </ul>
+        </figcaption>
+      </figure>
+
+      <section id="starting-point">
+        <h2>Starting Point</h2>
+        <p>
+          Art history has inherited a strong idea of single-author knowledge. A scholar
+          studies an object, interprets it, and writes an account. That account may cite
+          other people, but the final form is still usually attached to one authorial
+          position.<sup class="cite"><a id="cite-polanyi" href="#ref-polanyi">1</a></sup>
+        </p>
+
+        <p>
+          The distinction between personal knowledge and social knowledge is useful
+          here. It questions whether the individual author should be treated as the
+          main seat of knowledge. In a social model, knowledge is not only produced by
+          one expert. It is produced through communities, institutions, reception, and
+          collaboration.<sup class="cite"><a id="cite-longino" href="#ref-longino">2</a></sup>
+        </p>
+
+        <p>
+          I agree with that general movement. I do not think the individual author
+          disappears, and I do not think the single-author model is always wrong. Some
+          kinds of thought still depend on one person working through a problem. But it
+          is not enough for internet genres. Vaporwave makes this visible because the
+          community is not only receiving the work. It is also sorting it.
+        </p>
+
+        <p>
+          The middle term in the diagram below borrows loosely from the language of
+          Big Science, where knowledge production becomes visibly institutional,
+          collective, expensive, and distributed across many roles.<sup class="cite"><a id="cite-galison" href="#ref-galison">3</a></sup>
+          It is not a direct transfer. It is only a useful comparison.
+        </p>
+
+        <div class="vw-mode-map" aria-label="Three ways art historical knowledge may be produced">
+          <section class="vw-card" data-step="1">
+            <h3>Personal knowledge</h3>
+            <p>
+              A single writer or scholar produces an account. The authority sits mainly
+              in the author, their method, and their relation to the material.
+            </p>
+          </section>
+          <section class="vw-card" data-step="2">
+            <h3>Big art history</h3>
+            <p>
+              Many people contribute to interpretation. The project can include artists,
+              publics, staff, institutions, and researchers.
+            </p>
+          </section>
+          <section class="vw-card" data-step="3">
+            <h3>Self-researching community</h3>
+            <p>
+              The community produces its own accounts. Guides, playlists, threads, lists,
+              essays, and documentaries become part of how the genre is known.
+            </p>
+          </section>
+        </div>
+      </section>
+
+      <section id="vaporwave">
+        <h2>What Vaporwave Is, Provisionally</h2>
+        <p>
+          Vaporwave can be described as music, image, meme, genre, style, subculture,
+          and internet phenomenon. These descriptions are all partly true. None of them
+          is enough by itself.
+        </p>
+
+        <p>
+          A basic description would say that Vaporwave emerged around 2010 and works
+          through appropriation, imitation, and recontextualization of older commercial
+          media. It often draws on 1980s and 1990s pop culture, corporate design,
+          elevator music, television, early internet graphics, Japanese consumer
+          technology, mall aesthetics, and obsolete media formats.
+          <sup class="cite"><a id="cite-harper" href="#ref-harper">6</a>, <a id="cite-trainer" href="#ref-trainer">7</a>, <a id="cite-tanner" href="#ref-tanner">8</a></sup>
+        </p>
+
+        <p>
+          That description is already unstable. It describes a center, not a border.
+          A community can call something Vaporwave for a while and later decide it is
+          something else. A subgenre can be named, renamed, mocked, abandoned, revived,
+          or absorbed into another term. There is no central institution that approves
+          the category.<sup class="cite"><a id="cite-chandler" href="#ref-chandler">9</a></sup>
+        </p>
+
+        <figure class="vw-relation" aria-labelledby="relation-caption">
+          <svg viewBox="0 0 820 430" role="img">
+            <title>Vaporwave as overlapping roles and forms</title>
+            <defs>
+              <linearGradient id="vwLine" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#18bfc9" />
+                <stop offset="55%" stop-color="#7251df" />
+                <stop offset="100%" stop-color="#f27bb5" />
+              </linearGradient>
+            </defs>
+            <circle cx="270" cy="180" r="110" fill="#18bfc9" fill-opacity=".16" stroke="#18bfc9" stroke-width="3" />
+            <circle cx="410" cy="180" r="110" fill="#7251df" fill-opacity=".14" stroke="#7251df" stroke-width="3" />
+            <circle cx="550" cy="180" r="110" fill="#f27bb5" fill-opacity=".16" stroke="#f27bb5" stroke-width="3" />
+            <path d="M180 330 C250 275, 330 265, 410 330 C490 265, 570 275, 640 330" fill="none" stroke="url(#vwLine)" stroke-width="4" />
+
+            <text x="270" y="164" text-anchor="middle" class="vw-label">CREATOR</text>
+            <text x="270" y="188" text-anchor="middle" class="vw-small">tracks, edits, images</text>
+
+            <text x="410" y="164" text-anchor="middle" class="vw-label">AUDIENCE</text>
+            <text x="410" y="188" text-anchor="middle" class="vw-small">listening, posting, arguing</text>
+
+            <text x="550" y="164" text-anchor="middle" class="vw-label">HISTORIAN</text>
+            <text x="550" y="188" text-anchor="middle" class="vw-small">guides, lists, timelines</text>
+
+            <text x="410" y="96" text-anchor="middle" class="vw-small">the same person can occupy several positions</text>
+            <text x="410" y="354" text-anchor="middle" class="vw-label">COMMUNITY KNOWLEDGE</text>
+            <text x="410" y="378" text-anchor="middle" class="vw-small">not outside the genre, but one of its forms of activity</text>
+          </svg>
+          <figcaption id="relation-caption" class="vw-caption">
+            The usual split between artist, audience, critic, and historian becomes
+            weak. The roles still exist, but they do not stay in separate places.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section id="external">
+        <h2>External Research</h2>
+        <p>
+          Vaporwave has been researched and explained by journalists, academics, and
+          other writers outside or partly outside the community. This work matters. It
+          gives the genre public legibility, connects it to larger histories, and makes
+          it available to readers who would not find the community materials on their
+          own.<sup class="cite"><a id="cite-mcleod" href="#ref-mcleod">10</a>, <a href="#ref-tanner">8</a></sup>
+        </p>
+
+        <p>
+          The limitation is also clear. External research often has to stabilize the
+          object before it can analyze it. It needs to say what Vaporwave is, where it
+          began, what it means, and why it matters. This can produce useful accounts.
+          It can also make the genre look more coherent than it was.
+        </p>
+
+        <figure class="vw-source-grid" aria-label="Examples of external and internal sources from the presentation">
+          <figure class="vw-source-card">
+            <img src="vaporwave-assets/external-research-vaporwave-politics.png" loading="lazy" decoding="async" alt="Screenshot of an academic article page about Vaporwave politics, protest, and identity." />
+            <figcaption>
+              External research can connect Vaporwave to ideology, capitalism, protest,
+              or identity. That is useful, but it is still an account from a particular
+              outside position.
+            </figcaption>
+          </figure>
+          <figure class="vw-source-card">
+            <img src="vaporwave-assets/ppk80-guide-to-vapor.png" loading="lazy" decoding="async" alt="Screenshot of a Vaporwave wiki or guide page titled ppk80's guide to vapor." />
+            <figcaption>
+              Community explainers define terms, establish examples, and teach newcomers
+              how to hear and see the genre.
+            </figcaption>
+          </figure>
+          <figure class="vw-source-card">
+            <img src="vaporwave-assets/vaporwave-subgenres-list.png" loading="lazy" decoding="async" alt="Screenshot of an online Vaporwave subgenres list." />
+            <figcaption>
+              Lists and taxonomies do art historical work. They periodize, subdivide,
+              and make some names easier to remember than others.
+            </figcaption>
+          </figure>
+        </figure>
+
+        <p>
+          I do not want to say external research is wrong because it is external. That
+          would be too simple. An outside account can see patterns that insiders miss.
+          It can also provide historical and theoretical context that a community guide
+          does not need to provide.
+        </p>
+
+        <p>
+          The problem is not exteriority by itself. The problem is treating exteriority
+          as the only serious place where knowledge can be produced.
+        </p>
+      </section>
+
+      <section id="internal">
+        <h2>Internal Research</h2>
+        <p>
+          Vaporwave communities also produce knowledge internally. This happens through
+          guides, manifestos, Reddit threads, Discord discussions, YouTube essays,
+          playlists, Discogs lists, Rate Your Music lists, image guides, blog posts,
+          documentaries, and comment sections.<sup class="cite"><a id="cite-ppk80" href="#ref-ppk80">11</a>, <a id="cite-rym" href="#ref-rym">12</a>, <a id="cite-essentials" href="#ref-essentials">13</a></sup>
+        </p>
+
+        <p>
+          These materials are uneven. Some are careful. Some are casual. Some are
+          wrong. Some are arguments disguised as lists. Some are personal taste with
+          historical consequences. But this unevenness does not make them irrelevant.
+          It is part of what they are.
+        </p>
+
+        <figure class="vw-source-grid" aria-label="Community-produced Vaporwave knowledge sources">
+          <figure class="vw-source-card">
+            <img src="vaporwave-assets/discography-page.png" loading="lazy" decoding="async" alt="Screenshot of a Vaporwave discography page with subgenre headings and album titles." />
+            <figcaption>
+              Discographies turn listening into a sequence. They imply origins,
+              branches, missing works, and necessary examples.
+            </figcaption>
+          </figure>
+          <figure class="vw-source-card">
+            <img src="vaporwave-assets/reddit-japanese-elements.png" loading="lazy" decoding="async" alt="Screenshot of a Reddit thread asking about Japanese elements in Vaporwave." />
+            <figcaption>
+              Threads can function as small theory rooms. They ask why a feature exists,
+              and the answers become part of the circulating explanation.
+            </figcaption>
+          </figure>
+          <figure class="vw-source-card">
+            <img src="vaporwave-assets/essentials-ultra-guide.png" loading="lazy" decoding="async" alt="Large Vaporwave essentials guide with album covers, categories, labels, and resources." />
+            <figcaption>
+              Image guides are especially important. They are not only decorative. They
+              make a canon visible in one glance.
+            </figcaption>
+          </figure>
+        </figure>
+
+        <p>
+          A playlist is not an essay, but it can make an argument. A guide is not a
+          peer-reviewed article, but it can set a canon. A wiki page is not neutral,
+          but neither is an article. A comment thread is not stable, but it may preserve
+          a question that formal writing did not think to ask.
+        </p>
+
+        <div class="vw-note">
+          <p>
+            Internal research is not automatically better because it comes from inside
+            the community. It has its own biases. It has favorites, omissions, jokes,
+            dead links, factional claims, and habits of repetition. The point is only
+            that it is already producing knowledge.
+          </p>
+        </div>
+      </section>
+
+      <section id="little-histories">
+        <h2>Little Art Histories</h2>
+        <p>
+          I am calling these materials little art histories. I do not mean that they
+          are minor because they are unimportant. I mean that they are local, partial,
+          situated, and often made for use rather than for disciplinary recognition.
+        </p>
+
+        <p>
+          A little art history may be a list of essential albums, a chart of subgenres,
+          a forum answer, a documentary, a fan-made archive, or a playlist arranged in
+          a certain order. It may not present itself as art history. It may still do
+          art historical work.
+        </p>
+
+        <p>
+          These histories do not only describe Vaporwave after the fact. They help make
+          Vaporwave available as a genre. They teach people what counts, what came
+          first, which works are central, which names are embarrassing, which subgenres
+          matter, and which sounds have already become overfamiliar.
+        </p>
+
+        <p>
+          This is why the community is not just an audience. The community is also a
+          critical apparatus. It listens, names, remembers, forgets, jokes, disputes,
+          archives, and canonizes. These are ordinary actions online. They are also
+          actions through which an art history can form.
+        </p>
+      </section>
+
+      <section id="researching">
+        <h2>Researching It</h2>
+        <p>
+          The research problem is practical before it is theoretical. Vaporwave is
+          difficult to define. Anybody can call something Vaporwave. Approval is often
+          communal, temporary, and informal. There are also many communities, and they
+          do not always share the same standards.
+        </p>
+
+        <p>
+          The internet also does not preserve itself. Some histories exist inside small
+          groups, old comments, removed videos, private servers, changed usernames,
+          dead links, broken image hosts, and platform layouts that no longer exist.
+          The archive is not only incomplete. It is structurally unstable.
+          <sup class="cite"><a href="#ref-hine">5</a>, <a id="cite-rogers" href="#ref-rogers">14</a></sup>
+        </p>
+
+        <div class="vw-archive" aria-label="Places where Vaporwave knowledge appears">
+          <ul class="vw-archive-grid">
+            <li>
+              <strong>Guides</strong>
+              <span>define terms and give newcomers a route through the genre</span>
+            </li>
+            <li>
+              <strong>Playlists</strong>
+              <span>turn listening into sequence, comparison, and canon</span>
+            </li>
+            <li>
+              <strong>Threads</strong>
+              <span>record arguments, corrections, jokes, and changing consensus</span>
+            </li>
+            <li>
+              <strong>Lists</strong>
+              <span>stabilize names, subgenres, and exemplary works</span>
+            </li>
+            <li>
+              <strong>Archives</strong>
+              <span>preserve files and context, but always incompletely</span>
+            </li>
+          </ul>
+        </div>
+
+        <p>
+          A reasonable method would have to combine sources. It would use academic
+          writing, journalism, community documents, playlists, comment threads, old
+          screenshots, platform histories, and interviews where possible. It would not
+          treat all of these as the same kind of evidence. It would ask what each kind
+          of source can know.
+        </p>
+
+        <p>
+          The earlier version of this presentation ended by placing the problem under
+          artistic research. That frame may still be relevant, but it is not the central
+          problem here. The central problem is more direct: a community is producing
+          knowledge about its own aesthetic life, and art history has to decide how to
+          read that knowledge without simply absorbing it.
+        </p>
+      </section>
+
+      <section id="conclusion">
+        <h2>Conclusion</h2>
+        <p>
+          Little art histories is not a finished method. It is a way to keep the scale
+          of the problem visible. Vaporwave has large historical connections, but many
+          of its histories are small, partial, and user-made. They are not outside the
+          genre. They are one of the ways the genre has continued to exist.
+        </p>
+
+        <p>
+          This also means that fandom and knowledge production cannot always be separated
+          cleanly. A playlist, a guide, or a thread can be enthusiastic, biased, casual,
+          and still historically useful. The problem is how to read those materials
+          without making them seem more stable than they are.
+        </p>
+
+        <p>
+          A community source should not be treated as raw data waiting for an external
+          expert to interpret it. It already has a position. It has taste, timing,
+          platform context, omissions, and a sense of audience. The task is to read it
+          as a situated account, not as a transparent record.
+        </p>
+
+        <p>
+          The point is not to romanticize the community. The point is to notice the work
+          it is already doing. If art history wants to study internet genres, it has to
+          study not only the artworks and artists, but also the ordinary systems through
+          which those works were named, remembered, argued over, and made legible.
+        </p>
+      </section>
+
+      <section class="refs" aria-labelledby="references">
+        <h2 id="references">References</h2>
+        <ol>
+          <li id="ref-polanyi">
+            Polanyi, Michael. <em>Personal Knowledge: Towards a Post-Critical Philosophy</em>. Chicago: University of Chicago Press, 1958. <a class="backref" href="#cite-polanyi">back to text</a>
+          </li>
+          <li id="ref-longino">
+            Longino, Helen E. <em>Science as Social Knowledge: Values and Objectivity in Scientific Inquiry</em>. Princeton: Princeton University Press, 1990. <a href="https://press.princeton.edu/books/paperback/9780691020518/science-as-social-knowledge">https://press.princeton.edu/books/paperback/9780691020518/science-as-social-knowledge</a>. <a class="backref" href="#cite-longino">back to text</a>
+          </li>
+          <li id="ref-galison">
+            Galison, Peter, and Bruce Hevly, eds. <em>Big Science: The Growth of Large-Scale Research</em>. Stanford: Stanford University Press, 1992. <a class="backref" href="#cite-galison">back to text</a>
+          </li>
+          <li id="ref-born-haworth">
+            Born, Georgina, and Christopher Haworth. "Mixing It: Digital Ethnography and Online Research Methods - A Tale of Two Global Digital Music Genres." In <em>The Routledge Companion to Digital Ethnography</em>, edited by Larissa Hjorth, Heather Horst, Anne Galloway, and Genevieve Bell, 77-88. New York: Routledge, 2017. <a class="backref" href="#cite-born-haworth">back to text</a>
+          </li>
+          <li id="ref-hine">
+            Hine, Christine. <em>Ethnography for the Internet: Embedded, Embodied and Everyday</em>. London: Bloomsbury Academic, 2015. <a href="https://www.bloomsbury.com/us/ethnography-for-the-internet-9780857855701/">https://www.bloomsbury.com/us/ethnography-for-the-internet-9780857855701/</a>. <a class="backref" href="#cite-hine">back to text</a>
+          </li>
+          <li id="ref-harper">
+            Harper, Adam. "Comment: Vaporwave and the Pop-Art of the Virtual Plaza." <em>Dummy</em>, December 7, 2012. <a href="http://www.dummymag.com/features/adam-harper-vaporwave">http://www.dummymag.com/features/adam-harper-vaporwave</a>. <a class="backref" href="#cite-harper">back to text</a>
+          </li>
+          <li id="ref-trainer">
+            Trainer, Adam. "From Hypnagogia to Distroid: Postironic Musical Renderings of Personal Memory." In <em>The Oxford Handbook of Music and Virtuality</em>, edited by Sheila Whiteley and Shara Rambarran, 409-427. Oxford: Oxford University Press, 2016. <a href="https://doi.org/10.1093/oxfordhb/9780199321285.013.24">https://doi.org/10.1093/oxfordhb/9780199321285.013.24</a>. <a class="backref" href="#cite-trainer">back to text</a>
+          </li>
+          <li id="ref-tanner">
+            Tanner, Grafton. <em>Babbling Corpse: Vaporwave and the Commodification of Ghosts</em>. Winchester: Zero Books, 2016. <a class="backref" href="#cite-tanner">back to text</a>
+          </li>
+          <li id="ref-chandler">
+            Chandler, Simon. "Genre As Method: The Vaporwave Family Tree, From Eccojams to Hardvapour." <em>Bandcamp Daily</em>, November 21, 2016. <a href="https://daily.bandcamp.com/lists/vaporwave-genres-list">https://daily.bandcamp.com/lists/vaporwave-genres-list</a>. <a class="backref" href="#cite-chandler">back to text</a>
+          </li>
+          <li id="ref-mcleod">
+            McLeod, Ken. "Vaporwave: Politics, Protest, and Identity." <em>Journal of Popular Music Studies</em> 30, no. 4 (2018): 123-142. <a href="https://doi.org/10.1525/jpms.2018.300409">https://doi.org/10.1525/jpms.2018.300409</a>. <a class="backref" href="#cite-mcleod">back to text</a>
+          </li>
+          <li id="ref-ppk80">
+            ppk80. "ppk80's Guide to Vapor." <em>Vaporwave Aesthetics Wiki</em>, n.d. Community guide reproduced as a screenshot in the author's 2024 presentation. <a class="backref" href="#cite-ppk80">back to text</a>
+          </li>
+          <li id="ref-rym">
+            Harley_Magoo. "Vaporwave Subgenres." <em>Rate Your Music</em>, n.d. <a href="https://rateyourmusic.com/list/Harley_Magoo/vaporwave-subgenres/">https://rateyourmusic.com/list/Harley_Magoo/vaporwave-subgenres/</a>. <a class="backref" href="#cite-rym">back to text</a>
+          </li>
+          <li id="ref-essentials">
+            <em>The Vaporwave Essentials Guide: Ultra Edition</em>. <em>Vaporwave Ultra</em>, n.d. <a href="https://vaporwaveultra.tumblr.com/">https://vaporwaveultra.tumblr.com/</a>. <a class="backref" href="#cite-essentials">back to text</a>
+          </li>
+          <li id="ref-rogers">
+            Rogers, Richard. <em>Digital Methods</em>. Cambridge, MA: MIT Press, 2013. <a href="https://mitpress.mit.edu/9780262528249/digital-methods/">https://mitpress.mit.edu/9780262528249/digital-methods/</a>. <a class="backref" href="#cite-rogers">back to text</a>
+          </li>
+        </ol>
+      </section>
+
+      <div class="footer">
+        Posted by Xyh Tamura &middot; Blog index:
+        <a href="./">blog</a> &middot; Main page:
+        <a href="https://xyhtamura.github.io">xyhtamura.github.io</a>
+      </div>
+    </article>
+  </div>
+</body>
+</html>

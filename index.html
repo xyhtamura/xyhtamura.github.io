@@ -358,10 +358,36 @@ text-shadow:
 
 /* ── FILTER (transparent bubble; pills wrap + center) ── */
 .filter{
-  display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;justify-content:center;
+  display:flex;flex-wrap:wrap;gap:.65rem .8rem;align-items:center;justify-content:center;
   padding:.9rem 1rem;margin:.4rem 0 1.5rem;
 }
 .filter .lbl{font-family:var(--font-special);font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--tagline-color);margin-right:.3rem;}
+.filter-search,.filter-tags{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;justify-content:center;}
+.filter-search{flex:1 1 16rem;min-width:min(100%,16rem);}
+.filter-tags{flex:2 1 30rem;}
+.search-field{position:relative;flex:1 1 12rem;min-width:11rem;max-width:21rem;}
+.search-field input{
+  width:100%;font-family:var(--font-accent);font-size:.82rem;letter-spacing:.01em;
+  background:rgba(0,0,0,.14);border:1px solid var(--line-color);color:var(--text-color);
+  border-radius:20px;padding:.32rem 2rem .32rem .8rem;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
+  transition:border-color .18s,box-shadow .18s,background .18s;
+}
+.search-field input::placeholder{color:var(--tagline-color);opacity:.7;}
+.search-field input:focus{
+  outline:none;border-color:var(--line-hover-color);
+  background:rgba(0,0,0,.2);box-shadow:0 0 0 2px rgba(152,143,255,.2),inset 0 1px 0 rgba(255,255,255,.08);
+}
+.search-clear{
+  position:absolute;right:.3rem;top:50%;transform:translateY(-50%);
+  width:1.35rem;height:1.35rem;display:grid;place-items:center;
+  border:1px solid transparent;border-radius:50%;padding:0;
+  background:rgba(255,255,255,.12);color:var(--text-color);
+  font-family:var(--font-accent);font-size:.9rem;line-height:1;cursor:pointer;
+  transition:color .18s,border-color .18s,background .18s;
+}
+.search-clear:hover,.search-clear:focus{color:var(--link-hover-color);border-color:var(--line-hover-color);outline:none;}
+.search-clear[hidden]{display:none;}
 .fbtn{
   font-family:var(--font-accent);font-size:.76rem;letter-spacing:.02em;
   background:rgba(0,0,0,.14);border:1px solid var(--line-color);color:var(--text-color);
@@ -492,6 +518,11 @@ text-shadow:
   .blurb{max-width:100%;}
 }
 @media (max-width: 600px){
+  .filter{align-items:stretch;justify-content:flex-start;padding:.85rem;margin-bottom:1.1rem;}
+  .filter-search,.filter-tags{width:100%;justify-content:flex-start;}
+  .filter-search{flex-direction:column;align-items:stretch;gap:.35rem;}
+  .filter-search .lbl{margin-right:0;}
+  .search-field{width:100%;max-width:none;min-width:0;}
   .entry summary{grid-template-columns:5.5rem 1fr;grid-template-rows:auto auto;gap:.25rem .7rem;padding:.85rem .95rem;}
   .chips{grid-column:1/-1;justify-content:flex-start;padding-left:4.1rem;max-width:none;}
   .body{padding:.2rem .95rem 1.3rem 4.1rem; align-items: flex-start;} /* Added align-items reset */
@@ -825,7 +856,15 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
 
 
   <!-- ROW 5 · filter (transparent bubble; pills wrap + center) -->
-  <nav class="filter bubble flat" aria-label="filter by category">
+  <section class="filter bubble flat" aria-label="filter works">
+    <div class="filter-search" role="search">
+      <label class="lbl" for="work-search">search</label>
+      <div class="search-field">
+        <input id="work-search" type="search" placeholder="title / description" autocomplete="off">
+        <button class="search-clear" type="button" aria-label="clear search" hidden>&times;</button>
+      </div>
+    </div>
+    <div class="filter-tags" role="group" aria-label="filter by category">
     <span class="lbl">filter</span>
 <button class="fbtn on" data-cat="all">all</button>
 <button class="fbtn" data-cat="intermedia" data-tooltip="works transcending disciplines and combining multiple media forms">intermedia</button>
@@ -844,7 +883,8 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
 <button class="fbtn" data-cat="participatory" data-tooltip="participatory research, social action, community building">participatory</button>
 <button class="fbtn" data-cat="film" data-tooltip="film & video works i made/helped conceive">film</button>
 <button class="fbtn" data-cat="management">management</button>
-  </nav>
+    </div>
+  </section>
 
   <!-- ROW 6 · list of works (each <details class="entry"> is its own bubble) -->
   <main class="index">
@@ -1127,8 +1167,8 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
     <p>Tabota is a post-MIDI experimental composition tool and notation language for microtonal, polymetric, and time-based media. The project combines a JSON-based score format with browser-based editors: a piano-roll interface for drawing held tones, glides, freehand pitch contours, and voice assignments, and Cycla, a subdivision grammar builder for designing recursive meters and exporting <code>.cyc</code> time maps. Tabota models a score as a set of translatable temporal and axial regimes: beats, seconds, unordered cues, frequencies, note names, categories, and performance instructions. Its relationship to Scala is expanded sideways: where <code>.scl</code> files describe tuning systems for pitch, Cycla’s <code>.cyc</code> files describe tuning systems for time.</p>
     <div class="outlinks">
       <a class="glass visit" href="/tabota/" target="_blank" rel="noopener">▷ docs</a>
-      <a class="glass visit" href="/tabota/tabota_roll.html" target="_blank" rel="noopener">▷ tabota roll</a>
-      <a class="glass visit" href="/tabota/cycla_builder.html" target="_blank" rel="noopener">▷ cycla</a>
+      <a class="glass visit" href="/tabota/roll/" target="_blank" rel="noopener">▷ tabota roll</a>
+      <a class="glass visit" href="/tabota/cycla/builder/" target="_blank" rel="noopener">▷ cycla</a>
     </div>
   </div>
 </details>
@@ -2536,6 +2576,24 @@ const btns=document.querySelectorAll('.fbtn');
 const entries=document.querySelectorAll('.entry');
 const active=new Set();
 const allBtn=document.querySelector('[data-cat="all"]');
+const searchInput=document.querySelector('#work-search');
+const searchClear=document.querySelector('.search-clear');
+const normalizeSearch=text=>text.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+entries.forEach(e=>{
+  const title=e.querySelector('.title')?.textContent||'';
+  const description=[...e.querySelectorAll('.body p')].map(p=>p.textContent).join(' ');
+  e.dataset.search=normalizeSearch(`${title} ${description}`);
+});
+const applyFilters=()=>{
+  const terms=normalizeSearch(searchInput.value).trim().split(/\s+/).filter(Boolean);
+  searchClear.hidden=terms.length===0;
+  entries.forEach(e=>{
+    const cats=e.dataset.cats.split(/\s+/).filter(Boolean);
+    const matchesTag=active.size===0||[...active].some(t=>cats.includes(t));
+    const matchesSearch=terms.length===0||terms.every(term=>e.dataset.search.includes(term));
+    e.hidden=!(matchesTag&&matchesSearch);
+  });
+};
 btns.forEach(b=>b.addEventListener('click',()=>{
   const c=b.dataset.cat;
   if(c==='all'){active.clear();btns.forEach(x=>x.classList.toggle('on',x.dataset.cat==='all'));}
@@ -2545,11 +2603,21 @@ btns.forEach(b=>b.addEventListener('click',()=>{
     else{active.add(c);b.classList.add('on');}
     if(active.size===0)allBtn.classList.add('on');
   }
-  entries.forEach(e=>{
-    const cats=e.dataset.cats.split(' ');
-    e.hidden=!(active.size===0||[...active].some(t=>cats.includes(t)));
-  });
+  applyFilters();
 }));
+searchInput.addEventListener('input',applyFilters);
+searchInput.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&searchInput.value){
+    searchInput.value='';
+    applyFilters();
+  }
+});
+searchClear.addEventListener('click',()=>{
+  searchInput.value='';
+  searchInput.focus();
+  applyFilters();
+});
+applyFilters();
 
 // lightbox for media-group images
 const lb = document.createElement('div');

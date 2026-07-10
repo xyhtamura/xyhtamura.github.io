@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A provisional essay by Xyh Tamura on ecotechnoaesthetics: a way of thinking nature, humans, and technology together." />
+  <meta name="keywords" content="Xyh Tamura, ecotechnoaesthetics, ecoaesthetics, environmental aesthetics, ecocriticism, postphenomenology, technology, nature" />
+  <meta property="og:title" content="Ecotechnoaesthetics - Xyh Tamura" />
+  <meta property="og:description" content="A working argument for an aesthetic that thinks nature, humans, and technology together without treating any of them as pure." />
+  <meta property="og:url" content="https://xyhtamura.github.io/blog/ecotechnoaesthetics.html" />
+  <title>Ecotechnoaesthetics - Xyh Tamura</title>
+  <style>
+    :root{
+      --eco-paper:rgba(255,253,239,.9);
+      --eco-ink:#23213b;
+      --eco-muted:#53645d;
+      --eco-line:rgba(63,79,73,.24);
+      --eco-aqua:#19b9aa;
+      --eco-purple:#7351e8;
+      --eco-amber:#d79521;
+      --eco-rose:#d764a7;
+      --eco-green:#476f47;
+      --eco-soft:#f5f7e9;
+      --eco-radius:8px;
+      --eco-shadow:0 12px 30px rgba(39,55,45,.12);
+    }
+
+    .post{
+      max-width:980px;
+    }
+
+    .lede{
+      max-width:62ch;
+    }
+
+    .eco-toc{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(138px, 1fr));
+      gap:8px;
+      margin:28px 0 38px;
+      padding:0;
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:.88rem;
+    }
+
+    .eco-toc a{
+      display:flex;
+      align-items:center;
+      min-height:36px;
+      padding:7px 11px;
+      color:#34423e;
+      border:1px solid rgba(25,185,170,.24);
+      border-radius:999px;
+      background:rgba(238,251,231,.46);
+      line-height:1.3;
+    }
+
+    .eco-toc a:hover,
+    .eco-toc a:focus-visible{
+      color:#332658;
+      background:rgba(220,250,238,.68);
+    }
+
+    .eco-hero,
+    .eco-figure{
+      margin:40px 0;
+      padding:0;
+      border:1px solid var(--eco-line);
+      border-radius:var(--eco-radius);
+      overflow:hidden;
+      background:rgba(255,255,255,.46);
+      box-shadow:var(--eco-shadow);
+    }
+
+    .eco-hero img,
+    .case-card img{
+      display:block;
+      width:100%;
+      height:auto;
+    }
+
+    .eco-hero figcaption,
+    .case-card figcaption,
+    .eco-figure figcaption{
+      margin:0;
+      padding:12px 14px;
+      color:var(--eco-muted);
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:.86rem;
+      line-height:1.5;
+      background:rgba(255,253,239,.82);
+      border-top:1px solid var(--eco-line);
+    }
+
+    .argument-map{
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0, 1fr));
+      gap:10px;
+      margin:28px 0 34px;
+      counter-reset:argument;
+    }
+
+    .argument-step{
+      counter-increment:argument;
+      position:relative;
+      min-height:178px;
+      padding:46px 14px 16px;
+      border:1px solid var(--eco-line);
+      border-radius:var(--eco-radius);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.62), rgba(255,255,255,.2)),
+        var(--eco-soft);
+      box-shadow:0 8px 22px rgba(40,54,44,.08);
+    }
+
+    .argument-step::before{
+      content:counter(argument);
+      position:absolute;
+      top:14px;
+      left:14px;
+      width:24px;
+      height:24px;
+      display:grid;
+      place-items:center;
+      border-radius:50%;
+      color:#fffef1;
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:.76rem;
+      font-weight:700;
+      background:linear-gradient(145deg, var(--eco-purple), var(--eco-aqua));
+    }
+
+    .argument-step strong{
+      display:block;
+      margin-bottom:8px;
+      color:#332658;
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:.84rem;
+      line-height:1.35;
+      text-transform:uppercase;
+    }
+
+    .argument-step p{
+      margin:0;
+      color:#283330;
+      font-size:.94rem;
+      line-height:1.58;
+    }
+
+    .eco-note{
+      margin:28px 0 34px;
+      padding:18px 20px;
+      border:1px solid rgba(115,81,232,.2);
+      border-left:5px solid var(--eco-aqua);
+      border-radius:var(--eco-radius);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.66), rgba(248,250,231,.86)),
+        rgba(238,247,225,.52);
+      box-shadow:0 8px 22px rgba(40,54,44,.08);
+    }
+
+    .eco-note p:last-child{
+      margin-bottom:0;
+    }
+
+    .triad-wrap{
+      padding:20px;
+      background:
+        linear-gradient(145deg, rgba(25,185,170,.1), rgba(115,81,232,.07) 56%, rgba(215,149,33,.12)),
+        rgba(238,247,225,.5);
+    }
+
+    .triad-svg{
+      display:block;
+      width:100%;
+      height:auto;
+      max-width:760px;
+      margin:0 auto;
+    }
+
+    .triad-label{
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:20px;
+      font-weight:700;
+      fill:#23213b;
+    }
+
+    .triad-small{
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:13px;
+      fill:#53645d;
+    }
+
+    .axis-box{
+      margin:30px 0 36px;
+      padding:18px;
+      border:1px solid var(--eco-line);
+      border-radius:var(--eco-radius);
+      background:rgba(255,255,255,.48);
+      box-shadow:0 8px 22px rgba(40,54,44,.08);
+    }
+
+    .axis-track{
+      display:grid;
+      grid-template-columns:1fr auto 1fr;
+      align-items:center;
+      gap:12px;
+      position:relative;
+      min-height:56px;
+      font-family:Arial, Helvetica, sans-serif;
+      color:#34423e;
+      font-size:.88rem;
+      line-height:1.35;
+    }
+
+    .axis-track::before{
+      content:"";
+      position:absolute;
+      left:0;
+      right:0;
+      top:50%;
+      height:2px;
+      background:linear-gradient(90deg, var(--eco-green), var(--eco-aqua), var(--eco-purple));
+    }
+
+    .axis-track span{
+      position:relative;
+      display:block;
+      padding:8px 10px;
+      border:1px solid var(--eco-line);
+      border-radius:999px;
+      background:#fffef1;
+      text-align:center;
+    }
+
+    .axis-track span:nth-child(1){
+      justify-self:start;
+    }
+
+    .axis-track span:nth-child(2){
+      justify-self:center;
+      color:#fffef1;
+      background:#332658;
+      border-color:#332658;
+    }
+
+    .axis-track span:nth-child(3){
+      justify-self:end;
+    }
+
+    .axis-box p{
+      margin:12px 0 0;
+      color:var(--eco-muted);
+      font-size:.95rem;
+      line-height:1.6;
+    }
+
+    .case-grid{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:12px;
+      margin:30px 0 36px;
+    }
+
+    .case-card{
+      min-width:0;
+      border:1px solid var(--eco-line);
+      border-radius:var(--eco-radius);
+      overflow:hidden;
+      background:rgba(255,255,255,.5);
+      box-shadow:0 8px 22px rgba(40,54,44,.08);
+    }
+
+    .case-card img{
+      aspect-ratio:4 / 3;
+      object-fit:cover;
+      background:#fffef1;
+    }
+
+    .case-card:nth-child(2) img,
+    .case-card:nth-child(4) img{
+      object-position:center top;
+    }
+
+    .cite{
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:.72em;
+      line-height:0;
+      margin-left:.08em;
+      vertical-align:super;
+    }
+
+    .cite a{
+      color:#5335cf;
+      border-bottom:0;
+    }
+
+    .cite a:hover{
+      color:#0d7a70;
+    }
+
+    .refs{
+      margin-top:42px;
+      padding-top:24px;
+      border-top:1px solid var(--eco-line);
+    }
+
+    .refs h2{
+      margin:0 0 18px;
+    }
+
+    .refs ol{
+      margin:0;
+      padding-left:1.25rem;
+    }
+
+    .refs li{
+      margin:0 0 1em;
+      padding-left:.25rem;
+      font-size:.95rem;
+      line-height:1.65;
+    }
+
+    .backref{
+      color:#5335cf;
+      text-decoration:none;
+      border-bottom:1px solid transparent;
+      white-space:nowrap;
+    }
+
+    .backref:hover{
+      color:#0d7a70;
+      border-bottom-color:currentColor;
+    }
+
+    @media (max-width: 860px){
+      .argument-map,
+      .case-grid{
+        grid-template-columns:1fr 1fr;
+      }
+    }
+
+    @media (max-width: 700px){
+      .eco-toc{
+        grid-template-columns:1fr 1fr;
+      }
+
+      .argument-map,
+      .case-grid{
+        grid-template-columns:1fr;
+      }
+
+      .axis-track{
+        grid-template-columns:1fr;
+      }
+
+      .axis-track::before{
+        top:0;
+        bottom:0;
+        left:50%;
+        right:auto;
+        width:2px;
+        height:auto;
+      }
+
+      .axis-track span{
+        justify-self:stretch !important;
+      }
+    }
+
+    @media (max-width: 520px){
+      .eco-toc{
+        grid-template-columns:1fr;
+      }
+
+      .triad-label{
+        font-size:17px;
+      }
+
+      .triad-small{
+        font-size:12px;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="blog.css">
+</head>
+<body>
+  <div class="site-wrap">
+    <article class="post">
+      <div class="eyebrow">Blog Post</div>
+      <h1>Ecotechnoaesthetics</h1>
+      <div class="meta">
+        By <strong>Xyh Tamura</strong> &middot; October 18, 2024 &middot;
+        <a href="https://xyhtamura.github.io">xyhtamura.github.io</a>
+      </div>
+
+      <p class="lede">
+        I am using ecotechnoaesthetics as a provisional term. It names an aesthetic
+        position where nature, humans, and technology are not treated as separate
+        domains. The point is not to say that technology saves nature. It is to stop
+        treating technology as something that arrives after nature, outside it, or
+        against it.
+      </p>
+
+      <nav class="eco-toc" aria-label="Post sections">
+        <a href="#starting-point">Starting point</a>
+        <a href="#ecoaesthetics">Ecoaesthetics</a>
+        <a href="#geopolitics">Geopolitics</a>
+        <a href="#relations">Other relations</a>
+        <a href="#term">The term</a>
+        <a href="#conclusion">Conclusion</a>
+        <a href="#references">References</a>
+      </nav>
+
+      <figure class="eco-hero">
+        <img src="ecotechnoaesthetics-assets/shonee-sequencing-organisms.png" alt="A figure floating in shallow water with a transparent interface over the torso reading sequencing organisms." />
+        <figcaption>
+          art by <a href="https://www.artpoint.fr/artists/shonee">shonee</a>
+        </figcaption>
+      </figure>
+
+      <section id="starting-point">
+        <h2>Starting Point</h2>
+        <p>
+          Western environmental aesthetics and ecocriticism often try to correct a
+          problem while keeping part of the structure that produced it. They ask how
+          humans should value nature, preserve nature, or learn to appreciate nature
+          correctly. But the scene often stays divided. There is a human subject, there
+          is an environment, and the subject has to learn the right relation to it.
+          <sup class="cite"><a id="cite-carlson" href="#ref-carlson">1</a>, <a id="cite-berleant" href="#ref-berleant">2</a></sup>
+        </p>
+
+        <p>
+          I do not think this makes Western environmental aesthetics useless. It gives
+          us real questions about ecological knowledge, preservation, attention, and
+          aesthetic judgment. The problem is that ecological knowledge can become
+          something added to aesthetic experience from the outside. The world is first
+          seen as scenery, then corrected by science, ethics, or conservation.
+        </p>
+
+        <p>
+          This can produce strange results. Some environments are protected because
+          they look like nature should look. Other environments, which may be
+          ecologically important but ugly, damaged, ordinary, industrial, or difficult,
+          become harder to value.<sup class="cite"><a id="cite-saito" href="#ref-saito">3</a></sup> The picturesque remains inside environmentalism even
+          when environmentalism thinks it has moved past the picturesque.
+        </p>
+
+        <div class="argument-map" aria-label="Simplified argument map">
+          <section class="argument-step">
+            <strong>Environmental aesthetics</strong>
+            <p>Often begins with a human appreciator looking at nature as an object of judgment.</p>
+          </section>
+          <section class="argument-step">
+            <strong>Ecoaesthetics</strong>
+            <p>Tries to join aesthetic experience with ecological relation and human-nature unity.</p>
+          </section>
+          <section class="argument-step">
+            <strong>Ecoprimitivism</strong>
+            <p>Can turn nature into an ideal past, or a purer condition we are meant to return to.</p>
+          </section>
+          <section class="argument-step">
+            <strong>Ecotechnoaesthetics</strong>
+            <p>Starts from the mixed condition: organism, person, machine, infrastructure, and world.</p>
+          </section>
+        </div>
+
+        <p>
+          Even when the human is asked to protect nature, the human can still appear as
+          the one who stands apart from it. Humans become the problem and also the
+          savior. Nature becomes what must be saved. This is still a dualism, even if it
+          is an environmentalist one.
+        </p>
+      </section>
+
+      <section id="ecoaesthetics">
+        <h2>Ecoaesthetics</h2>
+        <p>
+          Chinese ecoaesthetics is useful because it begins from a different
+          orientation. It does not have to downgrade natural things in the same way. It
+          tries to think aesthetic experience and ecological experience together. It
+          also tries to join humans and nature, rather than treating humans as outside
+          observers who must later learn how to appreciate nature correctly.<sup class="cite"><a id="cite-zeng" href="#ref-zeng">4</a>, <a id="cite-cheng" href="#ref-cheng">5</a></sup>
+        </p>
+
+        <p>
+          This is a real difference. It matters that the experience of nature does not
+          have to be filtered through a detached subject. It matters that an ecological
+          relation can already be aesthetic, rather than becoming aesthetic only when
+          framed by a human viewer.
+        </p>
+
+        <p>
+          But Chinese ecoaesthetics is also a newer formulation. It develops partly in
+          relation to Western environmentalism and to older Chinese environmental
+          aesthetics. Because of that, it is not outside the West in any simple way. It
+          becomes a bridge, and a bridge has to be readable from both sides.
+        </p>
+
+        <div class="eco-note">
+          <p>
+            The issue is not that ecoaesthetics is secretly Western. That would be too
+            simple. The issue is that it can still inherit a Western desire for a pure
+            nature, or for a lost harmony that modern life supposedly ruined.
+          </p>
+        </div>
+
+        <p>
+          This is where ecoprimitivism enters. Environmental thought can become utopic
+          in a particular way. It can imagine an ideal version of nature to go back to,
+          and an ideal version of the human who belongs to it. That ideal can look
+          innocent, but it can hide another dualism: civilization on one side, and the
+          noble savage on the other.<sup class="cite"><a id="cite-cronon" href="#ref-cronon">6</a></sup>
+        </p>
+
+        <div class="axis-box" aria-label="Return and progress axis">
+          <div class="axis-track">
+            <span>return to pure nature</span>
+            <span>the mixed present</span>
+            <span>progress away from nature</span>
+          </div>
+          <p>
+            Ecotechnoaesthetics does not choose either end of this line. It starts from
+            the middle, where there is already damage, infrastructure, memory, habit,
+            extraction, adaptation, desire, and ordinary life.
+          </p>
+        </div>
+      </section>
+
+      <section id="geopolitics">
+        <h2>Geopolitics</h2>
+        <p>
+          The ecological question is also geopolitical. It is not only a question of
+          what humans should feel when they encounter nature. It is also a question of
+          production, energy, development, global power, and who gets asked to give
+          things up.
+        </p>
+
+        <p>
+          Countries in the Global South are often disproportionately affected by
+          climate change, while also being asked to accept limits that are easier to
+          demand from the outside. Green policy can be necessary and still uneven. It
+          can protect ecological futures while also carrying opportunity costs for
+          countries that did not profit from earlier industrialization in the same way.
+          <sup class="cite"><a id="cite-ipcc" href="#ref-ipcc">7</a></sup>
+        </p>
+
+        <p>
+          This does not mean green movements are wrong. It means the aesthetic of
+          return is not enough. A demand to return to nature can become very convenient
+          when made by people who already received the benefits of extraction,
+          production, and industrial growth.
+        </p>
+
+        <p>
+          So the question changes. It is not only: how do we recover a lost relation to
+          nature? It is also: what can we do with the relations that already exist,
+          including relations made by ports, grids, sensors, concrete, roads, floods,
+          devices, mines, farms, waste, and screens?
+        </p>
+      </section>
+
+      <section id="relations">
+        <h2>Other Relations</h2>
+        <p>
+          I do not want to claim that Japanese or Filipino cultures are
+          ecotechnoaesthetic in some total way. That would be too large. But I do think
+          there are impulses in both that make the separation between humans, nature,
+          and technology less stable.
+        </p>
+
+        <p>
+          In Japanese examples, personhood can emerge through relation with things. A
+          tool that has been used for a long time can begin to seem fused with its
+          user. Robots can be treated as social participants without needing to be
+          treated as biologically alive. The point is not that everything is a person.
+          The point is that relation can produce a kind of agency or presence.
+          <sup class="cite"><a id="cite-bird-david" href="#ref-bird-david">8</a>, <a id="cite-jensen" href="#ref-jensen">9</a></sup>
+        </p>
+
+        <p>
+          In Filipino examples, spirits and other entities do not only belong to a
+          premodern forest outside the city. They can appear in urban settings, vacant
+          lots, dark streets, trees, concrete pillars, and buildings. Modernization
+          does not simply remove them. It changes where they are encountered and how
+          they are described.<sup class="cite"><a id="cite-cervantes" href="#ref-cervantes">10</a></sup>
+        </p>
+
+        <div class="case-grid" aria-label="Selected visual examples from the presentation">
+          <figure class="case-card">
+            <img src="ecotechnoaesthetics-assets/aibo-robots.png" alt="A row of Sony AIBO robot dogs." />
+            <figcaption>AIBO robots as one example of social relation with technological things.</figcaption>
+          </figure>
+          <figure class="case-card">
+            <img src="ecotechnoaesthetics-assets/nausicaa.png" alt="Nausicaa standing near a large insect-like organism." />
+            <figcaption><em>Nausicaa</em>: ecology is not outside technology, war, toxicity, or repair.</figcaption>
+          </figure>
+          <figure class="case-card">
+            <img src="ecotechnoaesthetics-assets/evangelion.png" alt="Evangelion unit holding a knife above a city." />
+            <figcaption><em>Evangelion</em>: machine, organism, pilot, city, and catastrophe are not cleanly separate.</figcaption>
+          </figure>
+          <figure class="case-card">
+            <img src="ecotechnoaesthetics-assets/scavengers-reign.png" alt="A plant-like and mechanical figure holding a flower." />
+            <figcaption><em>Scavengers Reign</em>: survival appears through ecological and technical entanglement.</figcaption>
+          </figure>
+          <figure class="case-card">
+            <img src="ecotechnoaesthetics-assets/christian-rex-van-minnen.jpg" alt="A painting by Christian Rex Van Minnen with a synthetic body in a forest-like scene." />
+            <figcaption>Christian Rex Van Minnen: the body is natural, artificial, comic, and abject at once.</figcaption>
+          </figure>
+          <figure class="case-card">
+            <img src="ecotechnoaesthetics-assets/bjork-hunter.png" alt="Bjork with a shell-like technological headpiece in the Hunter music video." />
+            <figcaption>Bjork, <em>Hunter</em>: the human face is altered by an animal-machine surface.</figcaption>
+          </figure>
+        </div>
+
+        <p>
+          These examples are not all doing the same thing. Some are religious, some are
+          folkloric, some are popular media, and some are artworks. I am grouping them
+          only because they make the same strict separation difficult to maintain.
+          Human, nature, and technology appear as coexisting relations, not as three
+          clean substances.
+        </p>
+      </section>
+
+      <section id="term">
+        <h2>The Term</h2>
+        <p>
+          Ecotechnoaesthetics is not an elegant word, but it is precise enough for now.
+          It keeps three terms in the same frame: ecology, technology, and aesthetic
+          experience. Removing any one of them makes the problem easier, but also less
+          accurate.
+        </p>
+
+        <figure class="eco-figure" aria-labelledby="triad-caption">
+          <div class="triad-wrap">
+            <svg class="triad-svg" viewBox="0 0 760 520" role="img">
+              <title>Nature, human, and technology connected through ecological-aesthetic experience</title>
+              <defs>
+                <linearGradient id="triadLine" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#19b9aa" />
+                  <stop offset="52%" stop-color="#7351e8" />
+                  <stop offset="100%" stop-color="#d79521" />
+                </linearGradient>
+              </defs>
+              <line x1="190" y1="130" x2="570" y2="130" stroke="url(#triadLine)" stroke-width="4" vector-effect="non-scaling-stroke" />
+              <line x1="190" y1="130" x2="380" y2="420" stroke="url(#triadLine)" stroke-width="4" vector-effect="non-scaling-stroke" />
+              <line x1="570" y1="130" x2="380" y2="420" stroke="url(#triadLine)" stroke-width="4" vector-effect="non-scaling-stroke" />
+
+              <circle cx="190" cy="130" r="54" fill="#eaffde" stroke="#476f47" stroke-width="3" />
+              <circle cx="570" cy="130" r="54" fill="#eee9ff" stroke="#7351e8" stroke-width="3" />
+              <circle cx="380" cy="420" r="54" fill="#fff1d6" stroke="#d79521" stroke-width="3" />
+              <circle cx="380" cy="230" r="76" fill="#fffdef" fill-opacity=".88" stroke="#53645d" stroke-width="2" />
+
+              <text x="190" y="124" text-anchor="middle" class="triad-label">NATURE</text>
+              <text x="190" y="146" text-anchor="middle" class="triad-small">organisms, weather, land</text>
+
+              <text x="570" y="124" text-anchor="middle" class="triad-label">TECHNOLOGY</text>
+              <text x="570" y="146" text-anchor="middle" class="triad-small">tools, media, infrastructure</text>
+
+              <text x="380" y="414" text-anchor="middle" class="triad-label">HUMAN</text>
+              <text x="380" y="436" text-anchor="middle" class="triad-small">body, practice, judgment</text>
+
+              <text x="380" y="218" text-anchor="middle" class="triad-label">ENCOUNTER</text>
+              <text x="380" y="242" text-anchor="middle" class="triad-small">aesthetic and ecological at once</text>
+
+              <text x="380" y="106" text-anchor="middle" class="triad-small">not nature against technology</text>
+              <text x="252" y="292" text-anchor="middle" transform="rotate(56 252 292)" class="triad-small">not human outside nature</text>
+              <text x="508" y="292" text-anchor="middle" transform="rotate(-56 508 292)" class="triad-small">not technology after human</text>
+            </svg>
+          </div>
+          <figcaption id="triad-caption">
+            A simple map of the term. The center is not purity. It is the encounter
+            where ecological relation and aesthetic experience become difficult to
+            separate.
+          </figcaption>
+        </figure>
+
+        <p>
+          Postphenomenology is useful here because it treats technology as part of how
+          experience happens.<sup class="cite"><a id="cite-ihde" href="#ref-ihde">11</a></sup> A sensor, a camera, a phone, a flood map, a microscope, a
+          vehicle, a sea wall, or an air conditioner does not only sit between human
+          and world. It changes what can be perceived, what can be acted on, and what
+          can be felt as environmental.
+        </p>
+
+        <p>
+          This matters for aesthetics because ecological experience today is often
+          technologically mediated from the start. We encounter weather through apps
+          and damaged infrastructure. We encounter animals through cameras, algorithms,
+          fences, field guides, roads, and screens. We encounter climate through data,
+          heat, insurance, disaster planning, and broken routines. None of these are
+          outside nature in a simple way.
+        </p>
+
+        <p>
+          Ecotechnoaesthetics therefore refuses two easy stories. The first is the
+          story of progress, where technology carries humans away from nature. The
+          second is the story of return, where ecology means removing technology and
+          going back to a better original relation. Both stories are too clean.
+        </p>
+
+        <div class="eco-note">
+          <p>
+            A working definition: ecotechnoaesthetics is an aesthetic orientation that
+            treats ecological experience as already shaped by human bodies,
+            technological mediation, nonhuman agencies, and material systems. It does
+            not need to decide in advance which of these should be primary.
+          </p>
+        </div>
+
+        <p>
+          This is not a program for how the world should be. It is more modest than
+          that. It is a way to describe what is already happening, and to ask what can
+          be done with what we have.
+        </p>
+      </section>
+
+      <section id="conclusion">
+        <h2>Conclusion</h2>
+        <p>
+          Ecotechnoaesthetics may not be fully separate from posthumanism, new
+          materialism, assemblage theory, actor-network theory, cyborg feminism, or
+          other existing vocabularies. It may be a local arrangement of those ideas
+          rather than a new category. That is acceptable for now. The term is useful
+          if it names a pressure point clearly enough.
+        </p>
+
+        <p>
+          The pressure point is the mixed condition. We do not escape into pure nature,
+          and we do not escape into pure technology. We stay with relations that are
+          ecological, technological, human, damaged, ordinary, and sometimes
+          aesthetically available.
+        </p>
+
+        <p>
+          Keeping technology inside the frame should not mean celebrating extraction,
+          computation, militarization, or industrial damage. It should make those
+          conditions harder to hide. The same applies to cultural examples. An artwork,
+          a robot, a flood map, a spirit story, or a phone app does not prove the term
+          by itself. It only gives a place where the relation can be tested.
+        </p>
+
+        <p>
+          This is probably where I would begin: not with an ideal nature to recover,
+          and not with a future technology to believe in, but with the specific
+          relations already in front of us. The task is to notice how they work, what
+          they allow, what they hide, and what forms of experience they make possible.
+        </p>
+      </section>
+
+      <section class="refs" aria-labelledby="references">
+        <h2 id="references">References</h2>
+        <ol>
+          <li id="ref-carlson">
+            Carlson, Allen. "Appreciation and the Natural Environment." <em>The Journal of Aesthetics and Art Criticism</em> 37, no. 3 (1979): 267-275. <a href="https://doi.org/10.2307/430781">https://doi.org/10.2307/430781</a>. <a class="backref" href="#cite-carlson">back to text</a>
+          </li>
+          <li id="ref-berleant">
+            Berleant, Arnold. <em>The Aesthetics of Environment</em>. Philadelphia: Temple University Press, 1992. <a class="backref" href="#cite-berleant">back to text</a>
+          </li>
+          <li id="ref-saito">
+            Saito, Yuriko. "The Aesthetics of Unscenic Nature." <em>The Journal of Aesthetics and Art Criticism</em> 56, no. 2 (1998): 101-111. <a href="https://doi.org/10.2307/432249">https://doi.org/10.2307/432249</a>. <a class="backref" href="#cite-saito">back to text</a>
+          </li>
+          <li id="ref-zeng">
+            Zeng, Fanren. <em>Introduction to Ecological Aesthetics</em>. Singapore: Springer Singapore, 2019. <a href="https://doi.org/10.1007/978-981-13-8984-9">https://doi.org/10.1007/978-981-13-8984-9</a>. <a class="backref" href="#cite-zeng">back to text</a>
+          </li>
+          <li id="ref-cheng">
+            Xiangzhan, Cheng. <em>Ecoaesthetics and Ecosophy in China</em>. London: Transnational Press London, 2023. <a class="backref" href="#cite-cheng">back to text</a>
+          </li>
+          <li id="ref-cronon">
+            Cronon, William. "The Trouble with Wilderness; or, Getting Back to the Wrong Nature." <em>Environmental History</em> 1, no. 1 (1996): 7-28. <a href="https://doi.org/10.2307/3985059">https://doi.org/10.2307/3985059</a>. <a class="backref" href="#cite-cronon">back to text</a>
+          </li>
+          <li id="ref-ipcc">
+            IPCC. "Summary for Policymakers." In <em>Climate Change 2022: Impacts, Adaptation and Vulnerability</em>, edited by H.-O. Portner, D. C. Roberts, E. S. Poloczanska, K. Mintenbeck, M. Tignor, A. Alegria, M. Craig, S. Langsdorf, S. Loeschke, V. Moller, A. Okem, and B. Rama, 3-33. Cambridge: Cambridge University Press, 2022. <a href="https://doi.org/10.1017/9781009325844.001">https://doi.org/10.1017/9781009325844.001</a>. <a class="backref" href="#cite-ipcc">back to text</a>
+          </li>
+          <li id="ref-bird-david">
+            Bird-David, Nurit. "'Animism' Revisited: Personhood, Environment, and Relational Epistemology." <em>Current Anthropology</em> 40, no. S1 (1999): S67-S91. <a href="https://doi.org/10.1086/200061">https://doi.org/10.1086/200061</a>. <a class="backref" href="#cite-bird-david">back to text</a>
+          </li>
+          <li id="ref-jensen">
+            Jensen, Casper Bruun, and Anders Blok. "Techno-Animism in Japan: Shinto Cosmograms, Actor-Network Theory, and the Enabling Powers of Non-Human Agencies." <em>Theory, Culture &amp; Society</em> 30, no. 2 (2013): 84-115. <a href="https://doi.org/10.1177/0263276412456564">https://doi.org/10.1177/0263276412456564</a>. <a class="backref" href="#cite-jensen">back to text</a>
+          </li>
+          <li id="ref-cervantes">
+            Cervantes, Carl. "Deep Ecology, Nature Spirits, and the Filipino Transpersonal Worldview." <em>International Journal of Transpersonal Studies</em> 42, no. 1 (2023). <a href="https://doi.org/10.24972/ijts.2023.42.1.1">https://doi.org/10.24972/ijts.2023.42.1.1</a>. <a class="backref" href="#cite-cervantes">back to text</a>
+          </li>
+          <li id="ref-ihde">
+            Ihde, Don. <em>Technology and the Lifeworld: From Garden to Earth</em>. Bloomington: Indiana University Press, 1990. <a href="https://iupress.org/9780253205605/technology-and-the-lifeworld/">https://iupress.org/9780253205605/technology-and-the-lifeworld/</a>. <a class="backref" href="#cite-ihde">back to text</a>
+          </li>
+        </ol>
+      </section>
+
+      <div class="footer">
+        Posted by Xyh Tamura &middot; Blog index:
+        <a href="./">blog</a> &middot; Main page:
+        <a href="https://xyhtamura.github.io">xyhtamura.github.io</a>
+      </div>
+    </article>
+  </div>
+</body>
+</html>

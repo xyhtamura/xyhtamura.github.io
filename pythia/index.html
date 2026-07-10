@@ -96,6 +96,30 @@
                 <input type="radio" id="mode-triggered" name="mode" value="triggered">
                 <label for="mode-triggered">Threshold</label>
             </div>
+            <span class="mode-label mode-label--clip">clip &mdash;</span>
+            <div class="radio-group">
+                <input type="radio" id="loop-wrap" name="loopmode" value="loop" checked>
+                <label for="loop-wrap"><span class="glyph">&#x2940;</span> loop</label>
+            </div>
+            <div class="radio-group">
+                <input type="radio" id="loop-clamp" name="loopmode" value="unloop">
+                <label for="loop-clamp"><span class="glyph">&#x13199;</span> unloop</label>
+            </div>
+        </div>
+
+        <div class="state-toolbar">
+            <label class="window-type-label">
+                <span class="section-label">grain window</span>
+                <select id="window-type">
+                    <option value="linear" selected>linear</option>
+                    <option value="hann">hann</option>
+                </select>
+            </label>
+            <div class="state-buttons">
+                <button id="save-state" type="button">Save State</button>
+                <label class="load-state-label" for="load-state">Load State</label>
+                <input type="file" id="load-state" accept="application/json" hidden>
+            </div>
         </div>
 
         <div class="controls-panel">
@@ -131,10 +155,10 @@
                     <span id="grain-density-value" class="val">20</span>
                 </div>
 
-                <div class="slider-group" id="lookahead-group">
-                    <label for="lookahead">Lookahead</label>
-                    <input type="range" id="lookahead" min="0" max="5" value="0.5" step="0.01">
-                    <span id="lookahead-value" class="val">0.50<small>s</small></span>
+                <div class="slider-group" id="time-group">
+                    <label for="time">Time</label>
+                    <input type="range" id="time" min="-5" max="5" value="0" step="0.01">
+                    <span id="time-value" class="val">0.00<small>s</small></span>
                 </div>
 
                 <div class="slider-group">

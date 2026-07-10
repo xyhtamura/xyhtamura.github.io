@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A working definition of science art by Xyh Tamura, considering science communication, engineering, data visualization, scientific process, and knowledge production.">
+  <meta name="keywords" content="Xyh Tamura, science art, art and science, science communication, data visualization, artistic research, knowledge production">
+  <meta property="og:title" content="What is Science Art? - Xyh Tamura">
+  <meta property="og:description" content="A cautious working definition of science art as a possible participant in scientific knowledge production.">
+  <meta property="og:url" content="https://xyhtamura.github.io/blog/what-is-science-art.html">
+  <title>What is Science Art? - Xyh Tamura</title>
+  <style>
+    :root{
+      --bg:#f4efe8;
+      --bg2:#ece4da;
+      --paper:rgba(255,251,247,.94);
+      --ink:#1a1818;
+      --muted:#6f655f;
+      --line:rgba(92,74,63,.24);
+      --accent:#5b4fd1;
+      --accent-2:#138a7a;
+      --accent-3:#b86a4b;
+      --cool:#315f72;
+      --warm:#8c5a43;
+      --soft:#f8f3ed;
+      --max:900px;
+      --shadow:0 18px 50px rgba(48,28,20,.08);
+      --shadow-soft:0 8px 24px rgba(48,28,20,.05);
+      --radius:8px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+
+    body{
+      margin:0;
+      font-family:Georgia, "Iowan Old Style", "Times New Roman", serif;
+      color:var(--ink);
+      line-height:1.78;
+      background:
+        linear-gradient(180deg, var(--bg2) 0%, var(--bg) 36%, #f7f2ec 100%);
+      text-rendering:optimizeLegibility;
+      -webkit-font-smoothing:antialiased;
+      overflow-x:hidden;
+    }
+
+    .site-wrap{
+      padding:56px 20px 96px;
+    }
+
+    .post{
+      width:100%;
+      max-width:var(--max);
+      margin:0 auto;
+      background:var(--paper);
+      border:1px solid rgba(255,255,255,.7);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:56px 62px 72px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .post::before{
+      content:"";
+      position:absolute;
+      inset:0 0 auto 0;
+      height:5px;
+      background:linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
+    }
+
+    .eyebrow{
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:.78rem;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      color:var(--accent-2);
+      margin-bottom:18px;
+      font-weight:700;
+    }
+
+    h1{
+      font-size:clamp(2.35rem, 5vw, 3.8rem);
+      line-height:1.04;
+      font-weight:600;
+      letter-spacing:0;
+      margin:0 0 16px;
+      max-width:12ch;
+      overflow-wrap:break-word;
+    }
+
+    h2{
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:1rem;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color:var(--accent-2);
+      margin:46px 0 16px;
+    }
+
+    h3{
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:1rem;
+      line-height:1.35;
+      color:var(--ink);
+      margin:0 0 8px;
+    }
+
+    p{
+      margin:0 0 1.25em;
+      font-size:1.06rem;
+    }
+
+    a{
+      color:var(--accent);
+      text-decoration:none;
+      border-bottom:1px solid transparent;
+      transition:color .18s ease, border-color .18s ease;
+      overflow-wrap:anywhere;
+    }
+
+    a:hover{
+      color:var(--accent-2);
+      border-bottom-color:currentColor;
+    }
+
+    .cite{
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:.72em;
+      line-height:0;
+      margin-left:.08em;
+      vertical-align:super;
+    }
+
+    .cite a{
+      color:var(--accent);
+      border-bottom:0;
+    }
+
+    .cite a:hover{
+      color:var(--accent-2);
+    }
+
+    strong{color:#141212}
+    em{color:#332c48}
+
+    .meta{
+      font-family:Arial, Helvetica, sans-serif;
+      color:var(--muted);
+      font-size:.95rem;
+      line-height:1.6;
+      margin-bottom:34px;
+      padding-bottom:22px;
+      border-bottom:1px solid var(--line);
+    }
+
+    .lede{
+      font-size:1.16rem;
+      line-height:1.85;
+      color:#2a2523;
+      max-width:60ch;
+      margin-bottom:30px;
+    }
+
+    .toc{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(132px, 1fr));
+      gap:0 16px;
+      margin:28px 0 36px;
+      padding:14px 0;
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:.86rem;
+    }
+
+    .toc a{
+      display:block;
+      min-width:0;
+      color:var(--muted);
+      border-bottom:0;
+      padding:8px 0 8px 12px;
+      line-height:1.35;
+      overflow-wrap:anywhere;
+      position:relative;
+    }
+
+    .toc a::before{
+      content:"";
+      position:absolute;
+      left:0;
+      top:.9em;
+      width:4px;
+      height:4px;
+      border-radius:50%;
+      background:var(--accent-2);
+      opacity:.55;
+    }
+
+    .toc a:hover{
+      color:var(--accent-2);
+    }
+
+    .toc a:hover::before{
+      opacity:1;
+      background:var(--accent);
+    }
+
+    .note{
+      margin:28px 0 34px;
+      padding:18px 20px;
+      background:linear-gradient(180deg, rgba(255,255,255,.66), rgba(248,242,236,.88));
+      border:1px solid rgba(91,79,209,.14);
+      border-left:5px solid var(--accent-2);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow-soft);
+    }
+
+    .note p:last-child{
+      margin-bottom:0;
+    }
+
+    .taxonomy{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:14px;
+      margin:30px 0 36px;
+    }
+
+    .taxonomy-card,
+    .question-card{
+      min-width:0;
+      background:rgba(255,255,255,.54);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:18px;
+      box-shadow:var(--shadow-soft);
+    }
+
+    .taxonomy-card{
+      display:flex;
+      flex-direction:column;
+      min-height:100%;
+    }
+
+    .taxonomy-card[data-kind="communication"]{border-top:5px solid var(--accent)}
+    .taxonomy-card[data-kind="engineering"]{border-top:5px solid var(--accent-2)}
+    .taxonomy-card[data-kind="data"]{border-top:5px solid var(--accent-3)}
+
+    .taxonomy-card p{
+      font-size:.98rem;
+      line-height:1.62;
+      margin-bottom:0;
+    }
+
+    .taxonomy-label{
+      display:block;
+      margin:14px 0 4px;
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:.72rem;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color:var(--muted);
+    }
+
+    .figure{
+      margin:44px auto;
+      padding:28px 0;
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+    }
+
+    .figure figcaption{
+      margin:0 0 20px;
+      font-family:Arial, Helvetica, sans-serif;
+      text-align:center;
+      text-transform:uppercase;
+      letter-spacing:.16em;
+      color:var(--muted);
+      font-size:.78rem;
+      overflow-wrap:anywhere;
+    }
+
+    .method-wrap{
+      background:var(--soft);
+      border:1px solid rgba(92,74,63,.18);
+      border-radius:var(--radius);
+      padding:18px;
+    }
+
+    .night-band{
+      display:grid;
+      grid-template-columns:minmax(120px, .22fr) 1fr;
+      gap:16px;
+      align-items:center;
+      min-width:0;
+      padding:14px 16px;
+      margin-bottom:14px;
+      border:1px solid rgba(91,79,209,.18);
+      border-radius:var(--radius);
+      background:rgba(91,79,209,.07);
+      font-family:Arial, Helvetica, sans-serif;
+      color:#2f2a45;
+      line-height:1.45;
+    }
+
+    .night-band strong{
+      color:var(--accent);
+      text-transform:uppercase;
+      letter-spacing:.1em;
+      font-size:.78rem;
+    }
+
+    .method-steps{
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0, 1fr));
+      gap:10px;
+      margin:0;
+      padding:0;
+      list-style:none;
+    }
+
+    .method-steps li{
+      position:relative;
+      min-width:0;
+      min-height:150px;
+      padding:44px 12px 14px;
+      background:#fffdfa;
+      border:1px solid rgba(92,74,63,.18);
+      border-radius:var(--radius);
+    }
+
+    .method-steps li::before{
+      content:attr(data-step);
+      position:absolute;
+      top:12px;
+      left:12px;
+      width:24px;
+      height:24px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background:var(--cool);
+      color:white;
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:.76rem;
+      font-weight:700;
+    }
+
+    .method-steps h3{
+      font-size:.84rem;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--cool);
+    }
+
+    .method-steps p{
+      font-size:.9rem;
+      line-height:1.52;
+      margin:0;
+    }
+
+    .axis{
+      margin-top:18px;
+      padding:16px 18px;
+      background:#fffdfa;
+      border:1px solid rgba(92,74,63,.18);
+      border-radius:var(--radius);
+    }
+
+    .axis-line{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      align-items:center;
+      gap:10px;
+      min-height:46px;
+      position:relative;
+      font-family:Arial, Helvetica, sans-serif;
+      color:var(--muted);
+      font-size:.82rem;
+    }
+
+    .axis-line::before{
+      content:"";
+      position:absolute;
+      left:0;
+      right:0;
+      top:50%;
+      height:2px;
+      background:linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
+    }
+
+    .axis-line span{
+      position:relative;
+      background:#fffdfa;
+      padding:6px 8px;
+      border:1px solid rgba(92,74,63,.18);
+      border-radius:999px;
+      text-align:center;
+      line-height:1.35;
+    }
+
+    .axis-line span:nth-child(1){justify-self:start}
+    .axis-line span:nth-child(2){justify-self:center}
+    .axis-line span:nth-child(3){justify-self:end}
+
+    .axis p{
+      margin:12px 0 0;
+      font-size:.95rem;
+      line-height:1.58;
+      color:var(--muted);
+    }
+
+    .apparatus{
+      display:grid;
+      grid-template-columns:1fr auto 1fr;
+      gap:14px;
+      align-items:stretch;
+      background:var(--soft);
+      border:1px solid rgba(92,74,63,.18);
+      border-radius:var(--radius);
+      padding:18px;
+    }
+
+    .apparatus-node{
+      min-width:0;
+      padding:18px;
+      background:#fffdfa;
+      border:1px solid rgba(92,74,63,.18);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow-soft);
+    }
+
+    .apparatus-node strong{
+      display:block;
+      margin-bottom:8px;
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:.8rem;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color:var(--accent-2);
+    }
+
+    .apparatus-node p{
+      margin:0;
+      font-size:.96rem;
+      line-height:1.58;
+    }
+
+    .apparatus-bridge{
+      align-self:center;
+      max-width:150px;
+      padding:10px 12px;
+      border-radius:999px;
+      background:rgba(91,79,209,.08);
+      border:1px solid rgba(91,79,209,.18);
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:.76rem;
+      line-height:1.35;
+      text-align:center;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      color:var(--accent);
+    }
+
+    .questions{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:14px;
+      margin:28px 0 34px;
+    }
+
+    .question-card{
+      counter-increment:question;
+      position:relative;
+      padding-top:48px;
+    }
+
+    .question-card::before{
+      content:counter(question);
+      position:absolute;
+      top:16px;
+      left:18px;
+      width:24px;
+      height:24px;
+      display:grid;
+      place-items:center;
+      border-radius:50%;
+      background:var(--warm);
+      color:white;
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:.78rem;
+      font-weight:700;
+    }
+
+    .question-card p{
+      font-size:.96rem;
+      line-height:1.6;
+      margin-bottom:0;
+    }
+
+    .uncertainties{
+      margin:28px 0 34px;
+      padding:0;
+      list-style:none;
+      border-top:1px solid var(--line);
+    }
+
+    .uncertainties li{
+      padding:16px 0;
+      border-bottom:1px solid var(--line);
+      font-size:1.02rem;
+      line-height:1.68;
+    }
+
+    .refs{
+      margin-top:42px;
+      padding-top:24px;
+      border-top:1px solid var(--line);
+    }
+
+    .refs h2{
+      margin:0 0 18px;
+    }
+
+    .refs ol{
+      margin:0;
+      padding-left:1.25rem;
+    }
+
+    .refs li{
+      margin:0 0 1em;
+      padding-left:.25rem;
+      font-size:.95rem;
+      line-height:1.65;
+    }
+
+    .backref{
+      color:var(--accent);
+      text-decoration:none;
+      border-bottom:1px solid transparent;
+      white-space:nowrap;
+    }
+
+    .backref:hover{
+      color:var(--accent-2);
+      border-bottom-color:currentColor;
+    }
+
+    .footer{
+      margin-top:46px;
+      padding-top:22px;
+      border-top:1px solid var(--line);
+      font-family:Arial, Helvetica, sans-serif;
+      color:var(--muted);
+      font-size:.93rem;
+    }
+
+    ::selection{
+      background:rgba(91,79,209,.18);
+    }
+
+    @media (max-width: 860px){
+      .post{
+        padding:38px 28px 48px;
+      }
+
+      .taxonomy,
+      .questions{
+        grid-template-columns:1fr;
+      }
+
+      .method-steps{
+        grid-template-columns:repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 700px){
+      .site-wrap{
+        padding:24px 12px 56px;
+      }
+
+      .post{
+        padding:28px 18px 38px;
+      }
+
+      .lede,
+      p{
+        font-size:1rem;
+      }
+
+      h1{
+        font-size:2.16rem;
+        max-width:10ch;
+      }
+
+      .toc{
+        grid-template-columns:repeat(2, minmax(0, 1fr));
+      }
+
+      .night-band,
+      .method-steps,
+      .apparatus{
+        grid-template-columns:1fr;
+      }
+
+      .apparatus-bridge{
+        justify-self:center;
+        max-width:none;
+        border-radius:var(--radius);
+      }
+
+      .axis-line{
+        grid-template-columns:1fr;
+        gap:8px;
+      }
+
+      .axis-line::before{
+        top:0;
+        bottom:0;
+        left:50%;
+        right:auto;
+        width:2px;
+        height:auto;
+      }
+
+      .axis-line span{
+        justify-self:stretch !important;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="blog.css">
+</head>
+<body>
+  <div class="site-wrap">
+    <article class="post">
+      <div class="eyebrow">Blog Post</div>
+      <h1>What is Science Art?</h1>
+      <div class="meta">
+        By <strong>Xyh Tamura</strong> &middot; July 09, 2026 &middot;
+        <a href="https://xyhtamura.github.io">xyhtamura.github.io</a>
+      </div>
+
+      <p class="lede">
+        Science art is a useful term, but I do not think it names one stable form.
+        At least at the moment, it points to several different ways that artistic
+        practice borrows from, works beside, or tries to enter scientific knowledge production.
+      </p>
+
+      <nav class="toc" aria-label="Post sections">
+        <a href="#common-uses">Common uses</a>
+        <a href="#science">What science means here</a>
+        <a href="#action">Action and perception</a>
+        <a href="#participant">A stricter possibility</a>
+        <a href="#systems">Systems</a>
+        <a href="#uncertain">What I am not sure of</a>
+        <a href="#references">References</a>
+      </nav>
+
+      <section id="common-uses">
+        <h2>Common Uses</h2>
+        <p>
+          There is no one form of science art that we can point to now as the specific
+          form. Most things I see called science art can be placed, roughly, into three
+          categories: art that presents scientific knowledge, art that uses scientific
+          or technical processes, and art that visualizes data. These categories are
+          not clean. They overlap often. Still, they are useful enough as a first map.
+        </p>
+
+        <div class="taxonomy" aria-label="Common categories of science art">
+          <section class="taxonomy-card" data-kind="communication">
+            <h3>Science Communication</h3>
+            <p>
+              The work begins with scientific knowledge that already exists, then
+              presents it through image, sound, performance, text, installation, or
+              another artistic form.
+            </p>
+            <span class="taxonomy-label">Why it is called science art</span>
+            <p>
+              It translates or reframes science for an audience.
+            </p>
+          </section>
+
+          <section class="taxonomy-card" data-kind="engineering">
+            <h3>Engineering</h3>
+            <p>
+              The work uses instruments, materials, code, fabrication, laboratory
+              procedures, biological processes, or technical systems as part of making.
+            </p>
+            <span class="taxonomy-label">Why it is called science art</span>
+            <p>
+              It shows the presence of method, apparatus, or technical constraint.
+            </p>
+          </section>
+
+          <section class="taxonomy-card" data-kind="data">
+            <h3>Data Visualization</h3>
+            <p>
+              The work takes measurement, observation, or recorded information and
+              turns it into a visual, sonic, spatial, or interactive structure.
+            </p>
+            <span class="taxonomy-label">Why it is called science art</span>
+            <p>
+              It makes patterns, relations, or scales available to perception.
+            </p>
+          </section>
+        </div>
+
+        <p>
+          I do not think these categories are wrong. They are probably what the term
+          usually does in practice. But if we use a stricter definition of science,
+          none of them necessarily become science. Science communication often comes
+          after scientific work. Engineering can produce knowledge, but it is often
+          organized around making something work. Data visualization may be part of
+          analysis, but it is not the whole process of science.
+        </p>
+
+        <p>
+          I also think of a story a physicist told me about a research team that had
+          an artist in it. The artist was there partly so the group could make something
+          like science art, but eventually felt that they were not really doing science.
+          I do not know the details well enough to use this as evidence. Still, the
+          problem is clear enough. Putting an artist into a scientific group does not
+          automatically make the work science art in the stronger sense. It may make
+          art with the aesthetics of science, or art near science, and that is not
+          necessarily a failure. It is just a different claim.
+        </p>
+      </section>
+
+      <section id="science">
+        <h2>What Science Means Here</h2>
+        <p>
+          In modern Western academic usage, science has a relatively distinct meaning.
+          It is not just the presence of microscopes, machines, diagrams, equations,
+          specimens, or laboratories. It is a mode of knowledge production. A simplified
+          version would say that science involves forming a hypothesis, carrying out an
+          experiment or observation, analyzing the data, and making a claim about the
+          world that remains open to testing or revision.<sup class="cite"><a id="cite-method" href="#ref-method">1</a></sup>
+        </p>
+
+        <p>
+          This is a simplification. Many sciences do not move in such a neat order.
+          Some are observational. Some are theoretical. Some depend on modeling,
+          historical inference, fieldwork, or long-term collection. Still, this stricter
+          sense is useful because it asks what the work does inside knowledge production,
+          rather than only what the work looks like.<sup class="cite"><a href="#ref-method">1</a></sup>
+        </p>
+
+        <figure class="figure" aria-labelledby="method-caption">
+          <figcaption id="method-caption">Where a work might enter the science process</figcaption>
+          <div class="method-wrap">
+            <div class="night-band">
+              <strong>Night science<sup class="cite"><a id="cite-night" href="#ref-night">2</a></sup></strong>
+              <span>Hunches, metaphors, strange associations, questions, intuitions, and models that may later become formal inquiry.</span>
+            </div>
+            <ol class="method-steps">
+              <li data-step="1">
+                <h3>Question</h3>
+                <p>An artwork may produce a question, a metaphor, or a way of noticing.</p>
+              </li>
+              <li data-step="2">
+                <h3>Test</h3>
+                <p>It may shape an experiment, tool, protocol, or condition of observation.</p>
+              </li>
+              <li data-step="3">
+                <h3>Analyze</h3>
+                <p>It may change how data is seen, compared, interpreted, or doubted.</p>
+              </li>
+              <li data-step="4">
+                <h3>Claim</h3>
+                <p>It may help make, complicate, or communicate a claim about the world.</p>
+              </li>
+            </ol>
+          </div>
+        </figure>
+
+        <p>
+          I hesitate to say that the three common categories should be removed from
+          science art. They attempt to bridge an academic divide between fields of
+          knowledge, and that divide is not natural. It is produced by institutions,
+          training, funding structures, publication systems, and habits of naming.
+          The phrase "science art" is already doing some work by refusing to let those
+          separations remain completely settled.
+        </p>
+      </section>
+
+      <section id="action">
+        <h2>Action And Perception</h2>
+        <p>
+          It may be easier, structurally, for art and technology to meet than for art
+          and science to meet. Art and technology both involve making things and changing
+          conditions in the world. Science, in the narrow sense I am using here, is
+          closer to perception and description. It looks at the world and tries to say
+          what is the case.
+        </p>
+
+        <p>
+          This distinction is too clean. Science also acts on the world, and art is
+          often a way of perceiving. But the distinction still helps. One apparatus is
+          closer to perception. The other is closer to action. A strong form of science
+          art may appear where these are no longer separable.
+        </p>
+
+        <figure class="figure" aria-labelledby="apparatus-caption">
+          <figcaption id="apparatus-caption">A simplified split that science art may trouble</figcaption>
+          <div class="apparatus">
+            <div class="apparatus-node">
+              <strong>Science / theory</strong>
+              <p>Perceiving, describing, modeling, and making claims about what is.</p>
+            </div>
+            <div class="apparatus-bridge">where the split collapses</div>
+            <div class="apparatus-node">
+              <strong>Art / technology</strong>
+              <p>Making, arranging, performing, building, and changing conditions.</p>
+            </div>
+          </div>
+        </figure>
+
+        <p>
+          Some art already does this without needing science. A conceptual work can
+          ask a theoretical question by existing as an action, not by explaining itself
+          as an argument. John Cage's <em>4'33"</em> is useful here because it changes
+          the conditions of listening and also asks what counts as silence, music, and
+          performance. It does not only discuss a theory of sound. It stages a problem
+          for that theory.<sup class="cite"><a id="cite-cage" href="#ref-cage">3</a></sup>
+        </p>
+
+        <p>
+          Autotheory is another useful example, though it is not science in the narrow
+          sense.<sup class="cite"><a id="cite-autotheory" href="#ref-autotheory">4</a></sup> In works such as <em>Testo Junkie</em><sup class="cite"><a id="cite-preciado" href="#ref-preciado">5</a></sup> or <em>The Argonauts</em>,<sup class="cite"><a id="cite-nelson" href="#ref-nelson">6</a></sup> the
+          making of theory cannot be separated cleanly from the making of the artwork
+          or the making of a self in writing. Autoethnography can do something similar.
+          <sup class="cite"><a id="cite-autoethnography" href="#ref-autoethnography">7</a></sup>
+          This matters because it shows one way that knowledge production and artistic
+          form can occupy the same action.
+        </p>
+
+        <p>
+          For science art, the equivalent would not just be an artwork that refers to
+          science. It would be an artwork whose way of acting is also a way of knowing.
+          A performance, installation, or instrument might produce observations,
+          organize a research method, gather usable data, or create a situation in
+          which a scientific question becomes possible. If an installation listens to
+          planetary systems or detects weather, it might be close to citizen science.
+          <sup class="cite"><a id="cite-citizen" href="#ref-citizen">8</a></sup>
+          But the question remains what the art gives to the science: a dataset, a
+          method, a question, a mode of perception, or a community of observers.
+        </p>
+      </section>
+
+      <section id="participant">
+        <h2>A Stricter Possibility</h2>
+        <p>
+          Still, it seems fair to ask whether something can fall into a modern definition
+          of both science and art. Art has many definitions, and two common ones are
+          enough for now: art produces an aesthetic experience, and art is made or
+          framed as art by somebody. These are loose definitions, but that looseness is
+          part of how art functions.
+        </p>
+
+        <p>
+          Science is more strict, but even within science, many acts only carry out part
+          of the scientific process. Data collection is not all of science, but it can
+          be scientific. The data still needs to be analyzed. Theory-making is not all
+          of science either, since theories need to be tested, revised, or falsified.
+          These activities become scientific because they can participate in a larger
+          process of knowledge production.
+        </p>
+
+        <div class="note">
+          <p>
+            One possible stricter test is this: a strong form of science art would be an
+            artwork that produces an aesthetic experience and can also participate in
+            scientific knowledge production. It may not need to complete the whole
+            process by itself. It would need to be able to enter the process in a meaningful way.
+          </p>
+        </div>
+
+        <div class="questions" aria-label="Working test for science art">
+          <section class="question-card">
+            <h3>Is it art?</h3>
+            <p>
+              Does it make an aesthetic claim, produce an aesthetic experience, or get
+              framed by someone as an artwork?
+            </p>
+          </section>
+          <section class="question-card">
+            <h3>Is it science-adjacent only?</h3>
+            <p>
+              Does it mainly explain, illustrate, aestheticize, or use science without
+              changing any process of inquiry?
+            </p>
+          </section>
+          <section class="question-card">
+            <h3>Can it participate?</h3>
+            <p>
+              Does it shape a question, method, observation, dataset, model, analysis,
+              or claim in a way that matters to knowledge production?
+            </p>
+          </section>
+        </div>
+
+        <div class="axis" aria-label="A range from weak to strong science art">
+          <div class="axis-line">
+            <span>borrows from science</span>
+            <span>works with science</span>
+            <span>participates in science</span>
+          </div>
+          <p>
+            The left side is still often useful. The right side is the stricter sense
+            I am trying to describe. I would not treat this as a moral ranking.
+          </p>
+        </div>
+
+        <p>
+          One place to look for possible science art is scientific work that already
+          has an aesthetic quality. The Ig Nobel Prize selections are useful here.
+          <sup class="cite"><a id="cite-ig" href="#ref-ig">9</a></sup>
+          The works are science first. They are selected from research publications.
+          But the attention given to them suggests that they have a value beyond what
+          science normally rewards. They are funny, strange, trivial, surprising, or
+          awkward in a way that becomes part of their reception. These are aesthetic
+          qualities, or at least they are close to aesthetic experience.
+        </p>
+
+        <p>
+          This reverses the usual question. Instead of asking when art becomes science,
+          it asks when science becomes art-like. I am not sure this makes the research
+          into art by itself. It may only show that scientific work can acquire an
+          aesthetic life around it. But that seems relevant to the question.
+        </p>
+
+        <p>
+          Another place to look is what Yanai and Lercher call "Night Science." Their
+          distinction is useful because it names the informal, imaginative, and partly
+          irrational work that happens before and around formal scientific method.
+          <sup class="cite"><a href="#ref-night">2</a></sup>
+          Hypotheses do not usually arrive already clean. They come from noticing,
+          association, metaphor, accident, boredom, play, and other forms of thought
+          that are not always counted when science describes itself.
+        </p>
+
+        <p>
+          If we accept that partial contributions to science can be scientific, then
+          artworks that directly contribute to this night science may also deserve
+          attention. An artwork might not prove anything. It might instead generate a
+          question, make a phenomenon newly visible, offer a model, or produce a strange
+          relation that later becomes testable. That is not the same as saying all
+          inspiration is science. It is only saying that inspiration can matter to the
+          scientific process.
+        </p>
+      </section>
+
+      <section>
+        <h2>Knowledge Production</h2>
+        <p>
+          The stricter definitions of science also tend to assume a positivist
+          epistemology. They privilege objectivity, repeatability, and a particular
+          relation between observer and world. These are powerful commitments, but
+          they are not the only ways knowledge has been discussed. Qualitative research,
+          artistic research, and practice-based research all produce knowledge under
+          different conditions. They do not rely on objectivity or repeatability in
+          exactly the same way.
+          <sup class="cite"><a id="cite-artistic-research" href="#ref-artistic-research">10</a>, <a id="cite-practice-research" href="#ref-practice-research">11</a></sup>
+        </p>
+
+        <p>
+          These forms of knowledge production may be closer to what science does than
+          simple engineering or communication, even if they are not science in the
+          narrow institutional sense. They ask what can be known through practice,
+          through situated experience, through making, through interpretation, and
+          through the presence of the researcher or artist in the work.
+        </p>
+
+        <p>
+          I do not know how far the term science should stretch. If it stretches too
+          far, it stops being useful. If it remains too narrow, it may hide forms of
+          knowledge production that are already happening. This is why I am more
+          interested in "science art" as a problem than as a settled category. The
+          next question is where the work is being asked to count.
+        </p>
+      </section>
+
+      <section id="systems">
+        <h2>Systems And Contribution</h2>
+        <p>
+          There is also a systems question here. A scientific work becomes art-like,
+          or becomes legible as art, when it is recognized by an artistic system or
+          collides with one. By artistic system I mean institutions, exhibitions,
+          artists, audiences, critics, communities, and habits of attention. Calling
+          something art is already a way of forcing that collision.
+        </p>
+
+        <p>
+          The same is true of science. Scientific systems include academic scientists,
+          laboratories, journals, universities, corporations, government agencies,
+          instruments, protocols, and validation practices. A work can intervene in
+          those systems without necessarily becoming a scientific contribution. This
+          distinction matters. An intervention can disturb, provoke, or reframe a field.
+          A contribution has to count, somehow, within the field's ways of making and
+          testing knowledge.
+        </p>
+
+        <p>
+          This may be why science can enter art systems more easily than art can enter
+          science systems. Scientific work can arrive already validated as science,
+          then be reframed aesthetically. The Ig Nobel Prize examples work partly this
+          way. They are scientific works that collide with humor, surprise, strangeness,
+          and public attention. Art entering science has a harder test. It has to do
+          more than appear in a laboratory or use scientific imagery. It has to matter
+          to a question, method, observation, model, dataset, or claim.
+        </p>
+      </section>
+
+      <section id="uncertain">
+        <h2>What I Am Not Sure Of</h2>
+        <ul class="uncertainties">
+          <li>
+            I am not sure how much participation in scientific knowledge production is
+            enough. A question can matter, but not every interesting question is science.
+          </li>
+          <li>
+            I am not sure whether scientific work with aesthetic qualities should be
+            called art, or only described as having an aesthetic dimension.
+          </li>
+          <li>
+            I am not sure whether expanding science to include night science, artistic
+            research, or practice-based research clarifies the term, or weakens it.
+          </li>
+          <li>
+            I am not sure when an intervention in a scientific system becomes a
+            contribution to scientific knowledge.
+          </li>
+          <li>
+            I am not sure whether collapsing perception and action is enough, or only
+            one useful way of describing the problem.
+          </li>
+          <li>
+            I am not sure whether institutions are able to evaluate this kind of work
+            without turning it back into either illustration, engineering, or conventional
+            academic output.
+          </li>
+        </ul>
+      </section>
+
+      <p>
+        At this point, I would not end by choosing one definition. The loose sense still
+        matters: art can communicate, use, visualize, or borrow the aesthetics of science.
+        That is often what people mean, and it is not wrong. The stronger sense asks for
+        something more specific, but it should probably stay a test rather than a border.
+      </p>
+
+      <p>
+        The question then shifts. What is the work being asked to do? Is it borrowing a
+        surface, staging a collision, intervening in a system, or contributing to how
+        knowledge is made? These are not stable boxes. They are places where the term
+        "science art" can be tested, and maybe where the more interesting works begin.
+      </p>
+
+      <section class="refs" aria-labelledby="references">
+        <h2 id="references">References</h2>
+        <ol>
+          <li id="ref-method">
+            Andersen, Hanne, and Brian Hepburn. "Scientific Method." <em>Stanford Encyclopedia of Philosophy</em>. First published November 13, 2015; substantive revision June 1, 2021. <a href="https://plato.stanford.edu/entries/scientific-method/">https://plato.stanford.edu/entries/scientific-method/</a>. <a class="backref" href="#cite-method">back to text</a>
+          </li>
+          <li id="ref-night">
+            Yanai, Itai, and Martin J. Lercher. <em>Night Science</em>. Night Science Institute. <a href="https://night-science.org/">https://night-science.org/</a>. <a class="backref" href="#cite-night">back to text</a>
+          </li>
+          <li id="ref-cage">
+            John Cage Trust. "4'33&quot;." <em>John Cage Complete Works</em>. <a href="https://www.johncage.org/pp/John-Cage-Work-Detail.cfm?work_ID=17">https://www.johncage.org/pp/John-Cage-Work-Detail.cfm?work_ID=17</a>. <a class="backref" href="#cite-cage">back to text</a>
+          </li>
+          <li id="ref-autotheory">
+            Fournier, Lauren. <em>Autotheory as Feminist Practice in Art, Writing, and Criticism</em>. Cambridge, MA: MIT Press, 2022. <a href="https://mitpress.mit.edu/9780262544041/autotheory-as-feminist-practice-in-art-writing-and-criticism/">https://mitpress.mit.edu/9780262544041/autotheory-as-feminist-practice-in-art-writing-and-criticism/</a>. <a class="backref" href="#cite-autotheory">back to text</a>
+          </li>
+          <li id="ref-preciado">
+            Preciado, Paul B. <em>Testo Junkie: Sex, Drugs, and Biopolitics in the Pharmacopornographic Era</em>. Translated by Bruce Benderson. New York: Feminist Press, 2013. <a class="backref" href="#cite-preciado">back to text</a>
+          </li>
+          <li id="ref-nelson">
+            Nelson, Maggie. <em>The Argonauts</em>. Minneapolis: Graywolf Press, 2015. <a href="https://www.graywolfpress.org/books/argonauts">https://www.graywolfpress.org/books/argonauts</a>. <a class="backref" href="#cite-nelson">back to text</a>
+          </li>
+          <li id="ref-autoethnography">
+            Ellis, Carolyn, Tony E. Adams, and Arthur P. Bochner. "Autoethnography: An Overview." <em>Forum Qualitative Sozialforschung / Forum: Qualitative Social Research</em> 12, no. 1 (2011). <a href="https://doi.org/10.17169/fqs-12.1.1589">https://doi.org/10.17169/fqs-12.1.1589</a>. <a class="backref" href="#cite-autoethnography">back to text</a>
+          </li>
+          <li id="ref-citizen">
+            Association for Advancing Participatory Sciences. "Advancing the Participatory Sciences." <a href="https://participatorysciences.org/">https://participatorysciences.org/</a>. <a class="backref" href="#cite-citizen">back to text</a>
+          </li>
+          <li id="ref-ig">
+            Improbable Research. "About the Igs." <a href="https://improbable.com/ig/about-the-ig-nobel-prizes/">https://improbable.com/ig/about-the-ig-nobel-prizes/</a>. <a class="backref" href="#cite-ig">back to text</a>
+          </li>
+          <li id="ref-artistic-research">
+            Borgdorff, Henk. "The Production of Knowledge in Artistic Research." In <em>The Routledge Companion to Research in the Arts</em>, edited by Michael Biggs and Henrik Karlsson, 44-63. London: Routledge, 2011. <a href="https://www.researchcatalogue.net/researches/129647">https://www.researchcatalogue.net/researches/129647</a>. <a class="backref" href="#cite-artistic-research">back to text</a>
+          </li>
+          <li id="ref-practice-research">
+            Candy, Linda, and Ernest Edmonds. "Practice-Based Research in the Creative Arts: Foundations and Futures from the Front Line." <em>Leonardo</em> 51, no. 1 (2018): 63-69. <a href="https://doi.org/10.1162/LEON_a_01471">https://doi.org/10.1162/LEON_a_01471</a>. <a class="backref" href="#cite-practice-research">back to text</a>
+          </li>
+        </ol>
+      </section>
+
+      <div class="footer">
+        Posted by Xyh Tamura &middot; Blog index:
+        <a href="./">blog</a> &middot; Main page:
+        <a href="https://xyhtamura.github.io">xyhtamura.github.io</a>
+      </div>
+    </article>
+  </div>
+</body>
+</html>
