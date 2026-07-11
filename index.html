@@ -888,6 +888,40 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
 
   <!-- ROW 6 · list of works (each <details class="entry"> is its own bubble) -->
   <main class="index">
+  <details class="entry" data-cats="tech" id="dhuenut">
+  <summary>
+    <span class="year">2026</span>
+    <span class="title">DHuenut</span>
+    <span class="chips"><span class="chip tech">tech</span></span>
+  </summary>
+  <div class="body">
+    <div class="media-group">
+      <img class="media" src="img/dhuenut.svg" alt="DHuenut editor icon">
+    </div>
+    <p>A hue-vs-hue curve editor where color transforms are modeled as circle maps S¹ → S¹ on a torus. Features an interactive spline editor with winding degree controls, an animated projected 3D torus visualization, OKLCH/HSL remapping via a WebGL pipeline, and 3D LUT (.cube) export.</p>
+    <div class="outlinks">
+      <a class="glass visit" href="https://xyhtamura.github.io/dhuenut/" target="_blank" rel="noopener">▷ Launch App</a>
+    </div>
+  </div>
+</details>
+
+  <details class="entry" data-cats="tech" id="gliese">
+  <summary>
+    <span class="year">2026</span>
+    <span class="title">Gliese</span>
+    <span class="chips"><span class="chip tech">tech</span></span>
+  </summary>
+  <div class="body">
+    <div class="media-group">
+      <img class="media" src="img/gliese.png" alt="Gliese ray-tracing paths">
+    </div>
+    <p>A physics-derived multi-tap delay and reverb generator that calculates delay taps by ray-tracing acoustic propagation through a spherically-symmetric graded-index atmospheric channel (the RHO profile), based on a Lagrangian ray-particle analogy. Features real-time trajectory drafting, a 3D wavefront animator, and a batch offline convolution pipeline for stereo custom audio.</p>
+    <div class="outlinks">
+      <a class="glass visit" href="https://xyhtamura.github.io/gliese/" target="_blank" rel="noopener">▷ Launch App</a>
+    </div>
+  </div>
+</details>
+
   <details class="entry" data-cats="tech" id="remanence">
   <summary>
     <span class="year">2026</span>
@@ -1187,7 +1221,7 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
     <div class="subs">
       <div class="sub">
         <h4>Pythia</h4>
-        <p>A web-based acausal precognitive granular delay effect that uses one audio file to anticipate and shape textures from another file, or itself.</p>
+        <p>An acausal granular delay and sidechain processor that reads the entire file timeline to enable anticipatory pre-echo (negative delay) and lookahead sidechain ducking or following.</p>
         <div class="outlinks"><a class="glass visit" href="/hindcasts/pythia/" target="_blank" rel="noopener">▷ open</a></div>
       </div>
       
@@ -2581,7 +2615,7 @@ const searchClear=document.querySelector('.search-clear');
 const normalizeSearch=text=>text.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 entries.forEach(e=>{
   const title=e.querySelector('.title')?.textContent||'';
-  const description=[...e.querySelectorAll('.body p')].map(p=>p.textContent).join(' ');
+  const description=[...e.querySelectorAll('.body p,.body h4')].map(el=>el.textContent).join(' ');
   e.dataset.search=normalizeSearch(`${title} ${description}`);
 });
 const applyFilters=()=>{

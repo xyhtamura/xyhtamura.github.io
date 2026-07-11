@@ -539,9 +539,9 @@ links: [
     pieces: [
       {
         title: "Pythia",
-        year: "2025",
-        tags: ["precognitive granular delay", "audio effect", "web audio"],
-        blurb: "A web-based “precognitive” or “paracognitive” granular delay effect that uses one audio file to anticipate and shape textures from another file[cite: 1, 4]. Driven by a dual-signal interface, it uses the structural envelope of a control signal to redistribute and scatter source material via negative delay, lookahead sampling, threshold triggering, and variable grain density[cite: 4]."
+        year: "2025–2026",
+        tags: ["acausal granular delay", "sidechain lookahead", "BPM sync", "pitch & pan spray", "offline WAV bounce"],
+        blurb: "An acausal granular delay and sidechain processor that reads the entire file timeline to enable anticipatory pre-echo (negative delay) and lookahead sidechain ducking or following. Features a dual-path design (pristine tap and multi-parameter granulator) crossfaded via a Scatter axis, BPM-synced time subdivisions, ping-pong feedback with sub-grain disintegration, per-grain pitch/pan spray, and sample-accurate background Web Worker WAV exporting."
       },
       {
         title: "Sounder",
@@ -668,6 +668,24 @@ links: [
       label: "Creative Code, Instruments, & Software Utilities",
     },
     pieces: [
+	{
+	  title: "DHuenut",
+	  year: "2026",
+	  tags: ["color theory", "hue-vs-hue curve", "circle maps", "torus projection", "WebGL image processor"],
+	  blurb: "A hue-vs-hue curve editor where color transforms are modeled as circle maps S¹ → S¹ on a torus. Features an interactive spline editor with winding degree controls, an animated projected 3D torus visualization, OKLCH/HSL remapping via a WebGL pipeline, and 3D LUT (.cube) export.",
+	  links: [
+	    { label: "Launch App", url: "https://xyhtamura.github.io/dhuenut/" }
+	  ]
+	},
+	{
+	  title: "Gliese",
+	  year: "2026",
+	  tags: ["planetary acoustics", "multi-tap delay", "ray tracing", "offline convolution", "web audio"],
+	  blurb: "A physics-derived multi-tap delay and reverb generator that calculates delay taps by ray-tracing acoustic propagation through a spherically-symmetric graded-index atmospheric channel (the RHO profile), based on a Lagrangian ray-particle analogy. Features real-time trajectory drafting, a 3D wavefront animator, and a batch offline convolution pipeline for stereo custom audio.",
+	  links: [
+	    { label: "Launch App", url: "https://xyhtamura.github.io/gliese/" }
+	  ]
+	},
 	{
   title: "Remanence",
   year: "2026",
