@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Prime Song (Taper #17)</title>
+
+<!-- “Prime Song” Copyright (C) 2026 Xyh Tamura
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved. This file is offered as-is,
+without any warranty.
+
+This is from Taper #17: Prime, Fall 2026:
+
+https://taperzine.org/17/prime_song.html
+
+A glossolalic song in a scale no one has heard before: seventeen
+pitches drawn at random from the human vocal range. The voice is
+additive, built only from prime partials (1, 2, 3, 5, 7, 11 of the
+fundamental); its mouth is two formants sitting on prime multiples of
+55 Hz, and the glyph you read is derived from that prime pair — height
+from the first formant, backness from the second. Consonants are noise
+at prime multiples of 470 Hz. Verses run 3, 5, or 7 lines of 3, 5, or
+7 syllables. Nothing here is divisible; everything is sung.
+
+-->
+
+<style>
+	body { margin:0 ; overflow:hidden }
+	a { color:#eee ; text-decoration:none }
+	header { margin:0 ; padding:0 ; background-color:#444 ; color:#bbb ;
+		position:relative ; z-index:1000 }
+	header > h1 { margin:0 ; font-size:12px ; font-family:sans-serif ;
+		border-bottom:1px #999 solid ; padding:5px 10px ; line-height:17px }
+</style>
+</head>
+<body>
+<header id="nav">
+	<h1>
+		<a href="prev.html">&lt;&lt;</a> &nbsp;
+		<a href="index.html">Taper #17 :
+		Prime</a> : Fall 2026 &nbsp;
+		<a href="next.html">&gt;&gt;</a><br>
+		<a href="prime_song.html">“Prime Song”</a> by
+		<a href="about.html#tamura">Xyh Tamura</a>
+	</h1>
+</header>
+
+<style>body{background:#eed;color:#423}#Q{max-width:21em;height:82vh;margin:4vh auto;line-height:1.9;font:italic 19px Georgia;padding:0 1em;overflow:hidden}</style>
+<div id=Q>tap to sing</div>
+<script>
+let R=Math.random,I=n=>R()*n|0,K=a=>a[I(a.length)],T=[3,5,7],D=_=>document.createElement('div'),
+Z=(p,v,t)=>p.exponentialRampToValueAtTime(v,t),Y=(p,v,t,c)=>p.setTargetAtTime(v,t,c),
+S=[...Array(17)].map(_=>98*2**(R()*2.2)).sort((a,b)=>a-b),
+G="iɨueəoɛʌɔæaɑ",j=0,U,
+X=new AudioContext(),C=t=>X['create'+t](),
+b=X.createBuffer(1,4e4,4e4),d=b.getChannelData(0),
+v=C('Oscillator'),w=C('Gain'),n=C('BufferSource'),vg=C('Gain'),ng=C('Gain'),
+[fa,fb,nf]=[0,0,0].map(_=>{let f=C('BiquadFilter');f.type='bandpass';return f}),
+os=[1,2,3,5,7,11].map(h=>{let o=C('Oscillator'),g=C('Gain');g.gain.value=.8/h;o.connect(g);g.connect(fa);g.connect(fb);w.connect(o.detune);o.start();return[o,h]}),
+W=(e,s,t)=>setTimeout(()=>{e.textContent+=s;Q.scrollTop=1e9},(t-X.currentTime)*1e3),
+verse=_=>{
+let t=X.currentTime+.2,a=R()<.5||-1,e,L=K(T);
+for(l=0;l<L;l++){
+e=Q.appendChild(D());
+Y(vg.gain,.5,t,.06);
+let N=K(T);
+for(s=0;s<N;s++){
+j=Math.abs(j+I(5)-2+(s*2<N?a:-a))%17;
+let f=S[j],p=K([5,7,11,13]),q=K([13,17,19,23,29,37,43]),d=.2+R()*.3,y='';
+if(R()<.6){let c=I(6);y="hkpʃts"[c];nf.frequency.setValueAtTime(470*[2,3,5,7,11,13][c],t);Y(ng.gain,.3,t,.01);Y(ng.gain,0,t+(c>2?.07:.03),.02);t+=.07}
+os.map(z=>Z(z[0].frequency,f*z[1],t+.09));
+Z(fa.frequency,55*p,t+.06);
+Z(fb.frequency,55*q,t+.06);
+s>N-2&&(d*=1.8);
+W(e,y+G[((p>5)+(p>7)+(p>11))*3+(q<31)+(q<19)],t);
+t+=d}
+Y(vg.gain,0,t,.05);t+=.3+R()*.5}
+Q.appendChild(D()).textContent='\xa0';
+setTimeout(verse,(t+.8+R()-X.currentTime)*1e3)};
+for(l=0;l<4e4;)d[l++]=R()-.5;
+vg.gain.value=0;vg.connect(X.destination);
+[fa,fb].map(f=>{f.Q.value=9;f.connect(vg)});
+v.frequency.value=5;w.gain.value=9;v.connect(w);v.start();
+ng.gain.value=0;nf.connect(ng);ng.connect(X.destination);
+n.buffer=b;n.loop=1;n.connect(nf);n.start();
+onclick=_=>X.resume().then(_=>U||(U=1,Q.textContent='',verse()));
+</script>
+</body>
+</html>

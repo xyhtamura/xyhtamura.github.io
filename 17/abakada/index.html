@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>aBaKada (Taper #17)</title>
+
+<!-- “aBaKada” Copyright (C) 2026 Xyh Tamura
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved. This file is offered as-is,
+without any warranty.
+
+This is from Taper #17: Prime, Fall 2026:
+
+https://taperzine.org/17/abakada.html
+
+The Filipino alphabet has 28 letters. At its prime positions — 2, 3,
+5, 7, 11, 13, 17, 19, 23 — sit B, C, E, G, K, M, O, Q and U: enough
+to speak with. buko, kubo, kuko, ube, buo, oo, mo, ko. Even grammar
+survives the sieve: the infix -um- is built entirely of prime
+letters, so the poem can conjugate — buko, bumuko, bumubuko. Two of
+the nine, C and Q, arrived only in 1987, added for borrowed words,
+and they flash only when English drifts in: queue, become, cue.
+The poem absorbs the way the language always has, conjugating the
+arrivals — qumuqueue, bumecome, umemu — until borrowed and born are
+one tongue, and only the strip remembers where a letter is from. NG,
+the most Filipino letter of all, sits at position 16 = 2 to the 4th
+and stays dark. The title is the alphabet’s own name run through the
+sieve, keeping what is prime.
+
+-->
+
+<style>
+	body { margin:0 ; overflow:hidden }
+	a { color:#eee ; text-decoration:none }
+	header { margin:0 ; padding:0 ; background-color:#444 ; color:#bbb ;
+		position:relative ; z-index:1000 }
+	header > h1 { margin:0 ; font-size:12px ; font-family:sans-serif ;
+		border-bottom:1px #999 solid ; padding:5px 10px ; line-height:17px }
+</style>
+</head>
+<body>
+<header id="nav">
+	<h1>
+		<a href="prev.html">&lt;&lt;</a> &nbsp;
+		<a href="index.html">Taper #17 :
+		Prime</a> : Fall 2026 &nbsp;
+		<a href="next.html">&gt;&gt;</a><br>
+		<a href="abakada.html">“aBaKada”</a> by
+		<a href="about.html#tamura">Xyh Tamura</a>
+	</h1>
+</header>
+
+<style>body{background:#eed;color:#423}#A{display:flex;flex-wrap:wrap;gap:3px;max-width:21em;margin:6vh auto 0;font:15px monospace}#A b{padding:1px 6px;opacity:.18}#A .p{opacity:1;background:#423;color:#eed;border-radius:3px}#A .f{background:#b50}#Q{max-width:21em;height:58vh;margin:4vh auto;padding:0 1em;overflow:hidden;font:italic 21px Georgia;line-height:2}</style>
+<div id=A></div><div id=Q></div>
+<script>
+let R=Math.random,I=n=>R()*n|0,K=a=>a[I(a.length)],
+L="A B C D E F G H I J K L M N Ñ NG O P Q R S T U V W X Y Z".split(" "),
+E=L.map((c,i)=>{let b=document.createElement("b");b.textContent=c;[2,3,5,7,11,13,17,19,23].includes(i+1)&&(b.className="p");A.appendChild(b);return b}),
+W="oo mo ko buo buko kubo kuko ube ubo gugo bukbok bugbog kubkob ugok bugok".split(" "),
+B="be me um emu oboe moo book boom cook emcee become queue cue come cube ego q go".split(" "),
+D=_=>Q.appendChild(document.createElement("div")),
+F=w=>{for(let c of w){let b=E[L.indexOf(c.toUpperCase())];b.classList.add("f");setTimeout(_=>b.classList.remove("f"),700)}},
+e=D(),n=0,m=0,M=K([3,5,7]),
+tick=_=>{
+let w=R()<.12?K(B):K(W),r=R(),v="oue".includes(w[0]);
+w.length>2&&r<.26&&(w=r<.14?v?"um"+w:w[0]+"um"+w.slice(1):v?"um"+w[0]+w:w[0]+"um"+(w[1]<"f"?w[1]:"u")+w);
+e.textContent+=(e.textContent?" ":"")+w;F(w);
+++n>=2+I(2)&&(n=0,e=D(),++m>=M&&(m=0,M=K([3,5,7]),e.textContent="\xa0",e=D()));
+Q.scrollTop=1e9;
+setTimeout(tick,500+R()*1100)};
+tick();
+</script>
+</body>
+</html>
