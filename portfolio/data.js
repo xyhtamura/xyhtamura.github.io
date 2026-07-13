@@ -538,6 +538,12 @@ links: [
     },
     pieces: [
       {
+        title: "Metachamber",
+        year: "2026",
+        tags: ["gap-aware reverb", "acausal decay", "envelope follower", "masking credit", "offline WAV bounce"],
+        blurb: "A gap-aware reverb that measures all silences in a file to fit each event's decay tail to the following gap. Instead of using a compromise decay time that smears busy passages, it solves RT60 per event and applies zero-phase bidirectional smoothing, preventing collision and mud while respecting auditory masking credit."
+      },
+      {
         title: "Pythia",
         year: "2025–2026",
         tags: ["acausal granular delay", "sidechain lookahead", "BPM sync", "pitch & pan spray", "offline WAV bounce"],
@@ -668,6 +674,24 @@ links: [
       label: "Creative Code, Instruments, & Software Utilities",
     },
     pieces: [
+	{
+	  title: "Aeropane",
+	  year: "2026",
+	  tags: ["frosted glass", "light scattering", "gel physics", "WebGL progressive render", "Frutiger Aero"],
+	  blurb: "A physical glass and gel light-scattering simulator that renders how light offsets and blurs passing through textured dielectric interfaces. Features progressive slice rendering via a WebGL scissor pipeline, dynamic heightmap normal generation, distance-dependent blur, Fresnel reflection, and Beer-Lambert edge absorption, presented in a light-mode Frutiger Aero interface.",
+	  links: [
+	    { label: "Launch App", url: "https://xyhtamura.github.io/aeropane/" }
+	  ]
+	},
+	{
+	  title: "kíkik",
+	  year: "2026",
+	  tags: ["swarm dequantizer", "audio onset analyzer", "hit-seeded granulator", "MIDI generator"],
+	  blurb: "A swarm dequantizer, audio onset analyzer, and hit-seeded event/sound granulator. Derived from field recordings of Platypleura fulvigera (cicada), the tool detects micro-peaks to extract a found score, which simultaneously feeds a swarm of MIDI notes (mapping spectral centroids to pitch) and a granulation engine (rendering voice/poem files at the recording's pace), maintaining deterministic playback from a stable seed.",
+	  links: [
+	    { label: "Launch App", url: "https://xyhtamura.github.io/kikik/" }
+	  ]
+	},
 	{
 	  title: "DHuenut",
 	  year: "2026",

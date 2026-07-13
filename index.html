@@ -443,12 +443,12 @@ text-shadow:
   box-shadow:var(--bubble-ring),0 18px 42px rgba(2,18,16,0.5);
 }
 .entry.major:hover,.entry.major[open]{box-shadow:var(--bubble-ring),0 22px 48px rgba(2,18,16,0.55);}
-.entry summary{
+.entry > summary{
   display:grid;grid-template-columns:4.6rem 1fr auto;gap:.9rem;align-items:center;
   padding:.95rem 1.1rem;cursor:pointer;list-style:none;border-radius:24px;
 }
-.entry summary::-webkit-details-marker{display:none;}
-.entry summary:hover .title{color:var(--link-hover-color);}
+.entry > summary::-webkit-details-marker{display:none;}
+.entry > summary:hover .title{color:var(--link-hover-color);}
 .entry .year{font-family:var(--font-detail);font-size:.66rem;color:var(--year-color);text-align:center;letter-spacing:.02em;
   padding:.18rem .4rem;border-radius:9px;background:rgba(0,0,0,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.06); font-stretch: ultra-condensed;}
 .entry .title{font-family:var(--font-accent);font-size:1.08rem;color:var(--text-color);line-height:1.25;transition:color .15s;}
@@ -496,10 +496,19 @@ text-shadow:
 .body .role{color:var(--role-color);}
 /* collection sub-items */
 .subs{margin:.9rem 0 .4rem;padding:.2rem 0 0;border-top:1px dashed var(--line-color);}
-.sub{margin:.7rem 0;padding-left:.9rem;border-left:2px solid var(--line-color);}
+.sub{display:flow-root;margin:.7rem 0;padding-left:.9rem;border-left:2px solid var(--line-color);}
 .sub h4{font-family:var(--font-accent);color:var(--h4-color);font-size:1rem;margin:0 0 .15rem;font-weight:400;}
 .sub p{font-size:.86rem;margin:.1rem 0;color:var(--text-color);}
 .sub .outlinks{margin-top:.5rem;}
+.sub-media{float:right;width:clamp(68px,8vw,92px);height:56px;object-fit:cover;border-radius:8px;margin:.05rem 0 .45rem .75rem;background:linear-gradient(135deg,#2a2540,#1f3a3a);box-shadow:inset 0 0 18px rgba(0,0,0,.25),0 3px 9px var(--btn-glass-shadow);}
+.nested-heading{display:flex;align-items:baseline;flex-wrap:wrap;gap:.45rem;}
+.nested-heading h4{margin:0;}
+.nested-meta{font-family:var(--font-detail);font-size:.7rem;color:var(--year-color);}
+.nested-actions{align-items:center;}
+.nested-toggle{font-family:var(--font-special);}
+.nested-toggle[hidden]{display:none;}
+.nested-body{padding:.35rem 0 .15rem 1.15rem;}
+.nested-body > .subs{margin-top:.7rem;}
 /* outlinks footer */
 .outlinks{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.1rem;}
 .outlinks .glass{font-size:.78rem;padding:.3rem .8rem;}
@@ -523,7 +532,7 @@ text-shadow:
   .filter-search{flex-direction:column;align-items:stretch;gap:.35rem;}
   .filter-search .lbl{margin-right:0;}
   .search-field{width:100%;max-width:none;min-width:0;}
-  .entry summary{grid-template-columns:5.5rem 1fr;grid-template-rows:auto auto;gap:.25rem .7rem;padding:.85rem .95rem;}
+  .entry > summary{grid-template-columns:5.5rem 1fr;grid-template-rows:auto auto;gap:.25rem .7rem;padding:.85rem .95rem;}
   .chips{grid-column:1/-1;justify-content:flex-start;padding-left:4.1rem;max-width:none;}
   .body{padding:.2rem .95rem 1.3rem 4.1rem; align-items: flex-start;} /* Added align-items reset */
 }
@@ -888,6 +897,192 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
 
   <!-- ROW 6 · list of works (each <details class="entry"> is its own bubble) -->
   <main class="index">
+
+<details class="entry major" data-cats="tech artistic-research" id="sgueltch">
+  <summary>
+    <span class="year">2025&ndash;26&rarr;</span>
+    <span class="title">Sgueltch</span>
+    <span class="chips">
+      <span class="chip tech">tech</span>
+      <span class="chip artistic-research">research-art</span>
+    </span>
+  </summary>
+  <div class="body">
+    <p>An aesthetic philosophy and tech suite moving digital error away from rigid, pixelated, mechanical disruption and toward fluid, continuous, biologically inspired distortion. Sgueltch asks what error becomes when it begins from other substrates: ooze, tissue, silt, weather, viscosity, lesion, flocking, breath, and growth.</p>
+    <div class="outlinks">
+      <a class="glass visit" href="/sgueltch/" target="_blank" rel="noopener">&#9655; the suite</a>
+    </div>
+    <div class="subs">
+      <div class="sub">
+        <h4>CyberScotoma</h4>
+        <p>A non-grid, acausal datamosh tool that turns scintillating scotoma into a video effect. Drawn bloom curves latch Voronoi regions, then motion-field grafts and optional donor clips let future or foreign frames bleed backward into the present.</p>
+        <div class="outlinks"><a class="glass visit" href="/sgueltch/cyberscotoma/" target="_blank" rel="noopener">&#9655; open</a></div>
+      </div>
+      <div class="sub">
+        <h4>Pixel Lesions</h4>
+        <p>Pixel sorting as biological infection: lesion-like forms spread across an image like lichen or slime mold.</p>
+        <div class="outlinks"><a class="glass visit" href="/sgueltch/pixel-lesions/" target="_blank" rel="noopener">&#9655; open</a></div>
+      </div>
+      <div class="sub">
+        <h4>SiltCRT</h4>
+        <p>Shader-based CRT decay reimagined beyond the pixel grid via Voronoi tessellation, turbulence, and chromatic bleed. Inputs and outputs image and video.</p>
+        <div class="outlinks">
+          <a class="glass visit" href="/sgueltch/siltcrt/" target="_blank" rel="noopener">&#9655; open</a>
+          <a class="glass" href="/siltcrt/block/" target="_blank" rel="noopener">block version &nearr;</a>
+        </div>
+      </div>
+      <div class="sub">
+        <h4>Gurgulator</h4>
+        <p>Granular resynthesizer for wet, unstable, gurgling textures.</p>
+        <div class="outlinks"><a class="glass visit" href="/sgueltch/gurgulator/" target="_blank" rel="noopener">&#9655; open</a></div>
+      </div>
+      <div class="sub">
+        <h4>TypeBojangler</h4>
+        <p>Type renderer that jitters traits including rotation and spacing.</p>
+        <div class="outlinks"><a class="glass visit" href="/sgueltch/typebojangler/" target="_blank" rel="noopener">&#9655; open</a></div>
+      </div>
+      <div class="sub nested-set">
+        <div class="nested-heading"><h4>goopCodecs</h4><span class="nested-meta">2026&rarr; · set</span></div>
+       
+        <p>A suite of custom file formats built for databending, mojibake text editing, and substrate-specific corruption. Protected headers keep files readable while vulnerable bodies turn byte damage into continuous, analog-organic artifacts.</p>
+        <div class="outlinks nested-actions">
+          <a class="glass visit" href="/sgueltch/goopCodecs/" target="_blank" rel="noopener">&#9655; open suite</a>
+          <button class="glass nested-toggle" type="button" aria-expanded="false" aria-controls="goopcodecs-formats" hidden>expand</button>
+        </div>
+        <div class="nested-body" id="goopcodecs-formats">
+          <div class="subs">
+            <div class="sub">
+              <h4>ooid (.ooid)</h4>
+              <p>A layered anisotropic Gaussian blob still and video format.</p>
+              <div class="outlinks"><a class="glass visit" href="/sgueltch/goopCodecs/ooid/" target="_blank" rel="noopener">&#9655; open</a></div>
+            </div>
+            <div class="sub">
+              <h4>scute (.scute)</h4>
+              <p>A warped Voronoi-cell image codec built from scattered seed coordinates.</p>
+              <div class="outlinks"><a class="glass visit" href="/sgueltch/goopCodecs/scute/" target="_blank" rel="noopener">&#9655; open</a></div>
+            </div>
+            <div class="sub">
+              <h4>vermis (.vermis)</h4>
+              <p>A continuous space-filling Hilbert-thread image codec using DPCM color deltas.</p>
+              <div class="outlinks"><a class="glass visit" href="/sgueltch/goopCodecs/vermis/" target="_blank" rel="noopener">&#9655; open</a></div>
+            </div>
+            <div class="sub">
+              <h4>urumizuri (.urumizuri)</h4>
+              <p>A wet-state snapshot codec storing Bakezuri's fluid ink matrix as byte-editable material data.</p>
+              <div class="outlinks"><a class="glass visit" href="/sgueltch/goopCodecs/urumizuri/" target="_blank" rel="noopener">&#9655; open</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</details>
+
+<details class="entry major" data-cats="tech" id="hindcasts">
+  <summary>
+    <span class="year">2025&ndash;26&rarr;</span>
+    <span class="title">Hindcasts</span>
+    <span class="chips"><span class="chip tech">tech</span></span>
+  </summary>
+  <div class="body">
+    <p>A collection of "un-live" audio and video effects that work from the whole file rather than the passing instant. Treating static media as already-readable temporal objects enables effects that respond before, smooth backward, optimize globally, and act with full knowledge of a piece.</p>
+    <div class="outlinks">
+      <a class="glass visit" href="/hindcasts/" target="_blank" rel="noopener">&#9655; the suite</a>
+    </div>
+    <div class="subs">
+      <div class="sub">
+        <h4>Remanence</h4>
+        <p>An audio and video print-through effect modeling a wound tape reel whose neighboring wraps imprint ghost copies onto each other. Its acausal reel engine creates pre-echo, post-echo, drift, fold, wear, and VHS-like transport damage.</p>
+        <div class="outlinks"><a class="glass visit" href="/hindcasts/remanence/" target="_blank" rel="noopener">&#9655; open</a></div>
+      </div>
+      <div class="sub">
+        <h4>Metachamber</h4>
+        <p>A gap-aware reverb fitting each event's decay tail to following silence, avoiding collision and mud through global optimization and masking credit.</p>
+        <div class="outlinks"><a class="glass visit" href="/hindcasts/metachamber/" target="_blank" rel="noopener">&#9655; open</a></div>
+      </div>
+      <div class="sub">
+        <h4>Pythia</h4>
+        <p>An acausal granular delay and sidechain processor enabling anticipatory pre-echo, lookahead ducking, and following.</p>
+        <div class="outlinks"><a class="glass visit" href="/hindcasts/pythia/" target="_blank" rel="noopener">&#9655; open</a></div>
+      </div>
+      <div class="sub">
+        <h4>Sounder</h4>
+        <p>An un-live dynamics processor that turns a sound file into a manipulable histogram instead of using standard compressor thresholds, ratios, and attack windows.</p>
+        <div class="outlinks"><a class="glass visit" href="/hindcasts/sounder/" target="_blank" rel="noopener">&#9655; open</a></div>
+      </div>
+      <div class="sub">
+        <h4>Prolepsis</h4>
+        <p>An acausal video feedback field functioning as visual reverb or preverb.</p>
+        <div class="outlinks"><a class="glass visit" href="/hindcasts/prolepsis/" target="_blank" rel="noopener">&#9655; open</a></div>
+      </div>
+      <div class="sub">
+        <h4>Horn of Plenty</h4>
+        <p>An audio texture synthesis tool that processes sound samples into longer textures.</p>
+        <div class="outlinks"><a class="glass visit" href="/hindcasts/horn-of-plenty/" target="_blank" rel="noopener">&#9655; open</a></div>
+      </div>
+    </div>
+  </div>
+</details>
+
+<details class="entry" data-cats="tech" id="anexacta">
+  <summary>
+    <span class="year">2026&rarr;</span>
+    <span class="title">Anexacta</span>
+    <span class="chips"><span class="chip tech">tech</span></span>
+  </summary>
+  <div class="body">
+    <p>A set of equation-first synthesizers for treating spectral structure, tuning, modulation, and feedback as editable mathematics.</p>
+    <div class="subs">
+      <div class="sub">
+        <img class="sub-media" src="img/aliquoto.jpg" alt="Aliquoto interface" loading="lazy">
+        <h4>Aliquoto</h4>
+        <p>A pure additive synthesizer for sculpting timbres as spectral series using summations, envelopes, and conditionals, including fractional, irrational, subharmonic, and drift-modulated partial ratios.</p>
+        <div class="outlinks"><a class="glass visit" href="/aliquoto/" target="_blank" rel="noopener">&#9655; open</a></div>
+      </div>
+      <div class="sub">
+        <img class="sub-media" src="img/cella.jpg" alt="Cella interface" loading="lazy">
+        <h4>Cella</h4>
+        <p>A resonant additive synthesizer mapping custom equations onto a noise-driven resonator bank, with painted partials, spectral distributions, microtonal macro-detuning, and offline WAV rendering.</p>
+        <div class="outlinks"><a class="glass visit" href="/cella/" target="_blank" rel="noopener">&#9655; open</a></div>
+      </div>
+      <div class="sub">
+        <img class="sub-media" src="img/moire.jpg" alt="Moire interface" loading="lazy">
+        <h4>Moire</h4>
+        <p>A phase-modulation synthesizer replacing box-and-wire algorithm charts with live equations, arbitrary operator graphs, feedback loops, continuous drift, and non-integer ratios.</p>
+        <div class="outlinks"><a class="glass visit" href="/moire/" target="_blank" rel="noopener">&#9655; open</a></div>
+      </div>
+    </div>
+  </div>
+</details>
+
+  <details class="entry" data-cats="tech" id="aeropane">
+  <summary>
+    <span class="year">2026</span>
+    <span class="title">Aeropane</span>
+    <span class="chips"><span class="chip tech">tech</span></span>
+  </summary>
+  <div class="body">
+    <p>A physical glass and gel light-scattering simulator that renders how light offsets and blurs passing through textured dielectric interfaces (frosted, fluted, or hammered glass). Features a progressive slice renderer via WebGL scissor optimization, dynamic heightmap normal calculations, distance-dependent blur, Fresnel reflection, and Beer-Lambert edge absorption, presented in a light-mode Frutiger Aero aqua-glass interface.</p>
+    <div class="outlinks">
+      <a class="glass visit" href="https://xyhtamura.github.io/aeropane/" target="_blank" rel="noopener">▷ Launch App</a>
+    </div>
+  </div>
+</details>
+
+  <details class="entry minor" data-cats="tech" id="kikik">
+  <summary>
+    <span class="year">2026</span>
+    <span class="title">kíkik</span>
+    <span class="chips"><span class="chip tech">tech</span></span>
+  </summary>
+  <div class="body">
+    <p>A swarm dequantizer, audio onset analyzer, and hit-seeded event/sound granulator. Derived from field recordings of <em>Platypleura fulvigera</em> (cicada), the tool detects micro-peaks to extract a found score, which simultaneously feeds a swarm of MIDI notes (mapping spectral centroids to pitch) and a granulation engine (rendering voice/poem files at the recording's pace), maintaining deterministic playback from a stable seed.</p>
+    <div class="outlinks">
+      <a class="glass visit" href="https://xyhtamura.github.io/kikik/" target="_blank" rel="noopener">▷ Launch App</a>
+    </div>
+  </div>
+</details>
+
   <details class="entry" data-cats="tech" id="dhuenut">
   <summary>
     <span class="year">2026</span>
@@ -918,51 +1113,6 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
     <p>A physics-derived multi-tap delay and reverb generator that calculates delay taps by ray-tracing acoustic propagation through a spherically-symmetric graded-index atmospheric channel (the RHO profile), based on a Lagrangian ray-particle analogy. Features real-time trajectory drafting, a 3D wavefront animator, and a batch offline convolution pipeline for stereo custom audio.</p>
     <div class="outlinks">
       <a class="glass visit" href="https://xyhtamura.github.io/gliese/" target="_blank" rel="noopener">▷ Launch App</a>
-    </div>
-  </div>
-</details>
-
-  <details class="entry" data-cats="tech" id="remanence">
-  <summary>
-    <span class="year">2026</span>
-    <span class="title">Remanence</span>
-    <span class="chips"><span class="chip tech">tech</span></span>
-  </summary>
-  <div class="body">
-    <p>An audio+video print-through effect for the Hindcasts suite, modeling a wound tape reel whose neighboring wraps imprint ghost copies onto each other. The same acausal reel engine creates pre-echo, post-echo, drift, fold, wear, and VHS-like transport damage, with WAV/WebM export.</p>
-    <div class="outlinks">
-      <a class="glass visit" href="https://xyhtamura.github.io/hindcasts/remanence/" target="_blank" rel="noopener">▷ Launch App</a>
-    </div>
-  </div>
-</details>
-
-  <details class="entry" data-cats="tech" id="cyberscotoma">
-  <summary>
-    <span class="year">2026</span>
-    <span class="title">CyberScotoma</span>
-    <span class="chips"><span class="chip tech">tech</span></span>
-  </summary>
-  <div class="body">
-    <p>A non-grid, acausal datamosh tool that turns scintillating scotoma into a video effect. Drawn bloom curves latch Voronoi regions, then motion-field grafts and optional donor clips let future or foreign frames bleed backward into the present.</p>
-    <div class="outlinks">
-      <a class="glass visit" href="https://xyhtamura.github.io/sgueltch/cyberscotoma/" target="_blank" rel="noopener">▷ Launch App</a>
-    </div>
-  </div>
-</details>
-  
-  <details class="entry" data-cats="tech" id="moire">
-  <summary>
-    <span class="year">2026</span>
-    <span class="title">Moire</span>
-    <span class="chips"><span class="chip tech">tech</span></span>
-  </summary>
-  <div class="body">
-    <div class="media-group">
-      <img class="media" src="img/moire.jpg" alt="Moire screenshot">
-    </div>
-    <p>Moire is a phase-modulation (FM) synthesizer that dissolves traditional box-and-wire interface restrictions into a dynamic system of live equations. Operating via a per-voice function generator that expands operator families and unrolls sample-accurate z⁻¹ feedback loops at compile time, it breaks down standard synthesizer limits by allowing continuous drift, non-integer ratios, and arbitrary structural cross-feedback. The tool incorporates a live FFT analyzer plate coupled with an on-screen KaTeX equation engine, mapping complex emergent timbres into scannable mathematical expressions.</p>
-    <div class="outlinks">
-      <a class="glass visit" href="https://xyhtamura.github.io/moire" target="_blank" rel="noopener">▷ Launch App</a>
     </div>
   </div>
 </details>
@@ -1007,39 +1157,6 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   </div>
 </details>
 
-<details class="entry" data-cats="tech" id="cella">
-  <summary>
-    <span class="year">2026</span>
-    <span class="title">Cella</span>
-    <span class="chips"><span class="chip tech">tech</span></span>
-  </summary>
-  <div class="body">
-    <div class="media-group">
-      <img class="media" src="img/cella.jpg" alt="Cella screenshot">
-    </div>
-    <p>Cella is a resonant additive synthesizer that maps custom mathematical equations directly onto a noise-driven resonator bank. Users can interactively paint partials that act as maxima for Gaussian, Lorentzian, or Voigt distributions, test macro-detunings across custom microtonal systems, and effortlessly render generative compositions directly to offline WAV files.</p>
-    <div class="outlinks">
-      <a class="glass visit" href="https://xyhtamura.github.io/cella" target="_blank" rel="noopener">▷ Launch App</a>
-    </div>
-  </div>
-</details>
-  <details class="entry" data-cats="tech" id="aliquoto">
-  <summary>
-    <span class="year">2026</span>
-    <span class="title">Aliquoto</span>
-    <span class="chips"><span class="chip tech">tech</span></span>
-  </summary>
-  <div class="body">
-    <div class="media-group">
-      <img class="media" src="img/aliquoto.jpg" alt="aliquoto screenshot">
-    </div>
-    <p>aliquoto is a pure additive synthesizer that allows users to sculpt complex timbres by writing spectral series as naked mathematics using summations, envelopes, and conditionals. Operating via an offline equation parser and a phase-exact AudioWorklet engine, it frees electronic sound from standard integer lattices by enabling arbitrary fractional, irrational, subharmonic, and drift-modulated partial ratios. Users can interactively reshape partial amplitudes directly on a log-scaled spectrum view, bake hand-edits back into executable math, and tabulate every computed partial via a live LaTeX and matrix table display.</p>
-    <div class="outlinks">
-      <a class="glass visit" href="https://xyhtamura.github.io/aliquoto" target="_blank" rel="noopener">▷ Launch App</a>
-    </div>
-  </div>
-</details>
-  
  <details class="entry" data-cats="tech" id="bakezuri">
   <summary>
     <span class="year">2026</span>
@@ -1096,96 +1213,6 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
 </details>
 
 
-<details class="entry" data-cats="tech artistic-research" id="goopcodecs">
-  <summary>
-    <span class="year">2026→</span>
-    <span class="title">goopCodecs</span>
-    <span class="chips">
-      <span class="chip tech">tech</span>
-      <span class="chip artistic-research">research-art</span>
-    </span>
-  </summary>
-  <div class="body">
-    <p>A suite of custom file formats architected explicitly for databending, mojibake text-editing, and substrate-specific data corruption. Moving away from standard optimization metrics like compression or speed, goopCodecs protects essential file headers while leaving structural bodies highly vulnerable to direct byte manipulation. The resulting errors translate directly into continuous, analog-organic artifacts rather than traditional rigid, grid-based digital crashes.</p>
-        <div class="outlinks">
-      <a class="glass visit" href="/sgueltch/goopCodecs/" target="_blank" rel="noopener">▷ open suite</a>
-    </div>
-<div class="subs">
-      <div class="sub">
-        <h4>ooid (.ooid)</h4>
-        <p>A layered anisotropic Gaussian blob still and video format.</p>
-        <div class="outlinks"><a class="glass visit" href="/sgueltch/goopCodecs/ooid/" target="_blank" rel="noopener">▷ open</a></div>
-      </div>
-      <div class="sub">
-        <h4>scute (.scute)</h4>
-        <p>A warped Voronoi-cell image codec that constructs territory boundaries from scattered seed coordinates.</p>
-        <div class="outlinks"><a class="glass visit" href="/sgueltch/goopCodecs/scute/" target="_blank" rel="noopener">▷ open</a></div>
-      </div>
-      <div class="sub">
-        <h4>vermis (.vermis)</h4>
-        <p>A continuous space-filling Hilbert-thread image codec utilizing DPCM color deltas. </p>
-        <div class="outlinks"><a class="glass visit" href="/sgueltch/goopCodecs/vermis/" target="_blank" rel="noopener">▷ open</a></div>
-      </div>
-	  <div class="sub">
-  <h4>urumizuri (.urumizuri)</h4>
-  <p>A wet-state snapshot codec that stores Bakezuri’s fluid ink matrix as byte-editable material data.</p>
-  <div class="outlinks"><a class="glass visit" href="/sgueltch/goopCodecs/urumizuri/" target="_blank" rel="noopener">▷ open</a></div>
-</div>
-    </div>
-
-
-  </div>
-</details>
-
-<details class="entry major" data-cats="tech artistic-research" id="sgueltch">
-  <summary>
-    <span class="year">2025–26→</span>
-    <span class="title">Sgueltch</span>
-    <span class="chips">
-      <span class="chip tech">tech</span>
-      <span class="chip artistic-research">research-art</span>
-    </span>
-  </summary>
-  <div class="body">
-    <p>An aesthetic philosophy and a tech suite[cite: 1]. Sgueltch is a word between squelch and glitch[cite: 1]. It moves away from traditional glitch art's rigid, pixelated, mechanical disruptions and toward fluid, continuous, biologically-inspired distortion[cite: 1]. Sgueltch asks what digital error can become when it begins from other substrates: ooze, tissue, silt, weather, viscosity, lesion, flocking, breath, and growth[cite: 1]. It values asymmetry, unpredictability, embodiment, and mess-compatible media as a counter-infrastructure and a counter-erroring for an alternate digitality[cite: 1].</p>
-        <div class="outlinks">
-      <a class="glass visit" href="/sgueltch/" target="_blank" rel="noopener">▷ the suite</a>
-    </div>
-    <div class="subs">
-      <div class="sub">
-        <h4>Pixel Lesions</h4>
-        <p>Pixel sorting as biological infection: lesion-like forms spread across an image like lichen or slime mold[cite: 1].</p>
-        <div class="outlinks"><a class="glass visit" href="/sgueltch/pixel-lesions/" target="_blank" rel="noopener">▷ open</a></div>
-      </div>
-      <div class="sub">
-        <h4>SiltCRT</h4>
-        <p>Shader-based CRT decay reimagined beyond the pixel grid via Voronoi tessellation, turbulence, chromatic bleed[cite: 1]. Inputs and outputs image and video[cite: 1].</p>
-        <div class="outlinks">
-          <a class="glass visit" href="/sgueltch/siltcrt/" target="_blank" rel="noopener">▷ open</a>
-          <a class="glass" href="/siltcrt/block/" target="_blank" rel="noopener">block version ↗</a>
-        </div>
-      </div>
-      <div class="sub">
-        <h4>Gurgulator</h4>
-        <p>Granular resynthesizer for wet, unstable, gurgling textures[cite: 1].</p>
-        <div class="outlinks"><a class="glass visit" href="/sgueltch/gurgulator/" target="_blank" rel="noopener">▷ open</a></div>
-      </div>
-      <div class="sub">
-        <h4>TypeBojangler</h4>
-        <p>type renderer that jitters traits like rotation, spacing, and more[cite: 1].</p>
-        <div class="outlinks"><a class="glass visit" href="/sgueltch/typebojangler/" target="_blank" rel="noopener">▷ open</a></div>
-      </div>
-      <div class="sub">
-        <h4>goopCodecs</h4>
-        <p>A collection of browser-based image, video, and colour-field formats built for databending and substrate-specific visual damage[cite: 2].</p>
-        <div class="outlinks"><a class="glass visit" href="/sgueltch/goopCodecs" target="_blank" rel="noopener">▷ open</a></div>
-      </div>
-    </div>
-
-  </div>
-</details>
-
-
 <details class="entry" data-cats="tech artistic-research" id="tabota">
   <summary>
     <span class="year">2025→</span>
@@ -1204,46 +1231,6 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
       <a class="glass visit" href="/tabota/roll/" target="_blank" rel="noopener">▷ tabota roll</a>
       <a class="glass visit" href="/tabota/cycla/builder/" target="_blank" rel="noopener">▷ cycla</a>
     </div>
-  </div>
-</details>
-
-<details class="entry major" data-cats="tech" id="hindcasts">
-  <summary>
-    <span class="year">2025–26→</span>
-    <span class="title">Hindcasts</span>
-    <span class="chips"><span class="chip tech">tech</span></span>
-  </summary>
-  <div class="body">
-    <p>A collection of “un-live” audio and video effects that work from the whole file rather than the passing instant. This treats static media as already-readable temporal objects, the suite explores what becomes possible when an effect can respond before, smooth backward, optimize globally, and act with full knowledge of the piece. </p>
-        <div class="outlinks">
-      <a class="glass visit" href="/hindcasts/" target="_blank" rel="noopener">▷ the suite</a>
-    </div>
-    <div class="subs">
-      <div class="sub">
-        <h4>Pythia</h4>
-        <p>An acausal granular delay and sidechain processor that reads the entire file timeline to enable anticipatory pre-echo (negative delay) and lookahead sidechain ducking or following.</p>
-        <div class="outlinks"><a class="glass visit" href="/hindcasts/pythia/" target="_blank" rel="noopener">▷ open</a></div>
-      </div>
-      
-      <div class="sub">
-        <h4>Sounder</h4>
-        <p>An un-live dynamics processor that turns a sound file into a manipulatble histogram instead of modifying playback through standard compressor thresholds, ratios, and attack windows.</p>
-        <div class="outlinks"><a class="glass visit" href="/hindcasts/sounder/" target="_blank" rel="noopener">▷ open</a></div>
-      </div>
-      
-      <div class="sub">
-        <h4>Prolepsis</h4>
-        <p>An acausal video feedback field that functions as visual reverb or preverb for video.</p>
-        <div class="outlinks"><a class="glass visit" href="/hindcasts/prolepsis/" target="_blank" rel="noopener">▷ open</a></div>
-      </div>
-    </div>
-	<div class="sub">
-  <h4>Horn of Plenty</h4>
-  <p>An audio texture synthesis tool that processes sound samples into longer textures. </p>
-  <div class="outlinks"><a class="glass visit" href="/hindcasts/horn-of-plenty/" target="_blank" rel="noopener">▷ open</a></div>
-</div>
-
-
   </div>
 </details>
 
@@ -2652,6 +2639,24 @@ searchClear.addEventListener('click',()=>{
   applyFilters();
 });
 applyFilters();
+
+// nested portfolio sets
+document.querySelectorAll('.nested-toggle[aria-controls]').forEach(button => {
+  const contents = document.getElementById(button.getAttribute('aria-controls'));
+  if (!contents) return;
+
+  const setExpanded = expanded => {
+    contents.hidden = !expanded;
+    button.setAttribute('aria-expanded', String(expanded));
+    button.textContent = expanded ? 'collapse' : 'expand';
+  };
+
+  setExpanded(false);
+  button.hidden = false;
+  button.addEventListener('click', () => {
+    setExpanded(button.getAttribute('aria-expanded') !== 'true');
+  });
+});
 
 // lightbox for media-group images
 const lb = document.createElement('div');
