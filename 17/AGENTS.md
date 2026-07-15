@@ -1,7 +1,7 @@
 # AGENTS.md — Taper #17 submission project (`xyhtamura.github.io/17/`)
 
 Spec for any agent (or human) building or editing a piece in this folder. Read this
-before touching a poem file. `README.md` is the slot tracker / creative log; **this
+before touching a poem file. `17.md` is the slot tracker / creative log; **this
 file is the contract**. If a rule here conflicts with an instinct to "improve" a piece,
 the rule wins — Taper will reject work that breaks them.
 
@@ -82,7 +82,7 @@ Per-piece template chores (do all of them, consistently):
 - The **final submission filename** is a flat name like `prime_song.html` /
   `abakada.html` (underscores), referenced in the license URL + byline. Rename on the
   way into the zip; keep `index.html` locally so the dev server serves it directly.
-- `README.md` = slot table (5 slots) + per-piece creative notes + parked ideas.
+- `17.md` = slot table (5 slots) + per-piece creative notes + parked ideas.
   Update the slot's status + byte count whenever a piece changes.
 - Theme discipline: every piece must earn "Prime." Primeness should be **structural**
   (drives the mechanism), not decorative. 17 is the issue number and is itself prime —
@@ -151,7 +151,7 @@ javascript tool, not the `computer` click tool.)
 
 ---
 
-## 7. Current slots (see README for full DNA)
+## 7. Current slots (see 17.md for full DNA)
 
 | # | slug | status | one-line |
 |---|---|---|---|
