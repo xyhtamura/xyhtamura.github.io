@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Same Time Tomorrow (Taper #17)</title>
+
+<!-- “Same Time Tomorrow” Copyright (C) 2026 Xyh Tamura
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved. This file is offered as-is,
+without any warranty.
+
+This is from Taper #17: Prime, Fall 2026:
+
+https://taperzine.org/17/same_time_tomorrow.html
+
+The iroha is a perfect pangram from late Heian Japan, probably composed
+between the late tenth and mid-eleventh centuries. Its earliest known
+surviving copy dates to 1079. It uses each of forty-seven historical
+kana once, including ゐ and ゑ, and is commonly read as a Buddhist poem
+about impermanence: what in this world remains unchanged?
+
+Iroha Clock performs that question computationally. Each second it
+reads the poem from a new offset; every forty-seven seconds it
+returns to the first position with a new stride. The first two returns
+modernize ゐ and ゑ into い and え. On every return thereafter, the
+next prime selects a position by its residue modulo 47. A random kana
+is grafted over that sign. Each palimpsested kana can only hold two;
+after that, the older kana is removed.
+
+Its incremental search for each next prime also grows more
+demanding, giving it a latent computational senescence: ordinary at
+human scale, but burdened in its distant future.
+
+-->
+
+<style>
+	body { margin:0 ; overflow:hidden }
+	a { color:#eee ; text-decoration:none }
+	header { margin:0 ; padding:0 ; background-color:#444 ; color:#bbb ;
+		position:relative ; z-index:1000 }
+	header > h1 { margin:0 ; font-size:12px ; font-family:sans-serif ;
+		border-bottom:1px #999 solid ; padding:5px 10px ; line-height:17px }
+</style>
+</head>
+<body>
+<header id="nav">
+	<h1>
+		<a href="prev.html">&lt;&lt;</a> &nbsp;
+		<a href="index.html">Taper #17 :
+		Prime</a> : Fall 2026 &nbsp;
+		<a href="next.html">&gt;&gt;</a><br>
+		<a href="same_time_tomorrow.html">“Same Time Tomorrow”</a> by
+		<a href="about.html#tamura">Xyh Tamura</a>
+	</h1>
+</header>
+
+<style>body{background:#eed;color:#423}#J{text-align:center;margin:3vh 0 2vh;font:20px serif;letter-spacing:.12em}#Q{width:11em;margin:auto;font:30px serif;line-height:1.8;letter-spacing:.18em}#Q span{display:inline-block;position:relative}#Q span:before,#Q span:after{position:absolute;left:0;top:0;opacity:.35}#Q span:before{content:attr(data-a);transform:translate(-.06em,.04em)}#Q span:after{content:attr(data-b);transform:translate(.06em,-.04em)}#Q span:first-child{color:#b50}#E{max-width:27em;margin:2vh auto 0;padding:0 1em;text-align:center;font:italic 13px Georgia;line-height:1.5;transition:opacity 1s}#C{text-align:center;margin:2vh;font:12px monospace;opacity:.45}</style>
+<div id=J lang=ja>いろは時計</div><div id=Q lang=ja></div>
+<div id=E>Though fragrant, the colors scatter.<br>Who in this world remains unchanged?<br>Crossing today the deep mountain of being,<br>I dream no shallow dreams, nor become drunk.</div><div id=C></div>
+<script>
+let A=[..."いろはにほへとちりぬるをわかよたれそつねならむうゐのおくやまけふこえてあさきゆめみしゑひもせす"].map(c=>{let e=document.createElement("span");e.textContent=c;return e}),
+B=[7,5,6,5,7,5,7,5],t=0,h=0,p=1,
+P=_=>{for(;++p;){for(d=2;p%d&&d*d<p;d++);if(d*d>p)return p}},
+R=_=>{Q.textContent="";let a=t%47,s=1+(t/47|0)%46,n=0,j=0;
+for(let i=0;i<47;i++){Q.append(A[(a+i*s)%47]);if(++n==B[j]){Q.append(document.createElement("br"));n=0;j++}}
+},
+T=_=>{if(!(++t%47)){if(++h<3)A[h==1?24:42].textContent=h==1?"い":"え";else{let z=A[(P()-1)%47];z.dataset.a=z.dataset.b||"";z.dataset.b=A[Math.random()*47|0].textContent}}t<48&&(E.style.opacity=1-t/47);C.textContent=(t/60|0)+":"+("0"+t%60).slice(-2);R();setTimeout(T,1e3)};
+R();C.textContent="0:00";setTimeout(T,6e3)
+</script>
+</body>
+</html>

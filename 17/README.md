@@ -1,5 +1,9 @@
 # 17 — Taper #17 submissions ("Prime")
 
+> **Building or editing a piece? Read [AGENTS.md](AGENTS.md) first** — it's the hard
+> spec (2 KB limit, template rules, validation, autoplay lesson). This file is the
+> creative log / slot tracker.
+
 Up to 5 pieces per author. Deadline **2026-08-17 23:59 AoE**, no extensions.
 Submit: zip of HTML files → submit@taperzine.org. Issue launches Fall 2026 at taperzine.org.
 
@@ -13,10 +17,10 @@ Template body has `overflow:hidden` → pieces must scroll inside their own cont
 
 | # | piece | status | source DNA |
 |---|---|---|---|
-| 1 | `prime-song/` — glossolalic song in a 17-pitch random scale | building | antemelos (phrase/arc/glide/breath) + glossolalia (formant voice, IPA) + aliquoto (prime-partial timbre) |
+| 1 | `prime-song/` — glossolalic song in a 17-pitch random scale | built (2014 B) | antemelos (phrase/arc/glide/breath) + glossolalia (formant voice, IPA) + aliquoto (prime-partial timbre) |
 | 2 | prime meridian / colonialism — critical horology | concept only | Greenwich as imposed zero; longitude as empire's coordinate system; clock discipline |
-| 3 | `abakada/` — "aBaKada": Filipino alphabet, primes lit | built (1492 B) | 28 letters, prime positions → B C E G K M O Q U lit in strip; NG at 16=2⁴ dark. Tagalog lexicon (oo mo ko buo buko kubo kuko ube ubo gugo bukbok bugbog kubkob ugok bugok) + English arrivals (be me um emu oboe moo book become queue cue come cube ego q go) — C,Q flash only for English; one unified italic voice (code-switch typography nixed — cohesive language); -um- infix (all prime letters) conjugates both: buko→bumubuko, queue→qumuqueue, emu→umemu. Unpicked English inventory: bee gee ebb egg eke gem keg beg bog cog cob mob mug bug cub gum geek meek boom cook comb combo gumbo gecko cuckoo kook muck mock buck emcee cuke. Unused strata idea: baybayin (17 chars — prime) / abakada 20 → B K E H N O T W |
-| 4 | — | open | |
+| 3 | `abakada/` — "aBaKada": Filipino alphabet, primes lit | built (1445 B) | 28 letters, prime positions → B C E G K M O Q U lit in strip; NG at 16=2⁴ dark. Tagalog lexicon (oo mo ko buo buko kubo kuko ube ubo gugo bukbok bugbog kubkob ugok bugok) + English arrivals (be me um emu oboe moo book become queue cue come cube ego q go) — C,Q flash only for English; one unified italic voice (code-switch typography nixed — cohesive language); -um- infix (all prime letters) conjugates both: buko→bumubuko, queue→qumuqueue, emu→umemu. Unpicked English inventory: bee gee ebb egg eke gem keg beg bog cog cob mob mug bug cub gum geek meek boom cook comb combo gumbo gecko cuckoo kook muck mock buck emcee cuke. Unused strata idea: baybayin (17 chars — prime) / abakada 20 → B K E H N O T W |
+| 4 | `same-time-tomorrow/` — combinatorial iroha clock | prototype (1786 B) | 47 historical kana × 46 nonzero strides = 2,162 complete affine readings; prime residues address persistent FIFO kana grafts |
 | 5 | — | open | |
 
 ## Piece 1 notes — prime song
@@ -31,3 +35,31 @@ Template body has `overflow:hidden` → pieces must scroll inside their own cont
 - Verse structure: 3|5|7 lines × 3|5|7 syllables.
 - One persistent WebAudio graph; song schedules automation, never rebuilds nodes.
 - Byte check: `powershell -File check-bytes.ps1 prime-song/index.html`
+
+## Piece 4 notes — Same Time Tomorrow
+
+- Opens with the historical 47-kana iroha in legible 7/5/6/5/7/5/7/5 lines.
+- Japanese title: `いろは時計` (“Iroha Clock”). An English translation fades to
+  zero over the first 47-tick revolution.
+- Clock state at tick `t`: offset `t mod 47`; stride `1 + floor(t/47) mod 46`.
+- Every state visits all 47 character identities exactly once. All 2,162 affine
+  readings occur before the original offset and stride coincide again.
+- At returns 1 and 2, the alphabet modernizes persistently: `ゐ→い`, then `ゑ→え`.
+- At later return `r`, prime `P_(r-2)` addresses the one-based position
+  `P_(r-2) mod 47` (remainder zero means position 47). A random current kana is
+  grafted over that sign.
+- Each sign retains two grafts in FIFO order, so base plus overlays show at most
+  three letter histories. A third graft sheds the oldest overlay.
+- At tick 2,162 the original order returns carrying two spelling changes and 44
+  grafting events. The clock is periodic; the prime-residue address sequence is
+  not, and the grafted kana are contingent.
+- Primes are generated incrementally by trial division: each candidate is tested
+  for divisors only through its square root, and the search resumes after the
+  previously found prime rather than beginning again at 2.
+- This gives the clock a latent computational aging. Chronological ticks remain
+  regular while linguistic changes accumulate irreversibly, but discovering each
+  future mutation generally demands more searching as the primes grow. The cost
+  is negligible during an ordinary viewing; in the poem's distant future, time's
+  increasing computational burden is genuinely produced by its mathematics
+  rather than represented by an artificial slowdown.
+- Byte check: `powershell -File check-bytes.ps1 same-time-tomorrow/index.html`
