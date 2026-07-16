@@ -44,7 +44,7 @@ const slides = [
         { type: "image", src: "../card/comma.png", label: "sprouted comma map on black gulaman slab" },
         { type: "image", src: "../card/poem.png", label: "original punctuation field mapping coordinates" }
       ],
-      blurb: "A poem done on black gulaman and mung bean sprouts as well as an interactive digital poem that isolates only the commas from José García Villa's work and replants them as sprouts using a stencil technique onto a slab of black gulaman. Moving Villa’s classic imagery of a cultivatory miracle into a domestic act of munggo germination, the project acts as a small, temporary ritual for the agricultural and water anxieties of the developing 2026 El Niño. The browser interface maps the coordinates of the physical text, allowing users to wipe and fade dynamically between the original typographic punctuation and its temporary, living transfer.",
+      blurb: "A physical and browser poem that isolates the commas in José García Villa’s “I, it, was, that, saw,” and transfers their coordinates through a stencil into mung bean sprouts on black gulaman. The germinating punctuation turns Villa’s cultivatory image into a temporary domestic response to agricultural and water anxiety around the developing 2026 El Niño; the interface lets readers fade between the source punctuation and its living transfer.",
       links: [
         { label: "Open Poem", url: "https://xyhtamura.github.io/acommapoem/" },
       ]
@@ -63,7 +63,7 @@ const slides = [
         { type: "image", src: "../card/edi.gif", label: "hypertext constellation" },
         { type: "image", src: "../card/threefloor.jpeg", label: "hypertext constellation" }
       ],
-      blurb: "Of Another Shore is an intermedia suite of electronic literature, experimental pop, videopoetry, web art, glitch art, conceptual performance, and music. Structured as a decentralized hypertext network, the work links poems, songs, videos, scores, simulations, and interactive texts into a constellation of personal, cultural, geological, virtual, and speculative worlds. Suite treats the present as a porous shore between inaccessible pasts and futures. Across its fragmented and networked form, Of Another Shore explores liminality, multiplicity, memory, inheritance, cybertime, and the unstable construction of self within a reality where the dead, the dreamed, the virtual, the ancestral, and the not-yet-arrived remain strangely adjacent.",
+      blurb: "An intermedia suite linking electronic literature, experimental pop, videopoetry, web art, performance scores, and simulations through a decentralized hypertext. Its shore is the present: a boundary where personal, ancestral, geological, virtual, remembered, and speculative times remain adjacent but inaccessible to one another. Individual works use that structure to test how identity and inheritance are assembled across incompatible media and temporal scales.",
       links: [
         { label: "Launch Suite", url: "https://ppk80.github.io/of-another-shore/" }
       ]
@@ -99,7 +99,7 @@ const slides = [
             title: "Whisper House",
             year: "2025→",
             tags: ["conceptual performance", "score", "soundscape"],
-            blurb: "A conceptual performance score designed for four performers, designated as 'guests,' situated inside an empty house. The instructions guide the ensemble through a series of quiet, contemplative actions that create an intimate, house-based soundscape—ranging from mundane actions like frying an egg or turning encyclopedia pages, to gentle sonic gestures like cooing quietly into a room.",
+            blurb: "A score for four performers, designated as guests, inside an empty house. Frying an egg, turning encyclopedia pages, listening at doors, and cooing into rooms organize domestic actions into a quiet, distributed soundscape.",
             links: [
               { label: "View Score", url: "https://xyhtamura.github.io/whisperhouse/" }
             ]
@@ -117,7 +117,7 @@ const slides = [
       media: [
         { type: "image", src: "../card/table.jpeg", label: "interface — hue field editor" }
       ],
-      blurb: "Table of Metalloids is an interactive collection of experimental literature organized around the seven metalloids. Presented as a digital periodic table, the work uses each element’s scientific properties as a generative constraint for pieces including New Weird fiction, slipstream, body horror, kinetic poetry, science writing, nonfiction, and prose poetry. Across stories of termite symbiosis, programmable skin, undersea cables, emotional poisoning, metallic wolves, cosmic diaspora, and radioactive decay, the collection explores hybridity, toxicity, memory, geopolitics, embodiment, and transformation.",
+      blurb: "An interactive literature collection organized as a periodic table of the seven metalloids. Each element’s physical and chemical properties constrain a different work—New Weird fiction, body horror, kinetic poetry, science writing, nonfiction, or prose poetry—about objects including termite symbiosis, programmable skin, undersea cables, metallic wolves, and radioactive decay.",
       links: [
         { label: "Plasticoid", url: "https://ppk80.github.io/plasticoid/" }
       ]
@@ -150,7 +150,7 @@ const slides = [
 		{ type: "image", src: "../card/mani2.png", label: "film still — oceanic archive" },
 		{ type: "image", src: "../card/mani3.webp", label: "film still — oceanic archive" }
       ],
-      blurb: "Manifest is a collaborative short film and videopoem by Bea Mariano and Xyh Tamura, with a live score performed by Xyh at Search Mindscape Foundation’s Of Oceans and Currents. The work asks how the reverberations of American influence in the Philippines continue to structure what can be built, who is carried forward, and whose futures are allowed to arrive. Digitally stitching shipwrecks, Manila skylines, construction sites, archival photographs, handwashing footage, microorganisms, and oceanic imagery, Manifest becomes a meditation on war, development, salvage, and futurity. Its title evokes the ship manifest, ghostly manifestation, the making-real of the future, and the Pacific reach of manifest destiny, moving from the submerged wreck of the USS Samuel B. Roberts to construction workers turned sideways into underwater divers.",
+      blurb: "A short film and videopoem made with Bea Mariano, accompanied by my live score. It stitches the wreck of the USS Samuel B. Roberts, Manila construction sites, archival photographs, handwashing footage, microorganisms, and ocean imagery to examine how American military history remains embedded in Philippine development. The title connects cargo records, apparitions, futures made material, and manifest destiny; construction workers rotated sideways become divers moving through the same Pacific archive.",
       links: [
         { label: "Manifest", url: "https://vimeo.com/1019003508" }, 
         { label: "Bea Mariano", url: "https://www.beamariano.com/" }
@@ -164,7 +164,7 @@ const slides = [
       title: "Cornice",
       year: "2026",
       tags: ["art game", "ASCII terrarium", "web art", "generative audio", "cyberpunk"],
-      blurb: "A browser-based poetic art game and ASCII terrarium, modeling a nocturnal balcony at the edge of an impossible post-cyberpunk city. The work combines WASD traversal, click-to-inspect textual specimens, movable world elements, randomized distant vistas, changing weather states, and an interactive sound engine to create a compact, living ecology of terminal life.",
+      blurb: "A browser-based poem, art game, and ASCII terrarium set on a nocturnal balcony above an impossible city. WASD movement, inspectable textual specimens, movable objects, randomized vistas, changing weather, and a reactive sound engine make the terminal window behave as a small ecology.",
       links: [
         { label: "Launch Game", url: "https://xyhtamura.github.io/cornice" }
       ]
@@ -180,7 +180,7 @@ const slides = [
       media: [
         { type: "image", src: "../card/media.png", label: "gelatin poem — virtual exhibit" }
       ],
-      blurb: "Media exists in two related forms: a physical gelatin poem and an interactive virtual artifact. In the sculptural work, cut-up documents are suspended across four clear gel strata, allowing fragments of text to show through, obscure, and transform one another across depth. Its web counterpart extends this layered reading experience by letting readers adjust a virtual cut depth, moving through the block as upper layers recede and deeper textual fragments slowly clarify.",
+      blurb: "A physical gelatin poem and an interactive browser counterpart. Four clear gel strata suspend fragments of cut-up documents so depth determines which texts remain legible; the interface models the same block and lets readers change its virtual cut depth to expose lower layers.",
       links: [
         { label: "Open Exhibit", url: "https://xyhtamura.github.io/media/" }
       ]
@@ -198,7 +198,7 @@ const slides = [
       media: [
         { type: "image", src: "../card/plasticoid.gif", label: "interface — hue field editor" }
       ],
-      blurb: "Plasticoid is hypertext digital collage poetry in which every image and text fragment is sourced from and links out to academic papers, but includes public-domain archives, found images, recordings, online forums, garbage, and commercial packaging. The work explores identity as a collage of references inside academia, plastics, capitalism, virtuality, globalization, and ecological crisis. It asks how the self is constructed today through reference, how different sources can form poetic links through citation and collection, and the concept of the postmodern self as being composed entirely of references.",
+      blurb: "A hypertext collage poem whose images and text fragments link outward to academic papers, public-domain archives, found media, recordings, forums, discarded materials, and commercial packaging. Citation is both structure and subject: the linked fragments model identity as an arrangement of references shaped by academia, plastics, capitalism, globalization, and ecological crisis.",
       links: [
         { label: "Plasticoid", url: "https://ppk80.github.io/plasticoid/" }
       ]
@@ -211,7 +211,7 @@ const slides = [
       media: [
         { type: "image", src: "../card/shook.gif", label: "browser-based disaster interface" }
       ],
-      blurb: "Shook is an ongoing suite of electronic literature, videopoetry, docupoetry, and web art about the afterlives of disaster. From a Filipino-Japanese perspective, Shook explores how national histories, family memory, economic anxiety, digital media, and inherited trauma continue to reverberate through the present. Anchored by the 1990 Luzon earthquake, the 2011 Tōhoku earthquake, and the 2020 Taal phreatic eruption, the work pairs seismic events with the cultural and political conditions surrounding them: the post-Marcos Philippine state, Japan’s Lost Decades, and the pandemic-era internet. Through browser-based poems, movable windows, layered archival footage, blackout video editing, and Windows XP-inspired interfaces, the suite treats disasters as temporal lighthouses where geological rupture can be used to think about collective ghosts.",
+      blurb: "An ongoing suite of electronic literature, videopoetry, docupoetry, and web art about the afterlives of disaster from a Filipino-Japanese perspective. The 1990 Luzon earthquake, 2011 Tōhoku earthquake, and 2020 Taal eruption organize works about the post-Marcos state, Japan’s Lost Decades, the pandemic-era internet, family memory, and inherited trauma. Browser poems, movable windows, archival video, blackout editing, and Windows XP interfaces make each geological rupture a point from which different historical times are read.",
       links: []
     },
     {
@@ -222,7 +222,7 @@ const slides = [
       media: [
         { type: "image", src: "../card/galvanism.gif", label: "web sequence — conductive body" }
       ],
-      blurb: "Galvanism is a web-based poetic sequence about body porosity in the 2000s Philippines. Framing electricity as life-force, infrastructure, weather, media, empire, and nervous sensation, the work follows a Filipino-Japanese neuroqueer speaker whose body becomes a conductive membrane for television, dial-up internet, typhoons, political unrest, language, ghosts, rumors, floods, voltage, and history. In this charged Manila, plants break through concrete, insects invade power boxes, storms disrupt circuitry, and global events arrive as bodily current.",
+      blurb: "A web-based poetic sequence about body porosity in the 2000s Philippines. A Filipino-Japanese neuroqueer speaker conducts television, dial-up internet, typhoons, political unrest, language, ghosts, floods, and voltage; electricity links nervous sensation to infrastructure, weather, media, and empire.",
       links: [
         // { label: "Galvanism", url: "..." }
       ]
@@ -234,7 +234,7 @@ const slides = [
       media: [
         { type: "image", src: "../card/where-you-were-last-seen.jpg", label: "textual-visual work — disappearance map" }
       ],
-      blurb: "Where You Were Last Seen is a series of three textual-visual works combining traditional and digital drawing, maps, diagrams, manipulated photographs, poetry, prose, and asemic writing. Drawing from the visual languages of police diagrams, personal scrapbooks, and hand-drawn cartography, the series explores disappearance as a liminal state: distinct from death, and marked instead by traces, uncertainty, and unresolved grief. Through partially legible writing, diagrammatic layouts, and intimate acts of mapping, the works examine how memory and documentation circle around what has vanished without ever fully recovering it.",
+      blurb: "Three textual-visual works combining hand and digital drawing, maps, diagrams, manipulated photographs, poetry, prose, and asemic writing. Police diagrams, scrapbooks, and hand-drawn cartography supply formats for recording disappearance through traces and uncertainty without converting it into death or recovery.",
       links: [
         // { label: "Where You Were Last Seen", url: "..." }
       ]
@@ -265,7 +265,7 @@ const slides = [
         { type: "image", src: "../card/mono.gif", label: "live audiovisual set — archival airwaves" },
 		{ type: "image", src: "../card/vaporwave.jpeg", label: "live audiovisual set — archival airwaves" }
       ],
-      blurb: "Piyesta Plaza is a vaporwave and hauntological listening/social gathering hosted by Mono by Phono that explores Filipino cultural memory through archival sound, image, fashion, and atmosphere. While functioning as a broader vaporwave scene event, it also includes focused conceptual programs that trace Philippine history through 90s OPM, 80s ballads, Martial Law-era disco, Manila Sound, Golden Age cinema soundtracks, traditional folk songs, vintage commercials, and archival footage. The project has since expanded into Piyesta Plaza 1985–1995 Airwaves, a full-length vaporwave album and live audiovisual performance reflecting on Philippine pop culture, the 1986 People Power Revolution and its aftermath, and the early 1990s earthquakes.",
+      blurb: "A vaporwave listening and social gathering hosted by Mono by Phono, using archival sound, image, fashion, commercials, and film footage to organize programs around Philippine cultural memory. Sets move among 1990s OPM, 1980s ballads, Martial Law-era disco, Manila Sound, film soundtracks, and folk songs. The project later became Piyesta Plaza 1985–1995 Airwaves, an album and live audiovisual performance about Philippine pop culture, People Power and its aftermath, and the early-1990s earthquakes.",
       links: [
 	  { label: "Piyesta Plaza", url: "https://www.instagram.com/piyesta_plaza/" },
        { label: "Mono by Phono", url: "https://www.instagram.com/monobyphono/" }
@@ -285,19 +285,19 @@ const slides = [
       {
         title: "Chanidae",
         year: "2025",
-        blurb: "Chanidae is a web-based slide poem that reads like a cinematic presentation, with fragments of text appearing across shifting blue gradients that evoke water, depth, and disappearance. Navigated through arrows, swipes, or keyboard input, the work uses animated transitions and subtitle-like placement to create a rhythmic reading experience where memory, history, and song seem to dissolve across an empty screen.",
+        blurb: "A web-based slide poem presented through animated text fragments, blue gradients, and subtitle-like placement. Arrow, swipe, and keyboard navigation pace the text across screens associated with water, depth, and disappearance.",
         tags: ["web-based", "slide poem", "electronic literature"]
       },
       {
         title: "LOVE-LETTER-FOR-YOU.TXT",
         year: "2025",
-        blurb: "LOVE-LETTER-FOR-YOU.TXT is an algorithmic poem based on the ILOVEYOU virus, written through the imagined persona of its creator and reframed through a postcolonial reading of internet access, desire, and corruption. As the poem remains on screen, its words are gradually replaced one by one with ILOVEYOU until the phrase overtakes the entire text, making the poem perform its own viral collapse.",
+        blurb: "An algorithmic poem based on the ILOVEYOU virus, written through its creator's imagined persona and a postcolonial account of internet access and desire. Its words are replaced one by one with ILOVEYOU until the phrase overtakes the text and the poem performs its own viral collapse.",
         tags: ["algorithmic poem", "electronic literature", "generative text"]
       },
       {
         title: "breakfast",
         year: "2025",
-        blurb: "breakfast is a lo-fi spoken-word poem recorded on a phone during an early morning walk. Shaped by breath, footsteps, and passing traffic, the poem juxtaposes a grotesque encounter with roadside animal death against an eroticized vision of an approaching runner, blurring desire, violence, virility, and decay. Its raw field-recording quality heightens the speaker’s uneasy movement between observation, fantasy, and complicity.",
+        blurb: "A lo-fi spoken-word poem recorded on a phone during an early-morning walk. Breath, footsteps, and traffic hold together a roadside animal death and an eroticized approaching runner, placing observation, fantasy, desire, violence, and complicity in the same field recording.",
         tags: ["spoken word", "field recording", "sound sketch"]
       },
       {
@@ -309,13 +309,13 @@ const slides = [
       {
         title: "72 Munting Panahon",
         year: "2025",
-        blurb: "An interactive web timeline presenting a Filipino adaptation of the 72 microseasons. 72 Munting Panahon",
+        blurb: "An interactive web timeline and timekeeper presenting a Filipino adaptation of the Japanese 72 microseasons (七十二候).",
         tags: ["interactive timeline", "web", "generative"]
       },
 	  {
         title: "KuboCities",
         year: "2025",
-        blurb: "This digital poem takes the form of an interactive GeoCities homage, using GIFs, guestbooks, CRT glitches, and Web 1.0 design to archive Manila’s millennial geopolitics. Through references to EDSA revolts, pirated software, postcolonial tech culture, and urban mythology, the work treats the early internet as both personal memory and historical interface, inviting visitors to reshape the poem through submissions.",
+        blurb: "An interactive GeoCities-style poem using GIFs, guestbooks, CRT glitches, and Web 1.0 layouts to archive millennial Manila. References to the EDSA revolts, pirated software, postcolonial technology, and urban mythology treat the early web as both personal memory and historical interface; visitor submissions can alter the archive.",
         tags: ["digital poem", "interactive", "web 1.0"]
       }
     ]
@@ -342,7 +342,7 @@ const slides = [
 		{ type: "image", src: "https://f4.bcbits.com/img/0004708717_10.jpg", label: "film still — oceanic archive" },
 		{ type: "youtube", id: "ffGUR_9GX6E" }
       ],
-      blurb: "A collaboration with Brazilian artist MASM. This is a synthpop and vaporpop 6-track EP. Besides these genres, it takes influences from industrial music, bossa nova, trap EDM, eurodance, R&B, and minimalist music. It was mixed to have the sensation of being listened through an old device. It explores ideas of memories and the haunting of the past, as well as the inevitable change, development, and decay of reality. Also was the album artist for this incorporating 3d graphics, vector graphics, mixing different types of technological degradation such as glitch, paper, and vhs. draws on glowing 80's neon on black screen imagery as well as spray painted high color movie posters.",
+      blurb: "A six-track synthpop and vaporpop EP made with Brazilian artist MASM, combining industrial music, bossa nova, trap EDM, eurodance, R&B, and minimalism through deliberately degraded playback. I co-wrote, sang, produced, mixed, mastered, and designed the album art, combining 3D and vector graphics with paper, VHS, and digital damage.",
       links: []
     }
   },
@@ -369,25 +369,25 @@ const slides = [
       {
         title: "Lie",
         year: "2012–2018",
-        blurb: "A harp-based meterless song with multiplied harps which are also manipulated through granular synthesis to create a soundscape of infinite harps. It is based on the mythology of sirens, and tries to reimagine the modern digitally mediated siren, where the voice distorts and melts into the soundscape.",
+        blurb: "A meterless song built from multiplied harp recordings, granular synthesis, ocean field sound, and a voice that distorts into the instrumental field. The siren is treated as a digitally mediated voice whose source cannot be separated from its transmission.",
         tags: ["Experimental", "Granular Synthesis"]
       },
       {
         title: "Know Me Do",
         year: "2012–2018",
-        blurb: "An IDM pop song, mixing synthesized kick drums with household found sounds and musique concrète techniques, soft distorted beats, and a hybrid acoustic-electronic plucked instrument. This resists the typical drum set sound in electronic and pop music, favoring new materials as sonic sources, and resists the acoustic/electronic divide. It creates an ecosystem of fuzzy digital and analog distortion sound objects. The lyrics are surreal and blabber-like, about surveillance. “rat me out to the NSA, you really know me do”",
+        blurb: "An IDM-pop song combining synthesized kicks, household recordings, musique concrète edits, soft distortion, and a hybrid acoustic-electronic plucked instrument. Its blabber-like lyrics place surveillance inside an unstable field of digital and analog sound objects.",
         tags: ["IDM Pop", "Musique Concrète"]
       },
       {
         title: "Hyacinth",
         year: "2012–2018",
-        blurb: "A song composed with total serialism, and uses a shrill head voice for the melody, as well as synthesizers in 7/4 as a repeating loop through the song.",
+        blurb: "A total-serial song setting a shrill head-voice melody against a repeating synthesizer loop in 7/4.",
         tags: ["Total Serialism", "Experimental"]
       },
       {
         title: "PT01 (Perihelion)",
         year: "2012–2018",
-        blurb: "A short song, using a square-wave-like synth as the main accompanying instrument to the vocals. Its project is to elevate the synthesizer and electronics as an accompaniment to a singer-songwriter work instead of a typical instrument like a guitar. It’s written in the vein of Alanis Morrissette or Lisa Loeb. It also uses purely synthesized beats, resisting the ordinary drum kit.",
+        blurb: "A short singer-songwriter piece in which a square-wave-like synthesizer and programmed beat take the accompanying roles usually assigned to guitar and drum kit.",
         tags: ["Synthpop", "Singer-Songwriter"]
       },
       {
@@ -417,7 +417,7 @@ const slides = [
       title: "Biopsy",
       year: "2026",
       tags: ["playwriting", "experimental theater", "body horror", "institutional critique"],
-      blurb: "An experimental play set in a pandemic-era hospital biopsy room, where three forgotten tumors (Glioblastoma, Meningioma, and Hematoma) become conscious and begin performing the roles of doctors, patients, administrators, and hospital staff. As their abandoned biomass grows into a living hospital of flesh, wires, mold, and paperwork, the play moves through medical realism, absurd bureaucracy, and body horror to explore how individuals become locked into social roles inside complex systems of care, debt, migration, and public health.",
+      blurb: "An experimental play set in a pandemic-era biopsy room where three forgotten tumors—Glioblastoma, Meningioma, and Hematoma—become conscious and perform the roles of doctors, patients, administrators, and staff. Their biomass grows into a hospital of flesh, wires, mold, and paperwork; medical realism, bureaucratic absurdity, and body horror model how care, debt, migration, and public health assign people to institutional roles.",
       links: []
     }
   },
@@ -479,7 +479,7 @@ const slides = [
   title: "Moire",
   year: "2026",
   tags: ["phase modulation", "synthesizer", "audio worklet", "mathematical grammar", "live codegen"],
-  blurb: "A phase-modulation synthesizer that completely dissolves the traditional skeuomorphic algorithm chart into a system of live equations, enabling users to program custom directed graphs, feedback loops, and multi-operator index families using pure mathematical notation[cite: 4, 5].",
+  blurb: "A phase-modulation synthesizer that replaces box-and-wire algorithm charts with live equations, arbitrary operator graphs, feedback loops, continuous drift, and non-integer ratios.",
   links: [
     { label: "Launch Instrument", url: "https://xyhtamura.github.io/moire" }
   ]
@@ -491,7 +491,7 @@ const slides = [
     title: "DriftHam",
     year: "2026",
     tags: ["internet radio", "generative listening", "browser-native", "radio-browser", "listening toy"],
-    blurb: "DriftHam is an internet-radio drift device that wanders through live stations from the Radio-Browser community database, holding each signal for a randomized interval before crossfading or cutting to the next. Rather than functioning as a conventional radio player, it frames listening as a generative encounter with networked audio: users can cure a station in place, drift onward manually, savor stations, write taste notes, and export the session as a plain-text tasting log. Its breathing glazed ham interface turns the tool into a coherent media object, positioning the work between net art, sound art, interface sculpture, and listening instrument.",
+    blurb: "An internet-radio drift device that moves through live stations from the Radio Browser database, holding each for a randomized interval before crossfading or cutting onward. Listeners can hold or skip stations, annotate favorites, and export the session as a plain-text tasting log.",
     links: [
       { label: "Launch App", url: "https://xyhtamura.github.io/driftham" }
     ]
@@ -506,7 +506,7 @@ id: "binlod",
 title: "Binlod",
 year: "2026",
 tags: ["granular MIDI", "event generator", "composition tool", "Tabota", "rhythm"],
-blurb: "An event-domain granular MIDI generator that turns input note-ons into seeded clouds of grain-events while preserving each original note as a pinned anchor. Rather than granulating audio, Binlod granulates musical events, using density, spread, profile shape, velocity jitter, and seed controls to create baked rhythmic textures for drums, instruments, or other MIDI-driven systems.",
+blurb: "An event-domain granular MIDI generator. Each input note remains as a pinned anchor while density, spread, profile, velocity jitter, and seed controls generate a reproducible cloud around it for drums or pitched instruments.",
 links: [
 { label: "Launch App", url: "https://xyhtamura.github.io/binlod" }
 ]
@@ -520,7 +520,7 @@ links: [
       title: "TaboTa",
       year: "2025",
       tags: ["composition tool", "notation language", "microtonal", "polymetric", "web audio"],
-      blurb: "A post-MIDI experimental composition tool and notation language for microtonal, polymetric, and time-based media. The project combines a JSON-based score format with browser-based editors: a piano-roll interface for drawing held tones, glides, freehand pitch contours, and voice assignments, alongside Cycla, a subdivision grammar builder for designing recursive meters and exporting .cyc time maps. TaboTa models a score as a set of translatable temporal and axial regimes: beats, seconds, unordered cues, frequencies, categories, and performance instructions. Where .scl files describe tuning systems for pitch, Cycla’s .cyc files describe tuning systems for time.",
+      blurb: "A post-MIDI composition tool and JSON notation for microtonal, polymetric, and time-based media. Its editors draw held tones, glides, pitch contours, and voice assignments; Cycla builds recursive subdivision grammars and exports .cyc time maps. TaboTa translates among beats, seconds, unordered cues, frequencies, categories, and instructions: where .scl files tune pitch, .cyc files tune time.",
       links: [
         { label: "Launch Instrument", url: "https://xyhtamura.github.io/tabota/" }
       ]
@@ -533,7 +533,7 @@ links: [
       title: "Hindcasts",
       year: "2025–2026→",
       tags: ["Software Suite", "Acausal DSP", "Un-live Effects"],
-      blurb: "A collection of “un-live” audio and video effects that work from the whole file rather than the passing instant[cite: 1]. Treating static media as already-readable temporal objects, the suite explores what becomes possible when an effect can respond before, smooth backward, optimize globally, and act with full knowledge of the piece[cite: 1]. It intentionally drops causality to move past the traditional reactive, threshold-and-attack limitations of real-time systems, viewing the entire digital timeline at once[cite: 1].",
+      blurb: "A suite of offline audio and video effects that process a static file as a complete span. Whole-file access allows an effect to respond before an event, filter in both temporal directions, measure across passes, and optimize against the file's full distribution.",
       media: [{ type: "image", src: "../card/hindcasts.png", label: "Hindcasts index causality readout display" }]
     },
     pieces: [
@@ -541,25 +541,25 @@ links: [
         title: "Metachamber",
         year: "2026",
         tags: ["gap-aware reverb", "acausal decay", "envelope follower", "masking credit", "offline WAV bounce"],
-        blurb: "A gap-aware reverb that measures all silences in a file to fit each event's decay tail to the following gap. Instead of using a compromise decay time that smears busy passages, it solves RT60 per event and applies zero-phase bidirectional smoothing, preventing collision and mud while respecting auditory masking credit."
+        blurb: "An offline reverb that maps each event's release-to-next-onset gap, then fits or ducks its tail to the available span. The next event's level supplies masking credit, so inaudible spill need not be suppressed."
       },
       {
         title: "Pythia",
         year: "2025–2026",
         tags: ["acausal granular delay", "sidechain lookahead", "BPM sync", "pitch & pan spray", "offline WAV bounce"],
-        blurb: "An acausal granular delay and sidechain processor that reads the entire file timeline to enable anticipatory pre-echo (negative delay) and lookahead sidechain ducking or following. Features a dual-path design (pristine tap and multi-parameter granulator) crossfaded via a Scatter axis, BPM-synced time subdivisions, ping-pong feedback with sub-grain disintegration, per-grain pitch/pan spray, and sample-accurate background Web Worker WAV exporting."
+        blurb: "An acausal granular delay and sidechain processor that reads both files before rendering. A control signal supplies a future amplitude envelope; a source signal supplies pristine taps or grains, with negative delay, lookahead ducking, tempo-synced time, feedback, pitch, and pan controls."
       },
       {
         title: "Sounder",
         year: "2025",
         tags: ["un-live compressor", "depth · dynamics", "web audio"],
-        blurb: "An un-live dynamics processor that turns a sound file into a time-occupancy depth chart showing exactly how long the audio spends at each amplitude tier[cite: 1, 2]. Instead of modifying playback through standard compressor thresholds, ratios, and attack windows, the user redraws the dynamic seabed of the sound directly through an interactive visual transfer curve[cite: 2]."
+        blurb: "An offline dynamics processor that measures the file's amplitude distribution and maps it to a drawn transfer curve. The RMS window moves continuously from sample-level waveshaping to whole-file normalization."
       },
       {
         title: "Prolepsis",
         year: "2026",
         tags: ["acausal feedback field", "video processing", "framesmear"],
-        blurb: "An acausal video feedback field that reads a clip completely end-to-end before generating its visual artifacting[cite: 1, 3]. It transforms traditional trailing framesmear into a pre-rendered temporal material: trails can bloom symmetrically or build up entirely ahead of a physical motion event, all while maintaining completely instant, zero-phase scrubbing across the clip[cite: 3]."
+        blurb: "A video feedback field computed across a complete clip. Future and past frames can feed the current frame, producing trails before events and symmetric zero-phase wakes; rendered frames are cached for immediate scrubbing."
       }
     ]
   },
@@ -569,7 +569,7 @@ links: [
       title: "Sgueltch",
       year: "2025",
       tags: ["Software Suite", "Aesthetic Philosophy", "Tool Design"],
-      blurb: "Sgueltch, a word between squelch and glitch, is both an aesthetic philosophy and a software suite. It proposes a shift in digital aesthetics away from traditional glitch art’s rigid, pixelated, grid-bound, and mechanical disruptions toward organic, fluid, and biologically inflected distortions. Rather than treating glitch as the natural look of the digital, Sgueltch argues that conventional glitch mainly reveals the dominant abstractions underlying many computational systems: grids, blocks, lines, harmonic regularity, and schematic repetition. In response, Sgueltch develops alternative computational substrates drawn from material processes such as fluid flow, growth, diffusion, viscosity, and bodily transformation, as well as from less predictable abstract logics. Its glitches ooze, breathe, spread, stain, and mutate, foregrounding asymmetry, unpredictability, embodiment, and collaboration between human and nonhuman agencies. In this sense, Sgueltch is not simply about making glitch softer or more organic-looking; it is about rethinking what digital systems can become when they begin from other material and conceptual foundations. It takes the mechanics and aesthetics of glitch and moves them from rigidity toward living, symbiotic, ecological transformation.",
+      blurb: "A software suite built on the observation that digital errors inherit the geometry of the systems that fail. Its tools replace raster rows, codec blocks, and fixed glyph metrics with blobs, Voronoi territories, filaments, wet fields, or independent vectors, so corruption can seep, spread, and decay.",
       media: [{ type: "placeholder", label: "Sgueltch Visuals" }]
     },
     pieces: [
@@ -577,25 +577,25 @@ links: [
         title: "Gurgulator",
         year: "2025",
         tags: ["Granular Resynthesis", "Web Audio"],
-        blurb: "Gurgulator is a web-based granular resynthesizer for producing wet, unstable, gurgling sound textures. Using erratic pitch bends, time warps, burping filters, and gooey convolution reverb, the tool turns audio into a bubbling, bodily material suited for organic glitch, creaturely sound design, and viscous electronic textures.",
+        blurb: "A browser-based granular resynthesizer tuned for gurgling sounds. It turns a loaded sample into irregular pitch bends, time warps, overlapping bursts, and filter movement, then feeds the result through convolution reverb.",
       },
       {
         title: "Pixel Lesions",
         year: "2025",
         tags: ["Image Processing", "Pixel Sorting"],
-        blurb: "Pixel Lesions reimagines pixel sorting as biological infection. Instead of producing rigid linear glitches, the tool lets organic lesion-like forms spread across an image like lichen, slime mold, or tissue decay, sorting pixels only within their boundaries to create fluid, visceral distortions that feel alive.",
+        blurb: "Pixel sorting confined to expanding lichen-, mycelium-, dendrite-, or slime-mold-shaped regions. Growth topology replaces the raster row or column as the sorting path.",
       },
       {
         title: "SiltCRT",
         year: "2025",
         tags: ["Shader Tool", "Interactive Image"],
-        blurb: "SiltCRT is an interactive shader-based image tool that reimagines CRT decay beyond the pixel grid. Using Voronoi tessellation, turbulence, chromatic bleed, current flow, radiant bloom, and an inverse “Umbra” bleed, it transforms images into soft, glowing cellular fields that feel less like screens than unstable phosphorescent matter.",
+        blurb: "A shader that replaces the regular RGB-triad lattice with silt cells, Gaussian bodies, or weighted Voronoi territories; a block grid remains as a control. Geometry and signal memory vary independently, combining dry refresh, remanence, or advected wet feedback with turbulence, chromatic bleed, Kawase bloom, and subtractive Umbra.",
       },
 	        {
         title: "TypeBojangler",
         year: "2025",
         tags: ["typography", "SVG tool", "organic noise", "generative graphics"],
-        blurb: "A browser-based organic text renderer that applies seeded, per-character noise to typography — jittering size, rotation, position, color, blur, and spacing independently across characters. Controls split smooth cumulative drift from sharp per-character variation, letting parameters produce either subtle texture or total disintegration. Outputs dependency-free HTML with SVG/PNG export.",
+        blurb: "A text renderer that treats each character as an independently perturbed vector object. Seeded controls vary size, rotation, spacing, baseline, color, opacity, blur, breathing, and chromatic ghosts; users can load OTF or TTF fonts and export SVG or PNG.",
         links: [
           { label: "Launch App", url: "https://xyhtamura.github.io/typebojangler/" }
         ]
@@ -613,7 +613,7 @@ links: [
       media: [
         { type: "image", src: "../card/manifest.jpeg", label: "goopCodecs format interface" }
       ],
-      blurb: "A suite of browser-native, custom file formats architected explicitly for databending, mojibake text-editing, and substrate-specific data corruption. Moving away from standard optimization metrics like compression or speed, goopCodecs protects essential file headers while leaving structural bodies highly vulnerable to direct byte manipulation. The resulting errors translate directly into continuous, analog-organic artifacts rather than traditional rigid, grid-based digital crashes.",
+      blurb: "Browser-based codecs and native file formats built for databending. Ooid stores Gaussian blobs, Scute stores Voronoi territories, Vermis stores samples along a Hilbert filament, and Urumizuri stores a wet-state ink matrix; byte or text edits therefore deform those structures instead of exposing a conventional raster or block codec.",
       links: [
         { label: "Open Suite", url: "https://xyhtamura.github.io/sgueltch/goopCodecs.html" }
       ]
@@ -678,7 +678,7 @@ links: [
 	  title: "Aeropane",
 	  year: "2026",
 	  tags: ["frosted glass", "light scattering", "gel physics", "WebGL progressive render", "Frutiger Aero"],
-	  blurb: "A physical glass and gel light-scattering simulator that renders how light offsets and blurs passing through textured dielectric interfaces. Features progressive slice rendering via a WebGL scissor pipeline, dynamic heightmap normal generation, distance-dependent blur, Fresnel reflection, and Beer-Lambert edge absorption, presented in a light-mode Frutiger Aero interface.",
+      blurb: "A WebGL simulator of light passing through frosted, fluted, or hammered glass. A progressive slice renderer combines height-map normals, distance-dependent blur, Fresnel reflection, and Beer–Lambert absorption; a Frutiger Aero interface exposes the optical model.",
 	  links: [
 	    { label: "Launch App", url: "https://xyhtamura.github.io/aeropane/" }
 	  ]
@@ -696,7 +696,7 @@ links: [
 	  title: "DHuenut",
 	  year: "2026",
 	  tags: ["color theory", "hue-vs-hue curve", "circle maps", "torus projection", "WebGL image processor"],
-	  blurb: "A hue-vs-hue curve editor where color transforms are modeled as circle maps S¹ → S¹ on a torus. Features an interactive spline editor with winding degree controls, an animated projected 3D torus visualization, OKLCH/HSL remapping via a WebGL pipeline, and 3D LUT (.cube) export.",
+	  blurb: "A hue-remapping editor that models color transforms as circle maps S¹ → S¹ on a torus. A spline with winding-degree controls drives HSL or OKLCH remapping; the tool visualizes the map on a projected torus and exports a 3D LUT.",
 	  links: [
 	    { label: "Launch App", url: "https://xyhtamura.github.io/dhuenut/" }
 	  ]
@@ -705,7 +705,7 @@ links: [
 	  title: "Gliese",
 	  year: "2026",
 	  tags: ["planetary acoustics", "multi-tap delay", "ray tracing", "offline convolution", "web audio"],
-	  blurb: "A physics-derived multi-tap delay and reverb generator that calculates delay taps by ray-tracing acoustic propagation through a spherically-symmetric graded-index atmospheric channel (the RHO profile), based on a Lagrangian ray-particle analogy. Features real-time trajectory drafting, a 3D wavefront animator, and a batch offline convolution pipeline for stereo custom audio.",
+	  blurb: "A multi-tap delay and reverb generator that derives tap times by ray-tracing sound through a spherically symmetric graded-index atmospheric channel. Users draft trajectories, inspect a 3D wavefront, and convolve stereo audio offline with the resulting tap set.",
 	  links: [
 	    { label: "Launch App", url: "https://xyhtamura.github.io/gliese/" }
 	  ]
@@ -714,7 +714,7 @@ links: [
   title: "Remanence",
   year: "2026",
   tags: ["audio processing", "video processing", "acausal rendering", "tape print-through", "hindcasts"],
-  blurb: "An audio+video print-through effect for the Hindcasts suite, modeling a wound tape reel whose neighboring wraps imprint ghost copies onto each other. The same acausal reel engine creates pre-echo, post-echo, drift, fold, wear, and VHS-like transport damage, with WAV/WebM export.",
+  blurb: "A model of magnetic print-through for audio and video. Mapping a complete clip onto a wound reel lets adjacent wraps exchange amplitude or image content, producing pre-echo, post-echo, drift, wear, and VHS bleed with WAV or WebM export.",
   links: [
     { label: "Launch App", url: "https://xyhtamura.github.io/hindcasts/remanence/" }
   ]
@@ -723,7 +723,7 @@ links: [
   title: "CyberScotoma",
   year: "2026",
   tags: ["video processing", "datamosh", "acausal rendering", "voronoi", "motion estimation"],
-  blurb: "A non-grid, acausal datamosh tool that turns scintillating scotoma into a video effect. Drawn bloom curves latch Voronoi regions, then motion-field grafts and optional donor clips let future or foreign frames bleed backward into the present.",
+  blurb: "A video effect in which noised Voronoi regions stop refreshing their source pixels, continue to advect under optical flow, and accept content from a later frame or a second clip. This combines the visual-field shape of a scintillating scotoma with acausal, non-macroblock datamosh.",
   links: [
     { label: "Launch App", url: "https://xyhtamura.github.io/sgueltch/cyberscotoma/" }
   ]
@@ -732,7 +732,7 @@ links: [
   title: "Put Many Pictures Together",
   year: "2026",
   tags: ["image utilities", "layout tools", "html5 canvas", "client-side", "responsive design"],
-  blurb: "A simple, browser-based utility that lets you quickly compile multiple images into customized grid sheets, columns, or freeform collages for fast clipboard copying and high-resolution layout exporting[cite: 3].",
+  blurb: "A drag-and-drop tool for arranging images into justified rows, grids, columns, or freeform collages, then copying the result or exporting a high-resolution layout.",
   links: [
     { label: "Launch App", url: "https://xyhtamura.github.io/putmanypicturestogether" }
   ]
@@ -741,7 +741,7 @@ links: [
   title: "Cella",
   year: "2026",
   tags: ["additive synthesis", "resonator bank", "audio worklet", "spectral math", "microtonal"],
-  blurb: "Cella is a resonant additive synthesizer that maps custom mathematical equations directly onto a noise-driven resonator bank. Users can interactively paint partials that act as maxima for Gaussian, Lorentzian, or Voigt distributions, test macro-detunings across custom microtonal systems, and effortlessly render generative compositions directly to offline WAV files.",
+  blurb: "A resonant additive synthesizer that maps custom equations onto a noise-driven resonator bank, with painted partials, Gaussian, Lorentzian, or Voigt spectral distributions, microtonal macro-detuning, and offline WAV rendering.",
   links: [
     { label: "Launch Instrument", url: "https://xyhtamura.github.io/cella/" },
     { label: "Open Document", url: "https://xyhtamura.github.io/cella/README.md" }
@@ -751,7 +751,7 @@ links: [
   title: "aliquoto",
   year: "2026",
   tags: ["additive synthesis", "acausal grammar", "audio worklet", "spectral math", "hindcasts"],
-  blurb: "A pure additive synthesizer that allows users to sculpt complex timbres by writing spectral series as naked mathematics using summations, envelopes, and conditionals. Operating with an offline equation parser and a phase-exact AudioWorklet engine, it frees electronic sound from standard integer lattices by enabling arbitrary fractional, irrational, subharmonic, and drift-modulated partial ratios.",
+  blurb: "A pure additive synthesizer for writing spectral series as summations, envelopes, and conditionals. Its offline equation parser and phase-exact AudioWorklet support fractional, irrational, subharmonic, and drift-modulated partial ratios.",
   links: [
     { label: "Launch Instrument", url: "https://xyhtamura.github.io/aliquoto/" },
     { label: "Open Document", url: "https://xyhtamura.github.io/hindcasts/aliquoto/README.md" }
@@ -761,7 +761,7 @@ links: [
   title: "Horn of Plenty",
   year: "2026",
   tags: ["audio texture synthesis", "acausal", "granular synthesis", "audio substrate", "hindcasts"],
-  blurb: "Horn of Plenty is an audio texture synthesis tool that processes sound samples into longer textures. It stationarizes the sample, producing an even, statistical sound layer that can be sampled at any arbitrary length without noticeable looping.",
+  blurb: "A stationarizer that analyzes a finite sound, redistributes selected grains across time, and renders a statistically even texture long enough to sample without an audible loop.",
   links: [
     { label: "Launch Instrument", url: "https://xyhtamura.github.io/hindcasts/horn-of-plenty/" }
   ]
@@ -770,7 +770,7 @@ links: [
   title: "Bakezuri / 化け摺り",
   year: "2026",
   tags: ["wet printing", "image separation", "suminagashi", "riso", "goopCodec"],
-  blurb: "A browser-based wet-printing instrument that stages a sliding membrane between riso-style image separation and suminagashi-like ink-on-water flow.",
+  blurb: "A wet-print simulator that deposits quantized image separations into a shared field modeled on risograph printing and suminagashi. Inks bleed, repel, fix, and misregister; .bakezuri stores the process recipe, while .urumizuri exposes the wet-state matrix for databending.",
   links: [
     { label: "Launch Instrument", url: "https://xyhtamura.github.io/bakezuri/" },
     { label: "Open urumizuri Codec", url: "https://xyhtamura.github.io/sgueltch/goopCodecs/urumizuri/" }
@@ -780,7 +780,7 @@ links: [
         title: "Cytophone",
         year: "2026",
         tags: ["web audio", "modal synthesis", "physical modeling", "generative instrument"],
-        blurb: "A browser-based modal-synthesis instrument in which drifting cell-like bodies ring when struck, their timbre derived from physical resonance models (membrane, plate, bell) pushed into impossible hybrids. Visual properties map directly to sound, so the colony is played by setting it in motion and letting bodies collide.",
+        blurb: "A family of browser instruments in which animated 2D bodies are both interface and sound source. Size, geometry, motion, contact, pressure, tension, or environmental data control each instrument's synthesis and spatialization; users play them by seeding, striking, bowing, plucking, dragging, or disturbing the simulated ecology.",
         links: [
           { label: "Launch Instrument", url: "https://xyhtamura.github.io/cytophone/" }
         ]
@@ -789,7 +789,7 @@ links: [
         title: "Glossolalia",
         year: "2026",
         tags: ["formant synthesis", "vocal tract model", "experimental interface", "web art"],
-        blurb: "A browser-based formant-synthesis instrument in which drifting IPA glyphs act as sounding bodies, generating speech-like syllables from a vocal-tract model so that the output only ever seems to be language. The vowel space serves as the interface, sitting at the boundary of instrument, speaking toy, and writing machine.",
+        blurb: "A browser-based formant-synthesis instrument in which drifting IPA glyphs act as sounding bodies. Position in vowel space controls a vocal-tract model that produces speech-like syllables without resolving into language.",
         links: [
           { label: "In Vitro", url: "https://xyhtamura.github.io/glossolalia-invitro.html" },
           { label: "Rabble", url: "https://xyhtamura.github.io/glossolalia-rabble.html" }
@@ -799,7 +799,7 @@ links: [
         title: "FrameSmear",
         year: "2025→",
         tags: ["video processing", "feedback engine", "web tool", "glitch art"],
-        blurb: "A browser-based video feedback processor for creating frame-accumulation, motion-smear, and video-reverb effects from uploaded footage. It utilizes adjustable parameters for memory decay, frame opacity, drift, zoom, rotation, chromatic split, edge inscription, brightness persistence, and softening, with options to preview, snapshot, and export.",
+        blurb: "A browser-based video feedback processor for frame accumulation, motion smear, and video reverb. Controls govern memory decay, opacity, drift, zoom, rotation, chromatic split, edge inscription, brightness persistence, and softening; results can be previewed, captured, or exported.",
         links: [
           { label: "Launch App", url: "https://xyhtamura.github.io/framesmear.html" }
         ]
@@ -817,7 +817,7 @@ links: [
         title: "stitcher",
         year: "2025",
         tags: ["utility", "LLM workflow", "archiving", "file parsing"],
-        blurb: "A lightweight file-concatenation utility that merges collections of files into single, searchable .txt documents for research, archiving, and LLM workflows. It preserves source context through clear file delimiters and metadata (path, size, type). Available as a browser drag-and-drop interface and a recursive Windows desktop batch script.",
+        blurb: "A browser and Windows utility that concatenates files into one searchable .txt while preserving each source path, size, type, and delimiter.",
         links: [
           { label: "Launch App", url: "https://xyhtamura.github.io/stitcher/" }
         ]
@@ -826,7 +826,7 @@ links: [
         title: "Electropond",
         year: "2026",
         tags: ["FM synthesis", "physics engine", "microtonal", "visual music"],
-        blurb: "A browser-based visual-physics instrument where FM-synthesis plankton generate complex sound layers through physical motion, color properties, collision dynamics, and rippling microtonal fields.",
+        blurb: "A browser instrument in which moving plankton drive FM synthesis through color, collisions, and rippling microtonal fields.",
         links: [
           { label: "Launch Instrument", url: "https://xyhtamura.github.io/electropond.html" }
         ]
@@ -835,7 +835,7 @@ links: [
         title: "Critterances",
         year: "2026",
         tags: ["procedural audio", "interaction audio", "creature design", "web audio"],
-        blurb: "A procedural creature-sound engine and browser toy. It generates chirps, murmurs, droplets, and filtered grains for imaginary digital critters. Functions as an interaction-audio module for a robot-toy to convey systemic states (thinking, transcribing, crafting) and standalone as a playable web interface to modulate garbage-bot vocalizations.",
+        blurb: "A procedural sound engine that generates chirps, murmurs, droplets, and filtered grains for imaginary creatures. It maps robot states such as thinking, transcribing, and crafting to distinct vocal behaviors, and also runs as a standalone browser toy.",
         links: [
           { label: "Launch App", url: "https://xyhtamura.github.io/critterances/" }
         ]
@@ -844,7 +844,7 @@ links: [
         title: "Ganymede",
         year: "2026",
         tags: ["WebGL", "image processing", "audio reactive", "web tool", "noise field"],
-        blurb: "A browser-based WebGL image-warping tool that subjects any uploaded photograph or graphic to a continuously animated noise field, featuring layered controls for lens distortion, chromatic aberration, seamless tiling, hue and saturation shifting, and real-time audio reactivity via live microphone input.",
+        blurb: "A WebGL image warper that applies animated noise fields, lens distortion, chromatic offset, seamless tiling, and hue or saturation shifts to uploaded images. Live microphone input can modulate the field.",
         links: [
           { label: "Launch App", url: "https://xyhtamura.github.io/ganymede" }
         ]
@@ -917,7 +917,7 @@ links: [
           year: "2025"
         }
       ],
-      blurb: "A warm, narrative film score with a more traditional animation-film sensibility, inflected with Filipino timbres such as gongs, bamboo instruments, and guitars, seamlessly incorporating Filipino instruments with modern soundtrack instruments.",
+      blurb: "A narrative animation score combining gongs, bamboo instruments, and guitars with a contemporary orchestral and electronic soundtrack palette.",
       links: [
         { label: "watch", url: "https://vimeo.com/257075950/16254d49cb" }
       ]
@@ -982,14 +982,14 @@ links: [
       title: "Hauntotechnics",
       year: "2026",
       tags: ["autotheory"],
-      blurb: "Hauntotechnics is an autotheoretical research essay that understands haunting as both cultural memory and technological mediation. Bringing Derrida’s hauntology together with Yuk Hui’s cosmotechnics, it argues that ghosts emerge through specific bodies, rituals, histories, media systems, infrastructures, and habits of recognition. Moving across Filipino multo, Japanese yūrei, vaporwave, Hiroshima, U.S.–Philippine colonial memory, and Ringu, the essay proposes “hauntotechnics” as the co-mutation between ghosts and the systems through which societies learn what to notice, repeat, aestheticize, forget, or call common sense."
+      blurb: "An autotheoretical essay arguing that haunting is produced jointly by cultural memory and technical mediation. Filipino multo, Japanese yūrei, vaporwave, Hiroshima, U.S.–Philippine colonial memory, and Ringu show ghosts taking form through specific bodies, rituals, media systems, infrastructures, and habits of recognition; hauntotechnics names that mutual modification."
     },
     {
       id: "practice-sharing-iii",
       title: "Practice Sharing III",
       year: "2026",
       tags: ["artistic research"],
-      blurb: "This practice sharing reflected on my intermedia approach to language as a material, cultural, and technological medium shaped by bodies, histories, interfaces, and modalities. Through examples in web-based literature, code, sound poetry, installation, and performance scores, I traced how my work shifted from using media to present language toward treating code, sound, notation, and performance as compositional systems that actively transform what language can do.",
+      blurb: "A practice sharing on treating language as material shaped by bodies, histories, interfaces, and modalities. Examples from web literature, code, sound poetry, installation, and performance scores trace my shift from using media to present language toward using each medium as a compositional system that changes it.",
       exhibitions: [
         {
           venue: "Journal for Artistic Research",
@@ -1003,14 +1003,14 @@ links: [
       title: "From Interiority to Interaction: Reframing Personhood, Communication, and Affect with Artificial Interaction Partners through Japanese Cultures",
       year: "2025",
       tags: ["Philosophy of Technology"],
-      blurb: "Shifts debates about AI, robots, and large language models away from whether they possess “real” consciousness or intelligence, and toward the social roles they already perform in human life. Drawing on Japanese robotics, technoanimism, relational personhood, and ontological fluidity, the paper examines artificial interaction partners—from AIBO robot pets and android Buddhist figures to companion robots and LLMs—as technologies that mediate affect, communication, ritual, kinship, and care. It argues that technological personhood is not an internal property, but something that emerges through interaction."
+      blurb: "A paper analyzing artificial interaction partners through the social roles they already perform rather than as containers of hidden consciousness. AIBO, android Buddhist figures, companion robots, and LLMs show personhood emerging through communicative affordances involving affect, ritual, kinship, and care; the cases are drawn from Japanese robotics and relational accounts of personhood."
     },
     {
       id: "commitments-of-physical-modeling",
       title: "The Commitments of Physical Modeling: Timbre, Mediation, and Virtual Instrument Construction",
       year: "2026",
       tags: ["Timbre Studies"],
-      blurb: "Examines how timbre is constructed in virtual instrument design, especially through physical modeling synthesis. Rather than treating timbre as a fixed property that can be recovered from physical mechanisms alone, this research argues that timbral identity emerges from an assemblage of materials, mediation technologies, acoustic spaces, bodily cues, and culturally trained listening. Using physical modeling as a case study, the paper shows how virtual instruments inevitably make “commitments” about what counts as the instrument, what kind of listener is being addressed, and which aspects of timbral experience are being prioritized.",
+      blurb: "A paper arguing that physical modeling does not recover a fixed timbre from mechanism. Virtual instruments construct timbral identity by selecting materials, mediation, acoustic space, bodily cues, and assumed listening competencies; each design therefore commits to a particular account of what the instrument is and which parts of its sound matter.",
       exhibitions: [
         {
           venue: "Université de Montréal",
@@ -1024,14 +1024,14 @@ links: [
       title: "Dungeon Synth as Transcultural and Transtemporal Construction: Synthetic Medievalisms",
       year: "2026",
       tags: ["Medieval Reception"],
-      blurb: "Studies dungeon synth as a form of mediated world-building rather than a straightforward revival of medieval music. The project argues that the genre’s “medieval” atmosphere is assembled through layers of prior imagination: Norwegian black metal’s lo-fi mythic austerity, American and Japanese video game music, early MIDI and sound-chip aesthetics, fantasy literature, tabletop gaming, zines, pixel art, and online genre communities. By tracing these references across cultures and historical moments, the paper frames dungeon synth as a synthetic medievalism: a music of dungeons, ruins, forests, and quests that returns not directly to the Middle Ages, but to the late twentieth-century media systems that had already transformed the medieval into fantasy."
+      blurb: "A paper treating dungeon synth as mediated world-building rather than a revival of medieval music. Its synthetic medievalism is assembled from Norwegian black metal, American and Japanese game music, early MIDI and sound chips, fantasy literature, tabletop games, zines, pixel art, and online genre formation; the genre returns to late-twentieth-century media that had already converted the medieval into fantasy."
     },
     {
       id: "night-bus-intermedia-musicopoetics",
       title: "Intermedia Musicopoetics and Transpractice Songwriting in “Night Bus”",
       year: "2026",
       tags: ["music composition"],
-      blurb: "A conference presentation around Night Bus, an experimental pop composition that thinks about how the singer-songwriter genre can expand through intermedial practice, drawing together contemporary music, poetry, electronic sound, and Philippine cultural memory. Developed as part of the intermedia poetic suite Of Another Shore, the song treats pop as a hybrid artform where sung phrases behave like poetic lines, shaped by enjambment, asemic vocality, timbre, polytonality, ostinato, and electronic transformation. Inspired by soliranin and indolanin, Filipino song forms often referenced in literature but lacking definitive recorded versions, Night Bus reimagines rowing and work-song rhythms within an urban transit setting, layering maritime, riverine, mythological, and funerary imagery onto contemporary city life.",
+      blurb: "A presentation analyzing Night Bus as an intermedia song within Of Another Shore. Enjambed sung lines, asemic vocality, timbre, polytonality, ostinato, and electronic processing connect songwriting to poetic practice; references to soliranin and indolanin move rowing and work-song rhythms into urban transit without claiming to reconstruct unrecorded historical forms.",
 	  exhibitions: [
         {
           venue: "University of the Philippines",
@@ -1045,7 +1045,7 @@ links: [
       title: "Feeling Together: Affective Circuits and the Relational Self in Philippine Cultures Beyond Literary Individualism",
       year: "2025",
       tags: ["affect theory"],
-      blurb: "Examines how emotion and personhood operate beyond Western models of the self as private, bounded, and individual. Centering Filipino concepts such as loób and kapwa, the project argues that affect is not simply an inner state but a relational force that emerges through language, social expectations, media, ethical responsibility, and shared cultural worlds. Through philosophical and literary analysis, participant interviews, and autoethnographic reflection, the research explores affective phenomena such as hiyâ, kilíg, and húgot, showing how these blur the boundaries between feeling, action, virtue, perception, and performance.",
+      blurb: "A study of relational accounts of emotion and personhood through Tagalog concepts of loób and kapwa as theorized largely in Metro Manila, participant interviews, literary analysis, and autoethnography. It does not treat these terms as a national Filipino ontology: Hiligaynon, for example, has no direct equivalent of kapwa. Cases involving hiyâ, kilíg, and húgot test how feeling crosses language, ethical judgment, social expectation, perception, and performance.",
 	  exhibitions: [
         {
           venue: "Nanyang Technological University",
