@@ -1,0 +1,10 @@
+  
+You are a piece of pollen here, barely visible. You've been placed here by hand. In time, you will descend into this orchid, which no longer has the right species ot pollinate it. Species and flowers often evolve together. The hand floats in the air, moving to another flower.
+
+You are a flower, a body part of a plant. You can sense vaguely where your roots are. You can sense your petals, moved by the breeze. This breeze is just the right temperature. Soon, you will drop, and your center will bear a fruit where seed will be.
+
+You are a field of flowers. You are not composed of a single species. You have multiple species threaded throughout. Polyculture was set as a universal horticultural guideline for this sector.
+
+You are a garden room. You almost breathe continuously. Air is moved through you, to pass through the entire room where somebody is now laying. laying on the field of flowers. What are they thinking. Maybe everything they've ever been.
+
+You are a toroidal lifeship. You have been spinning to generate centrifugal force for artificial gravity. You have moved quadrillions of kilometers away from where you were constructed. Routinely, parts of you have already been replaced. You don't remember where you've really been constructed.

@@ -3,7 +3,7 @@
 
   <url>
     <loc>https://xyhtamura.github.io/</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-20</lastmod>
     <priority>1.00</priority>
   </url>
   
@@ -35,6 +35,90 @@
     <loc>https://xyhtamura.github.io/blog/what-is-science-art.html</loc>
     <lastmod>2026-07-09</lastmod>
     <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://xyhtamura.github.io/poetry/</loc>
+    <lastmod>2026-07-20</lastmod>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://xyhtamura.github.io/poetry/blot.html</loc>
+    <lastmod>2026-07-20</lastmod>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
+    <loc>https://xyhtamura.github.io/poetry/forecast.html</loc>
+    <lastmod>2026-07-20</lastmod>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
+    <loc>https://xyhtamura.github.io/poetry/heliotrope.html</loc>
+    <lastmod>2026-07-20</lastmod>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
+    <loc>https://xyhtamura.github.io/poetry/iso-e-super.html</loc>
+    <lastmod>2026-07-20</lastmod>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
+    <loc>https://xyhtamura.github.io/poetry/kill-quota.html</loc>
+    <lastmod>2026-07-20</lastmod>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
+    <loc>https://xyhtamura.github.io/poetry/lightning-man.html</loc>
+    <lastmod>2026-07-20</lastmod>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
+    <loc>https://xyhtamura.github.io/poetry/ossuary.html</loc>
+    <lastmod>2026-07-20</lastmod>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
+    <loc>https://xyhtamura.github.io/poetry/pollen.html</loc>
+    <lastmod>2026-07-20</lastmod>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
+    <loc>https://xyhtamura.github.io/poetry/posing.html</loc>
+    <lastmod>2026-07-20</lastmod>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
+    <loc>https://xyhtamura.github.io/poetry/speed.html</loc>
+    <lastmod>2026-07-20</lastmod>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
+    <loc>https://xyhtamura.github.io/poetry/survivor.html</loc>
+    <lastmod>2026-07-20</lastmod>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
+    <loc>https://xyhtamura.github.io/poetry/timeout.html</loc>
+    <lastmod>2026-07-20</lastmod>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
+    <loc>https://xyhtamura.github.io/poetry/mouth.html</loc>
+    <lastmod>2026-07-20</lastmod>
+    <priority>0.70</priority>
   </url>
 
   <url>
