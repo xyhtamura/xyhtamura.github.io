@@ -283,6 +283,16 @@ const slides = [
     },
     pieces: [
       {
+        id: "cutline",
+        title: "CUTLINE",
+        year: "2026",
+        blurb: "An open generative poetry deck assembled live from outside language. Each draw queries keyless sources, cuts retrieved fragments into a poem, builds a collage from public image searches, and returns its synthesized title to the deck; operator cards can replace, reinterpret, return, mash, or skip cards in the reading.",
+        tags: ["generative poetry", "electronic literature", "live collage"],
+        links: [
+          { label: "Open Deck", url: "https://xyhtamura.github.io/cutline/" }
+        ]
+      },
+      {
         title: "Chanidae",
         year: "2025",
         blurb: "A web-based slide poem presented through animated text fragments, blue gradients, and subtitle-like placement. Arrow, swipe, and keyboard navigation pace the text across screens associated with water, depth, and disappearance.",
@@ -473,6 +483,32 @@ const slides = [
       id: "technology",
       label: "Technology",
       description: "Creative tools, instruments, software, web systems, experimental interfaces, and speculative technical prototypes."
+    }
+  },
+  {
+    kind: "piece",
+    piece: {
+      id: "stanzuary",
+      title: "Stanzuary",
+      year: "2026",
+      tags: ["3D text editor", "spatial writing", "Tabota", "PNG export"],
+      blurb: "A browser-based 3D text editor for writing and arranging text as spatial objects. Users can style fragments and move, rotate, or extrude them in three dimensions, then export the view as a transparent PNG or exchange the scene as Stanzuary JSON or portable .tabota events.",
+      links: [
+        { label: "Launch Editor", url: "https://xyhtamura.github.io/stanzuary/" }
+      ]
+    }
+  },
+  {
+    kind: "piece",
+    piece: {
+      id: "w2xdx",
+      title: "W2XDX",
+      year: "2026",
+      tags: ["experimental television", "space-filling curves", "multipath channel", "signal receiver"],
+      blurb: "An experimental television instrument that threads a luminance field along six space-filling scan curves, transmits the resulting waveform through a phenomenological multipath atmosphere, then recovers sync and reconstructs the picture. The same delayed echo becomes a raster ghost, Hilbert blur, or scattered snow because each standard maps one-dimensional signal time to two-dimensional space differently.",
+      links: [
+        { label: "Launch Receiver", url: "https://xyhtamura.github.io/w2xdx/" }
+      ]
     }
   },
 {
