@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Standalone poems and bizarro flash by Xyh Tamura.">
+  <meta property="og:title" content="short lit — Xyh Tamura">
+  <meta property="og:description" content="Standalone poems and bizarro flash by Xyh Tamura.">
+  <meta property="og:url" content="https://xyhtamura.github.io/shortlit/">
+  <title>short lit — Xyh Tamura</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Averia+Libre:ital,wght@0,400;0,700;1,400&family=Averia+Sans+Libre:ital,wght@0,400;0,700;1,400&family=Syne+Mono&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="poetry.css">
+</head>
+<body>
+  <a class="skip-link" href="#poems">Skip to short lit</a>
+  <span class="ambient ambient-a" aria-hidden="true"></span>
+  <span class="ambient ambient-b" aria-hidden="true"></span>
+
+  <div class="site-shell archive-shell">
+    <header class="masthead">
+      <p class="eyebrow">Xyh Tamura · writing</p>
+      <h1>short lit</h1>
+      <p class="intro">standalone poems &amp; bizarro flash</p>
+    </header>
+
+    <div class="cabinet-tools">
+      <span class="cabinet-note">all pieces remain visible · no sequence implied</span>
+      <div class="compound-organ-btn">
+        <button class="drift-button" type="button" id="drift">drift to one</button>
+      </div>
+    </div>
+
+    <main id="poems">
+      <ul class="poem-cluster">
+        <li><a class="poem-card" href="blot.html"><div class="node-dot"></div><div class="poem-title">Blot</div><div class="poem-fragment">It begins with the ink of a dissected squid</div></a></li>
+        <li><a class="poem-card" href="cell.html"><div class="node-dot"></div><div class="poem-title">Cell</div><div class="poem-fragment">I get a call. It’s another babysitting job. The man’s voice sounds creaky over the phone</div></a></li>
+        <li><a class="poem-card" href="document-body.html"><div class="node-dot"></div><div class="poem-title">document body</div><div class="poem-fragment">document.body, but body as in really, biopsy</div></a></li>
+        <li><a class="poem-card" href="forecast.html"><div class="node-dot"></div><div class="poem-title">Forecast</div><div class="poem-fragment">When the self pulls away, it brings pieces of itself along with it</div></a></li>
+        <li><a class="poem-card" href="heliotrope.html"><div class="node-dot"></div><div class="poem-title">Heliotrope</div><div class="poem-fragment">the way a life, without thinking, bends toward the light source</div></a></li>
+        <li><a class="poem-card" href="iso-e-super.html"><div class="node-dot"></div><div class="poem-title">Iso E Super</div><div class="poem-fragment">In a year I’ll be scattered in the wind</div></a></li>
+        <li><a class="poem-card" href="kill-quota.html"><div class="node-dot"></div><div class="poem-title">kill quota</div><div class="poem-fragment">how to breathe without swallowing glass</div></a></li>
+        <li><a class="poem-card" href="lightning-man.html"><div class="node-dot"></div><div class="poem-title">lightning man</div><div class="poem-fragment">All I can say with vision.</div></a></li>
+        <li><a class="poem-card" href="ossuary.html"><div class="node-dot"></div><div class="poem-title">ossuary</div><div class="poem-fragment">The signal pulses a dull throb in a desert of ground bone</div></a></li>
+        <li><a class="poem-card" href="pollen.html"><div class="node-dot"></div><div class="poem-title">Pollen</div><div class="poem-fragment">You are a piece of pollen here, barely visible.</div></a></li>
+        <li><a class="poem-card" href="posing.html"><div class="node-dot"></div><div class="poem-title">posing</div><div class="poem-fragment">The way to make it hot is to think in squares.</div></a></li>
+        <li><a class="poem-card" href="speed.html"><div class="node-dot"></div><div class="poem-title">speed</div><div class="poem-fragment">it’s all a blur to you</div></a></li>
+        <li><a class="poem-card" href="survivor.html"><div class="node-dot"></div><div class="poem-title">survivor</div><div class="poem-fragment">Here we are. We are here</div></a></li>
+        <li><a class="poem-card" href="timeout.html"><div class="node-dot"></div><div class="poem-title">timeout</div><div class="poem-fragment">a consensus of algorithms decides the deer should appear now</div></a></li>
+        <li><a class="poem-card" href="mouth.html"><div class="node-dot"></div><div class="poem-title" lang="ja">口</div><div class="poem-fragment">that mouth · underwater · sa idalum sang kawayan</div></a></li>
+      </ul>
+    </main>
+
+    <footer class="archive-footer">
+      <span>fifteen standalone pieces · <a href="palettes.html">palette studio</a></span>
+      <a href="../">return to xyhtamura.github.io</a>
+    </footer>
+  </div>
+
+  <script>
+    const driftButton = document.querySelector("#drift");
+    const poems = [...document.querySelectorAll(".poem-card")];
+    driftButton.addEventListener("click", () => {
+      const destination = poems[Math.floor(Math.random() * poems.length)];
+      window.location.assign(destination.href);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="A">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Standalone poems and bizarro flash by Xyh Tamura.">
+  <title>short lit — Xyh Tamura (Aesthetic Explorations)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Averia+Libre:ital,wght@0,400;0,700;1,400&family=Averia+Sans+Libre:ital,wght@0,400;0,700;1,400&family=Syne+Mono&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <style>
+    /* ==========================================================================
+       GLOBAL BASE & FONTS
+       ========================================================================== */
+    :root {
+      --font-body: "Averia Sans Libre", system-ui, sans-serif;
+      --font-poem: "Averia Libre", Georgia, serif;
+      --font-mono: "Syne Mono", monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      min-height: 100%;
+      font-family: var(--font-body);
+      scroll-behavior: smooth;
+      transition: background 0.4s ease, color 0.4s ease;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+      line-height: 1.6;
+      padding: 2.5rem 1.5rem 5rem;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ==========================================================================
+       THEME A: SATIN PEWTER & LUMINOUS PODS
+       (Deep bruised indigo-slate backdrop + brighter satin-pewter panels)
+       ========================================================================== */
+    html[data-theme="A"] {
+      background-color: #14171f;
+      color: #e8ecf2;
+    }
+    html[data-theme="A"] body {
+      background: 
+        radial-gradient(ellipse at 85% 15%, rgba(217, 167, 74, 0.15), transparent 32rem),
+        radial-gradient(ellipse at 15% 65%, rgba(62, 194, 174, 0.18), transparent 34rem),
+        radial-gradient(ellipse at 50% 90%, rgba(184, 109, 174, 0.14), transparent 30rem),
+        linear-gradient(155deg, #1c202a 0%, #12151c 50%, #1a1724 100%);
+      background-attachment: fixed;
+    }
+    html[data-theme="A"] .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: #3ec2ae;
+      letter-spacing: 0.06em;
+      text-transform: lowercase;
+    }
+    html[data-theme="A"] h1 {
+      font-family: var(--font-poem);
+      font-size: clamp(2.6rem, 5.5vw, 4rem);
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+    }
+    html[data-theme="A"] .intro {
+      font-size: 1.15rem;
+      color: #9ba7b8;
+      font-style: italic;
+    }
+    html[data-theme="A"] .cabinet-tools {
+      background: rgba(30, 36, 46, 0.65);
+      border: 1px solid rgba(175, 195, 215, 0.22);
+      backdrop-filter: blur(14px);
+      border-radius: 20px 8px 20px 8px;
+      box-shadow: 0 12px 36px rgba(6, 8, 12, 0.5);
+    }
+    html[data-theme="A"] .cabinet-note {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: #9ba7b8;
+    }
+    html[data-theme="A"] .drift-button {
+      background: linear-gradient(135deg, #e6b85c, #3ec2ae);
+      color: #12151c;
+      font-weight: 700;
+      border: none;
+      box-shadow: 0 4px 14px rgba(62, 194, 174, 0.35);
+    }
+
+    /* Brighter Satin Panels for Theme A */
+    html[data-theme="A"] .poem-card {
+      background: rgba(242, 246, 252, 0.94);
+      color: #1b2029;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 20px 8px 24px 10px;
+      box-shadow: 
+        0 14px 32px rgba(5, 7, 10, 0.45),
+        inset 0 1px 1px rgba(255, 255, 255, 0.9);
+    }
+    html[data-theme="A"] .poem-card:hover {
+      background: #ffffff;
+      transform: translateY(-6px) scale(1.015);
+      box-shadow: 
+        0 22px 48px rgba(5, 7, 10, 0.6),
+        0 0 20px rgba(62, 194, 174, 0.3);
+      border-color: #3ec2ae;
+    }
+    html[data-theme="A"] .node-dot {
+      background: radial-gradient(circle at 35% 30%, #ffffff, #3ec2ae 60%, #b86dae);
+      box-shadow: 0 0 8px rgba(62, 194, 174, 0.6);
+    }
+    html[data-theme="A"] .poem-title {
+      color: #11151d;
+    }
+    html[data-theme="A"] .poem-fragment {
+      color: #4a5568;
+    }
+
+    /* ==========================================================================
+       THEME B: MINERAL TIDEPOOL
+       (Deep moss-teal backdrop + bright cream-parchment poem panels)
+       ========================================================================== */
+    html[data-theme="B"] {
+      background-color: #0d1716;
+      color: #f2f5f3;
+    }
+    html[data-theme="B"] body {
+      background: 
+        radial-gradient(ellipse at 75% 20%, rgba(62, 194, 150, 0.16), transparent 34rem),
+        radial-gradient(ellipse at 20% 80%, rgba(217, 167, 74, 0.14), transparent 30rem),
+        linear-gradient(160deg, #111f1d 0%, #0b1413 60%, #151a24 100%);
+      background-attachment: fixed;
+    }
+    html[data-theme="B"] .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: #e6b85c;
+      letter-spacing: 0.08em;
+    }
+    html[data-theme="B"] h1 {
+      font-family: var(--font-poem);
+      font-size: clamp(2.6rem, 5.5vw, 4rem);
+      font-weight: 700;
+      color: #f7f4ec;
+    }
+    html[data-theme="B"] .intro {
+      font-size: 1.15rem;
+      color: #a4b8b2;
+      font-style: italic;
+    }
+    html[data-theme="B"] .cabinet-tools {
+      background: rgba(18, 30, 28, 0.85);
+      border: 1px solid rgba(217, 167, 74, 0.3);
+      border-radius: 14px 24px 14px 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    }
+    html[data-theme="B"] .cabinet-note {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: #a4b8b2;
+    }
+    html[data-theme="B"] .drift-button {
+      background: #e6b85c;
+      color: #111f1d;
+      font-weight: 700;
+      border: 1px solid #f2cf85;
+      box-shadow: 0 4px 12px rgba(230, 184, 92, 0.3);
+    }
+
+    /* Bright Cream Paper Panels for Theme B */
+    html[data-theme="B"] .poem-card {
+      background: #f7f4ec;
+      color: #202422;
+      border: 1px solid rgba(217, 167, 74, 0.4);
+      border-radius: 12px 22px 10px 22px;
+      box-shadow: 
+        0 12px 28px rgba(0, 0, 0, 0.5),
+        inset 0 1px 2px rgba(255, 255, 255, 0.8);
+    }
+    html[data-theme="B"] .poem-card:hover {
+      background: #ffffff;
+      transform: translateY(-5px) rotate(-0.5deg);
+      box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.65),
+        0 0 16px rgba(217, 167, 74, 0.35);
+      border-color: #e6b85c;
+    }
+    html[data-theme="B"] .node-dot {
+      background: radial-gradient(circle at 30% 30%, #e6b85c, #3ec2ae 80%);
+      box-shadow: 0 0 6px rgba(230, 184, 92, 0.6);
+    }
+    html[data-theme="B"] .poem-title {
+      color: #141c1a;
+    }
+    html[data-theme="B"] .poem-fragment {
+      color: #485450;
+    }
+
+    /* ==========================================================================
+       THEME C: FRUTIGER BIO-MEMBRANE
+       (Deep violet-cyan atmosphere + glossy frosted-white 3D panels)
+       ========================================================================== */
+    html[data-theme="C"] {
+      background-color: #161224;
+      color: #f0ecfc;
+    }
+    html[data-theme="C"] body {
+      background: 
+        radial-gradient(circle at 90% 10%, rgba(184, 109, 174, 0.25), transparent 36rem),
+        radial-gradient(circle at 10% 70%, rgba(62, 194, 210, 0.22), transparent 38rem),
+        linear-gradient(145deg, #1d1630 0%, #101624 55%, #18222b 100%);
+      background-attachment: fixed;
+    }
+    html[data-theme="C"] .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: #b86dae;
+      letter-spacing: 0.08em;
+    }
+    html[data-theme="C"] h1 {
+      font-family: var(--font-poem);
+      font-size: clamp(2.6rem, 5.5vw, 4rem);
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffffff 40%, #c88fc0 80%, #7ee8b3 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    html[data-theme="C"] .intro {
+      font-size: 1.15rem;
+      color: #a8a0c2;
+      font-style: italic;
+    }
+    html[data-theme="C"] .cabinet-tools {
+      background: rgba(36, 28, 54, 0.65);
+      border: 1px solid rgba(184, 109, 174, 0.35);
+      backdrop-filter: blur(18px);
+      border-radius: 28px 10px 28px 10px;
+      box-shadow: 0 14px 40px rgba(10, 6, 18, 0.6);
+    }
+    html[data-theme="C"] .cabinet-note {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: #a8a0c2;
+    }
+    html[data-theme="C"] .drift-button {
+      background: linear-gradient(135deg, #b86dae, #62c2d2);
+      color: #ffffff;
+      font-weight: 700;
+      border: none;
+      box-shadow: 0 4px 16px rgba(184, 109, 174, 0.4);
+    }
+
+    /* Glossy Frosted 3D Panels for Theme C */
+    html[data-theme="C"] .poem-card {
+      background: rgba(248, 245, 255, 0.93);
+      color: #1e1830;
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      border-radius: 24px 10px 24px 10px;
+      box-shadow: 
+        0 16px 36px rgba(10, 6, 18, 0.5),
+        inset 0 2px 2px rgba(255, 255, 255, 0.95);
+    }
+    html[data-theme="C"] .poem-card:hover {
+      background: #ffffff;
+      transform: translateY(-7px) scale(1.02);
+      box-shadow: 
+        0 24px 50px rgba(10, 6, 18, 0.65),
+        0 0 24px rgba(184, 109, 174, 0.35);
+      border-color: #b86dae;
+    }
+    html[data-theme="C"] .node-dot {
+      background: radial-gradient(circle at 35% 30%, #ffffff, #b86dae 65%, #62c2d2);
+      box-shadow: 0 0 10px rgba(184, 109, 174, 0.7);
+    }
+    html[data-theme="C"] .poem-title {
+      color: #171128;
+    }
+    html[data-theme="C"] .poem-fragment {
+      color: #4e4466;
+    }
+
+    /* ==========================================================================
+       SHARED LAYOUT STRUCTURE (Identical to existing shortlit/index.html)
+       ========================================================================== */
+    .site-shell {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .masthead {
+      margin-bottom: 2.2rem;
+    }
+    .masthead h1 {
+      margin: 0.2rem 0;
+      line-height: 1.1;
+    }
+
+    .cabinet-tools {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.9rem 1.4rem;
+      margin-bottom: 2.8rem;
+    }
+
+    .drift-button {
+      padding: 0.55rem 1.3rem;
+      border-radius: 20px;
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .drift-button:hover {
+      transform: scale(1.04);
+    }
+
+    /* Anti-Lattice Organic Stagger */
+    .poem-cluster {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.6rem;
+      list-style: none;
+    }
+
+    .poem-cluster li:nth-child(3n+1) { transform: translateY(0px); }
+    .poem-cluster li:nth-child(3n+2) { transform: translateY(12px); }
+    .poem-cluster li:nth-child(3n+3) { transform: translateY(-6px); }
+
+    .poem-card {
+      display: flex;
+      flex-direction: column;
+      padding: 1.4rem;
+      height: 100%;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .node-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-bottom: 0.8rem;
+    }
+
+    .poem-title {
+      font-family: var(--font-poem);
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .poem-fragment {
+      font-size: 0.93rem;
+      line-height: 1.5;
+    }
+
+    .archive-footer {
+      margin-top: 4rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(175, 195, 215, 0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.84rem;
+      opacity: 0.8;
+    }
+    .archive-footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* ==========================================================================
+       TEMPORARY DESIGN EXPLORER SWITCHER BAR (Interactive Preview Menu)
+       ========================================================================== */
+    .theme-switcher-bar {
+      position: fixed;
+      bottom: 1.2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999;
+      background: rgba(14, 17, 24, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 0.5rem 0.8rem;
+      border-radius: 30px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .switcher-label {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: #9ba7b8;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding-left: 0.4rem;
+    }
+
+    .switcher-btn {
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.06);
+      color: #e8ecf2;
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      padding: 0.4rem 0.9rem;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .switcher-btn:hover {
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    .switcher-btn.active {
+      background: #ffffff;
+      color: #12151c;
+      font-weight: 700;
+      border-color: #ffffff;
+      box-shadow: 0 2px 10px rgba(255, 255, 255, 0.4);
+    }
+  </style>
+</head>
+<body>
+  <!-- Temporary Aesthetic Switcher Bar -->
+  <div class="theme-switcher-bar">
+    <span class="switcher-label">Design Explorer:</span>
+    <button type="button" class="switcher-btn active" data-set-theme="A">Option A: Satin Pewter</button>
+    <button type="button" class="switcher-btn" data-set-theme="B">Option B: Mineral Tidepool</button>
+    <button type="button" class="switcher-btn" data-set-theme="C">Option C: Frutiger Bio-Membrane</button>
+  </div>
+
+  <div class="site-shell archive-shell">
+    <header class="masthead">
+      <p class="eyebrow">Xyh Tamura · writing</p>
+      <h1>short lit</h1>
+      <p class="intro">standalone poems &amp; bizarro flash</p>
+    </header>
+
+    <div class="cabinet-tools">
+      <span class="cabinet-note">all pieces remain visible · no sequence implied</span>
+      <div class="compound-organ-btn">
+        <button class="drift-button" type="button" id="drift">drift to one</button>
+      </div>
+    </div>
+
+    <main id="poems">
+      <ul class="poem-cluster">
+        <li><a class="poem-card" href="blot.html"><div class="node-dot"></div><div class="poem-title">Blot</div><div class="poem-fragment">It begins with the ink of a dissected squid</div></a></li>
+        <li><a class="poem-card" href="cell.html"><div class="node-dot"></div><div class="poem-title">Cell</div><div class="poem-fragment">I get a call. It’s another babysitting job. The man’s voice sounds creaky over the phone</div></a></li>
+        <li><a class="poem-card" href="document-body.html"><div class="node-dot"></div><div class="poem-title">document body</div><div class="poem-fragment">document.body, but body as in really, biopsy</div></a></li>
+        <li><a class="poem-card" href="forecast.html"><div class="node-dot"></div><div class="poem-title">Forecast</div><div class="poem-fragment">When the self pulls away, it brings pieces of itself along with it</div></a></li>
+        <li><a class="poem-card" href="heliotrope.html"><div class="node-dot"></div><div class="poem-title">Heliotrope</div><div class="poem-fragment">the way a life, without thinking, bends toward the light source</div></a></li>
+        <li><a class="poem-card" href="iso-e-super.html"><div class="node-dot"></div><div class="poem-title">Iso E Super</div><div class="poem-fragment">In a year I’ll be scattered in the wind</div></a></li>
+        <li><a class="poem-card" href="kill-quota.html"><div class="node-dot"></div><div class="poem-title">kill quota</div><div class="poem-fragment">how to breathe without swallowing glass</div></a></li>
+        <li><a class="poem-card" href="lightning-man.html"><div class="node-dot"></div><div class="poem-title">lightning man</div><div class="poem-fragment">All I can say with vision.</div></a></li>
+        <li><a class="poem-card" href="ossuary.html"><div class="node-dot"></div><div class="poem-title">ossuary</div><div class="poem-fragment">The signal pulses a dull throb in a desert of ground bone</div></a></li>
+        <li><a class="poem-card" href="pollen.html"><div class="node-dot"></div><div class="poem-title">Pollen</div><div class="poem-fragment">You are a piece of pollen here, barely visible.</div></a></li>
+        <li><a class="poem-card" href="posing.html"><div class="node-dot"></div><div class="poem-title">posing</div><div class="poem-fragment">The way to make it hot is to think in squares.</div></a></li>
+        <li><a class="poem-card" href="speed.html"><div class="node-dot"></div><div class="poem-title">speed</div><div class="poem-fragment">it’s all a blur to you</div></a></li>
+        <li><a class="poem-card" href="survivor.html"><div class="node-dot"></div><div class="poem-title">survivor</div><div class="poem-fragment">Here we are. We are here</div></a></li>
+        <li><a class="poem-card" href="timeout.html"><div class="node-dot"></div><div class="poem-title">timeout</div><div class="poem-fragment">a consensus of algorithms decides the deer should appear now</div></a></li>
+        <li><a class="poem-card" href="mouth.html"><div class="node-dot"></div><div class="poem-title" lang="ja">口</div><div class="poem-fragment">that mouth · underwater · sa idalum sang kawayan</div></a></li>
+      </ul>
+    </main>
+
+    <footer class="archive-footer">
+      <span>fifteen standalone pieces</span>
+      <a href="../">return to xyhtamura.github.io</a>
+    </footer>
+  </div>
+
+  <script>
+    // Drift button functionality
+    const driftButton = document.querySelector("#drift");
+    const poems = [...document.querySelectorAll(".poem-card")];
+    driftButton.addEventListener("click", () => {
+      const destination = poems[Math.floor(Math.random() * poems.length)];
+      window.location.assign(destination.href);
+    });
+
+    // Temporary Theme Switcher Bar logic
+    const switcherBtns = document.querySelectorAll("[data-set-theme]");
+    switcherBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const theme = btn.dataset.setTheme;
+        document.documentElement.setAttribute("data-theme", theme);
+        switcherBtns.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+      });
+    });
+  </script>
+</body>
+</html>

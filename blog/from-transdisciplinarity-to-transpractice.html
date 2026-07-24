@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="description" content="Why the disciplinarity taxonomy — multi-, inter-, trans-, even anti- and post- — never leaves the university, and what changing the root word to 'practice' does.">
+<meta name="keywords" content="Xyh Tamura, transpractice, transdisciplinarity, interdisciplinarity, disciplinarity, Born and Barry, Ramon Santos, provincializing disciplines, vernacular knowledge">
+<meta property="og:title" content="From Transdisciplinary to Transpractice — Xyh Tamura">
+<meta property="og:description" content="You can prefix your way from multi- to un-disciplinary and the root never moves. Change the root instead.">
+<meta property="og:url" content="https://xyhtamura.github.io/blog/from-transdisciplinarity-to-transpractice.html">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>From Transdisciplinary to Transpractice — Xyh Tamura</title>
+  <style>
+  :root{
+    --bg:#f4efe8;
+    --bg2:#ece4da;
+    --paper:rgba(255,251,247,.9);
+    --ink:#1a1818;
+    --muted:#6f655f;
+    --line:rgba(92,74,63,.22);
+
+    --accent:#5b4fd1;
+    --accent-soft:#7c71ee;
+    --accent-2:#138a7a;
+    --accent-3:#b86a4b;
+
+    --shadow:0 18px 50px rgba(48,28,20,.10);
+    --shadow-soft:0 8px 24px rgba(48,28,20,.06);
+    --radius:20px;
+    --max:880px;
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+
+  body{
+    margin:0;
+    font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+    color:var(--ink);
+    line-height:1.78;
+    background:
+      radial-gradient(circle at top left, rgba(91,79,209,.08), transparent 34%),
+      radial-gradient(circle at top right, rgba(19,138,122,.07), transparent 30%),
+      linear-gradient(180deg, var(--bg2) 0%, var(--bg) 38%, #f7f2ec 100%);
+    text-rendering:optimizeLegibility;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .site-wrap{ padding:56px 20px 96px; }
+
+  .post{
+    max-width:var(--max);
+    margin:0 auto;
+    background:var(--paper);
+    backdrop-filter:blur(8px);
+    border:1px solid rgba(255,255,255,.6);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:56px 62px 72px;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .post::before{
+    content:"";
+    position:absolute;
+    inset:0 0 auto 0;
+    height:6px;
+    background:linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
+    opacity:.95;
+  }
+
+  .eyebrow{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:.78rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--accent-2);
+    margin-bottom:18px;
+    font-weight:700;
+  }
+
+  h1{
+    font-size:clamp(2.25rem, 5vw, 3.75rem);
+    line-height:1.02;
+    font-weight:600;
+    letter-spacing:-.02em;
+    margin:0 0 16px;
+    max-width:15ch;
+  }
+
+  .meta{
+    font-family: Arial, Helvetica, sans-serif;
+    color:var(--muted);
+    font-size:.95rem;
+    margin-bottom:34px;
+    padding-bottom:22px;
+    border-bottom:1px solid var(--line);
+  }
+
+  .meta a, .footer a{
+    color:var(--accent);
+    text-decoration:none;
+    border-bottom:1px solid transparent;
+    transition:.2s ease;
+  }
+
+  .meta a:hover, .footer a:hover{
+    color:var(--accent-2);
+    border-bottom-color:currentColor;
+  }
+
+  .lede{
+    font-size:1.16rem;
+    line-height:1.85;
+    color:#2a2523;
+    margin-bottom:34px;
+    max-width:58ch;
+  }
+
+  p{ margin:0 0 1.25em; font-size:1.06rem; }
+  strong{ color:#141212; }
+  em{ color:#332c48; }
+
+  .defs{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:14px;
+    margin:30px 0 34px;
+  }
+
+  .def{
+    position:relative;
+    padding:16px 18px 16px 22px;
+    background:linear-gradient(180deg, rgba(255,255,255,.72), rgba(248,242,236,.88));
+    border:1px solid rgba(91,79,209,.12);
+    border-radius:16px;
+    box-shadow:var(--shadow-soft);
+  }
+
+  .def::before{
+    content:"";
+    position:absolute;
+    left:0; top:14px; bottom:14px;
+    width:4px;
+    border-radius:999px;
+    background:linear-gradient(180deg, var(--accent), var(--accent-2));
+  }
+
+  .def strong{
+    display:inline-block;
+    min-width:150px;
+    color:var(--accent);
+  }
+
+  .figure{
+    margin:46px auto 46px;
+    padding:28px 18px 18px;
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+
+  .figure-title{
+    text-align:center;
+    font-family: Arial, Helvetica, sans-serif;
+    text-transform:uppercase;
+    letter-spacing:.16em;
+    color:var(--muted);
+    font-size:.78rem;
+    margin-bottom:20px;
+  }
+
+  .diagram-wrap{
+    max-width:720px;
+    margin:0 auto;
+    padding:12px;
+    border-radius:22px;
+    background:
+      radial-gradient(circle at center, rgba(91,79,209,.05), transparent 60%),
+      rgba(255,255,255,.35);
+  }
+
+  .figure-img{
+    display:block;
+    width:100%;
+    max-width:560px;
+    height:auto;
+    margin:0 auto;
+    border-radius:14px;
+    background:#fff;
+    padding:14px;
+    box-shadow:var(--shadow-soft);
+  }
+
+  svg{ width:100%; height:auto; display:block; }
+
+  .label{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:19px;
+    font-weight:700;
+    letter-spacing:.06em;
+    fill:#201d24;
+  }
+
+  .small{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:13px;
+    fill:var(--muted);
+    letter-spacing:.03em;
+  }
+
+  .note{
+    text-align:center;
+    color:var(--muted);
+    font-size:.96rem;
+    line-height:1.7;
+    margin-top:16px;
+    max-width:62ch;
+    margin-left:auto;
+    margin-right:auto;
+  }
+
+  .footer{
+    margin-top:46px;
+    padding-top:22px;
+    border-top:1px solid var(--line);
+    font-family: Arial, Helvetica, sans-serif;
+    color:var(--muted);
+    font-size:.93rem;
+  }
+
+  .cite{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:.72em;
+    line-height:0;
+    margin-left:.08em;
+    vertical-align:super;
+  }
+
+  .cite a{ color:var(--accent); text-decoration:none; border-bottom:0; }
+  .cite a:hover{ color:var(--accent-2); }
+
+  .refs{
+    margin-top:42px;
+    padding-top:24px;
+    border-top:1px solid var(--line);
+  }
+
+  .refs h2{
+    margin:0 0 18px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:.95rem;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--accent-2);
+  }
+
+  .refs ol{ margin:0; padding-left:1.25rem; }
+
+  .refs li{
+    margin:0 0 1em;
+    padding-left:.25rem;
+    font-size:.95rem;
+    line-height:1.65;
+  }
+
+  .refs a, .backref{
+    color:var(--accent);
+    text-decoration:none;
+    border-bottom:1px solid transparent;
+    transition:.2s ease;
+  }
+
+  .refs a:hover, .backref:hover{
+    color:var(--accent-2);
+    border-bottom-color:currentColor;
+  }
+
+  .backref{ white-space:nowrap; }
+
+  ::selection{ background:rgba(91,79,209,.18); }
+
+  @media (max-width: 860px){
+    .post{ padding:38px 28px 48px; border-radius:18px; }
+    h1{ max-width:none; }
+    .def strong{ min-width:auto; display:block; margin-bottom:2px; }
+  }
+
+  @media (max-width: 700px){
+    .site-wrap{ padding:24px 12px 56px; }
+    .post{ padding:28px 18px 38px; }
+    .lede, p{ font-size:1rem; }
+    .label{ font-size:16px; }
+    .small{ font-size:11.5px; }
+  }
+</style>
+  <link rel="stylesheet" href="blog.css">
+</head>
+<body>
+  <div class="site-wrap">
+    <article class="post">
+      <div class="eyebrow">Blog Post</div>
+      <h1>From Transdisciplinary to Transpractice</h1>
+      <div class="meta">
+        By <strong>Xyh Tamura</strong> · July 23, 2026 ·
+        <a href="https://xyhtamura.github.io">xyhtamura.github.io</a>
+      </div>
+
+      <p class="lede">
+        A large literature sorts multidisciplinary from interdisciplinary from transdisciplinary, but the <em>discipline</em> is an artifact of the university.
+      </p>
+
+      <section class="defs">
+        <div class="def">
+          <p><strong>Multidisciplinary</strong> disciplines work side by side on a shared problem, each keeping its own terms.<sup class="cite"><a id="cite-oecd" href="#ref-oecd">1</a></sup></p>
+        </div>
+        <div class="def">
+          <p><strong>Interdisciplinary</strong> disciplines work jointly, still from their own disciplinary perspectives.<sup class="cite"><a id="cite-klein" href="#ref-klein">2</a></sup></p>
+        </div>
+        <div class="def">
+          <p><strong>Transdisciplinary</strong> a shared framework is built across disciplines, often reaching for stakeholders outside them.<sup class="cite"><a id="cite-nicolescu" href="#ref-nicolescu">3</a></sup></p>
+        </div>
+      </section>
+
+      <p>
+        Enrico Isidori has pushed this ladder further than most. Past transdisciplinary he adds <em>crossdisciplinary</em>,
+        then <em>antidisciplinary</em>, <em>alterdisciplinary</em>, <em>post-disciplinary</em>, <em>undisciplinary</em> and an
+        <a href="https://www.instagram.com/p/DU0SpHWiBFp/">&ldquo;off-disciplinary&rdquo; region</a> for knowledge meant to leave the disciplines behind.<sup class="cite"><a id="cite-isidori" href="#ref-isidori">4</a></sup>
+        Though, every rung, including the ones built to escape,
+        still ends in <em>-disciplinary</em>. I think it's difficult to prefix your way out of disciplinarity.
+      </p>
+
+      <figure class="figure">
+        <div class="figure-title">Fig. 1 — Ten ways to keep the university</div>
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 700 400" role="img" aria-label="A vertical list of ten terms — intra-, multi-, cross-, inter-, trans-, anti-, alter-, post-, un-, off- — each ending in the same highlighted word 'disciplinary'. A label reads: the root never moves.">
+            <rect x="250" y="28" width="222" height="346" rx="10" fill="rgba(91,79,209,.07)"/>
+            <!-- prefixes (variable, right-aligned) + suffix (constant, highlighted) -->
+            <g class="label" font-size="18">
+              <text x="248" y="58" text-anchor="end" fill="#201d24">intra-</text>
+              <text x="248" y="91" text-anchor="end" fill="#201d24">multi-</text>
+              <text x="248" y="124" text-anchor="end" fill="#201d24">cross-</text>
+              <text x="248" y="157" text-anchor="end" fill="#201d24">inter-</text>
+              <text x="248" y="190" text-anchor="end" fill="#201d24">trans-</text>
+              <text x="248" y="223" text-anchor="end" fill="#201d24">anti-</text>
+              <text x="248" y="256" text-anchor="end" fill="#201d24">alter-</text>
+              <text x="248" y="289" text-anchor="end" fill="#201d24">post-</text>
+              <text x="248" y="322" text-anchor="end" fill="#201d24">un-</text>
+              <text x="248" y="355" text-anchor="end" fill="#201d24">off-</text>
+            </g>
+            <g class="label" font-size="18" fill="#5b4fd1">
+              <text x="256" y="58">disciplinary</text>
+              <text x="256" y="91">disciplinary</text>
+              <text x="256" y="124">disciplinary</text>
+              <text x="256" y="157">disciplinary</text>
+              <text x="256" y="190">disciplinary</text>
+              <text x="256" y="223">disciplinary</text>
+              <text x="256" y="256">disciplinary</text>
+              <text x="256" y="289">disciplinary</text>
+              <text x="256" y="322">disciplinary</text>
+              <text x="256" y="355">disciplinary</text>
+            </g>
+            <line x1="484" y1="40" x2="484" y2="362" stroke="#a9977f" stroke-width="2"/>
+            <text x="498" y="195" class="small" font-weight="bold" fill="#1f1f1f">the root</text>
+            <text x="498" y="214" class="small" font-weight="bold" fill="#1f1f1f">never moves</text>
+          </svg>
+        </div>
+        <p class="note">The disciplinarity ladder, after Isidori's &ldquo;approach space&rdquo;
+        (<a href="https://www.instagram.com/p/DU0SpHWiBFp/">2026</a>). He runs it all the way from
+        <em>intra-</em> to <em>off-</em>. Every rung still ends in the same word.</p>
+      </figure>
+
+      <p>
+        Andrew Barry and Georgina Born make the ceiling explicit. Among their three modes of interdisciplinarity, the sharpest
+        is the <em>agonistic-antagonistic</em>: interdisciplinarity &ldquo;driven by an agonistic or antagonistic relation to
+        existing or prior forms of disciplinary knowledge.&rdquo;<sup class="cite"><a id="cite-bornbarry" href="#ref-bornbarry">5</a></sup>
+        Even here — the mode that contests the disciplines hardest — the work is defined by what it opposes. The discipline still
+        sets the coordinates. Negation is not an exit.
+      </p>
+
+      <p>
+        The exit is not another prefix. It is a different root. Keep <em>trans-</em>; drop <em>-discipline</em>; attach it to <em>practice</em>.
+        <strong>Transpractice.</strong>
+      </p>
+
+      <figure class="figure">
+        <div class="figure-title">Fig. 2 — Swap the root, not the prefix</div>
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 720 300" role="img" aria-label="A column of prefixes points at a locked root, DISCIPLINE, marked as an artifact of the university. An arrow swaps the root to PRACTICE, a cultural practice, releasing the family transpractice, translocal, transvernacular, transsubcultural.">
+            <!-- prefixes -->
+            <text x="70" y="60" text-anchor="middle" class="small" font-weight="bold" fill="#1f1f1f">multi-</text>
+            <text x="70" y="90" text-anchor="middle" class="small" font-weight="bold" fill="#1f1f1f">inter-</text>
+            <text x="70" y="120" text-anchor="middle" class="small" font-weight="bold" fill="#1f1f1f">trans-</text>
+            <text x="70" y="150" text-anchor="middle" class="small" font-weight="bold" fill="#1f1f1f">anti-</text>
+            <text x="70" y="180" text-anchor="middle" class="small" font-weight="bold" fill="#1f1f1f">post-</text>
+            <text x="70" y="210" text-anchor="middle" class="small" font-weight="bold" fill="#1f1f1f">un-</text>
+
+            <!-- converging arrows -->
+            <line x1="110" y1="55" x2="180" y2="120" stroke="#a9977f" stroke-width="2"/>
+            <line x1="110" y1="115" x2="180" y2="128" stroke="#a9977f" stroke-width="2"/>
+            <line x1="110" y1="205" x2="180" y2="140" stroke="#a9977f" stroke-width="2"/>
+
+            <!-- locked root -->
+            <rect x="185" y="105" width="150" height="52" rx="12" fill="#f3efe7" stroke="#7a5a3f" stroke-width="2"/>
+            <text x="260" y="130" text-anchor="middle" class="label" fill="#7a5a3f">DISCIPLINE</text>
+            <text x="260" y="150" text-anchor="middle" class="small">artifact of the university</text>
+
+            <!-- swap arrow -->
+            <line x1="345" y1="131" x2="420" y2="131" stroke="#5b4fd1" stroke-width="3"/>
+            <polygon points="420,124 436,131 420,138" fill="#5b4fd1"/>
+            <text x="388" y="118" text-anchor="middle" class="small" font-weight="bold" fill="#5b4fd1">swap the root</text>
+
+            <!-- new root -->
+            <rect x="440" y="105" width="140" height="52" rx="12" fill="#eef5f2" stroke="#138a7a" stroke-width="2"/>
+            <text x="510" y="130" text-anchor="middle" class="label" fill="#0f6f62">PRACTICE</text>
+            <text x="510" y="150" text-anchor="middle" class="small">a cultural practice</text>
+
+            <!-- released family -->
+            <line x1="580" y1="120" x2="628" y2="70" stroke="#138a7a" stroke-width="2"/>
+            <line x1="580" y1="128" x2="632" y2="112" stroke="#138a7a" stroke-width="2"/>
+            <line x1="580" y1="140" x2="632" y2="168" stroke="#138a7a" stroke-width="2"/>
+            <line x1="580" y1="150" x2="628" y2="210" stroke="#138a7a" stroke-width="2"/>
+            <text x="636" y="66" class="small" font-weight="bold" fill="#0f6f62">trans&#183;practice</text>
+            <text x="638" y="112" class="small" fill="#1f1f1f">trans&#183;local</text>
+            <text x="638" y="172" class="small" fill="#1f1f1f">trans&#183;vernacular</text>
+            <text x="632" y="214" class="small" fill="#1f1f1f">trans&#183;subcultural</text>
+          </svg>
+        </div>
+        <p class="note">A new prefix keeps the university at the center. A new root moves it.</p>
+      </figure>
+
+      <p>
+        &ldquo;Practice&rdquo; is an anthropological unit, not an academic one.<sup class="cite"><a id="cite-latour" href="#ref-latour">6</a></sup>
+        It treats a discipline as one kind of cultural practice among others — particle physics, backstrap weaving, a funeral rite,
+        a mortar and pestle — rather than as the ruler the others are measured against. To name the disciplines as practices is to
+        <em>provincialize</em> them:<sup class="cite"><a id="cite-chakrabarty" href="#ref-chakrabarty">7</a></sup> to withdraw their claim to be the
+        neutral center from which every other knowledge is ranked. The move has a flattening effect on the culture and the power the
+        older word carries quietly.
+      </p>
+
+      <p>
+        The stakes show up at the moment of naming. Ramon Santos calls the very notion of &ldquo;music&rdquo; &ldquo;an inheritance
+        from western European culture,&rdquo; one that leaves &ldquo;all other musical traditions&hellip; qualitatively and aesthetically
+        disadvantaged.&rdquo;<sup class="cite"><a id="cite-santos" href="#ref-santos">8</a></sup> Take him at his word and a further
+        question opens under it: a knock on a door, a mortar and pestle, the sounds made after a death — are these even
+        &ldquo;music,&rdquo; or a sonic practice the word only strains to hold? Name them &ldquo;music&rdquo; and you carry the
+        expectations of Western art music into a room they never lived in. The same happens when a craft with ritual or ludic use
+        enters the white cube as &ldquo;art&rdquo; — a modern European boundary<sup class="cite"><a id="cite-shiner" href="#ref-shiner">9</a></sup>
+        that lifts the object out of the belief systems and rituals that gave it meaning<sup class="cite"><a id="cite-guillermo" href="#ref-guillermo">10</a></sup> —
+        or when oral folklore is admitted as &ldquo;literature.&rdquo; The object gains a room and loses its reasons. Whether the
+        definition of music should expand to hold these sounds, or whether it breaks, or whether the practice should simply be
+        left as itself, I don't know. That the renaming does something — saddles a practice with a burden it never asked for — is the point.
+      </p>
+
+      <p>
+        Universities already lean this way. Transdisciplinarity's turn to stakeholders — research <em>subjects</em> reframed as
+        <em>participants</em> — is a half-step toward flattening the hierarchy between expert and non-expert knowledge. Transpractice
+        takes the step the rest of the way, and turns it back on the university: it provincializes the disciplines themselves, into
+        practices. It is a semantic move, and semantics is where this particular fight is decided. Once <em>practice</em> holds the
+        center, the other <em>trans-</em> words have somewhere to stand — <em>translocal</em>, <em>transvernacular</em>,
+        <em>transsubcultural</em> — none of which can mean much while <em>discipline</em> holds it instead.
+      </p>
+
+      <section class="refs" aria-labelledby="references">
+        <h2 id="references">References</h2>
+        <ol>
+          <li id="ref-oecd">
+            Apostel, Leo, Guy Berger, Asa Briggs, and Guy Michaud, eds. <em>Interdisciplinarity: Problems of Teaching and Research in Universities</em>. Paris: OECD/CERI, 1972. <a class="backref" href="#cite-oecd">back to text</a>
+          </li>
+          <li id="ref-klein">
+            Klein, Julie Thompson. <em>Interdisciplinarity: History, Theory, and Practice</em>. Detroit: Wayne State University Press, 1990. <a class="backref" href="#cite-klein">back to text</a>
+          </li>
+          <li id="ref-nicolescu">
+            Nicolescu, Basarab. <em>Manifesto of Transdisciplinarity</em>. Translated by Karen-Claire Voss. Albany: State University of New York Press, 2002. <a class="backref" href="#cite-nicolescu">back to text</a>
+          </li>
+          <li id="ref-isidori">
+            Isidori, Enrico. &ldquo;Approach Space&rdquo; (disciplinarity diagram). Instagram, 2026. <a href="https://www.instagram.com/p/DU0SpHWiBFp/">instagram.com/p/DU0SpHWiBFp</a>. <a class="backref" href="#cite-isidori">back to text</a>
+          </li>
+          <li id="ref-bornbarry">
+            Barry, Andrew, and Georgina Born, eds. <em>Interdisciplinarity: Reconfigurations of the Social and Natural Sciences</em>. London: Routledge, 2013. <a class="backref" href="#cite-bornbarry">back to text</a>
+          </li>
+          <li id="ref-latour">
+            Latour, Bruno. <em>We Have Never Been Modern</em>. Translated by Catherine Porter. Cambridge, MA: Harvard University Press, 1993. <a class="backref" href="#cite-latour">back to text</a>
+          </li>
+          <li id="ref-chakrabarty">
+            Chakrabarty, Dipesh. <em>Provincializing Europe: Postcolonial Thought and Historical Difference</em>. Princeton: Princeton University Press, 2000. <a class="backref" href="#cite-chakrabarty">back to text</a>
+          </li>
+          <li id="ref-santos">
+            Santos, Ramon Pagayon. <em>Tunugan: Four Essays on Filipino Music</em>. Quezon City: University of the Philippines Press, 2005. <a class="backref" href="#cite-santos">back to text</a>
+          </li>
+          <li id="ref-shiner">
+            Shiner, Larry. <em>The Invention of Art: A Cultural History</em>. Chicago: University of Chicago Press, 2001. <a class="backref" href="#cite-shiner">back to text</a>
+          </li>
+          <li id="ref-guillermo">
+            Guillermo, Alice G. <em>Image to Meaning: Essays on Philippine Art</em>. Quezon City: Ateneo de Manila University Press, 2001. <a class="backref" href="#cite-guillermo">back to text</a>
+          </li>
+        </ol>
+      </section>
+
+      <div class="footer">
+        Posted by Xyh Tamura &middot; Blog index:
+        <a href="./">blog</a> &middot; Main page:
+        <a href="https://xyhtamura.github.io">xyhtamura.github.io</a>
+      </div>
+    </article>
+  </div>
+</body>
+</html>

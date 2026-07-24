@@ -349,11 +349,38 @@ text-shadow:
 .tile img,.tile video{width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit;}
 
 @media(max-width:600px){
-  .tile{height:110px;}
-  .t1,.t5{min-width:130px;}
-  .t3{min-width:160px;}
-  .t2,.t4{min-width:100px;}
-  .t6{min-width:115px;}
+  /* phone: gallery becomes a horizontal swipe strip (no long vertical scroll),
+     with a soft fade at both edges to signal off-screen tiles */
+  .gallery{
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    overflow-y:hidden;
+    -webkit-overflow-scrolling:touch;
+    scroll-snap-type:x proximity;
+    padding:.2rem 0 22px; /* bottom room so tiles clear the thicker bar */
+    scrollbar-width:auto; /* Firefox: chunkier bar, easier to grab */
+    scrollbar-color:var(--scrollbar-color) transparent;
+    -webkit-mask-image:linear-gradient(to right,transparent 0,#000 20px,#000 calc(100% - 20px),transparent 100%);
+    mask-image:linear-gradient(to right,transparent 0,#000 20px,#000 calc(100% - 20px),transparent 100%);
+  }
+  .tile{
+    flex:0 0 auto;
+    height:120px;
+    min-width:0;
+    scroll-snap-align:start;
+  }
+  .t1,.t3,.t5{width:170px;}
+  .t2,.t4,.t6{width:118px;}
+  .gallery::-webkit-scrollbar{height:13px;}
+  .gallery::-webkit-scrollbar-track{background:rgba(0,0,0,.15);border-radius:20px;margin:0 20px;}
+  .gallery::-webkit-scrollbar-thumb{
+    background:linear-gradient(160deg,var(--scrollbar-color),var(--line-hover-color));
+    border-radius:20px;
+    border:2px solid transparent;background-clip:padding-box; /* slimmer look, full hit area */
+  }
+  /* in-detail media strips: same chunkier bar + breathing room on phone */
+  .media-group{padding-bottom:16px;scrollbar-width:auto;}
+  .media-group::-webkit-scrollbar{height:13px;}
 }
 
 /* ── FILTER (transparent bubble; pills wrap + center) ── */
@@ -528,13 +555,35 @@ text-shadow:
 }
 @media (max-width: 600px){
   .filter{align-items:stretch;justify-content:flex-start;padding:.85rem;margin-bottom:1.1rem;}
-  .filter-search,.filter-tags{width:100%;justify-content:flex-start;}
+  /* drop the big row-oriented flex-basis (30rem/16rem) so columns shrink to
+     viewport instead of forcing page-wide horizontal scroll */
+  .filter-search,.filter-tags{width:100%;justify-content:flex-start;flex:1 1 auto;min-width:0;}
   .filter-search{flex-direction:column;align-items:stretch;gap:.35rem;}
   .filter-search .lbl{margin-right:0;}
-  .search-field{width:100%;max-width:none;min-width:0;}
-  .entry > summary{grid-template-columns:5.5rem 1fr;grid-template-rows:auto auto;gap:.25rem .7rem;padding:.85rem .95rem;}
-  .chips{grid-column:1/-1;justify-content:flex-start;padding-left:4.1rem;max-width:none;}
+  /* flex:1 1 12rem was a WIDTH basis in the row layout; in this column it
+     became a 12rem HEIGHT, inflating the search box. size to content instead */
+  .search-field{width:100%;max-width:none;min-width:0;flex:0 0 auto;}
+  /* category tooltips are hover-only (useless on touch) and their max-content
+     bubbles bleed past the right edge → page-wide horizontal scroll. drop them */
+  .filter [data-tooltip]::before,
+  .filter [data-tooltip]::after{content:none;}
+  /* summary as a wrapping flex row instead of a fixed grid: title keeps its
+     natural width, chips ride the right edge (margin-left:auto) and only drop
+     to a new line when they truly don't fit — no longer forced to own row */
+  .entry > summary{
+    display:flex;flex-wrap:wrap;align-items:center;
+    gap:.35rem .6rem;padding:.85rem .95rem;
+  }
+  .entry .year{flex:0 0 auto;}
+  .entry .title{flex:0 1 auto;min-width:0;}
+  .chips{flex:0 0 auto;margin-left:auto;justify-content:flex-end;max-width:none;}
   .body{padding:.2rem .95rem 1.3rem 4.1rem; align-items: flex-start;} /* Added align-items reset */
+}
+@media (max-width:480px){
+  /* thin phones: date pills are low-value — hide them so title + tags get the
+     full width (year stays in the HTML for crawlers/readers) */
+  .entry .year{display:none;}
+  .body{padding-left:.95rem;}
 }
 @media (prefers-reduced-motion:reduce){
   .tile{animation:none;}
@@ -835,7 +884,7 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
     <a class="glass" href="https://open.spotify.com/artist/6sC8YWzht783z5DhjB1j0N" target="_blank" rel="noopener">spotify</a>
     <a class="glass" href="https://soundcloud.com/xyh-tamura" target="_blank" rel="noopener">soundcloud</a>
     <a class="glass" href="blog/">blog</a>
-	<a class="glass" href="poetry/">poetry</a>
+	<a class="glass" href="shortlit/">short lit</a>
 	<a class="glass" href="https://www.researchgate.net/profile/Xyh-Tamura" target="_blank" rel="noopener">researchgate</a>
 	<a class="glass" href="https://scholar.google.com/citations?user=-KKjd50AAAAJ" target="_blank" rel="noopener">google scholar</a>
 	<a class="glass" href="https://www.imdb.com/name/nm9964342/" target="_blank" rel="noopener">imdb</a>

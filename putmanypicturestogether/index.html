@@ -699,6 +699,9 @@ input{
   box-shadow:
     inset 0 0 0 1px rgba(255,255,255,.64),
     inset 0 0 30px rgba(43,34,51,.08);
+  touch-action:none;
+  user-select:none;
+  -webkit-user-select:none;
 }
 
 .stage.transparent-bg{
@@ -707,15 +710,20 @@ input{
 
 .stage-img{
   position:absolute;
-  pointer-events:none;
+  pointer-events:auto;
+  cursor:grab;
   background:#fff;
   border:1px solid rgba(43,34,51,.38);
   border-radius:12px 8px 14px 9px;
   overflow:hidden;
+  touch-action:none;
+  user-select:none;
+  -webkit-user-select:none;
   box-shadow:
     2px 2px 0 rgba(43,34,51,.15),
     0 0 0 3px rgba(255,255,255,.78),
     0 0 14px rgba(102,214,189,.12);
+  transition:transform .1s ease, box-shadow .1s ease;
 }
 
 .stage-img img{
@@ -727,13 +735,18 @@ input{
   pointer-events:none;
 }
 
-.stage-img.freeform-mode{
-  pointer-events:auto;
-  cursor:grab;
+.stage-img.dragging{
+  cursor:grabbing;
+  z-index:20;
+  box-shadow:
+    5px 5px 0 rgba(43,34,51,.25),
+    0 0 0 3px var(--violet-pen),
+    0 0 20px rgba(169,135,255,.45);
 }
 
-.stage-img.freeform-mode.dragging{
-  cursor:grabbing;
+.stage-img.reorder-target{
+  outline:2px dashed var(--violet-pen);
+  outline-offset:2px;
 }
 
 .stage-remove{
@@ -776,11 +789,102 @@ input{
   z-index:5;
   display:none;
   pointer-events:auto;
+  touch-action:none;
   box-shadow:0 0 10px rgba(169,135,255,.42);
 }
 
 .stage-img.freeform-mode .resize-handle{
   display:block;
+}
+
+/* ---- ratio controls ---- */
+.ratio-controls{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  padding:6px 0;
+  border-top:1px dashed rgba(43,34,51,.25);
+}
+
+.ratio-presets{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:6px;
+}
+
+.ratio-btn{
+  font-size:11.5px;
+  padding:6px 4px;
+  border-radius:12px 8px 14px 9px;
+  border:1.5px solid rgba(43,34,51,.8);
+  background:linear-gradient(135deg, rgba(255,255,255,.92), rgba(255,243,215,.82));
+  color:var(--pencil);
+  cursor:pointer;
+  box-shadow:1px 1px 0 rgba(43,34,51,.15);
+  transition:all .1s ease;
+}
+
+.ratio-btn:hover{
+  transform:translate(-1px,-1px);
+  box-shadow:2px 2px 0 rgba(43,34,51,.2);
+}
+
+.ratio-btn.active{
+  background:linear-gradient(135deg, #ffb7ce, #c8b8ff);
+  border-color:var(--violet-pen);
+  font-weight:700;
+  box-shadow:inset 0 0 0 1px #fff, 1.5px 1.5px 0 rgba(43,34,51,.2);
+}
+
+.custom-ratio-inputs{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:13px;
+  font-weight:700;
+}
+
+.ratio-input{
+  width:55px;
+  padding:4px 6px;
+  border:1.5px solid rgba(43,34,51,.8);
+  border-radius:10px 7px 11px 8px;
+  background:#fff;
+  font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* ---- snap & reorder indicators ---- */
+.snap-guide{
+  position:absolute;
+  pointer-events:none;
+  z-index:30;
+  display:none;
+}
+
+.snap-guide-x{
+  border-top:2px dashed var(--red-pencil);
+  left:0;
+  right:0;
+  height:0;
+  box-shadow:0 0 6px rgba(219,90,120,.5);
+}
+
+.snap-guide-y{
+  border-left:2px dashed var(--red-pencil);
+  top:0;
+  bottom:0;
+  width:0;
+  box-shadow:0 0 6px rgba(219,90,120,.5);
+}
+
+.reorder-drop-indicator{
+  position:absolute;
+  pointer-events:none;
+  z-index:25;
+  background:var(--red-pencil);
+  border-radius:3px;
+  display:none;
+  box-shadow:0 0 10px rgba(219,90,120,.7);
 }
 
 .empty-state{
@@ -917,10 +1021,28 @@ body.dragging-file .drag-overlay{
   <p class="eyebrow">2. Put them together</p>
   <div class="mode-grid">
     <button class="mode-btn active" data-mode="justified">Make rows</button>
-    <button class="mode-btn" data-mode="square">Make a square</button>
+    <button class="mode-btn" data-mode="square">Fit shape</button>
     <button class="mode-btn" data-mode="row">One long line</button>
     <button class="mode-btn" data-mode="column">Stack them</button>
     <button class="mode-btn" data-mode="freeform" style="grid-column:1 / span 2;">Move by hand</button>
+  </div>
+
+  <div class="ratio-controls" id="ratioControls" style="display:none;">
+    <span class="label-inline">Shape ratio</span>
+    <div class="ratio-presets">
+      <button class="ratio-btn active" data-ratio="1:1">1:1 Square</button>
+      <button class="ratio-btn" data-ratio="4:3">4:3</button>
+      <button class="ratio-btn" data-ratio="16:9">16:9</button>
+      <button class="ratio-btn" data-ratio="9:16">9:16 Story</button>
+      <button class="ratio-btn" data-ratio="3:2">3:2</button>
+      <button class="ratio-btn" data-ratio="custom">Custom</button>
+    </div>
+    <div class="custom-ratio-inputs" id="customRatioWrap" style="display:none;">
+      <span class="label-inline">W:H</span>
+      <input type="number" id="ratioW" min="0.1" max="100" value="16" step="any" class="ratio-input">
+      <span>:</span>
+      <input type="number" id="ratioH" min="0.1" max="100" value="9" step="any" class="ratio-input">
+    </div>
   </div>
 
   <label class="slider-label" id="gapSliderWrap">
@@ -933,11 +1055,11 @@ body.dragging-file .drag-overlay{
     <input type="range" id="sizeSlider" min="60" max="600" value="260">
   </label>
 
-  <p class="hint" id="squareHint" style="display:none;">The row size adjusts itself so the whole thing becomes roughly square.</p>
+  <p class="hint" id="squareHint" style="display:none;">The row size adjusts itself so the photos fit into the target frame ratio.</p>
 
   <div class="freeform-controls" id="freeformControls" style="display:none;">
     <button id="resetFreeformBtn" class="btn btn-ghost">Put back in rows</button>
-    <p class="hint">Drag a picture to move it. Drag its corner dot to resize. Nothing is ever cropped.</p>
+    <p class="hint">Drag a picture to move it. Edges snap & pictures never intersect. Drag corner dot to resize.</p>
   </div>
 
   <div class="bg-row">
@@ -974,7 +1096,11 @@ body.dragging-file .drag-overlay{
 
     <main class="stage-frame" id="stageFrame">
       <div class="stage-wrap" id="stageWrap">
-        <div class="stage" id="stage"></div>
+        <div class="stage" id="stage">
+          <div id="snapGuideX" class="snap-guide snap-guide-x"></div>
+          <div id="snapGuideY" class="snap-guide snap-guide-y"></div>
+          <div id="reorderIndicator" class="reorder-drop-indicator"></div>
+        </div>
       </div>
 <div class="empty-state" id="emptyState">
   <p>Drop pictures here, or paste with Ctrl / ⌘ + V</p>
@@ -1000,6 +1126,9 @@ body.dragging-file .drag-overlay{
   let nextId = 1;
   let mode = 'justified';
   let lastAutoMode = 'justified';
+  let targetRatioPreset = '1:1';
+  let customRatioW = 16;
+  let customRatioH = 9;
   let gap = 12;
   let targetSize = 260;
   let bgMode = 'paper';
@@ -1027,6 +1156,13 @@ body.dragging-file .drag-overlay{
   const squareHint = el('squareHint');
   const freeformControls = el('freeformControls');
   const resetFreeformBtn = el('resetFreeformBtn');
+  const ratioControls = el('ratioControls');
+  const ratioButtons = Array.from(document.querySelectorAll('.ratio-btn'));
+  const customRatioWrap = el('customRatioWrap');
+  const ratioWInput = el('ratioW');
+  const ratioHInput = el('ratioH');
+  const snapGuideX = el('snapGuideX');
+  const snapGuideY = el('snapGuideY');
   const bgSwatches = Array.from(document.querySelectorAll('.swatch'));
   const customBgInput = el('customBgInput');
   const scaleSlider = el('scaleSlider');
@@ -1042,7 +1178,18 @@ body.dragging-file .drag-overlay{
   const emptyState = el('emptyState');
   const dragOverlay = el('dragOverlay');
 
-  // ---------- layout math ----------
+  // ---------- layout math & ratio ----------
+  function getTargetRatio(){
+    if (targetRatioPreset === 'custom'){
+      const w = Math.max(0.1, customRatioW || 1);
+      const h = Math.max(0.1, customRatioH || 1);
+      return w / h;
+    }
+    const parts = targetRatioPreset.split(':');
+    if (parts.length === 2) return (+parts[0]) / (+parts[1]);
+    return 1;
+  }
+
   function computeRows(imgs, containerW, targetH, gapPx){
     const rows = [];
     let row = [], aspectSum = 0;
@@ -1081,15 +1228,16 @@ body.dragging-file .drag-overlay{
     return Math.max(y - gapPx, 0);
   }
 
-  function solveSquareTargetHeight(imgs, containerW, gapPx){
-    let lo = 8, hi = containerW * 1.5;
-    for (let i=0;i<24;i++){
-      const mid = (lo+hi)/2;
+  function solveSquareTargetHeight(imgs, containerW, gapPx, ratio){
+    const targetTotalH = containerW / (ratio || getTargetRatio());
+    let lo = 8, hi = containerW * 3;
+    for (let i = 0; i < 28; i++){
+      const mid = (lo + hi) / 2;
       const rows = computeRows(imgs, containerW, mid, gapPx);
       const h = rowsTotalHeight(rows, gapPx);
-      if (h > containerW) hi = mid; else lo = mid;
+      if (h > targetTotalH) hi = mid; else lo = mid;
     }
-    return (lo+hi)/2;
+    return (lo + hi) / 2;
   }
 
   function recomputeLayout(m){
@@ -1103,7 +1251,7 @@ body.dragging-file .drag-overlay{
       const h = applyRows(rows, gap);
       stageUnits = { w: REF_WIDTH, h };
     } else if (m === 'square'){
-      const th = solveSquareTargetHeight(images, REF_WIDTH, gap);
+      const th = solveSquareTargetHeight(images, REF_WIDTH, gap, getTargetRatio());
       const rows = computeRows(images, REF_WIDTH, th, gap);
       const h = applyRows(rows, gap);
       stageUnits = { w: REF_WIDTH, h };
@@ -1125,6 +1273,118 @@ body.dragging-file .drag-overlay{
     let maxX = 0, maxY = 0;
     images.forEach(im=>{ maxX = Math.max(maxX, im.x + im.w); maxY = Math.max(maxY, im.y + im.h); });
     stageUnits = { w: Math.max(maxX, 40), h: Math.max(maxY, 40) };
+  }
+
+  // ---------- freeform collision & edge snapping ----------
+  function isOverlapping(r1, r2, pad = 0){
+    return !(r1.x + r1.w + pad <= r2.x || r1.x >= r2.x + r2.w + pad || r1.y + r1.h + pad <= r2.y || r1.y >= r2.y + r2.h + pad);
+  }
+
+  function solveCollision(movingRec, candX, candY, w, h, gapPx){
+    let curX = Math.max(0, candX);
+    let curY = Math.max(0, candY);
+    const pad = gapPx;
+
+    for (let pass = 0; pass < 4; pass++){
+      let collided = false;
+      for (const other of images){
+        if (other.id === movingRec.id) continue;
+        const rectA = { x: curX, y: curY, w, h };
+        const rectB = { x: other.x, y: other.y, w: other.w, h: other.h };
+
+        if (isOverlapping(rectA, rectB, pad)){
+          collided = true;
+          const pLeft = (other.x - w - pad) - curX;
+          const pRight = (other.x + other.w + pad) - curX;
+          const pUp = (other.y - h - pad) - curY;
+          const pDown = (other.y + other.h + pad) - curY;
+
+          const options = [
+            { dx: pLeft, dy: 0, d: Math.abs(pLeft) },
+            { dx: pRight, dy: 0, d: Math.abs(pRight) },
+            { dx: 0, dy: pUp, d: Math.abs(pUp) },
+            { dx: 0, dy: pDown, d: Math.abs(pDown) }
+          ];
+          options.sort((a,b)=>a.d - b.d);
+          curX += options[0].dx;
+          curY += options[0].dy;
+        }
+      }
+      if (!collided) break;
+    }
+    curX = Math.max(0, curX);
+    curY = Math.max(0, curY);
+    return { x: curX, y: curY };
+  }
+
+  function snapAndResolvePosition(movingRec, candX, candY, w, h, gapPx){
+    const snapDist = 14;
+    let sx = candX, sy = candY;
+    let guideXVal = null, guideYVal = null;
+
+    const xTargets = [
+      { pos: 0, guide: 0 },
+      { pos: Math.max(0, stageUnits.w - w), guide: stageUnits.w }
+    ];
+    const yTargets = [
+      { pos: 0, guide: 0 },
+      { pos: Math.max(0, stageUnits.h - h), guide: stageUnits.h }
+    ];
+
+    images.forEach(other=>{
+      if (other.id === movingRec.id) return;
+      xTargets.push({ pos: other.x - w - gapPx, guide: other.x - gapPx });
+      xTargets.push({ pos: other.x - w, guide: other.x });
+      xTargets.push({ pos: other.x, guide: other.x });
+      xTargets.push({ pos: other.x + other.w/2 - w/2, guide: other.x + other.w/2 });
+      xTargets.push({ pos: other.x + other.w, guide: other.x + other.w });
+      xTargets.push({ pos: other.x + other.w + gapPx, guide: other.x + other.w + gapPx });
+
+      yTargets.push({ pos: other.y - h - gapPx, guide: other.y - gapPx });
+      yTargets.push({ pos: other.y - h, guide: other.y });
+      yTargets.push({ pos: other.y, guide: other.y });
+      yTargets.push({ pos: other.y + other.h/2 - h/2, guide: other.y + other.h/2 });
+      yTargets.push({ pos: other.y + other.h, guide: other.y + other.h });
+      yTargets.push({ pos: other.y + other.h + gapPx, guide: other.y + other.h + gapPx });
+    });
+
+    let minXDist = snapDist;
+    xTargets.forEach(t=>{
+      const d = Math.abs(candX - t.pos);
+      if (d < minXDist){ minXDist = d; sx = t.pos; guideYVal = t.guide; }
+    });
+
+    let minYDist = snapDist;
+    yTargets.forEach(t=>{
+      const d = Math.abs(candY - t.pos);
+      if (d < minYDist){ minYDist = d; sy = t.pos; guideXVal = t.guide; }
+    });
+
+    const res = solveCollision(movingRec, sx, sy, w, h, gapPx);
+    return {
+      x: res.x, y: res.y,
+      guideX: guideXVal, guideY: guideYVal
+    };
+  }
+
+  function hideSnapGuides(){
+    if (snapGuideX) snapGuideX.style.display = 'none';
+    if (snapGuideY) snapGuideY.style.display = 'none';
+  }
+
+  function showSnapGuides(gx, gy){
+    if (gx !== null && gx !== undefined && snapGuideX){
+      snapGuideX.style.top = (gx * previewScale) + 'px';
+      snapGuideX.style.display = 'block';
+    } else if (snapGuideX){
+      snapGuideX.style.display = 'none';
+    }
+    if (gy !== null && gy !== undefined && snapGuideY){
+      snapGuideY.style.left = (gy * previewScale) + 'px';
+      snapGuideY.style.display = 'block';
+    } else if (snapGuideY){
+      snapGuideY.style.display = 'none';
+    }
   }
 
   // ---------- image loading ----------
@@ -1153,10 +1413,9 @@ body.dragging-file .drag-overlay{
     if (!loaded.length){ setStatus("Couldn't read that as an image."); return; }
     loaded.forEach(rec=>{
       if (mode === 'freeform'){
-        const idx = images.length;
-        const cascade = (idx % 8) * 24;
         rec.w = 260; rec.h = 260 / rec.aspect;
-        rec.x = 20 + cascade; rec.y = 20 + cascade;
+        const res = solveCollision(rec, 20, 20, rec.w, rec.h, gap);
+        rec.x = res.x; rec.y = res.y;
       }
       images.push(rec);
     });
@@ -1179,7 +1438,7 @@ body.dragging-file .drag-overlay{
     updateEmptyState();
   }
 
-  // ---------- rendering ----------
+  // ---------- rendering & interaction ----------
   function makeImageEl(rec){
     const wrap = document.createElement('div');
     wrap.className = 'stage-img';
@@ -1202,32 +1461,72 @@ body.dragging-file .drag-overlay{
     wrap.appendChild(handle);
 
     wrap.addEventListener('pointerdown', (e)=>{
-      if (mode !== 'freeform') return;
       if (e.target === handle || e.target === removeBtn) return;
       e.preventDefault();
       const startX = e.clientX, startY = e.clientY;
       const origX = rec.x, origY = rec.y;
-      wrap.setPointerCapture(e.pointerId);
+      const origIdx = images.findIndex(im=>im.id===rec.id);
+
+      try { wrap.setPointerCapture(e.pointerId); } catch(err){}
       wrap.classList.add('dragging');
+
       function onMove(ev){
-        const dx = (ev.clientX - startX) / previewScale;
-        const dy = (ev.clientY - startY) / previewScale;
-        rec.x = Math.max(0, origX + dx);
-        rec.y = Math.max(0, origY + dy);
-        wrap.style.left = (rec.x * previewScale) + 'px';
-        wrap.style.top = (rec.y * previewScale) + 'px';
+        if (mode === 'freeform'){
+          const dx = (ev.clientX - startX) / previewScale;
+          const dy = (ev.clientY - startY) / previewScale;
+          const snapRes = snapAndResolvePosition(rec, origX + dx, origY + dy, rec.w, rec.h, gap);
+          rec.x = snapRes.x;
+          rec.y = snapRes.y;
+          wrap.style.left = (rec.x * previewScale) + 'px';
+          wrap.style.top = (rec.y * previewScale) + 'px';
+          showSnapGuides(snapRes.guideX, snapRes.guideY);
+        } else {
+          // Reorder mode
+          const rect = stageEl.getBoundingClientRect();
+          const pX = (ev.clientX - rect.left) / previewScale;
+          const pY = (ev.clientY - rect.top) / previewScale;
+
+          let closestIdx = origIdx;
+          let minDist = Infinity;
+          images.forEach((other, i)=>{
+            const cx = other.x + other.w / 2;
+            const cy = other.y + other.h / 2;
+            const d = Math.hypot(pX - cx, pY - cy);
+            if (d < minDist){ minDist = d; closestIdx = i; }
+          });
+
+          stageEls.forEach((n, id)=>{ n.classList.toggle('reorder-target', id === images[closestIdx]?.id); });
+          wrap.dataset.targetIdx = closestIdx;
+        }
       }
-      function onUp(){
-        wrap.releasePointerCapture(e.pointerId);
+
+      function onEnd(ev){
+        try { wrap.releasePointerCapture(e.pointerId); } catch(err){}
         wrap.classList.remove('dragging');
+        hideSnapGuides();
+        stageEls.forEach(n=>n.classList.remove('reorder-target'));
+
         wrap.removeEventListener('pointermove', onMove);
-        wrap.removeEventListener('pointerup', onUp);
-        updateFreeformBounds();
+        wrap.removeEventListener('pointerup', onEnd);
+        wrap.removeEventListener('pointercancel', onEnd);
+
+        if (mode !== 'freeform'){
+          const targetIdx = parseInt(wrap.dataset.targetIdx, 10);
+          if (!isNaN(targetIdx) && targetIdx !== origIdx && targetIdx >= 0 && targetIdx < images.length){
+            const [moved] = images.splice(origIdx, 1);
+            images.splice(targetIdx, 0, moved);
+            recomputeLayout();
+          }
+        } else {
+          updateFreeformBounds();
+        }
         renderStage();
         updateExportUI();
       }
+
       wrap.addEventListener('pointermove', onMove);
-      wrap.addEventListener('pointerup', onUp);
+      wrap.addEventListener('pointerup', onEnd);
+      wrap.addEventListener('pointercancel', onEnd);
     });
 
     handle.addEventListener('pointerdown', (e)=>{
@@ -1235,24 +1534,41 @@ body.dragging-file .drag-overlay{
       e.preventDefault(); e.stopPropagation();
       const startX = e.clientX;
       const origW = rec.w;
-      handle.setPointerCapture(e.pointerId);
+      try { handle.setPointerCapture(e.pointerId); } catch(err){}
+
       function onMove(ev){
         const dx = (ev.clientX - startX) / previewScale;
-        const newW = Math.max(30, origW + dx);
+        let newW = Math.max(30, origW + dx);
+        let newH = newW / rec.aspect;
+
+        // Check collision during resize
+        const pad = gap;
+        for (const other of images){
+          if (other.id === rec.id) continue;
+          if (isOverlapping({ x: rec.x, y: rec.y, w: newW, h: newH }, other, pad)){
+            if (other.x > rec.x){
+              newW = Math.max(30, other.x - rec.x - pad);
+            }
+          }
+        }
         rec.w = newW; rec.h = newW / rec.aspect;
         wrap.style.width = (rec.w * previewScale) + 'px';
         wrap.style.height = (rec.h * previewScale) + 'px';
       }
-      function onUp(){
-        handle.releasePointerCapture(e.pointerId);
+
+      function onEnd(){
+        try { handle.releasePointerCapture(e.pointerId); } catch(err){}
         handle.removeEventListener('pointermove', onMove);
-        handle.removeEventListener('pointerup', onUp);
+        handle.removeEventListener('pointerup', onEnd);
+        handle.removeEventListener('pointercancel', onEnd);
         updateFreeformBounds();
         renderStage();
         updateExportUI();
       }
+
       handle.addEventListener('pointermove', onMove);
-      handle.addEventListener('pointerup', onUp);
+      handle.addEventListener('pointerup', onEnd);
+      handle.addEventListener('pointercancel', onEnd);
     });
 
     return wrap;
@@ -1313,6 +1629,7 @@ body.dragging-file .drag-overlay{
     const showSize = mode === 'justified' || mode === 'row' || mode === 'column';
     sizeSliderWrap.style.display = showSize ? '' : 'none';
     squareHint.style.display = mode === 'square' ? '' : 'none';
+    ratioControls.style.display = mode === 'square' ? '' : 'none';
     el('gapSliderWrap').style.display = mode === 'freeform' ? 'none' : '';
     freeformControls.style.display = mode === 'freeform' ? '' : 'none';
     if (mode === 'justified') sizeLabelText.textContent = 'Target row height';
@@ -1442,6 +1759,23 @@ body.dragging-file .drag-overlay{
       updateExportUI();
     });
   });
+
+  ratioButtons.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      targetRatioPreset = btn.dataset.ratio;
+      ratioButtons.forEach(b=>b.classList.toggle('active', b === btn));
+      customRatioWrap.style.display = targetRatioPreset === 'custom' ? 'flex' : 'none';
+      if (mode === 'square'){ recomputeLayout(); renderStage(); updateExportUI(); }
+    });
+  });
+
+  const onCustomRatioChange = ()=>{
+    customRatioW = parseFloat(ratioWInput.value) || 1;
+    customRatioH = parseFloat(ratioHInput.value) || 1;
+    if (mode === 'square'){ recomputeLayout(); renderStage(); updateExportUI(); }
+  };
+  ratioWInput.addEventListener('input', onCustomRatioChange);
+  ratioHInput.addEventListener('input', onCustomRatioChange);
 
   gapSlider.addEventListener('input', ()=>{
     gap = +gapSlider.value;

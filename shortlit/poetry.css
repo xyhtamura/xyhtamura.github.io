@@ -1,0 +1,597 @@
+@import url("https://fonts.googleapis.com/css2?family=Averia+Libre:ital,wght@0,400;0,700;1,400&family=Averia+Sans+Libre:ital,wght@0,400;0,700;1,400&family=Syne+Mono&display=swap");
+
+:root {
+  /* Satin Instrument Refined Token System — Full Dark Atmospheric Mode */
+  --bg-base: #1a1d24;
+  --bg-gradient: 
+    radial-gradient(ellipse at 82% 14%, rgba(211, 163, 77, 0.16), transparent 30rem),
+    radial-gradient(ellipse at 16% 65%, rgba(77, 190, 171, 0.18), transparent 32rem),
+    radial-gradient(ellipse at 50% 90%, rgba(170, 142, 224, 0.14), transparent 28rem),
+    linear-gradient(150deg, #222630 0%, #171a22 50%, #1f1c28 100%);
+  
+  --surface: rgba(40, 45, 54, 0.68);
+  --surface-hover: rgba(52, 58, 70, 0.90);
+  --surface-border: rgba(185, 200, 215, 0.20);
+  --surface-border-hover: rgba(229, 185, 92, 0.55);
+  
+  --ink: #f2f5f8;
+  --muted: #9aa7b8;
+  
+  /* Multi-hue subtle accent spectrum */
+  --accent-gold: #e5b95c;     /* warm oxidized gold */
+  --accent-teal: #4dbfae;     /* aquatic mint teal */
+  --accent-bruise: #aa8ee0;   /* bruised lavender purple */
+  --accent-rose: #e07a9e;     /* muted rose ash */
+  --accent-amber: #e09f58;    /* citrus amber */
+  
+  --body: "Averia Sans Libre", "Huninn", system-ui, sans-serif;
+  --poem: "Averia Libre", "Huninn", Georgia, serif;
+  --mono: "Syne Mono", "Huninn", ui-monospace, monospace;
+  
+  --shadow: 
+    0 22px 64px rgba(10, 12, 16, 0.6), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.35);
+  --soft-shadow: 
+    0 14px 36px rgba(10, 12, 16, 0.55), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.32),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.4);
+  
+  --node-glow: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.92), var(--accent-teal) 50%, var(--accent-bruise) 80%);
+}
+
+* { box-sizing: border-box; }
+
+html {
+  min-height: 100%;
+  color: var(--ink);
+  background: var(--bg-base);
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  overflow-x: hidden;
+  color: var(--ink);
+  font-family: var(--body);
+  background: var(--bg-gradient);
+  background-attachment: fixed;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  opacity: 0.25;
+  background:
+    linear-gradient(111deg, transparent 0 19%, rgba(77,190,171,0.06) 19.2% 19.7%, transparent 20% 100%),
+    linear-gradient(27deg, transparent 0 68%, rgba(211,163,77,0.05) 68.2% 68.7%, transparent 69% 100%);
+}
+
+a { color: inherit; }
+
+.skip-link {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 20;
+  padding: 8px 14px;
+  color: var(--ink);
+  background: #14171c;
+  border: 1px solid var(--surface-border);
+  border-radius: 12px;
+  transform: translateY(-160%);
+  transition: transform 0.2s ease;
+}
+.skip-link:focus { transform: translateY(0); }
+
+/* Ambient Organ Pods */
+.ambient {
+  position: fixed;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.4;
+  filter: blur(1px);
+}
+
+.ambient-a {
+  top: 8vh;
+  right: -50px;
+  width: 260px;
+  height: 200px;
+  border-radius: 54% 46% 63% 37% / 42% 58% 42% 58%;
+  background: linear-gradient(135deg, rgba(229,185,92,0.35), rgba(77,191,174,0.3), rgba(170,142,224,0.25));
+  animation: drift-a 20s ease-in-out infinite alternate;
+}
+
+.ambient-b {
+  bottom: -60px;
+  left: -40px;
+  width: 220px;
+  height: 240px;
+  border-radius: 62% 38% 45% 55% / 38% 62% 38% 62%;
+  background: linear-gradient(150deg, rgba(170,142,224,0.25), rgba(77,191,174,0.3));
+  animation: drift-b 24s ease-in-out infinite alternate;
+}
+
+@keyframes drift-a { to { transform: translate(-25px, 30px) rotate(6deg) scale(1.04); } }
+@keyframes drift-b { to { transform: translate(20px, -30px) rotate(-5deg) scale(0.96); } }
+
+/* Site Shell */
+.site-shell {
+  width: min(100% - 30px, 960px);
+  margin: 0 auto;
+  position: relative;
+}
+
+.archive-shell { padding: 50px 0 80px; }
+
+/* Unboxed Atmospheric Masthead (Sample.html inspired) */
+.masthead {
+  position: relative;
+  max-width: 960px;
+  margin: 0 0 28px;
+  padding: 4px 6px 12px;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.eyebrow, .kicker {
+  margin: 0 0 6px;
+  color: var(--accent-teal);
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--poem);
+  font-size: clamp(2.8rem, 7vw, 4.2rem);
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.masthead .intro {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-family: var(--body);
+  font-size: 1.02rem;
+  font-style: italic;
+}
+
+/* Cabinet Controls & Compound Organ */
+.cabinet-tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 0 0 28px;
+  padding: 12px 24px;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: 26px 16px 28px 18px;
+  box-shadow: var(--soft-shadow);
+  backdrop-filter: blur(10px);
+}
+
+.cabinet-note {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cabinet-note::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-gold);
+  box-shadow: 0 0 8px var(--accent-gold);
+}
+
+.compound-organ-btn {
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(180deg, rgba(225, 232, 242, 0.14), rgba(85, 95, 110, 0.26));
+  border: 1px solid rgba(220, 230, 245, 0.28);
+  border-radius: 26px;
+  padding: 3px;
+  box-shadow: inset 0 1px 1px rgba(255,255,255,0.32), 0 6px 14px rgba(0,0,0,0.25);
+}
+
+.drift-button, .pearl-link, .site-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 6px 16px;
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+  border: none;
+  border-radius: 20px;
+  background: rgba(225, 232, 242, 0.24);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+}
+
+.drift-button:hover, .pearl-link:hover, .site-link:hover {
+  background: rgba(240, 246, 255, 0.38);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+/* Bare Poem Cards (Non-Lattice Cluster Layout) */
+.poem-cluster {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 16px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.poem-card {
+  position: relative;
+  display: block;
+  padding: 18px 22px;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  text-decoration: none;
+  color: inherit;
+  box-shadow: var(--soft-shadow);
+  backdrop-filter: blur(8px);
+  transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1), 
+              border-color 0.22s ease, 
+              box-shadow 0.22s ease,
+              background-color 0.22s ease;
+}
+
+/* Asymmetrical non-repeating radii for organic instrument cell feel */
+.poem-cluster li:nth-child(3n+1) .poem-card { border-radius: 24px 14px 28px 16px; }
+.poem-cluster li:nth-child(3n+2) .poem-card { border-radius: 16px 26px 18px 28px; }
+.poem-cluster li:nth-child(3n+3) .poem-card { border-radius: 28px 16px 22px 20px; }
+
+/* Subtle rotational offsets */
+.poem-cluster li:nth-child(even) .poem-card { transform: rotate(-0.3deg); }
+.poem-cluster li:nth-child(odd) .poem-card { transform: rotate(0.3deg); }
+
+/* Multi-Hue Accent Cycling across cards for unexpected color spectrum */
+.poem-cluster li:nth-child(4n+1) .poem-card:hover {
+  border-color: rgba(229, 185, 92, 0.65);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.35), 0 0 16px rgba(229, 185, 92, 0.25);
+}
+.poem-cluster li:nth-child(4n+1) .poem-card:hover .poem-title { color: var(--accent-gold); }
+
+.poem-cluster li:nth-child(4n+2) .poem-card:hover {
+  border-color: rgba(77, 190, 171, 0.65);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.35), 0 0 16px rgba(77, 190, 171, 0.25);
+}
+.poem-cluster li:nth-child(4n+2) .poem-card:hover .poem-title { color: var(--accent-teal); }
+
+.poem-cluster li:nth-child(4n+3) .poem-card:hover {
+  border-color: rgba(170, 142, 224, 0.65);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.35), 0 0 16px rgba(170, 142, 224, 0.25);
+}
+.poem-cluster li:nth-child(4n+3) .poem-card:hover .poem-title { color: var(--accent-bruise); }
+
+.poem-cluster li:nth-child(4n+4) .poem-card:hover {
+  border-color: rgba(224, 122, 158, 0.65);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.35), 0 0 16px rgba(224, 122, 158, 0.25);
+}
+.poem-cluster li:nth-child(4n+4) .poem-card:hover .poem-title { color: var(--accent-rose); }
+
+.poem-card:hover, .poem-card:focus-visible {
+  transform: translateY(-4px) rotate(0deg) scale(1.01);
+  background: var(--surface-hover);
+  outline: none;
+}
+
+/* 3D Glass Node badge with anti-lattice hue variations */
+.node-dot {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  box-shadow: inset 1px 1px 2px rgba(255,255,240,0.6), 0 2px 6px rgba(0,0,0,0.3);
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+
+.poem-cluster li:nth-child(4n+1) .node-dot { background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.95), var(--accent-gold) 60%, var(--accent-teal)); }
+.poem-cluster li:nth-child(4n+2) .node-dot { background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.95), var(--accent-teal) 60%, var(--accent-bruise)); }
+.poem-cluster li:nth-child(4n+3) .node-dot { background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.95), var(--accent-bruise) 60%, var(--accent-rose)); }
+.poem-cluster li:nth-child(4n+4) .node-dot { background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.95), var(--accent-rose) 60%, var(--accent-amber)); }
+
+.poem-card:hover .node-dot {
+  transform: scale(1.4);
+  box-shadow: 0 0 10px currentColor;
+}
+
+.poem-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 5px 9px;
+  margin: 0 0 6px;
+  padding-right: 18px;
+}
+
+.poem-title {
+  font-family: var(--poem);
+  font-size: 1.35rem;
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0;
+  transition: color 0.2s ease;
+}
+
+.genre-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 18px;
+  padding: 1px 7px 2px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 0.59rem;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.11);
+}
+
+.genre-pill.poetry {
+  color: #baf1e7;
+  background: rgba(77, 191, 174, 0.14);
+  border-color: rgba(77, 191, 174, 0.34);
+}
+
+.genre-pill.flash-fiction {
+  color: #f6d58f;
+  background: rgba(229, 185, 92, 0.14);
+  border-color: rgba(229, 185, 92, 0.34);
+}
+
+.genre-pill.prose-poem {
+  color: #d7c8f7;
+  background: rgba(170, 142, 224, 0.14);
+  border-color: rgba(170, 142, 224, 0.36);
+}
+
+.genre-pill.bizarro-flash {
+  color: #f2b4ca;
+  background: rgba(224, 122, 158, 0.14);
+  border-color: rgba(224, 122, 158, 0.36);
+}
+
+.poem-fragment {
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--muted);
+  margin: 0;
+}
+
+/* Archive Footer */
+.archive-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 50px;
+  padding-top: 20px;
+  border-top: 1px solid var(--surface-border);
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.archive-footer a {
+  color: var(--accent-teal);
+  text-decoration: none;
+}
+.archive-footer a:hover {
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   INDIVIDUAL POEM READING PAGE (.reading-shell, .poem-page)
+   ========================================================================== */
+.reading-shell { padding: 36px 0 74px; }
+
+.reading-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.site-link {
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid var(--surface-border);
+}
+
+.poem-page {
+  position: relative;
+  width: min(100%, 820px);
+  margin: 0 auto;
+  padding: 48px clamp(24px, 6vw, 64px) 46px;
+  border: 1px solid var(--surface-border);
+  border-radius: 36px 20px 42px 24px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
+}
+
+.poem-page::before {
+  content: "";
+  position: absolute;
+  top: 40px;
+  bottom: 40px;
+  left: 18px;
+  width: 6px;
+  border-radius: 60% 40% 52% 48% / 8% 12% 88% 92%;
+  background: linear-gradient(180deg, var(--accent-gold), var(--accent-teal) 45%, var(--accent-bruise));
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3), inset 1px 0 rgba(255,255,230,0.6);
+}
+
+.poem-header {
+  max-width: 620px;
+  margin: 0 auto 36px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.poem-header h1 {
+  max-width: 15ch;
+  font-size: clamp(2.6rem, 7vw, 4.2rem);
+  line-height: 1.02;
+  color: var(--ink);
+}
+
+.poem-body {
+  max-width: 620px;
+  min-height: 35vh;
+  margin: 0 auto;
+  position: relative;
+}
+
+.poem-text {
+  margin: 0;
+  white-space: pre-wrap;
+  color: #e8ecf0;
+  font-family: var(--poem);
+  font-size: clamp(1.05rem, 2.2vw, 1.18rem);
+  line-height: 1.65;
+  tab-size: 3;
+}
+
+.prose-poem .poem-text { max-width: 54ch; line-height: 1.75; }
+
+.poem-switcher {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 620px;
+  margin: 46px auto 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--surface-border);
+}
+
+.poem-switcher a {
+  color: var(--accent-teal);
+  font-family: var(--body);
+  font-size: 0.88rem;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.poem-switcher a:hover, .poem-switcher a:focus-visible {
+  color: var(--accent-gold);
+  border-bottom-color: currentColor;
+  transform: translateY(-1px);
+}
+
+/* Mouth poem translations */
+.translation-note {
+  max-width: 620px;
+  margin: -18px auto 30px;
+  color: var(--muted);
+  font: 400 0.76rem/1.45 var(--mono);
+}
+
+.mouth-poem {
+  max-width: 620px;
+  font-family: var(--poem);
+  font-size: clamp(1.06rem, 2.35vw, 1.2rem);
+  line-height: 1.55;
+}
+
+.mouth-poem > span, .translation { display: block; width: max-content; max-width: 100%; }
+
+.translation {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: 0 3px 1px;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  border: 0;
+  border-radius: 4px;
+  background: linear-gradient(180deg, transparent 63%, rgba(77,190,171,0.3) 63% 90%, transparent 90%);
+  cursor: help;
+}
+
+.translation::after {
+  content: attr(data-translation);
+  position: absolute;
+  left: calc(100% + 20px);
+  top: 50%;
+  width: max-content;
+  max-width: min(280px, 42vw);
+  padding: 10px 14px;
+  color: #121519;
+  font: italic 0.88rem/1.4 var(--poem);
+  white-space: pre-line;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 14px 9px 17px 11px;
+  background: linear-gradient(145deg, rgba(240, 242, 245, 0.95), rgba(180, 205, 220, 0.9));
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(8px, -50%) scale(0.97);
+  transition: opacity 0.18s ease, transform 0.24s ease;
+}
+
+.translation:hover, .translation:focus-visible {
+  color: var(--accent-gold);
+  background: linear-gradient(180deg, transparent 54%, rgba(229,185,92,0.4) 54% 92%, transparent 92%);
+}
+
+.translation:hover::after, .translation:focus-visible::after {
+  opacity: 1;
+  transform: translate(0, -50%) scale(1);
+}
+
+::selection { color: #121519; background: rgba(229,185,92,0.7); }
+
+@media (max-width: 700px) {
+  .site-shell { width: min(100% - 20px, 960px); }
+  .masthead { padding: 24px 20px 24px 74px; }
+  .masthead::before { left: 18px; top: 26px; width: 42px; height: 52px; }
+  .poem-cluster { grid-template-columns: 1fr; }
+  .reading-shell { padding-top: 20px; }
+  .poem-page { padding: 36px 22px 34px 30px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .ambient { animation: none; }
+  .poem-card, .drift-button, .pearl-link, .site-link { transition: none; }
+}
