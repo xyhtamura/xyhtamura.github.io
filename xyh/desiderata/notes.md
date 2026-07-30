@@ -222,12 +222,21 @@ seconds into the next. Wet stone is deliberate: track 3 is "world wet stone,"
 and the surface the voice was sung into there becomes the thing it is spoken
 through here.
 
-The voice itself is not one take but an archive of them, layered — fourteen
-copies of the accumulated recording session, each entering at a different point
-and detuned against the others by under a quarter tone, which thickens the stack
-into a single voice rather than building a chord. A few layers drop an octave or
-two, for spectrum rather than harmony: a vocal source has almost nothing under
-200 Hz.
+The source is a vocal take from *Eosforos*, and the piece runs about four
+minutes. A layered alternative exists — the whole recording session stacked and
+detuned against itself by under a quarter tone, thickening into one voice rather
+than building a chord — and is kept in reserve in case a single take reads too
+thin.
+
+One long chain turned out to be the wrong shape. Every second of a serial chain
+is the same processing, and no amount of care in any one stage fixes that; it
+just makes the monotony well made. So the chain is severed and the voice feeds
+three branches at once — the vocoder with its materials, a ring modulator, and a
+chorus — each ending in its own space. The ring modulator's frequency climbs
+across the piece from a pulse of a couple of hertz up into audio rate, which is
+where it stops being a tremolo and starts throwing frequencies that belong to
+neither the voice nor the carrier. The chorus opens from two mouths to seven.
+Those are slow, and they are the only things moving.
 
 A second vocal take arrives dry near the end. The other mouth. Untransformed,
 after everything else has already gone through.
