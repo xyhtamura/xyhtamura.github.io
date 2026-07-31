@@ -365,6 +365,10 @@
         <div class="cl"><span class="cn">CONVECTION RATE</span><span class="cv" id="v-warpSpd">0.020</span></div>
         <input type="range" id="s-warpSpd" min="0" max="0.1" step="0.001" value="0.02">
       </div>
+      <div class="cr">
+        <div class="cl"><span class="cn">SCALE VARIATION</span><span class="cv" id="v-warpScaleVar">UNIFORM</span></div>
+        <input type="range" id="s-warpScaleVar" min="0" max="1" step="0.02" value="0">
+      </div>
 
       <div class="strata"></div>
 
@@ -447,6 +451,7 @@
     uniform float u_noise_scale;
     uniform float u_warp_amount;
     uniform float u_warp_speed;
+    uniform float u_warp_scale_var;/* multi-scale domain warp variation (0=uniform, 1=pockets) */
     uniform float u_saturation;
     /* MAX 8 stops. All array indices below are compile-time constants —
        GLSL ES 1.0 does not allow non-constant uniform array indexing. */
@@ -472,8 +477,22 @@
 
     void main() {
       vec2 uv  = gl_FragCoord.xy / u_resolution.xy;
-      vec2 wo  = vec2(noise(uv*u_noise_scale*0.5 + u_scroll_offset*u_warp_speed),
-                      noise(uv*u_noise_scale*0.5 + u_scroll_offset*u_warp_speed + 10.0));
+      vec2 sc  = u_scroll_offset;
+      vec2 shift = sc * u_warp_speed;
+      vec2 p0  = uv * u_noise_scale * 0.5 + shift;
+      vec2 wo0 = vec2(noise(p0), noise(p0 + 10.0));
+
+      vec2 wo;
+      if (u_warp_scale_var > 0.001) {
+        vec2 pFine = uv * (u_noise_scale * 1.4) + shift * 1.5;
+        vec2 pMask = uv * (u_noise_scale * 0.2) + shift * 0.4;
+        vec2 woFine = vec2(noise(pFine), noise(pFine + 15.0));
+        float pocketMask = smoothstep(0.25, 0.75, noise(pMask + 25.0) * 0.5 + 0.5);
+        vec2 woMulti = mix(wo0, wo0 * 0.4 + woFine * (0.3 + 0.7 * pocketMask), u_warp_scale_var);
+        wo = woMulti;
+      } else {
+        wo = wo0;
+      }
       vec2 wuv = uv + (wo * u_warp_amount);
       float nv = (noise(wuv * u_noise_scale + u_scroll_offset) + 1.0) * 0.5;
 
@@ -526,6 +545,7 @@
   const uNSc       = gl.getUniformLocation(prog, 'u_noise_scale');
   const uWAm       = gl.getUniformLocation(prog, 'u_warp_amount');
   const uWSp       = gl.getUniformLocation(prog, 'u_warp_speed');
+  const uWarpScaleVar = gl.getUniformLocation(prog, 'u_warp_scale_var');
   const uSat       = gl.getUniformLocation(prog, 'u_saturation');
   const uStopCol   = gl.getUniformLocation(prog, 'u_stop_col[0]');
   const uStopPos   = gl.getUniformLocation(prog, 'u_stop_pos[0]');
@@ -541,15 +561,15 @@
   const DEFAULTS = {
     baseSpeed:0.05, audioMult:12.0, smoothing:0.85,
     noiseScale:2.5, scrollSpeed:0.02, scrollMag:2.0,
-    warpAmt:0.36,   warpSpd:0.02,
+    warpAmt:0.36,   warpSpd:0.02,   warpScaleVar:0.0,
     colorSpeed:1.0, speedVar:0.3,
     satMin:0.1,     satMax:1.0,
   };
   const PRESETS = {
     default:  {...DEFAULTS},
-    molten:   {baseSpeed:0.15,audioMult:20, smoothing:0.70,noiseScale:3.5,scrollSpeed:0.04, scrollMag:3.0,warpAmt:0.70,warpSpd:0.05, colorSpeed:2.0,speedVar:0.4,satMin:0.6,satMax:1.0},
-    abyssal:  {baseSpeed:0.02,audioMult:5,  smoothing:0.95,noiseScale:1.5,scrollSpeed:0.005,scrollMag:1.0,warpAmt:0.15,warpSpd:0.005,colorSpeed:0.3,speedVar:0.1,satMin:0.0,satMax:0.45},
-    fracture: {baseSpeed:0.08,audioMult:18, smoothing:0.60,noiseScale:6.0,scrollSpeed:0.06, scrollMag:4.0,warpAmt:0.80,warpSpd:0.08, colorSpeed:3.0,speedVar:0.9,satMin:0.4,satMax:1.0},
+    molten:   {baseSpeed:0.15,audioMult:20, smoothing:0.70,noiseScale:3.5,scrollSpeed:0.04, scrollMag:3.0,warpAmt:0.70,warpSpd:0.05, warpScaleVar:0.35, colorSpeed:2.0,speedVar:0.4,satMin:0.6,satMax:1.0},
+    abyssal:  {baseSpeed:0.02,audioMult:5,  smoothing:0.95,noiseScale:1.5,scrollSpeed:0.005,scrollMag:1.0,warpAmt:0.15,warpSpd:0.005,warpScaleVar:0.0,  colorSpeed:0.3,speedVar:0.1,satMin:0.0,satMax:0.45},
+    fracture: {baseSpeed:0.08,audioMult:18, smoothing:0.60,noiseScale:6.0,scrollSpeed:0.06, scrollMag:4.0,warpAmt:0.80,warpSpd:0.08, warpScaleVar:0.75, colorSpeed:3.0,speedVar:0.9,satMin:0.4,satMax:1.0},
   };
   let P = {...DEFAULTS};
   const SAT_CHG_SPD  = 0.06;
@@ -820,6 +840,7 @@
   bindSlider('scrollMag',  v=>v.toFixed(1));
   bindSlider('warpAmt',    v=>v.toFixed(2));
   bindSlider('warpSpd',    v=>v.toFixed(3));
+  bindSlider('warpScaleVar', v=>v === 0 ? 'UNIFORM' : (v*100).toFixed(0)+'%');
   bindSlider('colorSpeed', v=>v.toFixed(2));
   bindSlider('speedVar',   v=>v.toFixed(2));
   bindSlider('satMin',     v=>v.toFixed(2));
@@ -997,6 +1018,7 @@
     gl.uniform1f(uNSc, P.noiseScale);
     gl.uniform1f(uWAm, P.warpAmt);
     gl.uniform1f(uWSp, P.warpSpd);
+    gl.uniform1f(uWarpScaleVar, P.warpScaleVar);
     gl.uniform1f(uSat, sat);
     gl.uniform3fv(uStopCol, stopColFlat);
     gl.uniform1fv(uStopPos, stopPosFlat);

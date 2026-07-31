@@ -363,6 +363,10 @@
         <input type="range" id="s-warpSpd" min="0" max="0.1" step="0.001" value="0.02">
       </div>
       <div class="cr">
+        <div class="cl"><span class="cn">SCALE VARIATION</span><span class="cv" id="v-warpScaleVar">UNIFORM</span></div>
+        <input type="range" id="s-warpScaleVar" min="0" max="1" step="0.02" value="0">
+      </div>
+      <div class="cr">
         <div class="cl"><span class="cn">DRIFT VELOCITY</span><span class="cv" id="v-scrollSpd">0.40</span></div>
         <input type="range" id="s-scrollSpd" min="0" max="2" step="0.05" value="0.4">
       </div>
@@ -500,6 +504,7 @@
     uniform float u_audio_pulse;   /* scaled amplitude */
     uniform float u_rotate;        /* rotation in radians, applied to warped field */
     uniform vec2  u_flip;          /* (flipX, flipY), each 0 or 1 */
+    uniform float u_warp_scale_var;/* multi-scale domain warp variation (0=uniform, 1=pockets) */
 
     vec3 rgb2hsv(vec3 c){vec4 K=vec4(0.,-1./3.,2./3.,-1.);vec4 p=mix(vec4(c.bg,K.wz),vec4(c.gb,K.xy),step(c.b,c.g));vec4 q=mix(vec4(p.xyw,c.r),vec4(c.r,p.yzx),step(p.x,c.r));float d=q.x-min(q.w,q.y);float e=1e-10;return vec3(abs(q.z+(q.w-q.y)/(6.*d+e)),d/(q.x+e),q.x);}
     vec3 hsv2rgb(vec3 c){vec4 K=vec4(1.,2./3.,1./3.,3.);vec3 p=abs(fract(c.xxx+K.xyz)*6.-K.www);return c.z*mix(K.xxx,clamp(p-K.xxx,0.,1.),c.y);}
@@ -514,12 +519,23 @@
       float r2 = dot(lc, lc);
       vec2 lensUV = lc * (1.0 + u_lens_amount * r2) + 0.5;
 
-      /* 2. Noise warp */
+      /* 2. Noise warp with multi-scale range/variation support */
       vec2 sc = u_scroll_offset;
-      vec2 wo = vec2(
-        noise(lensUV * u_noise_scale * 0.5 + sc * u_warp_speed),
-        noise(lensUV * u_noise_scale * 0.5 + sc * u_warp_speed + 10.0)
-      );
+      vec2 shift = sc * u_warp_speed;
+      vec2 p0 = lensUV * u_noise_scale * 0.5 + shift;
+      vec2 wo0 = vec2(noise(p0), noise(p0 + 10.0));
+
+      vec2 wo;
+      if (u_warp_scale_var > 0.001) {
+        vec2 pFine = lensUV * (u_noise_scale * 1.4) + shift * 1.5;
+        vec2 pMask = lensUV * (u_noise_scale * 0.2) + shift * 0.4;
+        vec2 woFine = vec2(noise(pFine), noise(pFine + 15.0));
+        float pocketMask = smoothstep(0.25, 0.75, noise(pMask + 25.0) * 0.5 + 0.5);
+        vec2 woMulti = mix(wo0, wo0 * 0.4 + woFine * (0.3 + 0.7 * pocketMask), u_warp_scale_var);
+        wo = woMulti;
+      } else {
+        wo = wo0;
+      }
       vec2 warpedUV = lensUV + wo * (u_warp_amount + u_audio_pulse * 0.12);
 
       /* 3. Audio zoom pulse (subtle push toward center on loud beats) */
@@ -650,6 +666,7 @@
   const uImage      = gl.getUniformLocation(prog, 'u_image');
   const uRotate     = gl.getUniformLocation(prog, 'u_rotate');
   const uFlip       = gl.getUniformLocation(prog, 'u_flip');
+  const uWarpScaleVar = gl.getUniformLocation(prog, 'u_warp_scale_var');
 
   const vbuf = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vbuf);
@@ -811,7 +828,7 @@
 
   /* ── Parameters ─────────────────────────────────────────────────────────── */
   let P = {
-    noiseScale:2.5, warpAmt:0.12, warpSpd:0.02,
+    noiseScale:2.5, warpAmt:0.12, warpSpd:0.02, warpScaleVar:0,
     scrollSpd:0.4, scrollMag:1.5,
     tileScale:1.0, tileEnabled:false, tileMode:0, tileBlend:0.5,
     rotate:0, flipX:false, flipY:false,
@@ -837,6 +854,7 @@
   bindSlider('noiseScale', v=>v.toFixed(1));
   bindSlider('warpAmt',    v=>v.toFixed(3));
   bindSlider('warpSpd',    v=>v.toFixed(3));
+  bindSlider('warpScaleVar', v=>v === 0 ? 'UNIFORM' : (v*100).toFixed(0)+'%');
   bindSlider('scrollSpd',  v=>v.toFixed(2));
   bindSlider('scrollMag',  v=>v.toFixed(1));
   bindSlider('tileScale',  v => v < 1 ? (1/v).toFixed(1)+'× zoom' : v.toFixed(1)+'×');
@@ -1120,6 +1138,7 @@
     gl.uniform1f(uPulse,  effAmp);
     gl.uniform1f(uRotate, P.rotate * Math.PI / 180);
     gl.uniform2f(uFlip,   P.flipX ? 1 : 0, P.flipY ? 1 : 0);
+    gl.uniform1f(uWarpScaleVar, P.warpScaleVar);
 
     gl.drawArrays(gl.TRIANGLES, 0, 6);
     requestAnimationFrame(render);
