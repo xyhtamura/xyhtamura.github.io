@@ -365,6 +365,16 @@ const slides = [
     },
     pieces: [
       {
+        id: "desiderata",
+        title: "Desiderata",
+        year: "2026",
+        blurb: "Drone ambient made purely from manipulated voice and breath. Microtonally vocoded with oceans and insects, layered, stretched, recorded in odd places, and sampled (including speech synthesis) to produce a cyborg flesh-scape.",
+        tags: ["Drone Ambient", "Vocal Synthesis", "Album"],
+        links: [
+          { label: "Bandcamp", url: "https://xyhtamura.bandcamp.com/album/desiderata" }
+        ]
+      },
+      {
         title: "Open Play Assembly 2",
         year: "2026",
         blurb: "Open Play Assembly 2 was a curated live free-improvisation performance organized by Joee Mejias, featuring Xyh on voice and synthesizer with bower gra! on processed electric violin and Blend Earth on electronics, loops, effects, and Filipino instruments. The set moved through loose sections: bright folktronica, moody violin-synth call-and-response, and a final ambient sound bed.",

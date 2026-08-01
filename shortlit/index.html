@@ -59,11 +59,14 @@
     </footer>
   </div>
 
+  <script src="shortlit-state.js"></script>
   <script>
     const driftButton = document.querySelector("#drift");
     const poems = [...document.querySelectorAll(".poem-card")];
     driftButton.addEventListener("click", () => {
-      const destination = poems[Math.floor(Math.random() * poems.length)];
+      const untouched = poems.filter((poem) => poem.dataset.visited !== "true");
+      const pool = untouched.length > 0 ? untouched : poems;
+      const destination = pool[Math.floor(Math.random() * pool.length)];
       window.location.assign(destination.href);
     });
   </script>

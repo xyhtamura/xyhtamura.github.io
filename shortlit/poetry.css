@@ -251,17 +251,20 @@ h1 {
 .poem-card {
   position: relative;
   display: block;
+  overflow: hidden;
   padding: 18px 22px;
-  background: var(--surface);
+  background: rgba(37, 41, 49, 0.9);
   border: 1px solid var(--surface-border);
   text-decoration: none;
   color: inherit;
-  box-shadow: var(--soft-shadow);
-  backdrop-filter: blur(8px);
-  transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1), 
-              border-color 0.22s ease, 
-              box-shadow 0.22s ease,
-              background-color 0.22s ease;
+  box-shadow:
+    0 10px 26px rgba(8, 10, 14, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.065);
+  transition:
+    transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 0.24s ease,
+    box-shadow 0.28s ease,
+    background-color 0.24s ease;
 }
 
 /* Asymmetrical non-repeating radii for organic instrument cell feel */
@@ -269,42 +272,45 @@ h1 {
 .poem-cluster li:nth-child(3n+2) .poem-card { border-radius: 16px 26px 18px 28px; }
 .poem-cluster li:nth-child(3n+3) .poem-card { border-radius: 28px 16px 22px 20px; }
 
-/* Subtle rotational offsets */
-.poem-cluster li:nth-child(even) .poem-card { transform: rotate(-0.3deg); }
-.poem-cluster li:nth-child(odd) .poem-card { transform: rotate(0.3deg); }
-
 /* Multi-Hue Accent Cycling across cards for unexpected color spectrum */
 .poem-cluster li:nth-child(4n+1) .poem-card:hover {
   border-color: rgba(229, 185, 92, 0.65);
-  box-shadow: 0 18px 40px rgba(0,0,0,0.35), 0 0 16px rgba(229, 185, 92, 0.25);
+  box-shadow: 0 11px 28px rgba(8,10,14,0.46), inset 0 0 18px rgba(229,185,92,0.045);
 }
 .poem-cluster li:nth-child(4n+1) .poem-card:hover .poem-title { color: var(--accent-gold); }
 
 .poem-cluster li:nth-child(4n+2) .poem-card:hover {
   border-color: rgba(77, 190, 171, 0.65);
-  box-shadow: 0 18px 40px rgba(0,0,0,0.35), 0 0 16px rgba(77, 190, 171, 0.25);
+  box-shadow: 0 11px 28px rgba(8,10,14,0.46), inset 0 0 18px rgba(77,190,171,0.045);
 }
 .poem-cluster li:nth-child(4n+2) .poem-card:hover .poem-title { color: var(--accent-teal); }
 
 .poem-cluster li:nth-child(4n+3) .poem-card:hover {
   border-color: rgba(170, 142, 224, 0.65);
-  box-shadow: 0 18px 40px rgba(0,0,0,0.35), 0 0 16px rgba(170, 142, 224, 0.25);
+  box-shadow: 0 11px 28px rgba(8,10,14,0.46), inset 0 0 18px rgba(170,142,224,0.045);
 }
 .poem-cluster li:nth-child(4n+3) .poem-card:hover .poem-title { color: var(--accent-bruise); }
 
 .poem-cluster li:nth-child(4n+4) .poem-card:hover {
   border-color: rgba(224, 122, 158, 0.65);
-  box-shadow: 0 18px 40px rgba(0,0,0,0.35), 0 0 16px rgba(224, 122, 158, 0.25);
+  box-shadow: 0 11px 28px rgba(8,10,14,0.46), inset 0 0 18px rgba(224,122,158,0.045);
 }
 .poem-cluster li:nth-child(4n+4) .poem-card:hover .poem-title { color: var(--accent-rose); }
 
 .poem-card:hover, .poem-card:focus-visible {
-  transform: translateY(-4px) rotate(0deg) scale(1.01);
-  background: var(--surface-hover);
+  transform: translate3d(1px, -1px, 0);
+  background: rgba(43, 48, 57, 0.94);
   outline: none;
 }
 
-/* 3D Glass Node badge with anti-lattice hue variations */
+.poem-card:focus-visible {
+  border-color: rgba(77, 190, 171, 0.7);
+  box-shadow:
+    0 0 0 2px rgba(77, 190, 171, 0.22),
+    0 11px 28px rgba(8, 10, 14, 0.46);
+}
+
+/* Signal node with anti-lattice hue variations */
 .node-dot {
   position: absolute;
   top: 14px;
@@ -322,8 +328,68 @@ h1 {
 .poem-cluster li:nth-child(4n+4) .node-dot { background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.95), var(--accent-rose) 60%, var(--accent-amber)); }
 
 .poem-card:hover .node-dot {
-  transform: scale(1.4);
-  box-shadow: 0 0 10px currentColor;
+  transform: translate3d(1px, -1px, 0) scale(1.12);
+  box-shadow: 0 0 8px currentColor;
+}
+
+.poem-card::before {
+  content: "";
+  position: absolute;
+  inset: -8% -5%;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    radial-gradient(ellipse at 18% 28%, rgba(77, 190, 171, 0.075), transparent 38%),
+    linear-gradient(108deg, transparent 35%, rgba(229, 185, 92, 0.035) 49%, transparent 61%);
+  transform: translate3d(-7px, 4px, 0);
+  transition:
+    opacity 0.22s ease,
+    transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.poem-card:hover::before,
+.poem-card:focus-visible::before {
+  opacity: 1;
+  transform: translate3d(4px, -2px, 0);
+}
+
+.poem-card::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    linear-gradient(112deg, transparent 0 58%, rgba(170, 142, 224, 0.045) 78%, rgba(77, 190, 171, 0.075));
+  box-shadow:
+    inset 0 0 0 1px rgba(205, 215, 226, 0.055),
+    inset -14px 0 24px -24px rgba(170, 142, 224, 0.6);
+  transition: opacity 0.28s ease;
+}
+
+.poem-card.is-visited {
+  border-color: rgba(190, 204, 218, 0.27);
+}
+
+.poem-card.is-visited::after {
+  opacity: 1;
+}
+
+.poem-cluster li .poem-card.is-visited .node-dot {
+  background: rgba(22, 25, 32, 0.82);
+  border: 1px solid rgba(207, 217, 229, 0.5);
+  box-shadow:
+    inset 0 0 0 2px rgba(22, 25, 32, 0.88),
+    0 0 7px rgba(170, 142, 224, 0.2);
+}
+
+.poem-cluster li .poem-card.is-visited:hover .node-dot {
+  transform: translate3d(1px, -1px, 0) scale(1.1);
+  box-shadow:
+    inset 0 0 0 2px rgba(22, 25, 32, 0.88),
+    0 0 9px rgba(170, 142, 224, 0.28);
 }
 
 .poem-card-head {
@@ -593,5 +659,11 @@ h1 {
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .ambient { animation: none; }
-  .poem-card, .drift-button, .pearl-link, .site-link { transition: none; }
+  .poem-card,
+  .poem-card::before,
+  .poem-card::after,
+  .node-dot,
+  .drift-button,
+  .pearl-link,
+  .site-link { transition: none; }
 }
