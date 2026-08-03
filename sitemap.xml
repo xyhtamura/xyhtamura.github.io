@@ -1,182 +1,429 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" ?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
   <url>
     <loc>https://xyhtamura.github.io/</loc>
-    <lastmod>2026-07-20</lastmod>
+    <lastmod>2026-08-01</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>1.00</priority>
   </url>
-  
-  <url>
-    <loc>https://xyhtamura.github.io/gahuema</loc>
-    <lastmod>2026-03-09</lastmod>
-    <priority>0.90</priority>
-  </url>
-
-  <url>
-    <loc>https://xyhtamura.github.io/mapping-research-practice-self.html</loc>
-    <lastmod>2026-03-09</lastmod>
-    <priority>0.90</priority>
-  </url>
-
-  <url>
-    <loc>https://xyhtamura.github.io/blog/</loc>
-    <lastmod>2026-07-09</lastmod>
-    <priority>0.80</priority>
-  </url>
-
-  <url>
-    <loc>https://xyhtamura.github.io/blog/class-fluency.html</loc>
-    <lastmod>2025-04-29</lastmod>
-    <priority>0.80</priority>
-  </url>
-
-  <url>
-    <loc>https://xyhtamura.github.io/blog/what-is-science-art.html</loc>
-    <lastmod>2026-07-09</lastmod>
-    <priority>0.80</priority>
-  </url>
-
-  <url>
-    <loc>https://xyhtamura.github.io/poetry/</loc>
-    <lastmod>2026-07-20</lastmod>
-    <priority>0.80</priority>
-  </url>
-
-  <url>
-    <loc>https://xyhtamura.github.io/poetry/blot.html</loc>
-    <lastmod>2026-07-20</lastmod>
-    <priority>0.70</priority>
-  </url>
-
-  <url>
-    <loc>https://xyhtamura.github.io/poetry/document-body.html</loc>
-    <lastmod>2026-07-20</lastmod>
-    <priority>0.70</priority>
-  </url>
-
-  <url>
-    <loc>https://xyhtamura.github.io/poetry/forecast.html</loc>
-    <lastmod>2026-07-20</lastmod>
-    <priority>0.70</priority>
-  </url>
-
-  <url>
-    <loc>https://xyhtamura.github.io/poetry/heliotrope.html</loc>
-    <lastmod>2026-07-20</lastmod>
-    <priority>0.70</priority>
-  </url>
-
-  <url>
-    <loc>https://xyhtamura.github.io/poetry/iso-e-super.html</loc>
-    <lastmod>2026-07-20</lastmod>
-    <priority>0.70</priority>
-  </url>
-
-  <url>
-    <loc>https://xyhtamura.github.io/poetry/kill-quota.html</loc>
-    <lastmod>2026-07-20</lastmod>
-    <priority>0.70</priority>
-  </url>
-
-  <url>
-    <loc>https://xyhtamura.github.io/poetry/lightning-man.html</loc>
-    <lastmod>2026-07-20</lastmod>
-    <priority>0.70</priority>
-  </url>
-
-  <url>
-    <loc>https://xyhtamura.github.io/poetry/ossuary.html</loc>
-    <lastmod>2026-07-20</lastmod>
-    <priority>0.70</priority>
-  </url>
-
-  <url>
-    <loc>https://xyhtamura.github.io/poetry/pollen.html</loc>
-    <lastmod>2026-07-20</lastmod>
-    <priority>0.70</priority>
-  </url>
-
-  <url>
-    <loc>https://xyhtamura.github.io/poetry/posing.html</loc>
-    <lastmod>2026-07-20</lastmod>
-    <priority>0.70</priority>
-  </url>
-
-  <url>
-    <loc>https://xyhtamura.github.io/poetry/speed.html</loc>
-    <lastmod>2026-07-20</lastmod>
-    <priority>0.70</priority>
-  </url>
-
-  <url>
-    <loc>https://xyhtamura.github.io/poetry/survivor.html</loc>
-    <lastmod>2026-07-20</lastmod>
-    <priority>0.70</priority>
-  </url>
-
-  <url>
-    <loc>https://xyhtamura.github.io/poetry/timeout.html</loc>
-    <lastmod>2026-07-20</lastmod>
-    <priority>0.70</priority>
-  </url>
-
-  <url>
-    <loc>https://xyhtamura.github.io/poetry/mouth.html</loc>
-    <lastmod>2026-07-20</lastmod>
-    <priority>0.70</priority>
-  </url>
-
-  <url>
-    <loc>https://xyhtamura.github.io/blog/vaporwave-knowledge-production-little-art-histories.html</loc>
-    <lastmod>2026-07-09</lastmod>
-    <priority>0.80</priority>
-  </url>
-
-  <url>
-    <loc>https://xyhtamura.github.io/sl/arbzn.html</loc>
-    <lastmod>2026-07-09</lastmod>
-    <priority>0.70</priority>
-  </url>
-
-  <url>
-    <loc>https://xyhtamura.github.io/tabota/</loc>
-    <priority>0.80</priority>
-  </url>
-  
-  <url>
-    <loc>https://xyhtamura.github.io/tanim-kalye/</loc>
-    <priority>0.80</priority>
-  </url>
-  
   <url>
     <loc>https://xyhtamura.github.io/72-munting-panahon/</loc>
+    <lastmod>2026-06-25</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.80</priority>
   </url>
-  
   <url>
-    <loc>https://xyhtamura.github.io/istorya-sang-balatyagon/</loc>
+    <loc>https://xyhtamura.github.io/acommapoem/</loc>
+    <lastmod>2026-06-14</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.80</priority>
   </url>
-  
+  <url>
+    <loc>https://xyhtamura.github.io/aeropane/</loc>
+    <lastmod>2026-07-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/aliquoto/</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/antemelos/</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/bakezuri/</loc>
+    <lastmod>2026-07-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/binlod/</loc>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/blog/</loc>
+    <lastmod>2026-07-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/blog/class-fluency.html</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/blog/ecotechnoaesthetics.html</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/blog/from-transdisciplinarity-to-transpractice.html</loc>
+    <lastmod>2026-07-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/blog/mapping-research-practice-self.html</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/blog/vaporwave-knowledge-production-little-art-histories.html</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/blog/what-is-science-art.html</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/cella/</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/cornerfit/</loc>
+    <lastmod>2026-06-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/cornice/</loc>
+    <lastmod>2026-07-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/critterances/</loc>
+    <lastmod>2026-05-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/cutline/</loc>
+    <lastmod>2026-08-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/cybernetic-inquiry/</loc>
+    <lastmod>2026-06-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/cytophone/</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/dhuenut/</loc>
+    <lastmod>2026-07-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/driftham/</loc>
+    <lastmod>2026-06-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/electropond/</loc>
+    <lastmod>2026-06-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/gahuema/</loc>
+    <lastmod>2026-06-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/galvanism/</loc>
+    <lastmod>2025-05-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/ganymede/</loc>
+    <lastmod>2026-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/gliese/</loc>
+    <lastmod>2026-07-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/hadeanflare/</loc>
+    <lastmod>2026-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/hindcasts/</loc>
+    <lastmod>2026-07-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/hunitsura/</loc>
+    <lastmod>2026-07-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/insulaeincognita/</loc>
+    <lastmod>2026-07-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/kikik/</loc>
+    <lastmod>2026-07-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/media/</loc>
+    <lastmod>2026-06-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/moire/</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
   <url>
     <loc>https://xyhtamura.github.io/of-another-shore/</loc>
-    <priority>0.85</priority>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
   </url>
-  
+  <url>
+    <loc>https://xyhtamura.github.io/open4/</loc>
+    <lastmod>2025-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/plasticoid/</loc>
+    <lastmod>2024-05-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/putmanypicturestogether/</loc>
+    <lastmod>2026-07-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/roil/</loc>
+    <lastmod>2026-06-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
   <url>
     <loc>https://xyhtamura.github.io/sgueltch/</loc>
-    <priority>0.70</priority>
+    <lastmod>2026-07-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
   </url>
-  
+  <url>
+    <loc>https://xyhtamura.github.io/shook/</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/shortlit/</loc>
+    <lastmod>2026-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/stanzuary/</loc>
+    <lastmod>2026-07-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
   <url>
     <loc>https://xyhtamura.github.io/stitcher/</loc>
-    <priority>0.60</priority>
+    <lastmod>2026-06-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
   </url>
-  
   <url>
-    <loc>https://xyhtamura.github.io/pythia/</loc>
-    <priority>0.60</priority>
+    <loc>https://xyhtamura.github.io/table-of-metalloids/</loc>
+    <lastmod>2026-06-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
   </url>
-
+  <url>
+    <loc>https://xyhtamura.github.io/tabota/</loc>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/tanim-kalye/</loc>
+    <lastmod>2026-07-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/the-magic-staff/</loc>
+    <lastmod>2026-07-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/w2xdx/</loc>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/where-you-were-last-seen/</loc>
+    <lastmod>2026-06-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/chanidae.html</loc>
+    <lastmod>2026-06-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/framesmear.html</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/glossolalia-invitro.html</loc>
+    <lastmod>2026-06-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/glossolalia-rabble.html</loc>
+    <lastmod>2026-06-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/shortlit/blot.html</loc>
+    <lastmod>2026-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/shortlit/cell.html</loc>
+    <lastmod>2026-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/shortlit/document-body.html</loc>
+    <lastmod>2026-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/shortlit/forecast.html</loc>
+    <lastmod>2026-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/shortlit/heliotrope.html</loc>
+    <lastmod>2026-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/shortlit/iso-e-super.html</loc>
+    <lastmod>2026-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/shortlit/kill-quota.html</loc>
+    <lastmod>2026-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/shortlit/lightning-man.html</loc>
+    <lastmod>2026-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/shortlit/mouth.html</loc>
+    <lastmod>2026-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/shortlit/ossuary.html</loc>
+    <lastmod>2026-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/shortlit/pollen.html</loc>
+    <lastmod>2026-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/shortlit/posing.html</loc>
+    <lastmod>2026-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/shortlit/speed.html</loc>
+    <lastmod>2026-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/shortlit/survivor.html</loc>
+    <lastmod>2026-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
+  <url>
+    <loc>https://xyhtamura.github.io/shortlit/timeout.html</loc>
+    <lastmod>2026-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
 </urlset>
