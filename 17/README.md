@@ -56,16 +56,22 @@ that could be in the future, or a dream.
 
 Before the International Meridian Conference of 1884 made Greenwich
 the international zero, longitude was reckoned from competing
-observatories and national meridians. Five of them appear here:
-Greenwich, Paris, San Fernando, Lisbon, and Amsterdam.
+observatories and national meridians. Five European origins appear
+here: Greenwich, Paris, San Fernando, Lisbon, and Amsterdam.
 
-Each is paired with a place where longitude or standardized time
-became a consequential local fact: Bombay, Phù Liễn, Manila, Goa, and
-Batavia. The pairings belong to different periods and institutions.
-Asia is their shared geography, not the boundary of the history.
-Together they show five different fates of a zero: resistance,
-legislation, a change of date, adoption from a neighbouring system,
-and the creation of a new colonial origin.
+They are paired with Bombay, Phù Liễn, Manila, Goa, and Batavia. The
+five destinations form a regional study of zero in motion. In each
+case a European reference entered an Asian colonial system and ceased
+to remain a stable metropolitan origin: it was resisted, relocated by
+law, carried across a change of date, exchanged for a neighbouring
+standard, or made into a colonial prime meridian. The cases belong to
+different periods and institutions; they do not reconstruct one
+imperial network.
+
+The poem isolates this movement rather than attempting a general
+history of longitude. Because the historical operation is transfer
+and transformation rather than territorial partition, the places
+remain fixed while zero moves.
 
 Each zero leaves its European city on a random walk that drifts toward
 its destination. Individual steps can reverse direction or carry the
@@ -79,13 +85,6 @@ destination is no longer measured as a distance from the European
 origin because it has taken the origin. The count records how many
 times this capture has occurred; it is a quantity produced by the
 poem, not a historical statistic.
-
-Longitude can be read as time because fifteen degrees of separation
-equals one hour. The number beneath each destination converts the
-current distance from its wandering zero into a clock reading. It is
-not a reconstruction of the city’s civil clock at one particular
-date. When the zero reaches the destination, the reading becomes
-`+0:00`.
 
 Bombay kept a local mean time approximately four hours and fifty-one
 minutes ahead of Greenwich. Attempts to replace it first with Madras
@@ -124,15 +123,6 @@ other parts of the Netherlands East Indies. Of the five destinations,
 it most literally took zero: the colony became the point from which
 other colonial places were measured.
 
-The fixed band is the Treaty of Tordesillas of 1494. Spain and Portugal
-divided claims to lands outside Europe along a meridian 370 leagues
-west of Cape Verde, but the length of a league and the choice of
-starting island were unsettled. The band covers the resulting range
-rather than pretending that the treaty named a precise modern
-longitude. Unlike the five travelling zeros, it never moves. It marks
-a territorial claim made before its authors could reliably locate
-their own line.
-
 The five zeros step at intervals of 17, 19, 23, 29, and 31 tenths of
 a second. Because those numbers are prime, all five make a decision
 together only once every 6,678,671 ticks, a little under eight days.
@@ -162,3 +152,32 @@ There is no going back to the original iroha.
 Its incremental search for each next prime also grows more
 demanding, giving it a latent computational senescence: ordinary at
 human scale, but burdened in its distant future.
+
+## [Antimeridian](https://xyhtamura.github.io/17/antimeridian/)
+
+The International Date Line is commonly drawn as one line near 180°,
+the antimeridian of Greenwich. It has no international legal status.
+States choose their civil dates and UTC offsets; the mapped line
+summarizes the boundary produced by those separate decisions.
+
+“Antimeridian” treats that summary as a problem repeatedly attempted
+rather than a line already given. Every attempt starts at the North
+Pole on 180° and makes seventeen southward decisions. Random changes
+pull it away from the antimeridian while a weaker correction pulls it
+back.
+
+Four schematic island groups interrupt the route. Their names refer
+to places around which the mapped date line has bent; their positions
+and spans are not a geographic projection. Each row connects places
+that the procedure must keep on one date. An attempt fails if it
+passes through a row, placing parts of the group on opposite dates.
+The line stops there. A successful attempt reaches the South Pole.
+Both remain as traces while another line begins.
+
+Success is a formal result internal to the poem. It does not mean that
+a generated line is historically or politically correct. The test
+only asks whether one path can satisfy four simplified constraints.
+
+The prime meridian is absent but determines the procedure. The
+antimeridian is its antipode: moving the adopted zero would move the
+starting point and restoring pull of every attempt.
