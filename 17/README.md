@@ -54,52 +54,92 @@ that could be in the future, or a dream.
 
 ## [Stealing Prime](https://xyhtamura.github.io/17/stealing-prime/)
 
-Before the conference of 1884 made Greenwich the international zero,
-longitude was reckoned from competing prime meridians. Five of them
-appear here, each paired with a colony of the same power: Greenwich
-and Bombay, Paris and Saigon, San Fernando and Manila, Lisbon and Goa,
-Amsterdam and Batavia. The pairings belong to different periods; their
-superimposition refuses the fiction of a single imperial now.
+Before the International Meridian Conference of 1884 made Greenwich
+the international zero, longitude was reckoned from competing
+observatories and national meridians. Five of them appear here:
+Greenwich, Paris, San Fernando, Lisbon, and Amsterdam.
 
-Each zero leaves its European city on a random walk. The destination
-pulls harder the nearer the zero comes, so the line wanders freely at
-the start and is drawn in at the end. On arrival the count beside the
-destination rises by one and the zero returns to Europe to set out
-again. The cities hold still. Only the origin moves, and it is the
-colony that takes it.
+Each is paired with a place where longitude or standardized time
+became a consequential local fact: Bombay, Phù Liễn, Manila, Goa, and
+Batavia. The pairings belong to different periods and institutions.
+Asia is their shared geography, not the boundary of the history.
+Together they show five different fates of a zero: resistance,
+legislation, a change of date, adoption from a neighbouring system,
+and the creation of a new colonial origin.
 
-Longitude is time. Fifteen degrees is one hour, so the distance between
-a wandering zero and its colony is a clock reading, and it is printed
-under the colony's name. At departure these are the historical offsets:
-Bombay four forty-eight from Greenwich, Saigon six fifty-eight from
-Paris, Goa five thirty-one from Lisbon. They drift because the origin
-drifts. At the moment of arrival the reading is zero, the colony's time
-having become the metropole's. That is what the count counts.
+Each zero leaves its European city on a random walk that drifts toward
+its destination. Individual steps can reverse direction or carry the
+zero behind its starting point, but the accumulated movement is
+one-way. When it arrives, the destination count rises and the zero
+returns to Europe.
 
-The destinations are all in Asia because these five pairs are one
-specific operation: a European observatory fixing a colonial city's
-longitude, and with it that city's clock, as a subtraction from the
-metropole. Madras Observatory was built in 1792 to fix Indian positions
-against Greenwich; Bombay kept its own time, four fifty-one ahead, until
-1955. Africa was not given a clock but the grid — the Berlin Conference
-of 1884–85 partitioned it along lines of latitude and longitude drawn in
-Europe, and a large share of its modern borders are still straight
-geometric lines. That is the same instrument turned on land instead of
-on the day, and a moving zero with a clock beside it would state it
-wrongly. The omission is the argument.
+The animation reverses the usual diagram of a standard radiating
+outward from a centre. Here the centre itself travels. At arrival, the
+destination is no longer measured as a distance from the European
+origin because it has taken the origin. The count records how many
+times this capture has occurred; it is a quantity produced by the
+poem, not a historical statistic.
 
-The Americas were running their own zero. The one fixed line on the map
-is the Treaty of Tordesillas of 1494, which divided the world between
-Spain and Portugal along a meridian near forty-six degrees thirty-seven
-minutes west, and is why Brazil speaks Portuguese. Neither crown could
-locate it, because longitude at sea could not yet be measured. The
-longitude problem was born there: Europe needed longitude in order to
-know who owned what.
+Longitude can be read as time because fifteen degrees of separation
+equals one hour. The number beneath each destination converts the
+current distance from its wandering zero into a clock reading. It is
+not a reconstruction of the city’s civil clock at one particular
+date. When the zero reaches the destination, the reading becomes
+`+0:00`.
 
-The five zeros step at intervals of 17, 19, 23, 29, and 31 tenths of a
-second. Because those numbers are prime, all five step together only
-once every 6,678,671 steps, a little under eight days. Each walk is
-drawn fresh, so no two readings arrive at the same counts.
+Bombay kept a local mean time approximately four hours and fifty-one
+minutes ahead of Greenwich. Attempts to replace it first with Madras
+railway time and later with Indian Standard Time produced the “Battle
+of the Clocks.” Municipal politicians, merchants, millworkers, courts,
+and public clocks did not respond as one body. Workers struck against
+the new hours, and Bombay Time remained in use until 1955. Zero was
+not simply received there; its authority was contested.
+
+In French Indochina, the observatory at Phù Liễn supplied a more
+literal case. A decree of 9 June 1906 established the meridian through
+the observatory—104°17′17″ east of Paris—as the legal time reference
+for Indochina from 1 July. Paris remained inside the definition even
+when the operative meridian had been placed in the colony.
+
+Spanish official maps of the Philippines measured longitude eastward
+from San Fernando. The archipelago’s calendar, however, had travelled
+westward from the Americas with the Manila–Acapulco galleon. The
+Philippines therefore kept the American date until 1844, when 31
+December was omitted and 30 December was followed by 1 January 1845.
+The Spanish zero in this poem follows that older direction: it leaves
+the map in the west and returns from the east.
+
+Goa shows one colonial clock joining another colonial system.
+Portugal abandoned Lisbon Mean Time for Greenwich in 1911. On 18 July
+of the same year, Portuguese Goa adopted Indian Standard Time, based
+on the meridian at 82°30′ east of Greenwich. Its legal time followed
+neighbouring British India rather than the longitude prescribed for
+Portuguese India from Lisbon.
+
+Batavia became an origin in its own right. Its time ball marked
+Batavia mean noon for ships from 1839 and also provided a separate
+Greenwich signal for navigators. The Dutch colonial topographic
+service later used Batavia as a prime meridian for mapping Java and
+other parts of the Netherlands East Indies. Of the five destinations,
+it most literally took zero: the colony became the point from which
+other colonial places were measured.
+
+The fixed band is the Treaty of Tordesillas of 1494. Spain and Portugal
+divided claims to lands outside Europe along a meridian 370 leagues
+west of Cape Verde, but the length of a league and the choice of
+starting island were unsettled. The band covers the resulting range
+rather than pretending that the treaty named a precise modern
+longitude. Unlike the five travelling zeros, it never moves. It marks
+a territorial claim made before its authors could reliably locate
+their own line.
+
+The five zeros step at intervals of 17, 19, 23, 29, and 31 tenths of
+a second. Because those numbers are prime, all five make a decision
+together only once every 6,678,671 ticks, a little under eight days.
+Motion is interpolated between decisions, so the lines move
+continuously while their changes of direction remain discrete. Each
+walk is generated afresh, so the counts develop differently on each
+viewing.
 
 ## [Same Time Tomorrow / いろは時計](https://xyhtamura.github.io/17/same-time-tomorrow/)
 
