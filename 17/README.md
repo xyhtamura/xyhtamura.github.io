@@ -52,6 +52,22 @@ The result is melodic glossolalia: not quite language and unfamiliar
 melody, maybe a song that seems to precede both, or maybe a song 
 that could be in the future, or a dream.
 
+## [Stealing the Prime](https://xyhtamura.github.io/17/stealing-the-prime/)
+
+Before Greenwich became the international zero, maps reckoned
+longitude from competing prime meridians. Five of those origins move
+through this poem along schematic colonial routes: Greenwich to
+Bombay, Paris to Saigon, San Fernando to Manila, Lisbon to Goa, and
+Amsterdam to Batavia. The routes belong to different periods; their
+superimposition refuses the fiction of a single imperial now.
+
+Each ship carries its own 0° meridian. Places remain still while east,
+west, and origin travel with the vessel. The voyages last 17, 19, 23,
+29, and 31 seconds. Because those durations are prime, all five zeros
+depart together only once every 6,678,671 seconds—more than 77 days.
+The prime meridian becomes cargo, continually stolen from one claimed
+origin by another.
+
 ## [Same Time Tomorrow / いろは時計](https://xyhtamura.github.io/17/same-time-tomorrow/)
 
 The iroha is a perfect pangram from late Heian Japan, probably composed
