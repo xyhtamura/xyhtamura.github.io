@@ -22,7 +22,7 @@ change from poem to poem:
 | Work | Regional field | Active element | Operation | Status |
 |---|---|---|---|---|
 | *Stealing Prime* | Colonial Asia | Origin | Zero moves and changes within local systems | Taper #17, built |
-| *Antimeridian* | Pacific | Boundary | A date seam attempts to constitute itself | Taper #17, prototype |
+| *Drawing the Day* | Pacific | Boundary | A date seam attempts to constitute itself | Taper #17, prototype |
 | *370 Leagues* (working title) | Atlantic / South America | Partition line | A territorial claim cannot locate itself | Parked |
 | Africa partition work | Specific African partition cases | Grid or boundary | Lines allocate territory from incomplete information | Research needed |
 | Americas work or works | North and South American institutions | Competing centres | Meridians synchronize, persist, or surrender authority | Research needed |
@@ -43,7 +43,7 @@ there.
 Do not add territorial partitions, general histories of world time, or examples
 whose main operation is a fixed boundary. Those belong elsewhere in the suite.
 
-## Antimeridian
+## Drawing the Day
 
 The International Date Line has no single international legal authority.
 States choose the dates and UTC offsets they observe; the line on a world map
@@ -53,8 +53,10 @@ and the [IANA Time Zone Database](https://www.iana.org/time-zones).
 The poem treats that summary as a problem repeatedly attempted rather than a
 line already given. A path starts at the North Pole on 180°, makes seventeen
 southward decisions under a restoring pull toward the antimeridian, and tries
-to pass island groups without splitting them between dates. A failure stops at
-the group it divides. A success reaches the South Pole. Both remain as traces.
+to pass through schematic island fields. The points are permeable constraints:
+the path can enter the gaps between them, but it stops if a segment touches a
+point. A path that avoids every point reaches the South Pole. Both outcomes
+remain as traces; no counter summarizes them.
 
 “Success” is only the poem's formal result. It does not mean that a generated
 line is politically or historically correct. The constraints expose why no
@@ -132,7 +134,7 @@ longitude.
 The useful suite distinction is formal:
 
 - *Stealing Prime*: the origin moves.
-- *Antimeridian*: the seam is generated.
+- *Drawing the Day*: the seam is generated.
 - Tordesillas: the partition cannot locate itself.
 - Africa: the grid allocates territory.
 - Americas: competing centres negotiate or surrender reference authority.

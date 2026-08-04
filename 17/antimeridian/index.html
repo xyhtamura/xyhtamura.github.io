@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>Antimeridian (Taper #17)</title>
+	<title>Drawing the Day (Taper #17)</title>
 
-<!-- “Antimeridian” Copyright (C) 2026 Xyh Tamura
+<!-- “Drawing the Day” Copyright (C) 2026 Xyh Tamura
 
 Copying and distribution of this file, with or without modification,
 are permitted in any medium without royalty provided the copyright
@@ -13,26 +13,26 @@ without any warranty.
 
 This is from Taper #17: Prime, Fall 2026:
 
-https://taperzine.org/17/antimeridian.html
+https://taperzine.org/17/drawing_the_day.html
 
 The International Date Line is commonly drawn as one line near 180°,
 the antimeridian of Greenwich. It has no international legal status.
 States choose their civil dates and UTC offsets; the mapped line
 summarizes the boundary produced by those separate decisions.
 
-“Antimeridian” treats that summary as a problem repeatedly attempted
+“Drawing the Day” treats that summary as a problem repeatedly attempted
 rather than a line already given. Every attempt starts at the North
 Pole on 180° and makes seventeen southward decisions. Random changes
 pull it away from the antimeridian while a weaker correction pulls it
 back.
 
-Four schematic island groups interrupt the route. Their names refer
+Four schematic island fields interrupt the route. Their names refer
 to places around which the mapped date line has bent; their positions
-and spans are not a geographic projection. Each row connects places
-that the procedure must keep on one date. An attempt fails if it
-passes through a row, placing parts of the group on opposite dates.
-The line stops there. A successful attempt reaches the South Pole.
-Both remain as traces while another line begins.
+are not a geographic projection. The points are individual obstacles,
+not connected borders. A line can pass between them. An attempt stops
+when one of its segments touches a point; one that avoids every point
+reaches the South Pole. Both remain as traces while another line
+begins.
 
 Success is a formal result internal to the poem. It does not mean that
 a generated line is historically or politically correct. The test
@@ -60,15 +60,15 @@ starting point and restoring pull of every attempt.
 		<a href="index.html">Taper #17 :
 		Prime</a> : Fall 2026 &nbsp;
 		<a href="next.html">&gt;&gt;</a><br>
-		<a href="antimeridian.html">“Antimeridian”</a> by
+		<a href="drawing_the_day.html">“Drawing the Day”</a> by
 		<a href="about.html#tamura">Xyh Tamura</a>
 	</h1>
 </header>
 
 <style>body{background:#eef;color:#234}#S{width:min(100vw,(100vh - 52px)*1.43);height:auto;display:block;margin:auto}text{fill:#234;font:2.4px Georgia;text-anchor:middle}#G{stroke:#678;stroke-width:1.2;stroke-linecap:round;stroke-dasharray:0 2}#P path{fill:none;stroke:#567;stroke-width:.25;opacity:.16}#P .s{stroke:#263;stroke-width:.55;opacity:.7}#P .f{stroke:#923;opacity:.35}</style>
-<svg id=S viewBox="0 0 100 70"><text x=50 y=4>NORTH</text><text x=9 y=8>+1 DAY</text><text x=91 y=8>−1 DAY</text><path d="M50 5V65" stroke=#789 stroke-width=.2 stroke-dasharray="1 2"/><text x=53 y=9>180°</text><g id=G><path d="M47 16h6M52 30h10M38 44h8M50 58h6"/></g><g font-size=2><text x=20 y=16>ALEUTIANS</text><text x=20 y=30>KIRIBATI</text><text x=20 y=44>SAMOA</text><text x=20 y=58>CHATHAMS</text></g><g id=P></g><text id=Q x=50 y=68>0 REACHED SOUTH · 0 SPLIT</text></svg>
+<svg id=S viewBox="0 0 100 70"><text x=50 y=4>ANTIMERIDIAN</text><text x=9 y=8>+1 DAY</text><text x=91 y=8>−1 DAY</text><path d="M50 5V65" stroke=#789 stroke-width=.2 stroke-dasharray="1 2"/><g id=G><path d="M43 15h.1M47 17h.1M52 14h.1M58 16h.1M48 29h.1M53 31h.1M60 28h.1M68 30h.1M35 43h.1M42 45h.1M49 42h.1M55 44h.1M46 57h.1M51 59h.1M57 56h.1"/></g><g font-size=2><text x=20 y=16>ALEUTIANS</text><text x=20 y=30>KIRIBATI</text><text x=20 y=44>SAMOA</text><text x=20 y=58>CHATHAMS</text></g><g id=P></g></svg>
 <script>
-let B=[[47,53,3],[52,62,7],[38,46,11],[50,56,15]],C=n=>document.createElementNS("http://www.w3.org/2000/svg",n),s=0,f=0,x,i,d,p,A=_=>{x=50;i=0;d="M50 5";p=C("path");P.append(p);P.children.length>47&&P.firstChild.remove();T()},T=_=>{i++;x+=(50-x)/7+(Math.random()-.5)*14;x=Math.max(5,Math.min(95,x));let y=5+i*60/17;d+=`L${x} ${y}`;p.setAttribute("d",d);let b=B.some(q=>q[2]==i&&x>q[0]&&x<q[1]);if(b||i==17){p.classList.add(b?"f":"s");b?f++:s++;Q.textContent=s+" REACHED SOUTH · "+f+" SPLIT";return setTimeout(A,500)}setTimeout(T,100)};A()
+let B="43 15 47 17 52 14 58 16 48 29 53 31 60 28 68 30 35 43 42 45 49 42 55 44 46 57 51 59 57 56".split(" ").map(Number),C=n=>document.createElementNS("http://www.w3.org/2000/svg",n),x,i,d,p,A=_=>{x=50;i=0;d="M50 5";p=C("path");P.append(p);P.children.length>47&&P.firstChild.remove();T()},T=_=>{i++;let o=x,h=60/17;x+=(50-x)/7+(Math.random()-.5)*14;x=Math.max(5,Math.min(95,x));let y=5+i*h;d+=`L${x} ${y}`;p.setAttribute("d",d);let b=B.some((q,j)=>!(j%2)&&B[j+1]>y-h&&B[j+1]<=y&&Math.abs(q-o-(x-o)*(B[j+1]-y+h)/h)<1.2);if(b||i==17){p.classList.add(b?"f":"s");return setTimeout(A,500)}setTimeout(T,100)};A()
 </script>
 </body>
 </html>
