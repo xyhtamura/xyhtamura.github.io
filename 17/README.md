@@ -52,21 +52,54 @@ The result is melodic glossolalia: not quite language and unfamiliar
 melody, maybe a song that seems to precede both, or maybe a song 
 that could be in the future, or a dream.
 
-## [Stealing the Prime](https://xyhtamura.github.io/17/stealing-the-prime/)
+## [Stealing Prime](https://xyhtamura.github.io/17/stealing-prime/)
 
-Before Greenwich became the international zero, maps reckoned
-longitude from competing prime meridians. Five of those origins move
-through this poem along schematic colonial routes: Greenwich to
-Bombay, Paris to Saigon, San Fernando to Manila, Lisbon to Goa, and
-Amsterdam to Batavia. The routes belong to different periods; their
+Before the conference of 1884 made Greenwich the international zero,
+longitude was reckoned from competing prime meridians. Five of them
+appear here, each paired with a colony of the same power: Greenwich
+and Bombay, Paris and Saigon, San Fernando and Manila, Lisbon and Goa,
+Amsterdam and Batavia. The pairings belong to different periods; their
 superimposition refuses the fiction of a single imperial now.
 
-Each ship carries its own 0° meridian. Places remain still while east,
-west, and origin travel with the vessel. The voyages last 17, 19, 23,
-29, and 31 seconds. Because those durations are prime, all five zeros
-depart together only once every 6,678,671 seconds—more than 77 days.
-The prime meridian becomes cargo, continually stolen from one claimed
-origin by another.
+Each zero leaves its European city on a random walk. The destination
+pulls harder the nearer the zero comes, so the line wanders freely at
+the start and is drawn in at the end. On arrival the count beside the
+destination rises by one and the zero returns to Europe to set out
+again. The cities hold still. Only the origin moves, and it is the
+colony that takes it.
+
+Longitude is time. Fifteen degrees is one hour, so the distance between
+a wandering zero and its colony is a clock reading, and it is printed
+under the colony's name. At departure these are the historical offsets:
+Bombay four forty-eight from Greenwich, Saigon six fifty-eight from
+Paris, Goa five thirty-one from Lisbon. They drift because the origin
+drifts. At the moment of arrival the reading is zero, the colony's time
+having become the metropole's. That is what the count counts.
+
+The destinations are all in Asia because these five pairs are one
+specific operation: a European observatory fixing a colonial city's
+longitude, and with it that city's clock, as a subtraction from the
+metropole. Madras Observatory was built in 1792 to fix Indian positions
+against Greenwich; Bombay kept its own time, four fifty-one ahead, until
+1955. Africa was not given a clock but the grid — the Berlin Conference
+of 1884–85 partitioned it along lines of latitude and longitude drawn in
+Europe, and a large share of its modern borders are still straight
+geometric lines. That is the same instrument turned on land instead of
+on the day, and a moving zero with a clock beside it would state it
+wrongly. The omission is the argument.
+
+The Americas were running their own zero. The one fixed line on the map
+is the Treaty of Tordesillas of 1494, which divided the world between
+Spain and Portugal along a meridian near forty-six degrees thirty-seven
+minutes west, and is why Brazil speaks Portuguese. Neither crown could
+locate it, because longitude at sea could not yet be measured. The
+longitude problem was born there: Europe needed longitude in order to
+know who owned what.
+
+The five zeros step at intervals of 17, 19, 23, 29, and 31 tenths of a
+second. Because those numbers are prime, all five step together only
+once every 6,678,671 steps, a little under eight days. Each walk is
+drawn fresh, so no two readings arrive at the same counts.
 
 ## [Same Time Tomorrow / いろは時計](https://xyhtamura.github.io/17/same-time-tomorrow/)
 
