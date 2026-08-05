@@ -36,6 +36,45 @@ const slides = [
 {
     kind: "piece",
     piece: {
+      id: "cutline",
+      title: "CUTLINE",
+      year: "2026",
+      tags: ["intermedia", "generative poetry", "electronic literature", "live collage"],
+      blurb: "An open generative poetry deck assembled live from outside language. Each draw queries keyless sources, cuts retrieved fragments into a poem, builds a collage from public image searches, and returns its synthesized title to the deck; operator cards can replace, reinterpret, return, mash, or skip cards in the reading.",
+      links: [
+        { label: "Open Deck", url: "https://xyhtamura.github.io/cutline/" }
+      ]
+    }
+  },
+{
+    kind: "piece",
+    piece: {
+      id: "plica",
+      title: "plica",
+      year: "2026",
+      tags: ["intermedia", "games", "electronic literature", "generative collage", "interactive web"],
+      blurb: "plica is an interactive generative collage built as an indefinitely unfolding sheet of paper. An artist-curated bank of themes and language seeds live searches for text and images, which are combined with procedural graphics, typography, blank space, and transformative effects. These are pulled from keyless public APIs (Wikipedia, Datamuse, PoetryDB, and Wikimedia Commons).",
+      links: [
+        { label: "Launch App", url: "https://xyhtamura.github.io/plica/" }
+      ]
+    }
+  },
+{
+    kind: "piece",
+    piece: {
+      id: "ombak-lock",
+      title: "Ombak Lock",
+      year: "2026",
+      tags: ["intermedia", "games", "acoustic puzzle", "sound art", "web audio"],
+      blurb: "An acoustic tuning puzzle game picked by ear, where zero-beat is failure. Grounded in Balinese gamelan's ombak (paired tuning where nominal unison shimmers with cultivated beating), the player must match target beat rates and depth across three multi-tone tumblers without allowing any two frequencies to reach unison.",
+      links: [
+        { label: "Launch Game", url: "https://xyhtamura.github.io/ombak-lock/" }
+      ]
+    }
+  },
+{
+    kind: "piece",
+    piece: {
       id: "comma-poem-villa",
       title: "A Comma Poem, after José García Villa’s “I, it, was, that, saw,” before the coming El Niño",
       year: "2026",
@@ -721,6 +760,16 @@ links: [
     },
     pieces: [
 	{
+	  title: "Benzaiten",
+	  year: "2026",
+	  tags: ["WebGL", "GPGPU", "fluid dynamics", "Navier-Stokes", "magnetohydrodynamics", "audio-responsive"],
+	  blurb: "Benzaiten is a WebGL video processor and graphics generator centered around fluid dynamics, optionally audio-responsive. The system unifies real-time 2D GPGPU hydrodynamics with multi-scale noise domain warping and custom physics regimes—including Navier-Stokes fluid momentum, viscoelastic shear-thinning liquids, and 2D magnetohydrodynamics (MHD) plasma and solar reconnection solvers. The engine operates across three primary modes: a procedural 8-stop color field editor, uploaded media (images, looping video, live webcam feeds), and a gradient map that dynamically colorizes media contours via fluid velocity fields. Users interact through multi-touch gesture controls (drag stirring, pinch-in sink vortices, pinch-out geyser sources). Includes Ganymede, a WebGL image-warping tool with animated noise fields and audio reactivity.",
+	  links: [
+	    { label: "Launch Instrument", url: "https://xyhtamura.github.io/benzaiten/" },
+	    { label: "Ganymede", url: "https://xyhtamura.github.io/ganymede" }
+	  ]
+	},
+	{
 	  title: "Aeropane",
 	  year: "2026",
 	  tags: ["frosted glass", "light scattering", "gel physics", "WebGL progressive render", "Frutiger Aero"],
@@ -884,15 +933,6 @@ links: [
         blurb: "A procedural sound engine that generates chirps, murmurs, droplets, and filtered grains for imaginary creatures. It maps robot states such as thinking, transcribing, and crafting to distinct vocal behaviors, and also runs as a standalone browser toy.",
         links: [
           { label: "Launch App", url: "https://xyhtamura.github.io/critterances/" }
-        ]
-      },
-	  {
-        title: "Ganymede",
-        year: "2026",
-        tags: ["WebGL", "image processing", "audio reactive", "web tool", "noise field"],
-        blurb: "A WebGL image warper that applies animated noise fields, lens distortion, chromatic offset, seamless tiling, and hue or saturation shifts to uploaded images. Live microphone input can modulate the field.",
-        links: [
-          { label: "Launch App", url: "https://xyhtamura.github.io/ganymede" }
         ]
       }
 
