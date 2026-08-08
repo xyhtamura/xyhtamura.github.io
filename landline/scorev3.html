@@ -37,8 +37,20 @@
     border-bottom: 1px solid var(--rule);
   }
   p { margin: 0 0 1rem; }
-  .lede { margin-bottom: 2rem; }
   a { color: var(--fg); text-underline-offset: 0.2em; }
+  .actions { margin: -1.8rem 0 2.8rem; }
+  .print-button {
+    appearance: none;
+    border: 1px solid var(--rule);
+    border-radius: 0;
+    background: transparent;
+    color: var(--fg);
+    cursor: pointer;
+    font: 0.78rem/1 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    padding: 0.65rem 0.8rem;
+  }
+  .print-button:hover { border-color: var(--dim); }
+  .print-button:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
 
   pre {
     font: 13.5px/1.75 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
@@ -46,30 +58,35 @@
     margin: 0 0 1.6rem;
     overflow-x: auto;
   }
+  .attempt-intro { margin-bottom: 2.2rem; }
+  .attempt-step { margin-bottom: 2.4rem; }
   /* Numbers the standard fixes, as opposed to numbers left open. */
   .fx { color: var(--fixed); font-weight: 600; }
   .op { color: var(--dim); font-style: italic; font-family: ui-serif, Georgia, serif; }
   .cm { color: var(--faint); }
   .kw { color: var(--dim); }
 
-  .note {
-    font-size: 0.9rem; color: var(--dim);
-    border-left: 1px solid var(--rule); padding-left: 1rem; margin: 2rem 0;
-  }
   figure { margin: 2rem 0; }
-  figcaption { font-size: 0.85rem; color: var(--dim); margin-top: 0.7rem; }
   svg { width: 100%; height: auto; display: block; overflow: visible; }
-  .legend { font-size: 0.82rem; color: var(--dim); margin: 0 0 2.5rem; }
-  .legend span { display: inline-block; margin-right: 1.4rem; }
-  .swatch-fx { color: var(--fixed); font-weight: 600;
-    font-family: ui-monospace, Menlo, Consolas, monospace; }
-  .swatch-op { color: var(--dim); font-style: italic; }
+  @media print {
+    :root {
+      --bg: #fff; --fg: #111; --dim: #555;
+      --faint: #777; --rule: #bbb; --fixed: #000;
+    }
+    body { max-width: none; padding: 0; }
+    .actions, .back { display: none; }
+    h1, h2 { break-after: avoid-page; }
+    figure, .attempt-step, .realization { break-inside: avoid-page; }
+    pre { overflow: visible; }
+    @page { size: A4; margin: 18mm; }
+  }
 </style>
 </head>
 <body>
 
 <h1>a landline imagining a line check during a storm</h1>
 <p class="sub">score &middot; Xyh Tamura, 2026</p>
+<p class="actions"><button class="print-button" type="button" onclick="window.print()">Print / save PDF</button></p>
 
 <h2>Terms</h2>
 
@@ -131,9 +148,11 @@ RATES       = an ordered list, fastest first, with a minimum
 </svg>
 </figure>
 
-<h2>score</h2>
+<h2>The line</h2>
 
-<pre>sound a telephone line for the whole duration,
+<pre>choose the total duration and every value in brackets.
+
+sound a telephone line for the whole duration,
 at the edge of audibility.
 
 its noise consists of band-limited hiss, mains hum,
@@ -146,23 +165,22 @@ as the piece progresses, with fluctuations:
     move a narrow null down through the band
 </pre>
 
-<pre><span class="kw">repeat</span> every <span class="op">[ a few seconds to half a minute ]</span>
-for the whole duration:
+<h2>Each attempt</h2>
 
+<pre class="attempt-intro"><span class="kw">repeat</span> every <span class="op">[ a few seconds to half a minute ]</span>
+for the whole duration:</pre>
 
-<span class="kw">1  announce</span>
+<pre class="attempt-step"><span class="kw">1  announce</span>
 
-   emit ANNOUNCE for <span class="op">[ one to four seconds ]</span>.
+   emit ANNOUNCE for <span class="op">[ one to four seconds ]</span>.</pre>
 
-
-<span class="kw">2  probe</span>
+<pre class="attempt-step"><span class="kw">2  probe</span>
 
    emit PROBE at equal amplitude.
    set its phases to minimise the combined peak.
-   first <span class="op">[ briefly, raised ]</span>, then <span class="op">[ longer, nominal ]</span>.
+   first <span class="op">[ briefly, raised ]</span>, then <span class="op">[ longer, nominal ]</span>.</pre>
 
-
-<span class="kw">3  measure</span>
+<pre class="attempt-step"><span class="kw">3  measure</span>
 
    <span class="kw">let</span> RECEIVED = the probe, through the line, plus its noise.
 
@@ -171,10 +189,9 @@ for the whole duration:
 
    <span class="kw">for each</span> t <span class="kw">in</span> PROBE:
        snr[t] = power of RECEIVED at t,
-                against noise interpolated to t
+                against noise interpolated to t</pre>
 
-
-<span class="kw">4  decide</span>
+<pre class="attempt-step"><span class="kw">4  decide</span>
 
    USABLE = { t <span class="kw">in</span> PROBE : snr[t] ≥ <span class="op">[ a threshold ]</span> }
 
@@ -187,10 +204,9 @@ for the whole duration:
        RATE = the first r <span class="kw">in</span> RATES with
                   BANDWIDTH ≥ r.least_bandwidth <span class="kw">and</span>
                   QUALITY   ≥ r.least_snr,
-              or NONE
+              or NONE</pre>
 
-
-<span class="kw">5  speak</span>
+<pre class="attempt-step"><span class="kw">5  speak</span>
 
    emit CAPABILITY from both ends, overlapping,
    carrying the measurement.
@@ -198,26 +214,28 @@ for the whole duration:
    <span class="kw">if</span> RATE is not NONE:
        emit data at RATE, shaped to the chosen band,
        for a time <span class="op">[ increasing with RATE ]</span>.
-
-
-<span class="kw">6  what is heard</span>
-
-   cut <span class="op">[ a few ]</span> fragments from the signals produced.
-   <span class="kw">for each</span> fragment:
-
-       length    drawn so short ones dominate,
-                 none longer than <span class="op">[ about a second ]</span>
-       source    any one of: announce, probe,
-                 capability, data
-       time      anywhere within a window <span class="op">[ wider than the
-                 interval between attempts ]</span>
-       position  between the two ends of the call
-       level     at or below the level of its source
-
-   <span class="kw">as</span> the piece nears its end: cut fewer, shorter fragments.
 </pre>
 
-<p><a href="index.html">← back</a></p>
+<section class="realization">
+<h2>What is heard</h2>
+
+<pre>cut <span class="op">[ a few ]</span> fragments from the signals produced.
+<span class="kw">for each</span> fragment:
+
+    length    drawn so short ones dominate,
+              none longer than <span class="op">[ about a second ]</span>
+    source    any one of: announce, probe,
+              capability, data
+    time      anywhere within a window <span class="op">[ wider than the
+              interval between attempts ]</span>
+    position  between the two ends of the call
+    level     at or below the level of its source
+
+<span class="kw">as</span> the piece nears its end: cut fewer, shorter fragments.
+</pre>
+</section>
+
+<p class="back"><a href="index.html">← back</a></p>
 
 </body>
 </html>
