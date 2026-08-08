@@ -76,7 +76,7 @@
     body { max-width: none; padding: 0; }
     .actions, .back { display: none; }
     h1, h2 { break-after: avoid-page; }
-    figure, .attempt-step, .realization { break-inside: avoid-page; }
+    figure, .attempt-step, .score-output { break-inside: avoid-page; }
     pre { overflow: visible; }
     @page { size: A4; margin: 18mm; }
   }
@@ -148,7 +148,7 @@ RATES       = an ordered list, fastest first, with a minimum
 </svg>
 </figure>
 
-<h2>The line</h2>
+<h2>Score</h2>
 
 <pre>choose the total duration and every value in brackets.
 
@@ -163,6 +163,21 @@ as the piece progresses, with fluctuations:
     attenuate high frequencies more than low frequencies
     raise the noise, then hold its level
     move a narrow null down through the band
+</pre>
+
+<pre class="score-output">from each attempt, sound only <span class="op">[ a few ]</span> fragments.
+<span class="kw">for each</span> fragment:
+
+    length    drawn so short ones dominate,
+              none longer than <span class="op">[ about a second ]</span>
+    source    any available one of: announce, probe,
+              capability, data
+    time      anywhere within a window <span class="op">[ wider than the
+              interval between attempts ]</span>
+    position  between the two ends of the call
+    level     at or below the level of its source
+
+<span class="kw">as</span> the piece nears its end: sound fewer, shorter fragments.
 </pre>
 
 <h2>Each attempt</h2>
@@ -215,25 +230,6 @@ for the whole duration:</pre>
        emit data at RATE, shaped to the chosen band,
        for a time <span class="op">[ increasing with RATE ]</span>.
 </pre>
-
-<section class="realization">
-<h2>What is heard</h2>
-
-<pre>cut <span class="op">[ a few ]</span> fragments from the signals produced.
-<span class="kw">for each</span> fragment:
-
-    length    drawn so short ones dominate,
-              none longer than <span class="op">[ about a second ]</span>
-    source    any one of: announce, probe,
-              capability, data
-    time      anywhere within a window <span class="op">[ wider than the
-              interval between attempts ]</span>
-    position  between the two ends of the call
-    level     at or below the level of its source
-
-<span class="kw">as</span> the piece nears its end: cut fewer, shorter fragments.
-</pre>
-</section>
 
 <p class="back"><a href="index.html">← back</a></p>
 
