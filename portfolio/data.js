@@ -409,8 +409,18 @@ const slides = [
         year: "2026",
         blurb: "Drone ambient made purely from manipulated voice and breath. Microtonally vocoded with oceans and insects, layered, stretched, recorded in odd places, and sampled (including speech synthesis) to produce a cyborg flesh-scape.",
         tags: ["Drone Ambient", "Vocal Synthesis", "Album"],
+        exhibitions: [
+          {
+            type: "Selected for",
+            venue: "The Wrong Biennale",
+            event: "The Wrong Eclipse",
+            details: "— 24-hour online sound exhibition. Curated by David Quiles Guilló.",
+            year: "12 August 2026"
+          }
+        ],
         links: [
-          { label: "Bandcamp", url: "https://xyhtamura.bandcamp.com/album/desiderata" }
+          { label: "Bandcamp", url: "https://xyhtamura.bandcamp.com/album/desiderata" },
+          { label: "The Wrong Eclipse", url: "https://thewrong.org" }
         ]
       },
       {
@@ -418,6 +428,26 @@ const slides = [
         year: "2026",
         blurb: "Open Play Assembly 2 was a curated live free-improvisation performance organized by Joee Mejias, featuring Xyh on voice and synthesizer with bower gra! on processed electric violin and Blend Earth on electronics, loops, effects, and Filipino instruments. The set moved through loose sections: bright folktronica, moody violin-synth call-and-response, and a final ambient sound bed.",
         tags: ["Live Performance", "Free Improvisation", "Vocal & Synth"]
+      },
+      {
+        id: "theia",
+        title: "Theia",
+        year: "2025",
+        blurb: "Voice, synth, and drum piece sung from the perspective of the colliding protoplanet Theia — microtonal melody, guttural vocalization, voice-electronic hybridization.",
+        tags: ["Microtonal", "Voice & Synth", "Eosforos", "as xyhtochrome"],
+        exhibitions: [
+          {
+            type: "Selected for",
+            venue: "The Wrong Biennale",
+            event: "The Wrong Eclipse",
+            details: "— 24-hour online sound exhibition. Curated by David Quiles Guilló.",
+            year: "12 August 2026"
+          }
+        ],
+        links: [
+          { label: "Eosforos on Bandcamp", url: "https://xyhtochrome.bandcamp.com/album/eosforos" },
+          { label: "The Wrong Eclipse", url: "https://thewrong.org" }
+        ]
       },
       {
         title: "Sail",
