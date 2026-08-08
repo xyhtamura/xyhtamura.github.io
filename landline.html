@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>a landline imagining a line check during a storm — Xyh Tamura</title>
+<style>
+  :root {
+    --bg: #0b0c0e;
+    --fg: #c9c6c0;
+    --dim: #6e6b66;
+    --rule: #232527;
+  }
+  @media (prefers-color-scheme: light) {
+    :root { --bg: #f4f3f1; --fg: #24262a; --dim: #6e6b66; --rule: #dedbd6; }
+  }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--fg); }
+  body {
+    font: 16px/1.65 ui-serif, Georgia, "Times New Roman", serif;
+    padding: 8vh 6vw 12vh;
+    max-width: 40rem;
+  }
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    margin: 0 0 0.35rem;
+    line-height: 1.3;
+  }
+  .byline { color: var(--dim); margin: 0 0 2.5rem; font-size: 0.95rem; }
+  audio { width: 100%; margin: 0 0 0.75rem; }
+  .alt { font-size: 0.85rem; color: var(--dim); margin: 0 0 2.5rem; }
+  .alt a { color: var(--dim); }
+  a { color: var(--fg); text-underline-offset: 0.2em; }
+  p { margin: 0 0 1.1rem; }
+  hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
+  dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 0.3rem 1.2rem; }
+  dt { color: var(--dim); font-size: 0.85rem; }
+  dd { margin: 0; font-size: 0.9rem; }
+  .note {
+    font-size: 0.9rem;
+    color: var(--dim);
+    border-left: 1px solid var(--rule);
+    padding-left: 1rem;
+    margin-top: 2.5rem;
+  }
+</style>
+</head>
+<body>
+
+<h1>a landline imagining a line check during a storm</h1>
+<p class="byline">Xyh Tamura, 2026 &middot; fixed media, stereo, 5:06</p>
+
+<audio controls preload="metadata">
+  <source src="landline.flac" type="audio/flac">
+  <source src="landline.mp3" type="audio/mpeg">
+  Your browser cannot play this file.
+  <a href="landline.mp3">Download the MP3</a>.
+</audio>
+<p class="alt">
+  Direct files: <a href="landline.flac">FLAC, 17.8 MB</a> &middot;
+  <a href="landline.mp3">MP3, 11.7 MB</a>
+</p>
+
+<p>Play this quietly, but not so quietly that the noise floor disappears. Most of
+the piece is the line itself, and it is meant to sit at the edge of hearing
+rather than below it.</p>
+
+<hr>
+
+<p>The piece is built from the ITU-T Recommendations that govern how two modems
+open a connection. Nothing in it is sampled. The V.8 answer tone, the V.34 line
+probe and the V.21 capability exchange are synthesised from their published
+definitions.</p>
+
+<p>The V.34 probe carries no data. It is a signal a machine emits to find out
+what the channel between it and another machine is. The receiver measures
+amplitude and noise across the band and from that measurement chooses the rate
+it is able to speak.</p>
+
+<p>A telephone line degrades across the piece. A modem attempts a connection
+every twenty to thirty seconds; each attempt probes the line, measures what
+returns, and negotiates whatever rate the measurement allows. The descent from
+24,000 to 300 bit/s is not composed. It is what the measurement produces, which
+is why the connection recovers when the weather eases, and why past a threshold
+nothing can be negotiated at all.</p>
+
+<p>No attempt is heard whole. What is placed are fragments cut out of it, none
+longer than a second, scattered across a window wider than the attempt itself,
+so that attempts overlap and their edges cannot be found by ear. The process is
+complete; the audition of it is partial.</p>
+
+<p>The scale comes from lowercase, and specifically from Steve Roden&rsquo;s
+<em>Forms of Paper</em> (2001), made for a branch library out of the sound of
+book pages being handled. Roden described that material by way of Rilke&rsquo;s
+&ldquo;inconsiderable things&rdquo; &mdash; what would ordinarily not be attended
+to at all.</p>
+
+<p>Here the position is the telephone&rsquo;s rather than a listener&rsquo;s.
+The line is what the instrument has instead of hearing, and the piece is closer
+to what it would make of a night of failed connections than to a recording of
+one. We are listening in on that.</p>
+
+<hr>
+
+<dl>
+  <dt>Format</dt><dd>WAV, 48 kHz, 24-bit (FLAC and MP3 here)</dd>
+  <dt>Duration</dt><dd>5:06</dd>
+  <dt>Channels</dt><dd>2, stereo</dd>
+  <dt>Setup</dt><dd>Stereo playback. No performer, no live electronics, no video.</dd>
+  <dt>Levels</dt><dd>Noise bed &minus;68.0 dBFS RMS by design; peak &minus;14.2 dBFS. No compression or limiting anywhere in the signal path.</dd>
+</dl>
+
+<p class="note">For concert playback: set level from the fragments, not from the
+noise floor, and apply no dynamic processing. The floor is meant to be at the
+edge of audibility, not inaudible. A ten-minute version exists; it is not an
+extension of this one but a second complete traversal at its own pace.</p>
+
+</body>
+</html>
