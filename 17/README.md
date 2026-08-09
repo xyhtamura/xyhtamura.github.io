@@ -3,7 +3,7 @@
 Computational art/poems based on the number 17, and prime numbers.
 
 
-## [bumibecome](https://xyhtamura.github.io/17/abakada/)
+## [bumibecome](https://xyhtamura.github.io/17/bumibecome/)
 
 The Filipino alphabet has 28 letters. Its present form expanded the
 20-letter Abakada with letters used by other Philippine languages and

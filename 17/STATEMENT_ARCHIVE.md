@@ -6,7 +6,7 @@ notes.
 
 ## aBaKada
 
-Source: `abakada/index.html`
+Source: `bumibecome/index.html`
 
 > The Filipino alphabet has 28 letters. At its prime positions — 2, 3,
 > 5, 7, 11, 13, 17, 19, 23 — sit B, C, E, G, K, M, O, Q and U: enough
