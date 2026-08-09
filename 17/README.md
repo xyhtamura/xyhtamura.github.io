@@ -18,13 +18,18 @@ Abakada for words from other Philippine languages and languages from
 elsewhere.
 
 At prime positions 2, 3, 5, 7, 11, 13, 17, 19 and 23 sit B, C, E,
-G, K, M, O, Q and U. From those nine letters, the poem draws Tagalog
-roots and English arrivals. Only three vowels survive: E, O and U.
-So does -um-, a Tagalog affix. The poem probabilistically inflects
-either group through infixation and reduplication: buko, bumuko,
-bumubuko; become, bumebecome; queue, qumuqueue. Some generated
-phrases are grammatical. Others work through the rhyme, rhythm and
-repetition of the reduced sound set.
+G, K, M, O, Q and U. From those nine letters, the poem builds an
+authored lexicon of Tagalog roots and English arrivals. It selects
+each word at random, weighted toward Tagalog. Longer words may then
+pass through one of two authored infixation and reduplication rules:
+buko, bumuko, bumubuko; become, bumebecome; queue, qumuqueue. Every
+word and transformation stays within the nine-letter set.
+
+The system does not test syntax. It places two or three words on each
+line and three, five or seven lines in each stanza, so both counts are
+prime. Grammatical phrases occur by chance within those limits. Other
+combinations carry rhyme, rhythm and repetition through the reduced
+sound set.
 
 C and Q are uncommon in native Tagalog roots but admit several
 English words into this lexicon. Their prime positions are a
