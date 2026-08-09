@@ -1,12 +1,12 @@
 # Creative statement archive
 
 Earlier versions of the creative statements embedded in the Taper #17 HTML
-license comments. Archived 2026-07-16 before revision from the artist's voice
-notes.
+license comments. The first group was archived 2026-07-16 before revision from
+the artist's voice notes; later entries carry their own archive dates.
 
 ## aBaKada
 
-Source: `bumibecome/index.html`
+Source: `bumebecome/index.html`
 
 > The Filipino alphabet has 28 letters. At its prime positions — 2, 3,
 > 5, 7, 11, 13, 17, 19, 23 — sit B, C, E, G, K, M, O, Q and U: enough
@@ -21,6 +21,41 @@ Source: `bumibecome/index.html`
 > the most Filipino letter of all, sits at position 16 = 2 to the 4th
 > and stays dark. The title is the alphabet’s own name run through the
 > sieve, keeping what is prime.
+
+## bumibecome
+
+Source: `bumebecome/index.html`
+
+Archived 2026-08-09 before the history-centered revision and the spelling
+change to `bumebecome`.
+
+> The Filipino alphabet has 28 letters. Its present form expanded the
+> 20-letter Abakada with letters used by other Philippine languages and
+> by words from elsewhere. At its prime positions: 2, 3, 5, 7, 11, 13,
+> 17, 19 and 23 are B, C, E, G, K, M, O, Q and U. Remove everything
+> else and a surprisingly generative Tagalog remains.
+>
+> bumibecome probabilistically takes from a dictionary of Tagalog words
+> composed entirely of these prime letters. This gives three vowels: E,
+> O, U, and -um-, a commonly used panlapi or affix. Tagalog builds
+> through panlapi and reduplication. Affixes and repetition can turn
+> roots into verbs and mark their aspect.
+>
+> Each line holds two or three words; each stanza has three, five or
+> seven lines. The poem draws from Tagalog roots and English arrivals,
+> then passes both through infixation and reduplication: buko, bumuko,
+> bumubuko; queue, qumuqueue.
+>
+> C and Q are rarely needed for native Tagalog words, but they let some
+> English enter the dictionary. In Taglish, imported words can take
+> Filipino affixes and are turned into verbs or other inflections. Some
+> generated phrases make grammatical sense; others create rhyme, rhythm
+> and repetition through the reduced sonic palette.
+>
+> The title treats become as a Tagalog root and asks what Filipinos
+> become through a language that keeps absorbing words from elsewhere.
+> The letter I lies outside the prime-letter set, so the poem cannot
+> produce its own title.
 
 ## Prime Song
 

@@ -3,35 +3,37 @@
 Computational art/poems based on the number 17, and prime numbers.
 
 
-## [bumibecome](https://xyhtamura.github.io/17/bumibecome/)
+## [bumebecome](https://xyhtamura.github.io/17/bumebecome/)
 
-The Filipino alphabet has 28 letters. Its present form expanded the
-20-letter Abakada with letters used by other Philippine languages and
-by words from elsewhere. At its prime positions: 2, 3, 5, 7, 11, 13,
-17, 19 and 23 are B, C, E, G, K, M, O, Q and U. Remove everything
-else and a surprisingly generative Tagalog remains.
+“bumebecome” (Taglish, “becoming”) is a computational lipogram. It
+builds a lexicon from the prime-numbered letters of the Filipino
+alphabet.
 
-bumibecome probabilistically takes from a dictionary of Tagalog words
-composed entirely of these prime letters. This gives three vowels: E,
-O, U, and -um-, a commonly used panlapi or affix. Tagalog builds
-through panlapi and reduplication. Affixes and repetition can turn
-roots into verbs and mark their aspect.
+The alphabet’s count records a history of language policy. Lope K.
+Santos’s 1940 Abakada had 20 letters. An enriched alphabet approved
+in 1971 and codified through the 1976 orthographic reform had 31.
+The 1987 reform removed CH, LL and RR as separate letters, leaving
+the 28 taught today. It retained C, F, J, Ñ, Q, V, X and Z beyond
+Abakada for words from other Philippine languages and languages from
+elsewhere.
 
-Each line holds two or three words; each stanza has three, five or
-seven lines. The poem draws from Tagalog roots and English arrivals,
-then passes both through infixation and reduplication: buko, bumuko,
-bumubuko; queue, qumuqueue.
+At prime positions 2, 3, 5, 7, 11, 13, 17, 19 and 23 sit B, C, E,
+G, K, M, O, Q and U. From those nine letters, the poem draws Tagalog
+roots and English arrivals. Only three vowels survive: E, O and U.
+So does -um-, a Tagalog affix. The poem probabilistically inflects
+either group through infixation and reduplication: buko, bumuko,
+bumubuko; become, bumebecome; queue, qumuqueue. Some generated
+phrases are grammatical. Others work through the rhyme, rhythm and
+repetition of the reduced sound set.
 
-C and Q are rarely needed for native Tagalog words, but they let some
-English enter the dictionary. In Taglish, imported words can take
-Filipino affixes and are turned into verbs or other inflections. Some
-generated phrases make grammatical sense; others create rhyme, rhythm
-and repetition through the reduced sonic palette.
-
-The title treats become as a Tagalog root and asks what Filipinos
-become through a language that keeps absorbing words from elsewhere.
-The letter I lies outside the prime-letter set, so the poem cannot produce
-its own title.
+C and Q are uncommon in native Tagalog roots but admit several
+English words into this lexicon. Their prime positions are a
+historical contingency of the 28-letter order: a different official
+count produces a different poem. The chalkboard presents the alphabet
+as a standardized lesson. The poem reads that expanded alphabet as a
+hybrid instrument and makes it generate Taglish. Its title names one
+possible output and asks what Filipinos become through a language
+shaped by contact and policy.
 
 ## [Prime Song](https://xyhtamura.github.io/17/prime-song/)
 
