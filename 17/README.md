@@ -48,9 +48,9 @@ one possible output and asks what Filipinos and Philippine languages
 become as institutions standardize language and speakers continue to
 borrow, inflect and transmit words.
 
-## [Prime Song](https://xyhtamura.github.io/17/prime-song/)
+## [Primer for a Song](https://xyhtamura.github.io/17/primer-for-a-song/)
 
-Prime song uses the prime numbers to reimagine what song and voice 
+Primer for a Song uses the prime numbers to reimagine what song and voice
 can be. Its source is additive, made from a fundamental and the
 prime-numbered partials 2, 3, 5, 7 and 11. Two filters give it formants
 at prime multiples of 55 Hz. These formants help suggest the sensation

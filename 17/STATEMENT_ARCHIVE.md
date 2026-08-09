@@ -57,9 +57,9 @@ change to `bumebecome`.
 > The letter I lies outside the prime-letter set, so the poem cannot
 > produce its own title.
 
-## Prime Song
+## Primer for a Song
 
-Source: `prime-song/index.html`
+Source: `primer-for-a-song/index.html`
 
 > A glossolalic song in a scale no one has heard before: seventeen
 > pitches drawn at random from the human vocal range. The voice is

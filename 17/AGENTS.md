@@ -47,7 +47,7 @@ that *is* the poem. Up to **5 pieces** per author.
 
 ## 2. The template
 
-`prime-song/template.html` is a reference copy of the official Taper #17 template.
+`primer-for-a-song/template.html` is a reference copy of the official Taper #17 template.
 Every piece is built on it. Structure:
 
 ```
@@ -67,9 +67,9 @@ Per-piece template chores (do all of them, consistently):
   `about.html#tamura` anchor. Keep the `<<`/`>>`/index links as-is.
 - **Template `<body>` is `overflow:hidden`.** A piece that accumulates content must
   scroll **inside its own container** (`#Q{height:…;overflow:hidden}` + pin
-  `scrollTop=1e9`), not rely on page scroll. Prime-song and abakada both do this.
+  `scrollTop=1e9`), not rely on page scroll. Primer for a Song and abakada both do this.
 
-> `prime-song/16 anna (Taper #16).htm` is an unrelated **reference artifact** — a
+> `primer-for-a-song/16 anna (Taper #16).htm` is an unrelated **reference artifact** — a
 > published Taper #16 piece saved for study (mangled by a DarkReader export; ignore the
 > injected CSS). Not a submission, not a template.
 
@@ -77,16 +77,16 @@ Per-piece template chores (do all of them, consistently):
 
 ## 3. Project conventions
 
-- **One folder per piece**, file named `index.html` (`prime-song/index.html`,
+- **One folder per piece**, file named `index.html` (`primer-for-a-song/index.html`,
   `bumebecome/index.html`). The folder name is the working slug.
-- The **final submission filename** is a flat name like `prime_song.html` /
+- The **final submission filename** is a flat name like `primer_for_a_song.html` /
   `bumebecome.html` (underscores), referenced in the license URL + byline. Rename on the
   way into the zip; keep `index.html` locally so the dev server serves it directly.
 - `17.md` = slot table (5 slots) + per-piece creative notes + parked ideas.
   Update the slot's status + byte count whenever a piece changes.
 - Theme discipline: every piece must earn "Prime." Primeness should be **structural**
   (drives the mechanism), not decorative. 17 is the issue number and is itself prime —
-  bonus if a piece lands on 17 (prime-song's 17-pitch scale; abakada's baybayin-17
+  bonus if a piece lands on 17 (Primer for a Song's 17-pitch scale; abakada's baybayin-17
   parallel).
 
 ---
@@ -155,7 +155,7 @@ javascript tool, not the `computer` click tool.)
 
 | # | slug | status | one-line |
 |---|---|---|---|
-| 1 | `prime-song` | built (2014 B) | glossolalic song, 17-pitch random scale, prime-partial voice, prime-Hz formants, 3\|5\|7 verses; tap-to-start |
+| 1 | `primer-for-a-song` | built (2014 B) | glossolalic song, 17-pitch random scale, prime-partial voice, prime-Hz formants, 3\|5\|7 verses; tap-to-start |
 | 2 | `stealing-prime` | built (1910 B) | five European zeros random-walk toward Asian destinations at 17\|19\|23\|29\|31-tenth-second intervals; arrivals accumulate |
 | 3 | `abakada` | built (1462 B) | Filipino 28-letter alphabet, prime positions lit; Tagalog + absorbed English via all-prime `-um-` infix; C/Q flash only for loanwords |
 | 4 | `same-time-tomorrow` | prototype (1786 B) | 47-kana iroha clock; prime-addressed persistent grafts; computational senescence |
