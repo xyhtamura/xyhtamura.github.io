@@ -80,7 +80,7 @@ Per-piece template chores (do all of them, consistently):
 - **One folder per piece**, file named `index.html` (`prime-song/index.html`,
   `abakada/index.html`). The folder name is the working slug.
 - The **final submission filename** is a flat name like `prime_song.html` /
-  `abakada.html` (underscores), referenced in the license URL + byline. Rename on the
+  `bumibecome.html` (underscores), referenced in the license URL + byline. Rename on the
   way into the zip; keep `index.html` locally so the dev server serves it directly.
 - `17.md` = slot table (5 slots) + per-piece creative notes + parked ideas.
   Update the slot's status + byte count whenever a piece changes.

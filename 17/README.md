@@ -3,7 +3,7 @@
 Computational art/poems based on the number 17, and prime numbers.
 
 
-## [aBaKada](https://xyhtamura.github.io/17/abakada/)
+## [bumibecome](https://xyhtamura.github.io/17/abakada/)
 
 The Filipino alphabet has 28 letters. Its present form expanded the
 20-letter Abakada with letters used by other Philippine languages and
@@ -11,7 +11,7 @@ by words from elsewhere. At its prime positions: 2, 3, 5, 7, 11, 13,
 17, 19 and 23 are B, C, E, G, K, M, O, Q and U. Remove everything
 else and a surprisingly generative Tagalog remains.
 
-aBaKada probabilistically takes from a dictionary of Tagalog words
+bumibecome probabilistically takes from a dictionary of Tagalog words
 composed entirely of these prime letters. This gives three vowels: E,
 O, U, and -um-, a commonly used panlapi or affix. Tagalog builds
 through panlapi and reduplication. Affixes and repetition can turn
@@ -27,6 +27,11 @@ English enter the dictionary. In Taglish, imported words can take
 Filipino affixes and are turned into verbs or other inflections. Some
 generated phrases make grammatical sense; others create rhyme, rhythm
 and repetition through the reduced sonic palette.
+
+The title treats become as a Tagalog root and asks what Filipinos
+become through a language that keeps absorbing words from elsewhere.
+The letter I lies outside the prime-letter set, so the poem cannot produce
+its own title.
 
 ## [Prime Song](https://xyhtamura.github.io/17/prime-song/)
 
