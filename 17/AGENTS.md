@@ -157,7 +157,7 @@ javascript tool, not the `computer` click tool.)
 |---|---|---|---|
 | 1 | `prime-song` | built (2014 B) | glossolalic song, 17-pitch random scale, prime-partial voice, prime-Hz formants, 3\|5\|7 verses; tap-to-start |
 | 2 | `stealing-prime` | built (1910 B) | five European zeros random-walk toward Asian destinations at 17\|19\|23\|29\|31-tenth-second intervals; arrivals accumulate |
-| 3 | `abakada` | built (1445 B) | Filipino 28-letter alphabet, prime positions lit; Tagalog + absorbed English via all-prime `-um-` infix; C/Q flash only for loanwords |
+| 3 | `abakada` | built (1462 B) | Filipino 28-letter alphabet, prime positions lit; Tagalog + absorbed English via all-prime `-um-` infix; C/Q flash only for loanwords |
 | 4 | `same-time-tomorrow` | prototype (1786 B) | 47-kana iroha clock; prime-addressed persistent grafts; computational senescence |
 | 5 | `antimeridian` | prototype (1528 B) | “Drawing the Day”: 17-decision date lines try to pass through four schematic island fields without touching a point |
 

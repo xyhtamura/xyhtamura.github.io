@@ -60,14 +60,14 @@ and repetition through the reduced sonic palette.
 	</h1>
 </header>
 
-<style>body{background:#eed;color:#423}#A{display:flex;flex-wrap:wrap;gap:3px;max-width:21em;margin:6vh auto 0;font:15px monospace}#A b{padding:1px 6px;opacity:.18}#A .p{opacity:1;background:#423;color:#eed;border-radius:3px}#A .f{background:#b50}#Q{max-width:21em;height:58vh;margin:4vh auto;padding:0 1em;overflow:hidden;font:italic 21px Georgia;line-height:2}</style>
+<style>body{background:#26382f;color:#eee8d5}#A{display:flex;flex-wrap:wrap;gap:3px;max-width:21em;margin:6vh auto 0;font:15px monospace}#A b{padding:1px 6px;opacity:.18}#A .p{opacity:1;background:#eee8d5;color:#26382f;border-radius:3px}#A .f{background:#d6b55b}#Q{max-width:21em;height:58vh;margin:4vh auto;padding:0 1em;overflow:hidden;font:italic 21px Georgia;line-height:2}</style>
 <div id=A></div><div id=Q></div>
 <script>
 let R=Math.random,I=n=>R()*n|0,K=a=>a[I(a.length)],
 L="A B C D E F G H I J K L M N Ñ NG O P Q R S T U V W X Y Z".split(" "),
 E=L.map((c,i)=>{let b=document.createElement("b");b.textContent=c;[2,3,5,7,11,13,17,19,23].includes(i+1)&&(b.className="p");A.appendChild(b);return b}),
 W="oo mo ko buo buko kubo kuko ube ubo gugo bukbok bugbog kubkob ugok bugok".split(" "),
-B="be me um emu oboe moo book boom cook emcee become queue cue come cube ego q go".split(" "),
+B="be me um emu oboe moo book boom cook emcee become queue cue come cube ego q g go".split(" "),
 D=_=>Q.appendChild(document.createElement("div")),
 F=w=>{for(let c of w){let b=E[L.indexOf(c.toUpperCase())];b.classList.add("f");setTimeout(_=>b.classList.remove("f"),700)}},
 e=D(),n=0,m=0,M=K([3,5,7]),
