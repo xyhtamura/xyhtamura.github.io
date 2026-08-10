@@ -800,6 +800,16 @@ links: [
 	  ]
 	},
 	{
+	  id: "glitterizer",
+	  title: "glitterizer",
+	  year: "2026",
+	  tags: ["procedural glitter", "advection fields", "PRNG particles", "dither & palette export", "canvas"],
+	  blurb: "A procedural glitter painter and loop generator. Painting over an image writes low-resolution density, flow, focus, and tint fields; particles are derived deterministically from a seeded PRNG. Pluggable kits interpret focus as attention density or circle-of-confusion, while output profiles control palette quantization, Bayer/Floyd–Steinberg dither, and frame rates for client-side PNG, WebM, and GIF export.",
+	  links: [
+	    { label: "Launch App", url: "https://xyhtamura.github.io/glitterizer/" }
+	  ]
+	},
+	{
 	  title: "Aeropane",
 	  year: "2026",
 	  tags: ["frosted glass", "light scattering", "gel physics", "WebGL progressive render", "Frutiger Aero"],
