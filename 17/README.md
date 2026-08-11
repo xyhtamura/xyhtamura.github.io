@@ -72,85 +72,6 @@ The result is melodic glossolalia: not quite language and unfamiliar
 melody, maybe a song that seems to precede both, or maybe a song 
 that could be in the future, or a dream.
 
-## [Stealing Prime](https://xyhtamura.github.io/17/stealing-prime/)
-
-Before the International Meridian Conference of 1884 made Greenwich
-the international zero, longitude was reckoned from competing
-observatories and national meridians. Five European origins appear
-here: Greenwich, Paris, San Fernando, Lisbon, and Amsterdam.
-
-They are paired with Bombay, Phù Liễn, Manila, Goa, and Batavia. The
-five destinations form a regional study of zero in motion. In each
-case a European reference entered an Asian colonial system and ceased
-to remain a stable metropolitan origin: it was resisted, relocated by
-law, carried across a change of date, exchanged for a neighbouring
-standard, or made into a colonial prime meridian. The cases belong to
-different periods and institutions; they do not reconstruct one
-imperial network.
-
-The poem isolates this movement rather than attempting a general
-history of longitude. Because the historical operation is transfer
-and transformation rather than territorial partition, the places
-remain fixed while zero moves.
-
-Each zero leaves its European city on a random walk that drifts toward
-its destination. Individual steps can reverse direction or carry the
-zero behind its starting point, but the accumulated movement is
-one-way. When it arrives, the destination count rises and the zero
-returns to Europe.
-
-The animation reverses the usual diagram of a standard radiating
-outward from a centre. Here the centre itself travels. At arrival, the
-destination is no longer measured as a distance from the European
-origin because it has taken the origin. The count records how many
-times this capture has occurred; it is a quantity produced by the
-poem, not a historical statistic.
-
-Bombay kept a local mean time approximately four hours and fifty-one
-minutes ahead of Greenwich. Attempts to replace it first with Madras
-railway time and later with Indian Standard Time produced the “Battle
-of the Clocks.” Municipal politicians, merchants, millworkers, courts,
-and public clocks did not respond as one body. Workers struck against
-the new hours, and Bombay Time remained in use until 1955. Zero was
-not simply received there; its authority was contested.
-
-In French Indochina, the observatory at Phù Liễn supplied a more
-literal case. A decree of 9 June 1906 established the meridian through
-the observatory—104°17′17″ east of Paris—as the legal time reference
-for Indochina from 1 July. Paris remained inside the definition even
-when the operative meridian had been placed in the colony.
-
-Spanish official maps of the Philippines measured longitude eastward
-from San Fernando. The archipelago’s calendar, however, had travelled
-westward from the Americas with the Manila–Acapulco galleon. The
-Philippines therefore kept the American date until 1844, when 31
-December was omitted and 30 December was followed by 1 January 1845.
-The Spanish zero in this poem follows that older direction: it leaves
-the map in the west and returns from the east.
-
-Goa shows one colonial clock joining another colonial system.
-Portugal abandoned Lisbon Mean Time for Greenwich in 1911. On 18 July
-of the same year, Portuguese Goa adopted Indian Standard Time, based
-on the meridian at 82°30′ east of Greenwich. Its legal time followed
-neighbouring British India rather than the longitude prescribed for
-Portuguese India from Lisbon.
-
-Batavia became an origin in its own right. Its time ball marked
-Batavia mean noon for ships from 1839 and also provided a separate
-Greenwich signal for navigators. The Dutch colonial topographic
-service later used Batavia as a prime meridian for mapping Java and
-other parts of the Netherlands East Indies. Of the five destinations,
-it most literally took zero: the colony became the point from which
-other colonial places were measured.
-
-The five zeros step at intervals of 17, 19, 23, 29, and 31 tenths of
-a second. Because those numbers are prime, all five make a decision
-together only once every 6,678,671 ticks, a little under eight days.
-Motion is interpolated between decisions, so the lines move
-continuously while their changes of direction remain discrete. Each
-walk is generated afresh, so the counts develop differently on each
-viewing.
-
 ## [Same Time Tomorrow / いろは時計](https://xyhtamura.github.io/17/same-time-tomorrow/)
 
 The iroha is a perfect pangram from late Heian Japan, probably composed
@@ -173,7 +94,7 @@ Its incremental search for each next prime also grows more
 demanding, giving it a latent computational senescence: ordinary at
 human scale, but burdened in its distant future.
 
-## [Drawing the Day](https://xyhtamura.github.io/17/antimeridian/)
+## [Drawing the Day](https://xyhtamura.github.io/17/drawing-the-day/)
 
 The International Date Line is commonly drawn as one line near 180°,
 the antimeridian of Greenwich. It has no international legal status.
@@ -201,3 +122,10 @@ only asks whether one path can satisfy four simplified constraints.
 The prime meridian is absent but determines the procedure. The
 antimeridian is its antipode: moving the adopted zero would move the
 starting point and restoring pull of every attempt.
+
+## Archived studies
+
+[Stealing Prime](https://xyhtamura.github.io/17/archive/stealing-prime/)
+was removed from the active Taper #17 slate on 11 August 2026. Its five
+historical cases did not form a cogent enough operation, and *Drawing
+the Day* handles the related longitude material more directly.

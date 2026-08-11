@@ -21,13 +21,17 @@ change from poem to poem:
 
 | Work | Regional field | Active element | Operation | Status |
 |---|---|---|---|---|
-| *Stealing Prime* | Colonial Asia | Origin | Zero moves and changes within local systems | Taper #17, built |
+| *Stealing Prime* | Colonial Asia | Origin | Zero moves and changes within local systems | Archived Taper study |
 | *Drawing the Day* | Pacific | Boundary | A date seam attempts to constitute itself | Taper #17, prototype |
 | *370 Leagues* (working title) | Atlantic / South America | Partition line | A territorial claim cannot locate itself | Parked |
 | Africa partition work | Specific African partition cases | Grid or boundary | Lines allocate territory from incomplete information | Research needed |
 | Americas work or works | North and South American institutions | Competing centres | Meridians synchronize, persist, or surrender authority | Research needed |
 
 ## Stealing Prime
+
+Archived on 2026-08-11. The five cases did not resolve into one cogent operation,
+and *Drawing the Day* handles the related longitude material more directly. The
+final working version remains available as a study, not an active submission.
 
 The poem studies five cases in which a European reference point became
 unstable within Asian colonial systems. Bombay resisted standardized time;
