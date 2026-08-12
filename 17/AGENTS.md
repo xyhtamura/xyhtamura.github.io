@@ -174,7 +174,7 @@ javascript tool, not the `computer` click tool.)
 | 1 | `primer-for-a-song` | submitted (2014 B) | glossolalic song, 17-pitch random scale, prime-partial voice, prime-Hz formants, 3\|5\|7 verses; tap-to-start |
 | 2 | — | open | *Stealing Prime* was archived on 2026-08-11 |
 | 3 | `bumebecome` | submitted (1462 B) | Filipino 28-letter alphabet, prime positions lit; Tagalog + absorbed English via all-prime `-um-` infix; C/Q flash only for loanwords |
-| 4 | `same-time-tomorrow` | submitted (1853 B) | 47-kana iroha clock; prime-addressed persistent grafts; computational senescence |
+| 4 | `same-time-tomorrow` | submitted (1841 B) | 47-kana iroha clock; prime-addressed persistent grafts; computational senescence |
 | 5 | `drawing-the-day` | submitted (1550 B) | 17-decision date lines try to pass through four schematic island fields without touching a point |
 
 All four active pieces are byte-legal, validated, browser-verified, and packaged
