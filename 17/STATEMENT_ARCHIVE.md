@@ -156,3 +156,20 @@ Source: `drawing-the-day/index.html`, replaced 2026-08-12
 > starting point and restoring pull of every attempt. Each trace tests the
 > consequences of that chosen zero against a Pacific that cannot be
 > reduced to its antipode.
+
+## Drawing the Day — expanded Greenwich opening
+
+Source: `drawing-the-day/index.html`, replaced 2026-08-12
+
+> Before 1884, maps, nautical charts and observatories measured longitude
+> from multiple initial meridians. The International Meridian Conference
+> in Washington recommended the meridian through the transit instrument
+> at Greenwich Observatory as their common zero. Twenty-two delegations
+> voted for Greenwich; San Domingo voted against it, while Brazil and
+> France abstained. The decision made a negotiated convention the origin
+> of global longitude.
+>
+> Greenwich's antimeridian lies at 180° and supplies the geometric basis
+> for the International Date Line. Domestic laws give the Date Line its
+> actual course and practical force. Countries choose the dates they
+> observe; the line on a map records where those calendars meet.
