@@ -54,8 +54,10 @@ that *is* the poem. Up to **5 pieces** per author.
 
 ## 2. The template
 
-`primer-for-a-song/template.html` is a reference copy of the official Taper #17 template.
-Every piece is built on it. Structure:
+`17/template.html` is the official Taper #17 template, placed at the folder root by
+Xyh on 2026-08-12. `primer-for-a-song/template.html` is a copy of it and was verified
+byte-identical (SHA-256 `16cc6409…`, 1879 B, LF endings, no BOM) on the same day. Every
+piece is built on it. Structure:
 
 ```
 <head> … official <style> (DO NOT EDIT) … </head>
@@ -66,6 +68,14 @@ Every piece is built on it. Structure:
 <!-- POEM REGION ENDS at </body> -->
 </body>
 ```
+
+**The template's whitespace is part of the template.** It carries three trailing
+spaces — one in the license line after `the copyright`, two in the nav after
+`&nbsp;` — that a save-on-format editor will silently strip. All four pieces had
+lost them and they were restored on 2026-08-12. The call says to edit only the
+comment and the poem region, so treat the header bytes as fixed. Verify with the
+skeleton diff in the pre-submission pass (17.md), not by eye. `git diff --check`
+will report these as trailing-whitespace warnings; that is expected, leave them.
 
 Per-piece template chores (do all of them, consistently):
 - License comment: fill title, `© 2026 Xyh Tamura`, the `taperzine.org/17/<file>.html`
