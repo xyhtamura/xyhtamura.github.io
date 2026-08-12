@@ -83,3 +83,34 @@ Source: `same-time-tomorrow/index.html`
 > modulo 47, and a random kana is grafted over it. Each sign keeps two
 > grafts; the oldest is shed when another arrives. After 47 × 46 = 2,162
 > ticks, the order returns. The alphabet does not.
+
+## Drawing the Day
+
+Source: `drawing-the-day/index.html`
+
+> The International Date Line is commonly drawn as one line near 180°,
+> the antimeridian of Greenwich. It has no international legal status.
+> States choose their civil dates and UTC offsets; the mapped line
+> summarizes the boundary produced by those separate decisions.
+>
+> “Drawing the Day” treats that summary as a problem repeatedly attempted
+> rather than a line already given. Every attempt starts at the North
+> Pole on 180° and makes seventeen southward decisions. Random changes
+> pull it away from the antimeridian while a weaker correction pulls it
+> back.
+>
+> Four schematic island fields interrupt the route. Their names refer
+> to places around which the mapped date line has bent; their positions
+> are not a geographic projection. The points are individual obstacles,
+> not connected borders. A line can pass between them. An attempt stops
+> when one of its segments touches a point; one that avoids every point
+> reaches the South Pole. Both remain as traces while another line
+> begins.
+>
+> Success is a formal result internal to the poem. It does not mean that
+> a generated line is historically or politically correct. The test
+> only asks whether one path can satisfy four simplified constraints.
+>
+> The prime meridian is absent but determines the procedure. The
+> antimeridian is its antipode: moving the adopted zero would move the
+> starting point and restoring pull of every attempt.
