@@ -25,28 +25,23 @@ pass through one of two authored infixation and reduplication rules:
 buko, bumuko, bumubuko; become, bumebecome; queue, qumuqueue. Every
 word and transformation stays within the nine-letter set.
 
-The system does not test syntax. It places two or three words on each
-line and three, five or seven lines in each stanza, so both counts are
-prime. Grammatical phrases occur by chance within those limits. Other
-combinations carry rhyme, rhythm and repetition through the reduced
-sound set.
+The system randomly places two or three words on each line and three,
+five or seven lines in each stanza, so both counts are prime.
+Grammatical phrases occur by chance within those limits.
 
 These prime positions are a historical contingency of the 28-letter
 order. In the 26-letter English alphabet, the same positions yield B,
 C, E, G, K, M, Q, S and W; only E remains among its five vowel
-letters. In the Filipino alphabet,
-the insertion of Ñ and NG shifts O, Q and U into prime positions. The
-result retains three vowels and the affix -um-. A different official
-alphabet therefore produces a different poem.
+letters. In the Filipino alphabet, the insertion of Ñ and NG shifts O,
+Q and U into prime positions. The result retains three vowels and the
+affix -um-. A different official alphabet therefore produces a
+different poem.
 
-C and Q are uncommon in native Tagalog roots but admit several
-English words into this lexicon. The chalkboard presents the Filipino
-alphabet as an institutional standard: something defined, taught and
-learned. The poem reads that standard as a hybrid instrument and makes
-it generate Taglish from within its own letter set. Its title names
-one possible output and asks what Filipinos and Philippine languages
-become as institutions standardize language and speakers continue to
-borrow, inflect and transmit words.
+C and Q are uncommon in native Tagalog roots but admit several English
+words into this lexicon: today’s alphabet is internationally hybrid by
+default. From the title, this piece asks what Filipinos and Philippine
+languages are becoming through what is institutionalized, taught,
+learned, and hybridized.
 
 ## [Primer for a Song](https://xyhtamura.github.io/17/primer-for-a-song/)
 
@@ -104,28 +99,22 @@ give the Date Line its actual course; the mapped line records where
 calendars meet.
 
 Inhabited islands, political borders and cross-Pacific relations give
-the mapped line its bends. It keeps the Aleutians with Alaska and the
-Chathams on the same date as New Zealand. Kiribati shifted the line east
-to put its island groups on one calendar day. Samoa legislated a shift
-from its west to its east in 2011 and specified how the lost day would
-affect deadlines, interest and wages. These cases arose through
+today’s mapped line its bends. It keeps the Aleutians with Alaska and
+the Chathams on the same date as New Zealand. Kiribati shifted the line
+east to put its island groups on one calendar day. Samoa legislated a
+shift from its west to its east in 2011 and specified how the lost day
+would affect deadlines, interest and wages. These cases arose through
 territorial administration, national coordination and economic
 relations across the Pacific.
 
 “Drawing the Day” compresses these histories into four schematic island
-fields positioned for the poem's procedure. Each attempt starts at the
+fields positioned for the piece’s procedure. Each attempt starts at the
 North Pole on 180° and makes seventeen southward decisions. Random
 changes push the path away from the antimeridian while a correction
-pulls it back. A path threads the gaps between points and stops when a
-segment touches one. Completed and interrupted attempts accumulate as
-traces while another begins.
-
-Within the poem, success means a generated path completes the simplified
-passage from pole to pole. The historical cases supply the constraint
-fields and remain outside that formal result. The absent prime
-meridian determines the starting point and restoring pull of every
-attempt. Each trace places the geometric consequence of a global zero
-among Pacific decisions that shape the calendar boundary.
+pulls it back. The path can thread the gaps between points and stops
+when a segment touches one. Paths that pass from pole to pole without
+interruption are traced as bold lines, while paths that collide with
+islands are marked by dotted lines.
 
 ## Archived studies
 

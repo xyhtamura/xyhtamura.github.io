@@ -29,6 +29,13 @@ that *is* the poem. Up to **5 pieces** per author.
      (IPA, ñ, ·, curly quotes) cost 2–3 bytes each and blow the budget silently.
 2. **Valid HTML5.** Must pass the W3C validator (validator.w3.org) with no errors.
    Warnings are tolerable if the feature is cross-browser; prefer zero.
+   - **One exemption, granted by the call itself:** a `<style>` element in the poem
+     region makes Nu report `Element “style” not allowed as child of element
+     “body”`. The call reads: *"(An exception is made for using &lt;style&gt; tags
+     within your poem code; please do not modify the template's stylesheet.)"*
+     Every piece here trips it and every piece is fine. Ignore that one error;
+     any *other* error is real. Settled 2026-08-12 — see 17.md, and do not
+     restructure the style tags to chase a clean report.
 3. **ES6, no more.** Modern JS is fine. No transpilers assumed.
 4. **No external resources, period.** No CDN, no `<link>` fonts, no fetch, no APIs, no
    remote images. The file must work fully **offline** (gallery / air-gapped setting).
@@ -69,9 +76,8 @@ Per-piece template chores (do all of them, consistently):
   scroll **inside its own container** (`#Q{height:…;overflow:hidden}` + pin
   `scrollTop=1e9`), not rely on page scroll. Primer for a Song and abakada both do this.
 
-> `primer-for-a-song/16 anna (Taper #16).htm` is an unrelated **reference artifact** — a
-> published Taper #16 piece saved for study (mangled by a DarkReader export; ignore the
-> injected CSS). Not a submission, not a template.
+> A copy of the published Taper #16 piece `16 anna` was once kept in
+> `primer-for-a-song/` as a reference artifact. It is no longer in the folder.
 
 ---
 
@@ -155,13 +161,13 @@ javascript tool, not the `computer` click tool.)
 
 | # | slug | status | one-line |
 |---|---|---|---|
-| 1 | `primer-for-a-song` | built (2014 B) | glossolalic song, 17-pitch random scale, prime-partial voice, prime-Hz formants, 3\|5\|7 verses; tap-to-start |
+| 1 | `primer-for-a-song` | submitted (2014 B) | glossolalic song, 17-pitch random scale, prime-partial voice, prime-Hz formants, 3\|5\|7 verses; tap-to-start |
 | 2 | — | open | *Stealing Prime* was archived on 2026-08-11 |
-| 3 | `bumebecome` | built (1462 B) | Filipino 28-letter alphabet, prime positions lit; Tagalog + absorbed English via all-prime `-um-` infix; C/Q flash only for loanwords |
-| 4 | `same-time-tomorrow` | prototype (1853 B) | 47-kana iroha clock; prime-addressed persistent grafts; computational senescence |
-| 5 | `drawing-the-day` | prototype (1550 B) | 17-decision date lines try to pass through four schematic island fields without touching a point |
+| 3 | `bumebecome` | submitted (1462 B) | Filipino 28-letter alphabet, prime positions lit; Tagalog + absorbed English via all-prime `-um-` infix; C/Q flash only for loanwords |
+| 4 | `same-time-tomorrow` | submitted (1853 B) | 47-kana iroha clock; prime-addressed persistent grafts; computational senescence |
+| 5 | `drawing-the-day` | submitted (1550 B) | 17-decision date lines try to pass through four schematic island fields without touching a point |
 
-Two pieces are built, two are prototypes, and one slot is open. All four active
-pieces are byte-legal. The current
-versions have not completed their final W3C validation and zip-renaming pass; do that
-for all pieces together near the deadline.
+All four active pieces are byte-legal, validated, browser-verified, and packaged
+into `taper17_xyh_tamura.zip`. The zip has not been emailed yet. Slot 2 is open;
+a fifth piece before the 2026-08-17 deadline means rebuilding the zip. See the
+pre-submission pass in 17.md for what was checked and what is still undone.

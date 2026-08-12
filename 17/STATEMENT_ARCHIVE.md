@@ -57,6 +57,48 @@ change to `bumebecome`.
 > The letter I lies outside the prime-letter set, so the poem cannot
 > produce its own title.
 
+## bumebecome — five-moves draft
+
+Source: `17/README.md`, replaced 2026-08-12
+
+Xyh shortened these two passages directly in `bumebecome/index.html` on
+2026-08-11 (commit `4f962f9`). The README kept the longer Codex draft until
+2026-08-12, when it was brought into agreement with the submitted file. The
+replaced passages:
+
+> The system does not test syntax. It places two or three words on each
+> line and three, five or seven lines in each stanza, so both counts are
+> prime. Grammatical phrases occur by chance within those limits. Other
+> combinations carry rhyme, rhythm and repetition through the reduced
+> sound set.
+
+> C and Q are uncommon in native Tagalog roots but admit several
+> English words into this lexicon. The chalkboard presents the Filipino
+> alphabet as an institutional standard: something defined, taught and
+> learned. The poem reads that standard as a hybrid instrument and makes
+> it generate Taglish from within its own letter set. Its title names
+> one possible output and asks what Filipinos and Philippine languages
+> become as institutions standardize language and speakers continue to
+> borrow, inflect and transmit words.
+
+## Drawing the Day — formal-result close
+
+Source: `drawing-the-day/index.html`, replaced 2026-08-12
+
+Xyh replaced the closing paragraph with a direct description of how the two
+outcomes are drawn. The replaced ending:
+
+> pulls it back. A path threads the gaps between points and stops when a
+> segment touches one. Completed and interrupted attempts accumulate as
+> traces while another begins.
+>
+> Within the poem, success means a generated path completes the simplified
+> passage from pole to pole. The historical cases supply the constraint
+> fields and remain outside that formal result. The absent prime
+> meridian determines the starting point and restoring pull of every
+> attempt. Each trace places the geometric consequence of a global zero
+> among Pacific decisions that shape the calendar boundary.
+
 ## Primer for a Song
 
 Source: `primer-for-a-song/index.html`
