@@ -101,38 +101,37 @@ from multiple initial meridians. The International Meridian Conference
 in Washington recommended the meridian through the transit instrument
 at Greenwich Observatory as their common zero. Twenty-two delegations
 voted for Greenwich; San Domingo voted against it, while Brazil and
-France abstained. The choice elevated one established national
-reference into an international standard. It did not discover a
-natural origin.
+France abstained. The decision made a negotiated convention the origin
+of global longitude.
 
-The antimeridian lies 180° from that zero. It supplies the geometric
-basis of the International Date Line but does not dictate its route.
-The Date Line has no international legal status. Countries choose the
-dates they observe; the line on a map summarizes where those choices
-meet.
+Greenwich's antimeridian lies at 180° and supplies the geometric basis
+for the International Date Line. Domestic laws give the Date Line its
+actual course and practical force. Countries choose the dates they
+observe; the line on a map records where those calendars meet.
 
-The Pacific is not empty space available to a geometric rule. The
-mapped line bends around inhabited islands and political borders. It
-keeps the Aleutians with Alaska and the Chathams on the same date as
-New Zealand. Kiribati shifted the line east to put its island groups
-on one calendar day. Samoa legislated a shift from its west to its east
-in 2011 and specified how the lost day would affect deadlines, interest
-and wages. These are different histories of territorial administration,
-national coordination and economic relations across the Pacific.
+Inhabited islands, political borders and cross-Pacific relations give
+the mapped line its bends. It keeps the Aleutians with Alaska and the
+Chathams on the same date as New Zealand. Kiribati shifted the line east
+to put its island groups on one calendar day. Samoa legislated a shift
+from its west to its east in 2011 and specified how the lost day would
+affect deadlines, interest and wages. These cases arose through
+territorial administration, national coordination and economic
+relations across the Pacific.
 
-“Drawing the Day” compresses those histories into four schematic island
-fields. Their positions are not a geographic projection. Each attempt
-starts at the North Pole on 180° and makes seventeen southward
-decisions. Random changes push the path away from the antimeridian while
-a correction pulls it back. A path can pass between points but stops if
-a segment touches one. The path, rather than an island, fails. Completed
-and interrupted attempts remain as traces while another begins.
+“Drawing the Day” compresses these histories into four schematic island
+fields positioned for the poem's procedure. Each attempt starts at the
+North Pole on 180° and makes seventeen southward decisions. Random
+changes push the path away from the antimeridian while a correction
+pulls it back. A path threads the gaps between points and stops when a
+segment touches one. Completed and interrupted attempts accumulate as
+traces while another begins.
 
-Success is a formal result internal to the poem, not a historically or
-politically correct boundary. The absent prime meridian determines the
-starting point and restoring pull of every attempt. Each trace tests the
-consequences of that chosen zero against a Pacific that cannot be
-reduced to its antipode.
+Within the poem, success means a generated path completes the simplified
+passage from pole to pole. The historical cases supply the constraint
+fields and remain outside that formal result. The absent prime
+meridian determines the starting point and restoring pull of every
+attempt. Each trace places the geometric consequence of a global zero
+among Pacific decisions that shape the calendar boundary.
 
 ## Archived studies
 

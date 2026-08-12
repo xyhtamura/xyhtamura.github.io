@@ -114,3 +114,45 @@ Source: `drawing-the-day/index.html`
 > The prime meridian is absent but determines the procedure. The
 > antimeridian is its antipode: moving the adopted zero would move the
 > starting point and restoring pull of every attempt.
+
+## Drawing the Day — negotiated-zero draft
+
+Source: `drawing-the-day/index.html`, replaced 2026-08-12
+
+> Before 1884, maps, nautical charts and observatories measured longitude
+> from multiple initial meridians. The International Meridian Conference
+> in Washington recommended the meridian through the transit instrument
+> at Greenwich Observatory as their common zero. Twenty-two delegations
+> voted for Greenwich; San Domingo voted against it, while Brazil and
+> France abstained. The choice elevated one established national
+> reference into an international standard. It did not discover a
+> natural origin.
+>
+> The antimeridian lies 180° from that zero. It supplies the geometric
+> basis of the International Date Line but does not dictate its route.
+> The Date Line has no international legal status. Countries choose the
+> dates they observe; the line on a map summarizes where those choices
+> meet.
+>
+> The Pacific is not empty space available to a geometric rule. The
+> mapped line bends around inhabited islands and political borders. It
+> keeps the Aleutians with Alaska and the Chathams on the same date as
+> New Zealand. Kiribati shifted the line east to put its island groups
+> on one calendar day. Samoa legislated a shift from its west to its east
+> in 2011 and specified how the lost day would affect deadlines, interest
+> and wages. These are different histories of territorial administration,
+> national coordination and economic relations across the Pacific.
+>
+> “Drawing the Day” compresses those histories into four schematic island
+> fields. Their positions are not a geographic projection. Each attempt
+> starts at the North Pole on 180° and makes seventeen southward
+> decisions. Random changes push the path away from the antimeridian while
+> a correction pulls it back. A path can pass between points but stops if
+> a segment touches one. The path, rather than an island, fails. Completed
+> and interrupted attempts remain as traces while another begins.
+>
+> Success is a formal result internal to the poem, not a historically or
+> politically correct boundary. The absent prime meridian determines the
+> starting point and restoring pull of every attempt. Each trace tests the
+> consequences of that chosen zero against a Pacific that cannot be
+> reduced to its antipode.
