@@ -577,7 +577,7 @@ const slides = [
         { type: "image", src: "../tcb.jpg", label: "the complete Titanopsis wearable suite" },
         { type: "image", src: "../img/TitanopsisRing.jpg", label: "the iridescent cockroach ring worn on a hand" }
       ],
-      blurb: "A wearable suite inspired by the namesake plant, consisting of pants, innerwear, outerwear, and an iridescent cockroach ring. The ring is a secondhand plastic toy coated in multichrome nail polish and attached to a metal ring base.",
+      blurb: "Developed over several months for a succulent-themed wedding, this head-to-toe suite began with beige nail polish with green shimmer and a photograph of stone-like Titanopsis calcarea. Acid green, steel blue, brick red, and greyed beige move across a wavy appliquéd coat, metallic innerwear, neon trousers with asymmetrical folds, hair, makeup, nails, a modified kitchen glove, and an iridescent cockroach ring made from a multichrome-coated plastic toy. Xyh developed the concept, palette, silhouette, sketch, styling, cosmetics, and accessories; George Palmos collaborated on garment design and construction.",
       links: [
         { label: "Open CV Entry", url: "https://xyhtamura.github.io/#titanopsis" }
       ]
