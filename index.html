@@ -2392,9 +2392,12 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
     <span class="chips"><span class="chip fashion">fashion</span></span>
   </summary>
   <div class="body">
-    <p>Three-piece outfit inspired by the namesake cultivar: pants, innerwear, and outerwear. Plus a crafted iridescent cockroach ring.</p>
+    <div class="media-group">
+      <img class="media" src="tcb.jpg" alt="Three views of Xyh wearing the Titanopsis suite: tan outerwear with green, grey, and brown appliqué, grey innerwear, and bright green pants">
+      <img class="media" src="img/TitanopsisRing.jpg" alt="Close view of the Titanopsis cockroach ring worn on a hand, with its green-gold multichrome surface beside painted nails">
+    </div>
+    <p>A wearable suite inspired by the namesake plant, consisting of pants, innerwear, outerwear, and an iridescent cockroach ring. The ring is a secondhand plastic toy coated in multichrome nail polish and attached to a metal ring base.</p>
     <div class="outlinks">
-      <a class="glass visit" href="tcb.jpg" target="_blank" rel="noopener">▷ photo</a>
       <span class="collab-note">w/</span><a class="glass" href="#">George Palmos ↗</a>
     </div>
   </div>
@@ -2820,6 +2823,16 @@ searchClear.addEventListener('click',()=>{
   applyFilters();
 });
 applyFilters();
+
+const openHashEntry = () => {
+  if (!location.hash) return;
+  const target = document.querySelector(location.hash);
+  if (!(target instanceof HTMLDetailsElement)) return;
+  target.open = true;
+  requestAnimationFrame(() => target.scrollIntoView({ block: 'start' }));
+};
+window.addEventListener('hashchange', openHashEntry);
+openHashEntry();
 
 // nested portfolio sets
 document.querySelectorAll('.nested-toggle[aria-controls]').forEach(button => {

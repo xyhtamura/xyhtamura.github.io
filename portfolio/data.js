@@ -4,6 +4,7 @@ const PORTFOLIO = {
     { id: "intermedia", label: "Intermedia"},
 	{ id: "music", label: "music" },
 	{ id: "theater", label: "Theater" },
+	{ id: "fashion", label: "Fashion" },
 	  { id: "technology", label: "Technology" },
 
   
@@ -549,6 +550,36 @@ const slides = [
       links: [
         { label: "watch", url: "https://www.youtube.com/watch?v=R4hyaAySjG0" },
         { label: "Philstar Press", url: "https://www.philstar.com/pilipino-star-ngayon/showbiz/2000/11/04/118632/gifted-children-san-sila-galing-" }
+      ]
+    }
+  },
+
+// --------------------------------------------------
+  // SECTION: FASHION
+  // --------------------------------------------------
+  {
+    kind: "divider",
+    sec: {
+      id: "fashion",
+      label: "Fashion",
+      description: "Clothing, accessories, wearable objects, and body-based design."
+    }
+  },
+  {
+    kind: "piece",
+    piece: {
+      id: "titanopsis",
+      title: "Titanopsis calcarea bizarre",
+      year: "2018",
+      tags: ["fashion"],
+      collaborators: "George Palmos",
+      media: [
+        { type: "image", src: "../tcb.jpg", label: "the complete Titanopsis wearable suite" },
+        { type: "image", src: "../img/TitanopsisRing.jpg", label: "the iridescent cockroach ring worn on a hand" }
+      ],
+      blurb: "A wearable suite inspired by the namesake plant, consisting of pants, innerwear, outerwear, and an iridescent cockroach ring. The ring is a secondhand plastic toy coated in multichrome nail polish and attached to a metal ring base.",
+      links: [
+        { label: "Open CV Entry", url: "https://xyhtamura.github.io/#titanopsis" }
       ]
     }
   },
