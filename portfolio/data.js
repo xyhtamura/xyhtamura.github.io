@@ -591,12 +591,54 @@ const slides = [
     }
   },
 {
-  title: "Moire",
-  year: "2026",
-  tags: ["phase modulation", "synthesizer", "audio worklet", "mathematical grammar", "live codegen"],
-  blurb: "A phase-modulation synthesizer that replaces box-and-wire algorithm charts with live equations, arbitrary operator graphs, feedback loops, continuous drift, and non-integer ratios.",
-  links: [
-    { label: "Launch Instrument", url: "https://xyhtamura.github.io/moire" }
+  kind: "set",
+  main: {
+    id: "anexacta",
+    title: "Anexacta",
+    year: "2026→",
+    tags: ["equation-first synthesis", "spectral math", "Web Audio"],
+    blurb: "A set of equation-first synthesizers that expose spectral structure, tuning, modulation, and feedback as editable mathematics.",
+    links: [
+      { label: "Open Collection", url: "https://xyhtamura.github.io/anexacta/" }
+    ]
+  },
+  children: [
+    {
+      kind: "panels",
+      label: "Instruments",
+      panels: [
+        {
+          id: "aliquoto",
+          title: "Aliquoto",
+          year: "2026",
+          tags: ["additive synthesis", "spectral grammar", "microtonal"],
+          blurb: "A pure additive synthesizer for writing spectral series as summations, envelopes, and conditionals. Its offline equation parser and phase-exact AudioWorklet support fractional, irrational, subharmonic, and drift-modulated partial ratios.",
+          links: [
+            { label: "Launch Instrument", url: "https://xyhtamura.github.io/anexacta/aliquoto/" }
+          ]
+        },
+        {
+          id: "cella",
+          title: "Cella",
+          year: "2026",
+          tags: ["resonator bank", "spectral math", "microtonal"],
+          blurb: "A resonant additive synthesizer that maps custom equations onto a noise-driven resonator bank, with painted partials, Gaussian, Lorentzian, or Voigt spectral distributions, microtonal macro-detuning, and offline WAV rendering.",
+          links: [
+            { label: "Launch Instrument", url: "https://xyhtamura.github.io/anexacta/cella/" }
+          ]
+        },
+        {
+          id: "moire",
+          title: "Moire",
+          year: "2026",
+          tags: ["phase modulation", "mathematical grammar", "live codegen"],
+          blurb: "A phase-modulation synthesizer that replaces box-and-wire algorithm charts with live equations, arbitrary operator graphs, feedback loops, continuous drift, and non-integer ratios.",
+          links: [
+            { label: "Launch Instrument", url: "https://xyhtamura.github.io/anexacta/moire/" }
+          ]
+        }
+      ]
+    }
   ]
 },
 {
@@ -870,26 +912,6 @@ links: [
   blurb: "A drag-and-drop tool for arranging images into justified rows, grids, columns, or freeform collages, then copying the result or exporting a high-resolution layout.",
   links: [
     { label: "Launch App", url: "https://xyhtamura.github.io/putmanypicturestogether" }
-  ]
-},
-	{
-  title: "Cella",
-  year: "2026",
-  tags: ["additive synthesis", "resonator bank", "audio worklet", "spectral math", "microtonal"],
-  blurb: "A resonant additive synthesizer that maps custom equations onto a noise-driven resonator bank, with painted partials, Gaussian, Lorentzian, or Voigt spectral distributions, microtonal macro-detuning, and offline WAV rendering.",
-  links: [
-    { label: "Launch Instrument", url: "https://xyhtamura.github.io/cella/" },
-    { label: "Open Document", url: "https://xyhtamura.github.io/cella/README.md" }
-  ]
-},
-	{
-  title: "aliquoto",
-  year: "2026",
-  tags: ["additive synthesis", "acausal grammar", "audio worklet", "spectral math", "hindcasts"],
-  blurb: "A pure additive synthesizer for writing spectral series as summations, envelopes, and conditionals. Its offline equation parser and phase-exact AudioWorklet support fractional, irrational, subharmonic, and drift-modulated partial ratios.",
-  links: [
-    { label: "Launch Instrument", url: "https://xyhtamura.github.io/aliquoto/" },
-    { label: "Open Document", url: "https://xyhtamura.github.io/hindcasts/aliquoto/README.md" }
   ]
 },
 	{
