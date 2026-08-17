@@ -339,10 +339,14 @@ const slides = [
         tags: ["web-based", "slide poem", "electronic literature"]
       },
       {
+        id: "love-letter",
         title: "LOVE-LETTER-FOR-YOU.TXT",
         year: "2025",
         blurb: "An algorithmic poem based on the ILOVEYOU virus, written through its creator's imagined persona and a postcolonial account of internet access and desire. Its words are replaced one by one with ILOVEYOU until the phrase overtakes the text and the poem performs its own viral collapse.",
-        tags: ["algorithmic poem", "electronic literature", "generative text"]
+        tags: ["algorithmic poem", "electronic literature", "generative text"],
+        links: [
+          { label: "Run It", url: "https://xyhtamura.github.io/loveletterforyou/" }
+        ]
       },
       {
         title: "breakfast",

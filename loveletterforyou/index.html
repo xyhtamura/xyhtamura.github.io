@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOVE-LETTER-FOR-YOU.TXT</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap');
+
+        body, h1, p {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Noto Sans", sans-serif;
+            background-color: cyan;
+            /* deliberately bad tiling: odd fixed cell, seams everywhere */
+            background-image: url("Clouds_(Windows_95).png");
+            background-repeat: repeat;
+            background-size: 173px 130px;
+            background-attachment: fixed;
+            color: red;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* cyan wash over the wallpaper so the red still reads */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: cyan;
+            opacity: 0.45;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* the source photo: small, centred, solid, in front of the clouds */
+        #backdrop {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: min(46vmin, 520px);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .poetry-container, .controls { position: relative; z-index: 2; }
+
+        .poetry-container {
+            max-width: 600px;
+            text-align: center;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-transform: lowercase;
+        }
+
+        .poem {
+            font-size: 1.1em;
+            margin-bottom: 40px;
+        }
+
+        .stanza {
+            margin: 1.5em 0;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 8px 16px;
+            font-family: "Noto Sans", sans-serif;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        button:hover {
+            background-color: darkred;
+        }
+    </style>
+</head>
+<body>
+    <img id="backdrop" src="hatetogotoschool.jpg" alt="">
+
+    <div class="poetry-container">
+        <h1>LOVE-LETTER-FOR-YOU.TXT</h1>
+        <div class="poem">
+            <p class="stanza">
+Y? they r only 1<br>
+2 say dis? 2 tok in <br>
+da machine, hotmail<br>
+y!, g00gle, MS w/o IMF<br>
+fr0m h3re 2 th3r3?<br><br>
+txt m3 sa cp k0, wag<br>
+ung beep lang. <br>
+friendster edsa dos<br>
+always rally, brownout<br>
+4 hrs, videoke at <br>
+nite in da kanto. <br><br>
+H0w many r w3 hir<br>
+in dis w0rld? W@ke,<br>
+sl33p, 34t, dr1nk, s3xing<br><br>
+0n-0ff da lite @ n1te––<br>
+hu rly dserv. u kn0w<br>
+alrdy. C it. ppl p@y<br>
+1t-ol- u-can iting ol<br>
+day, no c@re, thr0w<br>
+aw@y. we knt even <br>
+d14l-up. ERAPTION<br>
+1f we wnt or no.<br>
+w/ 20 asawas + 40<br>
+house&lot & abt us<br>
+population ctrl<br>
+ur MTV is showing.<br>
+computer shop 15 <br>
+pesos per hr, cnting<br>
+r hrs. cn0 b d2 <br>
+r34l. 22o. <br>
+cn0 cn b r34l<br><br>
+i bliv in u<br>
+and myslf & i<br>
+            </p>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="pauseBtn">Pause</button>
+        <button id="resetBtn">Reset</button>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const poemElement = document.querySelector(".stanza");
+            const pauseBtn = document.getElementById("pauseBtn");
+            const resetBtn = document.getElementById("resetBtn");
+            
+            // Store the original poem content
+            const originalPoem = poemElement.innerHTML;
+            
+            let words = poemElement.innerHTML.split(/(\s+|<br>)/);
+            let firstReplacementDone = false;
+            let allWordsReplaced = false;
+            let intervalId = null;
+            let isPaused = false;
+            
+            function startTransformation() {
+                if (!intervalId) {
+                    intervalId = setInterval(replaceWord, 1000);
+                }
+            }
+            
+            function replaceWord() {
+                if (!allWordsReplaced) {
+                    if (!firstReplacementDone) {
+                        // Find "dis?" and replace it first
+                        const index = words.findIndex(word => word.includes("dis?"));
+                        if (index !== -1) {
+                            words[index] = "ILOVEYOU";
+                            firstReplacementDone = true;
+                        }
+                    } else {
+                        // Pick a random index to replace, excluding <br> tags
+                        let validIndexes = words.map((word, i) => word.trim() !== "ILOVEYOU" && word.trim() !== "" && word !== "<br>" ? i : -1).filter(i => i !== -1);
+                        
+                        if (validIndexes.length === 0) {
+                            allWordsReplaced = true;
+                        } else {
+                            let randomIndex = validIndexes[Math.floor(Math.random() * validIndexes.length)];
+                            words[randomIndex] = "ILOVEYOU";
+                        }
+                    }
+                } else {
+                    // Start replacing letters within words, excluding <br> tags
+                    let validIndexes = words.map((word, i) => word.trim() !== "" && word !== "<br>" ? i : -1).filter(i => i !== -1);
+                    if (validIndexes.length > 0) {
+                        let randomIndex = validIndexes[Math.floor(Math.random() * validIndexes.length)];
+                        let word = words[randomIndex];
+                        let insertPosition = Math.floor(Math.random() * (word.length + 1));
+                        words[randomIndex] = word.slice(0, insertPosition) + "ILOVEYOU" + word.slice(insertPosition);
+                    }
+                }
+                
+                // Update the HTML while preserving <br> tags
+                poemElement.innerHTML = words.join("");
+            }
+            
+            // Start the transformation automatically
+            startTransformation();
+            
+            // Pause button functionality
+            pauseBtn.addEventListener("click", function() {
+                if (isPaused) {
+                    // Resume
+                    startTransformation();
+                    pauseBtn.textContent = "Pause";
+                    isPaused = false;
+                } else {
+                    // Pause
+                    clearInterval(intervalId);
+                    intervalId = null;
+                    pauseBtn.textContent = "Resume";
+                    isPaused = true;
+                }
+            });
+            
+            // Reset button functionality
+            resetBtn.addEventListener("click", function() {
+                // Clear the interval
+                clearInterval(intervalId);
+                intervalId = null;
+                
+                // Reset all variables
+                poemElement.innerHTML = originalPoem;
+                words = originalPoem.split(/(\s+|<br>)/);
+                firstReplacementDone = false;
+                allWordsReplaced = false;
+                
+                // Update button state
+                pauseBtn.textContent = "Pause";
+                isPaused = false;
+                
+                // Restart the transformation
+                startTransformation();
+            });
+        });
+    </script>
+</body>
+</html>

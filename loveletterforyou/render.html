@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ILOVEYOU · render (1080²)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;background:#111;color:#0ff;font:13px/1.5 "Noto Sans",Segoe UI,sans-serif}
+  #wrap{display:flex;gap:18px;padding:18px;align-items:flex-start;flex-wrap:wrap}
+  canvas{width:min(78vh,720px);height:min(78vh,720px);background:#0ff;box-shadow:0 0 0 1px #333}
+  #panel{width:300px;display:flex;flex-direction:column;gap:10px}
+  button{font:600 13px "Noto Sans",sans-serif;background:#e00000;color:#fff;border:0;
+         padding:10px 12px;cursor:pointer}
+  button:disabled{background:#444;cursor:default}
+  button:hover:not(:disabled){background:#ff2222}
+  label{display:flex;justify-content:space-between;gap:8px;align-items:center;color:#8ff}
+  input[type=number]{width:88px;background:#000;color:#0ff;border:1px solid #444;padding:4px}
+  #log{white-space:pre-wrap;font:11px/1.45 ui-monospace,Consolas,monospace;color:#7d7;
+       background:#000;border:1px solid #333;padding:8px;height:170px;overflow:auto}
+  hr{border:0;border-top:1px solid #333;margin:4px 0}
+  .hint{color:#688;font-size:11px}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <canvas id="c" width="1080" height="1080"></canvas>
+  <div id="panel">
+    <button id="play">▶ preview (with sound)</button>
+    <label>frame <input type="range" id="scrub" min="0" max="359" value="0" step="1" style="flex:1"></label>
+    <hr>
+    <label>seed <input type="number" id="seed" value="1400"></label>
+    <label>fps <input type="number" id="fps" value="60"></label>
+    <label>duration s <input type="number" id="dur" value="6.0" step="0.1"></label>
+    <label>fill done s <input type="number" id="fill" value="5.0" step="0.1"></label>
+    <label>insert ops <input type="number" id="ins" value="320"></label>
+    <label>final stamp <input type="checkbox" id="stamp"></label>
+    <button id="rebuild">rebuild</button>
+    <hr>
+    <button id="exp">⬛ export frames + wav (exact)</button>
+    <div class="hint">Writes <code>frames/f00000.png…</code>, <code>audio.wav</code>,
+      <code>encode.bat</code> into a folder you pick. Then run encode.bat → mp4.
+      Needs Chrome over localhost.</div>
+    <hr>
+    <button id="rec">● quick record (realtime)</button>
+    <div class="hint">One file, faster, may drop frames.</div>
+    <div id="log"></div>
+  </div>
+</div>
+
+<script>
+/* ─────────────────────────────────────────────────────────────────────────────
+   LOVE-LETTER-FOR-YOU · Instagram render · 1080×1080
+
+   The poem is cut in half. Half one runs down from the top-left; half two runs
+   down from the bottom-right inside a 180°-rotated frame, so it reads
+   upside-down and climbs. Both halves keep the original page's computational
+   logic: ILOVEYOU overwrites a word, then ILOVEYOU inserts itself inside words,
+   and because the text re-wraps every frame the growth shoves lines along,
+   collides the two halves in the middle, and spills off the edges.
+
+   Everything is a pure function of (seed, frame): one deterministic op list
+   drives both the layout and the audio, so exported PNG frames and the
+   offline-rendered WAV line up sample-for-sample.
+
+   Grain synth adapted from IrisSoundEngine (Sgueltch suite,
+   xyhtamura.github.io/critterances/critterances.js) — click + thud grains.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+const SIZE = 1080;
+const CFG = { seed:1400, fps:60, dur:6.0, fill:5.0, ins:320, stamp:false };
+
+const CY   = "#00ffff";
+const RED  = "#d90000";
+const RED2 = "#ff1414";
+const WHT  = "#ffffff";
+
+const FONT_FAM = '"Noto Sans","Segoe UI",Arial,sans-serif';
+const VERSE_PX = 35, LINE_H = 43, COL_W = 752, X0 = 18, Y0 = 40;
+const PHOTO_K  = 0.46;               // hatetogotoschool.jpg, fraction of the square
+
+const LOVE = "ILOVEYOU";
+const P1_END = 3.00;                 // whole-word replacement finishes here
+// Exponents < 1 push the early ops apart and crush the late ones together, so
+// the poem stays readable for a beat and then goes off.
+const P1_EXP = 0.55, P2_EXP = 0.65;
+const FLASH  = 0.085;                // white flash on a freshly changed token
+
+/* ── poem ─────────────────────────────────────────────────────────────────── */
+const POEM = `Y? they r only 1
+2 say dis? 2 tok in
+da machine, hotmail
+y!, g00gle, MS w/o IMF
+fr0m h3re 2 th3r3?
+
+txt m3 sa cp k0, wag
+ung beep lang.
+friendster edsa dos
+always rally, brownout
+4 hrs, videoke at
+nite in da kanto.
+
+H0w many r w3 hir
+in dis w0rld? W@ke,
+sl33p, 34t, dr1nk, s3xing
+
+0n-0ff da lite @ n1te––
+hu rly dserv. u kn0w
+alrdy. C it. ppl p@y
+1t-ol- u-can iting ol
+day, no c@re, thr0w
+aw@y. we knt even
+d14l-up. ERAPTION
+1f we wnt or no.
+w/ 20 asawas + 40
+house&lot & abt us
+population ctrl
+ur MTV is showing.
+computer shop 15
+pesos per hr, cnting
+r hrs. cn0 b d2
+r34l. 22o.
+cn0 cn b r34l
+
+i bliv in u
+and myslf & i`;
+
+/* ── deterministic rng ────────────────────────────────────────────────────── */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+let rnd = mulberry32(CFG.seed);
+const R  = ()=>rnd();
+const RR = (a,b)=>a+rnd()*(b-a);
+function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
+const clamp=(v,l,h)=>Math.min(h,Math.max(l,v));
+
+/* ── canvas ───────────────────────────────────────────────────────────────── */
+const cv  = document.getElementById("c");
+const ctx = cv.getContext("2d",{alpha:false});
+const scratch = document.createElement("canvas");
+scratch.width = scratch.height = SIZE;
+const sctx = scratch.getContext("2d",{alpha:false});
+const log = m=>{const l=document.getElementById("log");l.textContent+=m+"\n";l.scrollTop=l.scrollHeight;};
+
+const IMG = {};
+function loadImg(key,src){return new Promise((res,rej)=>{const i=new Image();i.onload=()=>{IMG[key]=i;res(i);};i.onerror=()=>rej(new Error("load fail "+src));i.src=src;});}
+
+/* ── text metrics ─────────────────────────────────────────────────────────── */
+// Both weights are bold so a paused first frame still reads as the poem;
+// 700 vs 900 is what separates untouched words from mutated ones.
+const FONT_REG = `700 ${VERSE_PX}px ${FONT_FAM}`;
+const FONT_BLD = `900 ${VERSE_PX}px ${FONT_FAM}`;
+let mcache = new Map();
+function widthOf(s, bold){                      // exact, used when placing a run
+  const k = (bold?"b":"r") + s;
+  let w = mcache.get(k);
+  if(w === undefined){
+    ctx.font = bold ? FONT_BLD : FONT_REG;
+    w = ctx.measureText(s).width;
+    if(mcache.size > 40000) mcache.clear();
+    mcache.set(k, w);
+  }
+  return w;
+}
+// Runaway ILOVEYOU chains get hundreds of characters long and every one of them
+// needs wrap decisions each frame, so widths for those decisions come from a
+// per-character table (kerning-free, ~1px off, arithmetic instead of shaping).
+const cwCache = [new Map(), new Map()];
+function charW(ch, bold){
+  const m = cwCache[bold?1:0];
+  let w = m.get(ch);
+  if(w === undefined){
+    ctx.font = bold ? FONT_BLD : FONT_REG;
+    w = ctx.measureText(ch).width;
+    m.set(ch, w);
+  }
+  return w;
+}
+function estW(s, bold){
+  let w = 0;
+  for(let i=0;i<s.length;i++) w += charW(s[i], bold);
+  return w;
+}
+// largest prefix length of s whose estimated width fits `room`
+function fitPrefix(s, bold, room){
+  let w = 0, i = 0;
+  while(i < s.length){
+    const c = charW(s[i], bold);
+    if(w + c > room) break;
+    w += c; i++;
+  }
+  return i;
+}
+const SPACE_W = ()=>charW(" ", false);
+
+/* ── document model ───────────────────────────────────────────────────────── */
+// COL[c].items — {br:1} hard newline · {gap:1} stanza gap · {ri:k} a word slot.
+// TOK0[k] is the word's original text; every mutation is replayed from TOK0.
+let COL = [], TOK0 = [], OPS = [];
+
+function splitPoem(){
+  const lines = POEM.split("\n");
+  const breaks = lines.map((l,i)=>l.trim()===""?i:-1).filter(i=>i>=0);
+  const mid = lines.length/2;
+  const cut = breaks.reduce((b,i)=>Math.abs(i-mid)<Math.abs(b-mid)?i:b, breaks[0]);
+  return [lines.slice(0,cut), lines.slice(cut+1)];
+}
+
+function buildDoc(){
+  TOK0 = [];
+  COL = splitPoem().map((lines, ci)=>{
+    const items = [];
+    lines.forEach((line, li)=>{
+      if(line.trim()===""){ items.push({gap:1}); return; }
+      for(const w of line.split(/\s+/).filter(Boolean)){
+        items.push({ ri: TOK0.length });
+        TOK0.push(w);
+      }
+      if(li < lines.length-1) items.push({br:1});
+    });
+    return { items, flip: ci===1 };
+  });
+}
+
+/* ── op list ──────────────────────────────────────────────────────────────── */
+function buildOps(){
+  OPS = [];
+  const n = TOK0.length;
+
+  // phase 1 — every word becomes ILOVEYOU. "dis?" goes first, as in the original.
+  const order = shuffle(TOK0.map((_,i)=>i));
+  const dis = TOK0.findIndex(w=>w.includes("dis?"));
+  if(dis>=0){ order.splice(order.indexOf(dis),1); order.unshift(dis); }
+  order.forEach((ri,k)=>{
+    const p = k/Math.max(1,order.length-1);
+    OPS.push({ t: 0.20 + Math.pow(p,P1_EXP)*(P1_END-0.20), ri, ins:-1 });
+  });
+
+  // phase 2 — ILOVEYOU starts replacing the insides of itself
+  for(let m=0; m<CFG.ins; m++){
+    const p = m/Math.max(1,CFG.ins-1);
+    OPS.push({
+      t: P1_END + Math.pow(p,P2_EXP)*(CFG.fill-P1_END),
+      ri: Math.floor(R()*n),
+      ins: R(),                      // fraction → insertion point inside the word
+    });
+  }
+  OPS.sort((a,b)=>a.t-b.t);
+}
+
+// replay ops up to t; returns current strings + when each last changed
+let _st = { t:-1, s:null, last:null };
+function stateAt(t){
+  if(_st.t === t) return _st;
+  const s = TOK0.slice();
+  const last = new Float32Array(TOK0.length).fill(-9);
+  for(const op of OPS){
+    if(op.t > t) break;
+    if(op.ins < 0) s[op.ri] = LOVE;
+    else {
+      const w = s[op.ri];
+      const p = Math.floor(op.ins*(w.length+1));
+      s[op.ri] = w.slice(0,p) + LOVE + w.slice(p);
+    }
+    last[op.ri] = op.t;
+  }
+  _st = { t, s, last };
+  return _st;
+}
+
+/* ── layout ───────────────────────────────────────────────────────────────── */
+// Wraps like a text block. A word longer than the column breaks mid-word
+// (break-all), which is what turns the runaway ILOVEYOU chains into walls.
+function layout(col, st){
+  const out = [];
+  let x = X0, y = Y0;
+  const sp = SPACE_W();
+  for(const it of col.items){
+    if(y > SIZE + LINE_H) break;                 // everything past here is off-frame
+    if(it.br){ x = X0; y += LINE_H; continue; }
+    if(it.gap){ x = X0; y += LINE_H*0.6; continue; }
+
+    let s = st.s[it.ri];
+    const bold = s.includes(LOVE);
+    const age  = st.last[it.ri];
+
+    while(s.length){
+      const w = estW(s, bold);
+      if(x > X0 && x + w > X0 + COL_W){ x = X0; y += LINE_H; }
+      if(w <= COL_W){ out.push({s,x,y,bold,age}); x += widthOf(s,bold) + sp; break; }
+
+      // break-all: largest prefix that fits what's left of the line
+      const cut = Math.max(1, fitPrefix(s, bold, X0 + COL_W - x));
+      const head = s.slice(0,cut);
+      out.push({ s:head, x, y, bold, age });
+      s = s.slice(cut);
+      x = X0; y += LINE_H;
+      if(y > SIZE + LINE_H) break;
+    }
+  }
+  return out;
+}
+
+/* ── drawing ──────────────────────────────────────────────────────────────── */
+function drawBackplate(t){
+  ctx.fillStyle = CY;
+  ctx.fillRect(0,0,SIZE,SIZE);
+
+  // Win95 Clouds: the sky layer, drifting left, tiled so it never runs out
+  if(IMG.clouds){
+    const im = IMG.clouds;
+    const k = 1.15 * Math.max(SIZE/im.width, SIZE/im.height);
+    const w = im.width*k, h = im.height*k;
+    ctx.save();
+    ctx.globalAlpha = 0.95;
+    const dx = -((t*26) % w), dy = (SIZE-h)/2 + Math.sin(t*0.35)*22;
+    for(let i=-1;i<Math.ceil(SIZE/w)+1;i++) ctx.drawImage(im, dx + i*w, dy, w, h);
+    ctx.restore();
+  }
+
+  // cyan haze: pushes the sky back so the red text sits clear of it
+  ctx.save();
+  ctx.globalCompositeOperation = "screen";
+  ctx.globalAlpha = 0.34;
+  ctx.fillStyle = CY; ctx.fillRect(0,0,SIZE,SIZE);
+  ctx.globalCompositeOperation = "source-over";
+  ctx.globalAlpha = 0.26;
+  ctx.fillStyle = CY; ctx.fillRect(0,0,SIZE,SIZE);
+  ctx.restore();
+
+  // barok -loveletter(vbe) source photo: small, centred, solid — in front of the
+  // clouds, behind the text. Breathes very slightly so it isn't a dead sticker.
+  if(IMG.school){
+    const im = IMG.school;
+    const w = SIZE*PHOTO_K*(1 + Math.sin(t*0.55)*0.012);
+    const h = w*im.height/im.width;
+    ctx.drawImage(im, (SIZE-w)/2, (SIZE-h)/2, w, h);
+  }
+}
+
+function drawColumn(col, st, t){
+  const pieces = layout(col, st);
+  ctx.save();
+  if(col.flip){ ctx.translate(SIZE,SIZE); ctx.rotate(Math.PI); }
+  ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
+  for(const p of pieces){
+    ctx.font = p.bold ? FONT_BLD : FONT_REG;
+    const dt = t - p.age;
+    if(dt >= 0 && dt < FLASH){                   // fresh mutation flashes white
+      ctx.globalAlpha = 1 - dt/FLASH;
+      ctx.fillStyle = WHT;
+      ctx.fillText(p.s, p.x, p.y);
+      ctx.globalAlpha = 1;
+    }
+    ctx.fillStyle = p.bold ? RED2 : RED;
+    ctx.fillText(p.s, p.x, p.y);
+  }
+  ctx.restore();
+}
+
+function drawFrame(f){
+  const t = f/CFG.fps;
+  drawBackplate(t);
+
+  const st = stateAt(t);
+  for(const col of COL) drawColumn(col, st, t);
+
+  // slice glitch as the square saturates
+  const g0 = CFG.fill*0.62;
+  const g = clamp((t-g0)/Math.max(0.1, CFG.dur-g0), 0, 1);
+  if(g > 0.02){
+    sctx.drawImage(cv,0,0);
+    const n = 4 + Math.floor(g*12);
+    const fr = mulberry32(CFG.seed ^ (f*2654435761>>>0));
+    for(let i=0;i<n;i++){
+      const sy = Math.floor(fr()*SIZE), h = 6 + Math.floor(fr()*54);
+      const off = Math.round((fr()*2-1) * 70 * g);
+      ctx.drawImage(scratch, 0, sy, SIZE, h, off, sy, SIZE, h);
+    }
+  }
+
+  // the subject line lands
+  const stt = t - CFG.fill;
+  if(CFG.stamp && stt >= 0){
+    const k = 1 + Math.max(0, 1 - stt/0.20)*0.30;
+    ctx.save();
+    ctx.translate(SIZE/2, SIZE/2); ctx.scale(k,k);
+    ctx.font = `900 168px ${FONT_FAM}`;
+    ctx.textAlign="center"; ctx.textBaseline="middle";
+    ctx.lineWidth = 14; ctx.strokeStyle = RED;
+    ctx.fillStyle  = WHT;
+    ctx.fillText(LOVE,0,0);
+    ctx.strokeText(LOVE,0,0);
+    ctx.restore();
+  }
+}
+
+/* ── audio ────────────────────────────────────────────────────────────────── */
+// One grain per op, thinned as the op rate explodes. Same clock as the visuals.
+let AUD = [], DRONE_T0 = 0.55;
+function buildAudio(){
+  AUD = [];
+  const n = OPS.length;
+  OPS.forEach((op,i)=>{
+    const p = i/n;
+    const keep = i<40 ? 1 : (p<0.55 ? 0.40 : 0.15);
+    if(R() > keep) return;
+    const thud = op.ins < 0 && R() < 0.12 || R() < 0.05;
+    AUD.push({
+      t: op.t,
+      pan: (COL[0].items.some(it=>it.ri===op.ri) ? -0.7 : 0.7) * RR(0.7,1.1),
+      pitch: 3000 * (1 - 0.55*p) * RR(0.82,1.22),
+      gain: (thud ? 0.10 : 0.05) * RR(0.8,1.25),
+      kind: thud ? "thud" : "click",
+    });
+  });
+}
+
+function noiseBuffer(ac){
+  const n = Math.floor(ac.sampleRate*0.25);
+  const b = ac.createBuffer(1,n,ac.sampleRate);
+  const d = b.getChannelData(0);
+  const r = mulberry32(0xC0FFEE ^ CFG.seed);
+  for(let i=0;i<n;i++) d[i] = r()*2-1;
+  return b;
+}
+
+// click / thud: fast pitch drop through a slamming lowpass + a noise tick
+function grain(ac, dest, nb, at, e){
+  const thud = e.kind==="thud";
+  const dur  = thud ? 0.16 : 0.055;
+  const p0   = clamp(e.pitch * (thud?0.42:1), 30, 18000);
+  const p1   = clamp(p0 * (thud?0.16:0.28), 25, 18000);
+
+  const osc = ac.createOscillator(), filt = ac.createBiquadFilter();
+  const amp = ac.createGain(),       pan  = ac.createStereoPanner();
+
+  osc.type = thud ? "triangle" : "sine";
+  osc.frequency.setValueAtTime(p0, at);
+  osc.frequency.exponentialRampToValueAtTime(p1, at+dur);
+
+  filt.type = "lowpass"; filt.Q.value = thud?4:8;
+  filt.frequency.setValueAtTime(clamp(p0*7, 80, 18000), at);
+  filt.frequency.exponentialRampToValueAtTime(clamp(p1*1.6, 60, 18000), at+dur*0.8);
+
+  amp.gain.setValueAtTime(0.0001, at);
+  amp.gain.exponentialRampToValueAtTime(Math.max(0.0002,e.gain), at+dur*0.06);
+  amp.gain.exponentialRampToValueAtTime(0.0001, at+dur);
+
+  pan.pan.setValueAtTime(e.pan, at);
+  osc.connect(filt); filt.connect(amp); amp.connect(pan); pan.connect(dest);
+  osc.start(at); osc.stop(at+dur+0.02);
+
+  const src = ac.createBufferSource(), bp = ac.createBiquadFilter(), na = ac.createGain();
+  src.buffer = nb; src.playbackRate.value = thud?0.7:1.8;
+  bp.type="bandpass"; bp.Q.value=1.6; bp.frequency.value = clamp(p0*1.5, 200, 15000);
+  na.gain.setValueAtTime(e.gain*(thud?0.5:0.85), at);
+  na.gain.exponentialRampToValueAtTime(0.0001, at + (thud?0.09:0.028));
+  src.connect(bp); bp.connect(na); na.connect(pan);
+  src.start(at, 0.01); src.stop(at + (thud?0.11:0.04));
+}
+
+// sub drone rising under the flood + one impact where the square closes
+function drone(ac, dest, t0){
+  const o1 = ac.createOscillator(), o2 = ac.createOscillator();
+  const f = ac.createBiquadFilter(), g = ac.createGain();
+  o1.type="sawtooth"; o1.frequency.setValueAtTime(41, t0);
+  o1.frequency.linearRampToValueAtTime(58, t0+CFG.fill);
+  o2.type="sine";     o2.frequency.setValueAtTime(82, t0);
+  o2.frequency.linearRampToValueAtTime(116, t0+CFG.fill);
+  f.type="lowpass"; f.frequency.setValueAtTime(180, t0);
+  f.frequency.linearRampToValueAtTime(950, t0+CFG.fill);
+  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.exponentialRampToValueAtTime(0.11, t0+CFG.fill*0.9);
+  g.gain.exponentialRampToValueAtTime(0.24, t0+CFG.fill+0.02);
+  g.gain.exponentialRampToValueAtTime(0.0002, t0+CFG.dur);
+  o1.connect(f); o2.connect(f); f.connect(g); g.connect(dest);
+  o1.start(t0); o2.start(t0); o1.stop(t0+CFG.dur+0.1); o2.stop(t0+CFG.dur+0.1);
+
+  const nb = noiseBuffer(ac);
+  const s = ac.createBufferSource(), lp = ac.createBiquadFilter(), ig = ac.createGain();
+  const at = t0 - DRONE_T0 + CFG.fill;
+  s.buffer=nb; s.playbackRate.value=0.5;
+  lp.type="lowpass"; lp.frequency.setValueAtTime(4000, at);
+  lp.frequency.exponentialRampToValueAtTime(220, at+0.6);
+  ig.gain.setValueAtTime(0.45, at);
+  ig.gain.exponentialRampToValueAtTime(0.0002, at+0.9);
+  s.connect(lp); lp.connect(ig); ig.connect(dest);
+  s.start(at); s.stop(at+1.0);
+}
+
+function busFor(ac){
+  const out = ac.createGain(); out.gain.value = 1.5;
+  const comp = ac.createDynamicsCompressor();
+  comp.threshold.value=-20; comp.ratio.value=6; comp.attack.value=0.003;
+  comp.release.value=0.12; comp.knee.value=6;
+  const lim = ac.createWaveShaper();
+  const n=2048, c=new Float32Array(n);
+  for(let i=0;i<n;i++){ const x=i/(n-1)*2-1; c[i]=Math.tanh(x*1.3)/Math.tanh(1.3); }
+  lim.curve = c;
+  out.connect(comp); comp.connect(lim);
+  return { out, tail: lim };
+}
+
+function scheduleAll(ac, out, offset){
+  const nb = noiseBuffer(ac);
+  for(const e of AUD) grain(ac, out, nb, offset + e.t, e);
+  drone(ac, out, offset + DRONE_T0);
+}
+
+/* ── preview ──────────────────────────────────────────────────────────────── */
+let raf = null;
+async function preview(){
+  cancelAnimationFrame(raf);
+  const ac = new (window.AudioContext||window.webkitAudioContext)();
+  await ac.resume();
+  const bus = busFor(ac); bus.tail.connect(ac.destination);
+  scheduleAll(ac, bus.out, ac.currentTime + 0.12);
+
+  const t0 = performance.now() + 120;
+  const total = Math.ceil(CFG.dur*CFG.fps);
+  (function tick(){
+    const f = Math.floor((performance.now()-t0)/1000*CFG.fps);
+    drawFrame(clamp(f,0,total-1));
+    document.getElementById("scrub").value = clamp(f,0,total-1);
+    if(f < total) raf = requestAnimationFrame(tick);
+    else setTimeout(()=>ac.close(), 900);
+  })();
+}
+
+/* ── exact export: PNG frames + offline WAV ───────────────────────────────── */
+const toBlob = (c,type,q)=>new Promise(r=>c.toBlob(r,type,q));
+
+function wavFromBuffer(buf){
+  const ch = buf.numberOfChannels, n = buf.length, sr = buf.sampleRate;
+  const data = new DataView(new ArrayBuffer(44 + n*ch*2));
+  const s = (o,str)=>{for(let i=0;i<str.length;i++)data.setUint8(o+i,str.charCodeAt(i));};
+  s(0,"RIFF"); data.setUint32(4, 36+n*ch*2, true); s(8,"WAVEfmt ");
+  data.setUint32(16,16,true); data.setUint16(20,1,true); data.setUint16(22,ch,true);
+  data.setUint32(24,sr,true); data.setUint32(28,sr*ch*2,true);
+  data.setUint16(32,ch*2,true); data.setUint16(34,16,true);
+  s(36,"data"); data.setUint32(40, n*ch*2, true);
+  const cd = []; for(let c=0;c<ch;c++) cd.push(buf.getChannelData(c));
+  let o = 44;
+  for(let i=0;i<n;i++) for(let c=0;c<ch;c++){
+    const v = clamp(cd[c][i],-1,1);
+    data.setInt16(o, v<0 ? v*0x8000 : v*0x7FFF, true); o += 2;
+  }
+  return new Blob([data.buffer],{type:"audio/wav"});
+}
+
+async function renderAudioWav(){
+  const sr = 48000;
+  const oac = new OfflineAudioContext(2, Math.ceil((CFG.dur+0.5)*sr), sr);
+  const bus = busFor(oac); bus.tail.connect(oac.destination);
+  scheduleAll(oac, bus.out, 0);
+  return wavFromBuffer(await oac.startRendering());
+}
+
+const BAT = fps=>`@echo off
+cd /d "%~dp0"
+ffmpeg -y -framerate ${fps} -i frames\\f%%05d.png -i audio.wav ^
+  -c:v libx264 -preset slow -crf 16 -pix_fmt yuv420p -profile:v high -level 4.2 ^
+  -c:a aac -b:a 256k -shortest -movflags +faststart loveletterforyou.mp4
+echo.
+echo done -^> loveletterforyou.mp4
+pause
+`;
+
+async function exportExact(){
+  if(!window.showDirectoryPicker){ log("! no File System Access API — use Chrome over localhost"); return; }
+  const dir = await window.showDirectoryPicker({mode:"readwrite"});
+  const fdir = await dir.getDirectoryHandle("frames",{create:true});
+  const total = Math.ceil(CFG.dur*CFG.fps);
+  log(`exporting ${total} frames @ ${CFG.fps}fps …`);
+  for(let f=0; f<total; f++){
+    drawFrame(f);
+    const blob = await toBlob(cv, "image/png");
+    const fh = await fdir.getFileHandle(`f${String(f).padStart(5,"0")}.png`,{create:true});
+    const ws = await fh.createWritable(); await ws.write(blob); await ws.close();
+    if(f%20===0) log(`  frame ${f}/${total}`);
+    await new Promise(r=>setTimeout(r,0));
+  }
+  log("rendering audio …");
+  const wav = await renderAudioWav();
+  let fh = await dir.getFileHandle("audio.wav",{create:true});
+  let ws = await fh.createWritable(); await ws.write(wav); await ws.close();
+  fh = await dir.getFileHandle("encode.bat",{create:true});
+  ws = await fh.createWritable(); await ws.write(new Blob([BAT(CFG.fps)])); await ws.close();
+  log("DONE. run encode.bat in that folder.");
+}
+
+/* ── quick realtime record ────────────────────────────────────────────────── */
+async function quickRecord(){
+  const ac = new (window.AudioContext||window.webkitAudioContext)();
+  await ac.resume();
+  const dest = ac.createMediaStreamDestination();
+  const bus = busFor(ac);
+  bus.tail.connect(dest); bus.tail.connect(ac.destination);
+  scheduleAll(ac, bus.out, ac.currentTime + 0.15);
+
+  const stream = cv.captureStream(CFG.fps);
+  dest.stream.getAudioTracks().forEach(t=>stream.addTrack(t));
+  const types = ['video/mp4;codecs="avc1.640028,mp4a.40.2"','video/webm;codecs=vp9,opus','video/webm'];
+  const mime = types.find(t=>MediaRecorder.isTypeSupported(t)) || "";
+  const mr = new MediaRecorder(stream, {mimeType:mime, videoBitsPerSecond:20e6});
+  const parts = [];
+  mr.ondataavailable = e=>e.data.size&&parts.push(e.data);
+  mr.onstop = ()=>{
+    const ext = mime.startsWith("video/mp4") ? "mp4" : "webm";
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob(parts,{type:mime}));
+    a.download = `loveletterforyou.${ext}`; a.click();
+    log(`saved loveletterforyou.${ext}  (${mime||"default"})`);
+    ac.close();
+  };
+  mr.start();
+  log("recording "+(mime||"default")+" …");
+
+  const t0 = performance.now() + 150;
+  const total = Math.ceil(CFG.dur*CFG.fps);
+  (function tick(){
+    const f = Math.floor((performance.now()-t0)/1000*CFG.fps);
+    drawFrame(clamp(f,0,total-1));
+    if(f < total) requestAnimationFrame(tick);
+    else setTimeout(()=>mr.stop(), 250);
+  })();
+}
+
+/* ── ui ───────────────────────────────────────────────────────────────────── */
+const $ = id=>document.getElementById(id);
+function readCfg(){
+  CFG.seed  = +$("seed").value || 1;
+  CFG.fps   = clamp(+$("fps").value||60, 12, 120);
+  CFG.dur   = clamp(+$("dur").value||6, 1, 30);
+  CFG.fill  = clamp(+$("fill").value||5, 0.5, CFG.dur);
+  CFG.ins   = clamp(+$("ins").value||0, 0, 5000);
+  CFG.stamp = $("stamp").checked;
+  $("scrub").max = Math.ceil(CFG.dur*CFG.fps)-1;
+}
+function build(){
+  rnd = mulberry32(CFG.seed);
+  mcache.clear(); _st.t = -1;
+  buildDoc(); buildOps(); buildAudio();
+  log(`built · ${TOK0.length} words · ${OPS.length} ops · ${AUD.length} grains`);
+}
+$("play").onclick    = ()=>preview();
+$("rebuild").onclick = ()=>{ readCfg(); build(); drawFrame(+$("scrub").value); };
+$("exp").onclick     = async()=>{ readCfg(); build(); $("exp").disabled=true; try{ await exportExact(); }catch(e){ log("! "+e.message); } $("exp").disabled=false; };
+$("rec").onclick     = ()=>{ readCfg(); build(); quickRecord(); };
+$("scrub").oninput   = e=>{ cancelAnimationFrame(raf); drawFrame(+e.target.value); };
+
+(async function init(){
+  try{
+    await Promise.all([
+      document.fonts.load(`400 ${VERSE_PX}px "Noto Sans"`),
+      document.fonts.load(`900 ${VERSE_PX}px "Noto Sans"`),
+    ]);
+    await document.fonts.ready;
+  }catch(e){ log("font fallback: "+e.message); }
+  try{
+    await Promise.all([
+      loadImg("clouds","Clouds_(Windows_95).png"),
+      loadImg("school","hatetogotoschool.jpg"),
+    ]);
+  }catch(e){ log("! image: "+e.message); }
+  readCfg(); build();
+  drawFrame(0);
+  log("ready · 1080×1080 · press preview");
+})();
+</script>
+</body>
+</html>
