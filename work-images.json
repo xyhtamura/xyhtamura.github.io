@@ -1,0 +1,379 @@
+{
+  "version": 1,
+  "defaults": {
+    "width": 1440,
+    "height": 1080,
+    "waitMs": 4000
+  },
+  "works": [
+    {
+      "id": "comma-poem-villa",
+      "aliases": ["a-comma-poem-after-jose-garcia-villas-i-it-was-that-saw-before-the-coming-el-nino"],
+      "image": "acommapoem/comma.png",
+      "alt": "sprouted comma map on black gulaman"
+    },
+    {
+      "id": "media",
+      "image": "media/media.png",
+      "alt": "layered virtual gelatin poem"
+    },
+    {
+      "id": "driftham",
+      "image": "img/driftham.jpg",
+      "alt": "DriftHam online radio interface"
+    },
+    {
+      "id": "framesmear",
+      "image": "img/framesmear.jpg",
+      "alt": "FrameSmear video-processing interface"
+    },
+    {
+      "id": "put-many-pictures-together",
+      "aliases": ["pur-many-pictures-together"],
+      "image": "img/putmanypicturestogether.jpg",
+      "alt": "Put Many Pictures Together collage interface"
+    },
+    {
+      "id": "aliquoto",
+      "image": "img/aliquoto.jpg",
+      "alt": "aliquoto browser instrument"
+    },
+    {
+      "id": "cella",
+      "image": "img/cella.jpg",
+      "alt": "Cella browser instrument"
+    },
+    {
+      "id": "bakezuri",
+      "image": "img/bakezuri.jpg",
+      "alt": "Bakezuri image instrument"
+    },
+    {
+      "id": "binlod",
+      "image": "img/binlod.jpg",
+      "alt": "Binlod granular sampler"
+    },
+    {
+      "id": "tabota",
+      "image": "img/tabota.jpg",
+      "alt": "TaboTa browser instrument"
+    },
+    {
+      "id": "gliese",
+      "image": "img/gliese.png",
+      "alt": "Gliese ray-tracing paths"
+    },
+    {
+      "id": "dhuenut",
+      "image": "img/dhuenut.svg",
+      "alt": "DHuenut color instrument"
+    },
+    {
+      "id": "cytophone",
+      "image": "img/cytophone1.jpg",
+      "alt": "Cytophone browser instrument"
+    },
+    {
+      "id": "shook",
+      "image": "img/shook1.jpg",
+      "alt": "Shook electronic literature interface"
+    },
+    {
+      "id": "plasticoid",
+      "image": "img/plasticoid1.jpg",
+      "alt": "Plasticoid hypertext collage"
+    },
+    {
+      "id": "table-of-metalloids",
+      "image": "card/table.jpeg",
+      "alt": "Table of Metalloids interface"
+    },
+    {
+      "id": "hauntotechnics",
+      "image": "img/hauntotechnics.jpg",
+      "alt": "Hauntotechnics publication spread"
+    },
+    {
+      "id": "handaan",
+      "image": "img/stills/handaan1.jpg",
+      "alt": "still from Handaan"
+    },
+    {
+      "id": "palibut-libot",
+      "image": "img/stills/palibut1.png",
+      "alt": "still from Palibut-Libot"
+    },
+    {
+      "id": "critterances",
+      "image": "critterances/crit.png",
+      "alt": "Critterances creature-language interface"
+    },
+    {
+      "id": "cutline",
+      "image": "img/works/cutline.jpg",
+      "alt": "CUTLINE generative poetry deck",
+      "capture": { "url": "https://xyhtamura.github.io/cutline/", "waitMs": 5000 }
+    },
+    {
+      "id": "plica",
+      "image": "img/works/plica.jpg",
+      "alt": "Plica generative fold-based writing interface",
+      "capture": { "url": "https://xyhtamura.github.io/plica/", "localUrl": "http://localhost:8000/plica/", "waitMs": 5000 }
+    },
+    {
+      "id": "ombak-lock",
+      "image": "img/works/ombak-lock.jpg",
+      "alt": "Ombak Lock acoustic tuning game",
+      "page": "https://xyhtamura.github.io/ombak-lock/",
+      "skipReason": "Needs a deliberate audio-start gesture and an active tuning state; headless Edge does not emit a frame for the idle page."
+    },
+    {
+      "id": "stanzuary",
+      "image": "img/works/stanzuary.jpg",
+      "alt": "Stanzuary spatial text editor",
+      "capture": { "url": "https://xyhtamura.github.io/stanzuary/", "waitMs": 4000 }
+    },
+    {
+      "id": "w2xdx",
+      "image": "img/works/w2xdx.jpg",
+      "alt": "W2XDX experimental television instrument",
+      "capture": { "url": "https://xyhtamura.github.io/w2xdx/", "waitMs": 4000 }
+    },
+    {
+      "id": "sgueltch",
+      "image": "img/works/sgueltch.jpg",
+      "alt": "Sgueltch software suite",
+      "capture": { "url": "https://xyhtamura.github.io/sgueltch/", "waitMs": 4500 }
+    },
+    {
+      "id": "hindcasts",
+      "image": "img/works/hindcasts.jpg",
+      "alt": "Hindcasts index of causal instruments",
+      "capture": { "url": "https://xyhtamura.github.io/hindcasts/", "waitMs": 4000 }
+    },
+    {
+      "id": "aeropane",
+      "image": "img/works/aeropane.jpg",
+      "alt": "Aeropane browser instrument",
+      "capture": { "url": "https://xyhtamura.github.io/aeropane/", "waitMs": 4000 }
+    },
+    {
+      "id": "anexacta",
+      "image": "img/works/anexacta.jpg",
+      "alt": "Anexacta browser instrument collection",
+      "capture": { "url": "https://xyhtamura.github.io/anexacta/", "localUrl": "http://localhost:8000/anexacta/", "waitMs": 4000 }
+    },
+    {
+      "id": "moire",
+      "image": "img/works/moire.jpg",
+      "alt": "Moire phase-modulation instrument",
+      "capture": { "url": "https://xyhtamura.github.io/anexacta/moire/", "localUrl": "http://localhost:8000/anexacta/moire/", "waitMs": 4500 }
+    },
+    {
+      "id": "electropond",
+      "image": "img/works/electropond.jpg",
+      "alt": "Electropond browser instrument",
+      "capture": { "url": "https://xyhtamura.github.io/electropond/", "waitMs": 4000 }
+    },
+    {
+      "id": "cornice",
+      "image": "img/works/cornice.jpg",
+      "alt": "Cornice ASCII terrarium and art game",
+      "capture": { "url": "https://xyhtamura.github.io/cornice/", "waitMs": 4000 }
+    },
+    {
+      "id": "72-munting-panahon",
+      "image": "img/works/72-munting-panahon.jpg",
+      "alt": "72 Munting Panahon microseason timeline",
+      "capture": { "url": "https://xyhtamura.github.io/72-munting-panahon/", "waitMs": 3500 }
+    },
+    {
+      "id": "eosforos",
+      "image": "img/works/eosforos.jpg",
+      "alt": "Eosforos audiovisual suite",
+      "capture": { "url": "https://xyhtamura.github.io/hadeanflare/", "waitMs": 4500 }
+    },
+    {
+      "id": "open4",
+      "image": "img/works/open4.jpg",
+      "alt": "Open4 video work page",
+      "capture": { "url": "https://xyhtamura.github.io/open4/", "waitMs": 5000 }
+    },
+    {
+      "id": "tanim-kalye",
+      "image": "img/works/tanim-kalye.png",
+      "alt": "Tanim-Kalye participatory planting project",
+      "skipReason": "Reviewed 4:3 Browser capture: standalone headless Edge does not emit a screenshot for this page."
+    },
+    {
+      "id": "insulae-incognita",
+      "aliases": ["insulae-incognita"],
+      "image": "img/works/insulae-incognita.jpg",
+      "alt": "Insulae Incognita algorithmic archipelago",
+      "capture": {
+        "url": "https://xyhtamura.github.io/insulaeincognita/",
+        "waitMs": 4500,
+        "crop": { "x": 420, "y": 315, "width": 600, "height": 450 }
+      }
+    },
+    {
+      "id": "whisper-house",
+      "aliases": ["whisperhouse"],
+      "image": "img/works/whisper-house.jpg",
+      "alt": "Whisper House performance score",
+      "capture": { "url": "https://xyhtamura.github.io/whisperhouse/", "waitMs": 3500 }
+    },
+    {
+      "id": "chanidae",
+      "image": "img/works/chanidae.jpg",
+      "alt": "Chanidae animated slide poem",
+      "capture": { "url": "https://xyhtamura.github.io/chanidae.html", "waitMs": 3500 }
+    },
+    {
+      "id": "love-letter-for-you-txt",
+      "aliases": ["love-letter"],
+      "image": "img/works/love-letter-for-you-txt.jpg",
+      "alt": "LOVE-LETTER-FOR-YOU.TXT algorithmic poem",
+      "capture": { "url": "https://xyhtamura.github.io/loveletterforyou/", "waitMs": 3500 }
+    },
+    {
+      "id": "kubocities",
+      "image": "img/works/kubocities.jpg",
+      "alt": "KuboCities Web 1.0 poem",
+      "capture": { "url": "https://xyhtamura.github.io/kubocities/", "waitMs": 4500 }
+    },
+    {
+      "id": "galvanism",
+      "image": "img/works/galvanism.jpg",
+      "alt": "Galvanism conductive-body web poem",
+      "capture": { "url": "https://xyhtamura.github.io/galvanism/", "waitMs": 4000 }
+    },
+    {
+      "id": "hunitsura",
+      "image": "img/works/hunitsura.jpg",
+      "alt": "Hunitsura browser tool",
+      "capture": { "url": "https://xyhtamura.github.io/hunitsura/", "waitMs": 4000 }
+    },
+    {
+      "id": "istorya",
+      "aliases": ["istorya-sang-balatyagon"],
+      "image": "img/works/istorya.jpg",
+      "alt": "Istorya Sang Balatyagon interface",
+      "capture": { "url": "https://xyhtamura.github.io/istorya-sang-balatyagon/", "waitMs": 4500 }
+    },
+    {
+      "id": "where-you-were-last-seen",
+      "image": "img/works/where-you-were-last-seen.jpg",
+      "alt": "Where You Were Last Seen textual-visual map",
+      "capture": { "url": "https://xyhtamura.github.io/where-you-were-last-seen/", "waitMs": 4000 }
+    },
+    {
+      "id": "gahuema",
+      "image": "img/works/gahuema.jpg",
+      "alt": "Gahuema browser tool",
+      "capture": { "url": "https://xyhtamura.github.io/gahuema/", "waitMs": 4000 }
+    },
+    {
+      "id": "of-another-shore",
+      "image": "img/works/of-another-shore.jpg",
+      "alt": "Of Another Shore hypertext constellation",
+      "capture": { "url": "https://xyhtamura.github.io/of-another-shore/", "waitMs": 5000 }
+    },
+    {
+      "id": "second-life",
+      "image": "img/works/second-life.jpg",
+      "alt": "Second Life performance archive",
+      "capture": { "url": "https://xyhtamura.github.io/sl/arbzn.html", "waitMs": 4000 }
+    },
+    {
+      "id": "typebojangler",
+      "image": "img/works/typebojangler.jpg",
+      "alt": "TypeBojangler typographic distortion interface",
+      "capture": { "url": "https://xyhtamura.github.io/typebojangler/", "localUrl": "http://localhost:8000/sgueltch/typebojangler/", "waitMs": 4000 }
+    },
+    {
+      "id": "ooid",
+      "image": "img/works/ooid.jpg",
+      "alt": "Ooid structure-based image codec",
+      "capture": { "url": "https://xyhtamura.github.io/sgueltch/goopCodecs/ooid/", "localUrl": "http://localhost:8000/sgueltch/goopCodecs/ooid/", "waitMs": 4000 }
+    },
+    {
+      "id": "scute",
+      "image": "img/works/scute.jpg",
+      "alt": "Scute structure-based image codec",
+      "capture": { "url": "https://xyhtamura.github.io/sgueltch/goopCodecs/scute/", "localUrl": "http://localhost:8000/sgueltch/goopCodecs/scute/", "waitMs": 4000 }
+    },
+    {
+      "id": "vermis",
+      "image": "img/works/vermis.jpg",
+      "alt": "Vermis structure-based image codec",
+      "capture": { "url": "https://xyhtamura.github.io/sgueltch/goopCodecs/vermis/", "localUrl": "http://localhost:8000/sgueltch/goopCodecs/vermis/", "waitMs": 4000 }
+    },
+    {
+      "id": "urumizuri",
+      "image": "img/works/urumizuri.jpg",
+      "alt": "Urumizuri structure-based image codec",
+      "page": "https://xyhtamura.github.io/sgueltch/goopCodecs/urumizuri/",
+      "skipReason": "Needs a curated native .urumizuri fixture; the default page is an empty drop target."
+    },
+    {
+      "id": "benzaiten",
+      "image": "img/works/benzaiten.jpg",
+      "alt": "Benzaiten image-sonification instrument",
+      "capture": { "url": "https://xyhtamura.github.io/benzaiten/", "localUrl": "http://localhost:8000/benzaiten/", "waitMs": 4500 }
+    },
+    {
+      "id": "glitterizer",
+      "image": "img/works/glitterizer.jpg",
+      "alt": "Glitterizer image-processing interface",
+      "page": "https://xyhtamura.github.io/glitterizer/",
+      "skipReason": "Needs a curated image fixture; headless Edge does not emit a representative frame for the idle page."
+    },
+    {
+      "id": "kikik",
+      "image": "img/works/kikik.jpg",
+      "alt": "Kikik spectral drawing instrument",
+      "page": "https://xyhtamura.github.io/kikik/",
+      "skipReason": "Needs a curated field-recording and grain-source fixture; the default page contains no swarm."
+    },
+    {
+      "id": "remanence",
+      "image": "img/works/remanence.jpg",
+      "alt": "Remanence acausal audio processor",
+      "page": "https://xyhtamura.github.io/hindcasts/remanence/",
+      "skipReason": "Needs a curated audio or video fixture; the default page contains no waveform."
+    },
+    {
+      "id": "cyberscotoma",
+      "image": "img/works/cyberscotoma.jpg",
+      "alt": "CyberScotoma video-processing interface",
+      "page": "https://xyhtamura.github.io/sgueltch/cyberscotoma/",
+      "skipReason": "Needs the built-in demo clip to be started before capture; the default page contains no video field."
+    },
+    {
+      "id": "horn-of-plenty",
+      "image": "img/works/horn-of-plenty.jpg",
+      "alt": "Horn of Plenty whole-file audio processor",
+      "page": "https://xyhtamura.github.io/hindcasts/horn-of-plenty/",
+      "skipReason": "Needs a curated sound fixture; the default page contains no seeded audio field."
+    },
+    {
+      "id": "ganymede",
+      "image": "img/works/ganymede.jpg",
+      "alt": "Ganymede image sonification interface",
+      "skipReason": "Needs a representative image or video upload fixture."
+    },
+    {
+      "id": "stitcher",
+      "image": "img/works/stitcher.jpg",
+      "alt": "Stitcher text recombination tool",
+      "skipReason": "Needs several curated text-file fixtures."
+    },
+    {
+      "id": "glossolalia",
+      "image": "img/works/glossolalia.jpg",
+      "alt": "Glossolalia vocal instrument",
+      "skipReason": "Needs a deliberate start gesture and timed visual state."
+    }
+  ]
+}

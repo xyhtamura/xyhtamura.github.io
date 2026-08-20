@@ -13,6 +13,24 @@ const DEFAULT_LAYOUT  = "stack";    // "stack" | "row" | "grid" | <number> | [..
 
 const IMG_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>`;
 
+function workImageKey(p) {
+  if (p?.id) return p.id;
+  return (p?.title || "")
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
+function sharedWorkImage(p) {
+  const item = globalThis.WORK_IMAGES?.[workImageKey(p)];
+  if (!item) return null;
+  const src = /^(?:[a-z]+:|\/)/i.test(item.src) ? item.src : `../${item.src}`;
+  return { type: "image", src, label: item.alt || p?.title || "" };
+}
+
+function mediaForWork(p) {
+  return (p?.media && p.media.length) ? p.media : (sharedWorkImage(p) ? [sharedWorkImage(p)] : []);
+}
+
 function renderMediaItem(m) {
   if (!m) return "";
   if (m.type === "placeholder") {
@@ -21,7 +39,7 @@ function renderMediaItem(m) {
   if (m.type === "image") {
     const esc = (s) => (s || "").replace(/"/g, "&quot;");
     return `<div class="media-item" onclick="openLb('${esc(m.src)}','${esc(m.label||"")}')">
-      <img src="${esc(m.src)}" alt="${esc(m.label||"")}">
+      <img src="${esc(m.src)}" alt="${esc(m.label||"")}" loading="lazy" decoding="async">
       <div class="media-overlay">${m.label || ""}</div>
     </div>`;
   }
@@ -140,8 +158,10 @@ function renderTags(tags) {
 function renderGridCard(p) {
   const title = p.title || "";
   const letter = title.replace(/^(A|An|The)\s+/i, "").charAt(0) || "?";
-  const thumb  = p.thumbnail
-    ? `<img src="${p.thumbnail}" alt="${title}">`
+  const fallback = sharedWorkImage(p);
+  const thumbSrc = p.thumbnail || fallback?.src;
+  const thumb  = thumbSrc
+    ? `<img src="${thumbSrc}" alt="${fallback?.label || title}" loading="lazy" decoding="async">`
     : `<div class="acad-ph"><span class="big-ltr">${letter}</span></div>`;
   const collabHTML = p.collaborators
     ? `<span class="tag tag-collab" style="border-color:var(--mg);color:var(--mg);margin-top:.15rem;">With ${p.collaborators}</span>`
@@ -164,8 +184,9 @@ function renderPanelCard(p) {
   const collabHTML = p.collaborators
     ? `<span class="tag tag-collab" style="border-color:var(--mg);color:var(--mg);">With ${p.collaborators}</span>`
     : "";
-  const mediaHTML = (p.media || []).map(renderMediaItem).join("");
-  const hasMedia = (p.media || []).length > 0;
+  const media = mediaForWork(p);
+  const mediaHTML = media.map(renderMediaItem).join("");
+  const hasMedia = media.length > 0;
   return `<article class="panel-card"${p.id ? ` id="work-${p.id}"` : ""}>
     ${hasMedia ? `<div class="panel-media">${mediaHTML}</div>` : ""}
     <div class="panel-body">
@@ -188,7 +209,7 @@ function renderPanelCard(p) {
 function renderPieceBody(p, { heading = "h2", titleStyle = "" } = {}) {
   p = p || {};
   const tag = heading === "h3" ? "h3" : "h2";
-  const mediaHTML = (p.media || []).map(renderMediaItem).join("");
+  const mediaHTML = mediaForWork(p).map(renderMediaItem).join("");
   const collabHTML = p.collaborators
     ? `<span class="tag tag-collab" style="border-color:var(--mg);color:var(--mg);">With ${p.collaborators}</span>`
     : "";
@@ -275,7 +296,7 @@ function renderSetBlock(node, ctx = {}) {
     const leadStyle = isNone
       ? "padding-bottom:1.2rem; margin-bottom:1.5rem;"
       : "padding-bottom:2rem; border-bottom:1px dashed var(--border-hi); margin-bottom:2rem;";
-    const mediaHTML = (lead.media || []).map(renderMediaItem).join("");
+    const mediaHTML = mediaForWork(lead).map(renderMediaItem).join("");
     const collabHTML = lead.collaborators
       ? `<span class="tag tag-collab" style="border-color:var(--mg);color:var(--mg);">With ${lead.collaborators}</span>`
       : "";

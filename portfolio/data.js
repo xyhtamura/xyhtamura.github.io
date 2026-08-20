@@ -81,8 +81,8 @@ const slides = [
       year: "2026",
       tags: ["intermedia", "bio-art", "electronic literature", "interactive web", "climate art"],
       media: [
-        { type: "image", src: "../card/comma.png", label: "sprouted comma map on black gulaman slab" },
-        { type: "image", src: "../card/poem.png", label: "original punctuation field mapping coordinates" }
+        { type: "image", src: "../acommapoem/comma.png", label: "sprouted comma map on black gulaman slab" },
+        { type: "image", src: "../acommapoem/poem.png", label: "original punctuation field mapping coordinates" }
       ],
       blurb: "A physical and browser poem that isolates the commas in José García Villa’s “I, it, was, that, saw,” and transfers their coordinates through a stencil into mung bean sprouts on black gulaman. The germinating punctuation turns Villa’s cultivatory image into a temporary domestic response to agricultural and water anxiety around the developing 2026 El Niño; the interface lets readers fade between the source punctuation and its living transfer.",
       links: [
@@ -98,9 +98,8 @@ const slides = [
       year: "2025→",
       tags: ["intermedia suite"],
       media: [
-        { type: "image", src: "../card/oas.webp", label: "hypertext constellation" },
-        { type: "image", src: "../card/oas2.webp", label: "hypertext constellation" },
-        { type: "image", src: "../card/edi.gif", label: "hypertext constellation" },
+        { type: "image", src: "../img/works/of-another-shore.jpg", label: "hypertext constellation" },
+        { type: "video-loop", src: "../card/EDI.mp4", label: "suite video fragment" },
         { type: "image", src: "../card/threefloor.jpeg", label: "hypertext constellation" }
       ],
       blurb: "An intermedia suite linking electronic literature, experimental pop, videopoetry, web art, performance scores, and simulations through a decentralized hypertext. Its shore is the present: a boundary where personal, ancestral, geological, virtual, remembered, and speculative times remain adjacent but inaccessible to one another. Individual works use that structure to test how identity and inheritance are assembled across incompatible media and temporal scales.",
@@ -186,9 +185,7 @@ const slides = [
       ],
       media: [
         { type: "image", src: "../card/manifest.jpeg", label: "film still — oceanic archive" },
-		{ type: "image", src: "../card/mani1.webp", label: "film still — oceanic archive" },
-		{ type: "image", src: "../card/mani2.png", label: "film still — oceanic archive" },
-		{ type: "image", src: "../card/mani3.webp", label: "film still — oceanic archive" }
+        { type: "image", src: "../card/mani2.png", label: "film still — oceanic archive" }
       ],
       blurb: "A short film and videopoem made with Bea Mariano, accompanied by my live score. It stitches the wreck of the USS Samuel B. Roberts, Manila construction sites, archival photographs, handwashing footage, microorganisms, and ocean imagery to examine how American military history remains embedded in Philippine development. The title connects cargo records, apparitions, futures made material, and manifest destiny; construction workers rotated sideways become divers moving through the same Pacific archive.",
       links: [
@@ -218,7 +215,7 @@ const slides = [
       year: "2026",
       tags: ["virtual exhibit", "sculpture", "intermedia", "electronic literature"],
       media: [
-        { type: "image", src: "../card/media.png", label: "gelatin poem — virtual exhibit" }
+        { type: "image", src: "../media/media.png", label: "gelatin poem — virtual exhibit" }
       ],
       blurb: "A physical gelatin poem and an interactive browser counterpart. Four clear gel strata suspend fragments of cut-up documents so depth determines which texts remain legible; the interface models the same block and lets readers change its virtual cut depth to expose lower layers.",
       links: [
@@ -236,7 +233,7 @@ const slides = [
       year: "2024→",
       tags: ["cyberpoetry", "digital collage", "docupoetry"],
       media: [
-        { type: "image", src: "../card/plasticoid.gif", label: "interface — hue field editor" }
+        { type: "video-loop", src: "../card/plasticoid.mp4", label: "Plasticoid hypertext collage" }
       ],
       blurb: "A hypertext collage poem whose images and text fragments link outward to academic papers, public-domain archives, found media, recordings, forums, discarded materials, and commercial packaging. Citation is both structure and subject: the linked fragments model identity as an arrangement of references shaped by academia, plastics, capitalism, globalization, and ecological crisis.",
       links: [
@@ -249,7 +246,9 @@ const slides = [
       year: "2024→",
       tags: ["electronic literature", "videopoetry", "docupoetry", "web art", "disaster"],
       media: [
-        { type: "image", src: "../card/shook.gif", label: "browser-based disaster interface" }
+        { type: "image", src: "../img/shook1.jpg", label: "browser-based disaster interface" },
+        { type: "image", src: "../img/shook2.jpg", label: "browser-based disaster interface" },
+        { type: "image", src: "../img/shook3.jpg", label: "browser-based disaster interface" }
       ],
       blurb: "An ongoing suite of electronic literature, videopoetry, docupoetry, and web art about the afterlives of disaster from a Filipino-Japanese perspective. The 1990 Luzon earthquake, 2011 Tōhoku earthquake, and 2020 Taal eruption organize works about the post-Marcos state, Japan’s Lost Decades, the pandemic-era internet, family memory, and inherited trauma. Browser poems, movable windows, archival video, blackout editing, and Windows XP interfaces make each geological rupture a point from which different historical times are read.",
       links: []
@@ -260,7 +259,7 @@ const slides = [
       year: "2025",
       tags: ["web poetry", "electronic literature", "body porosity", "infrastructure", "Philippines"],
       media: [
-        { type: "image", src: "../card/galvanism.gif", label: "web sequence — conductive body" }
+        { type: "image", src: "../img/works/galvanism.jpg", label: "web sequence — conductive body" }
       ],
       blurb: "A web-based poetic sequence about body porosity in the 2000s Philippines. A Filipino-Japanese neuroqueer speaker conducts television, dial-up internet, typhoons, political unrest, language, ghosts, floods, and voltage; electricity links nervous sensation to infrastructure, weather, media, and empire.",
       links: [
@@ -272,7 +271,7 @@ const slides = [
       year: "2025",
       tags: ["textual-visual art", "drawing", "maps", "asemic writing", "disappearance"],
       media: [
-        { type: "image", src: "../card/where-you-were-last-seen.jpg", label: "textual-visual work — disappearance map" }
+        { type: "image", src: "../img/works/where-you-were-last-seen.jpg", label: "textual-visual work — disappearance map" }
       ],
       blurb: "Three textual-visual works combining hand and digital drawing, maps, diagrams, manipulated photographs, poetry, prose, and asemic writing. Police diagrams, scrapbooks, and hand-drawn cartography supply formats for recording disappearance through traces and uncertainty without converting it into death or recovery.",
       links: [
@@ -302,7 +301,7 @@ const slides = [
         }
       ],
       media: [
-        { type: "image", src: "../card/mono.gif", label: "live audiovisual set — archival airwaves" },
+        { type: "video-loop", src: "../card/mono.mp4", label: "live audiovisual set — archival airwaves" },
 		{ type: "image", src: "../card/vaporwave.jpeg", label: "live audiovisual set — archival airwaves" }
       ],
       blurb: "A vaporwave listening and social gathering hosted by Mono by Phono, using archival sound, image, fashion, commercials, and film footage to organize programs around Philippine cultural memory. Sets move among 1990s OPM, 1980s ballads, Martial Law-era disco, Manila Sound, film soundtracks, and folk songs. The project later became Piyesta Plaza 1985–1995 Airwaves, an album and live audiovisual performance about Philippine pop culture, People Power and its aftermath, and the early-1990s earthquakes.",
@@ -726,7 +725,7 @@ links: [
       year: "2025–2026→",
       tags: ["Software Suite", "Acausal DSP", "Un-live Effects"],
       blurb: "A suite of offline audio and video effects that process a static file as a complete span. Whole-file access allows an effect to respond before an event, filter in both temporal directions, measure across passes, and optimize against the file's full distribution.",
-      media: [{ type: "image", src: "../card/hindcasts.png", label: "Hindcasts index causality readout display" }]
+      media: [{ type: "image", src: "../img/works/hindcasts.jpg", label: "Hindcasts index causality readout display" }]
     },
     pieces: [
       {
@@ -803,7 +802,7 @@ links: [
       year: "2026→",
       tags: ["Software Suite", "Databending Codecs", "Substrate Distortion"],
       media: [
-        { type: "image", src: "../card/manifest.jpeg", label: "goopCodecs format interface" }
+        { type: "image", src: "../img/works/sgueltch.jpg", label: "goopCodecs format interface" }
       ],
       blurb: "Browser-based codecs and native file formats built for databending. Ooid stores Gaussian blobs, Scute stores Voronoi territories, Vermis stores samples along a Hilbert filament, and Urumizuri stores a wet-state ink matrix; byte or text edits therefore deform those structures instead of exposing a conventional raster or block codec.",
       links: [
@@ -1020,7 +1019,7 @@ links: [
         tags: ["FM synthesis", "physics engine", "microtonal", "visual music"],
         blurb: "A browser instrument in which moving plankton drive FM synthesis through color, collisions, and rippling microtonal fields.",
         links: [
-          { label: "Launch Instrument", url: "https://xyhtamura.github.io/electropond.html" }
+          { label: "Launch Instrument", url: "https://xyhtamura.github.io/electropond/" }
         ]
       },
       {
