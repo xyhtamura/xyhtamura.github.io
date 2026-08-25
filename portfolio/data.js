@@ -670,6 +670,16 @@ const slides = [
           links: [
             { label: "Launch Instrument", url: "https://xyhtamura.github.io/anexacta/moire/" }
           ]
+        },
+        {
+          id: "physa",
+          title: "Physa",
+          year: "2026",
+          tags: ["memristive synthesis", "stateful dynamics", "microtonal"],
+          blurb: "A stateful charge-controlled memristor synthesizer built as a single-file browser instrument. It models dynamic, history-dependent resistance curves over a shared drive substrate, featuring parallel capacitance (mould), senescence (surface wear), and colony scaling.",
+          links: [
+            { label: "Launch Instrument", url: "https://xyhtamura.github.io/anexacta/physa/" }
+          ]
         }
       ]
     }

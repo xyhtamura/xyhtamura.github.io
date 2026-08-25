@@ -170,6 +170,16 @@
       "capture": { "url": "https://xyhtamura.github.io/anexacta/moire/", "localUrl": "http://localhost:8000/anexacta/moire/", "waitMs": 4500 }
     },
     {
+      "id": "physa",
+      "image": "img/works/physa.jpg",
+      "alt": "Physa browser instrument",
+      "capture": {
+        "url": "https://xyhtamura.github.io/anexacta/physa/",
+        "localUrl": "http://localhost:8000/anexacta/physa/",
+        "waitMs": 4000
+      }
+    },
+    {
       "id": "electropond",
       "image": "img/works/electropond.jpg",
       "alt": "Electropond browser instrument",
