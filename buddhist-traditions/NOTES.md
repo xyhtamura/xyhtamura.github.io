@@ -15,7 +15,7 @@ Add a poster export mode that fits the selected view to one landscape canvas and
 - Moved the atlas into the \`xyhtamura.github.io\` source repository at \`/buddhist-traditions/\` for publication.
 - Kept the public URL unlinked: it is absent from the landing page, interactive portfolio, shared work-image manifest, sitemap, and CV.
 - Updated the internal root roadmap to the new source location.
-- Left undone: confirm the deployed GitHub Pages URL after the push completes.
+- Verified `https://xyhtamura.github.io/buddhist-traditions/` returned HTTP 200 from GitHub Pages after the push.
 
 ### 2026-08-27 — Codex
 
