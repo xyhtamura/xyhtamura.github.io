@@ -8,7 +8,9 @@
   "works": [
     {
       "id": "comma-poem-villa",
-      "aliases": ["a-comma-poem-after-jose-garcia-villas-i-it-was-that-saw-before-the-coming-el-nino"],
+      "aliases": [
+        "a-comma-poem-after-jose-garcia-villas-i-it-was-that-saw-before-the-coming-el-nino"
+      ],
       "image": "acommapoem/comma.png",
       "alt": "sprouted comma map on black gulaman"
     },
@@ -29,7 +31,9 @@
     },
     {
       "id": "put-many-pictures-together",
-      "aliases": ["pur-many-pictures-together"],
+      "aliases": [
+        "pur-many-pictures-together"
+      ],
       "image": "img/putmanypicturestogether.jpg",
       "alt": "Put Many Pictures Together collage interface"
     },
@@ -112,13 +116,20 @@
       "id": "cutline",
       "image": "img/works/cutline.jpg",
       "alt": "CUTLINE generative poetry deck",
-      "capture": { "url": "https://xyhtamura.github.io/cutline/", "waitMs": 5000 }
+      "capture": {
+        "url": "https://xyhtamura.github.io/cutline/",
+        "waitMs": 5000
+      }
     },
     {
       "id": "plica",
       "image": "img/works/plica.jpg",
       "alt": "Plica generative fold-based writing interface",
-      "capture": { "url": "https://xyhtamura.github.io/plica/", "localUrl": "http://localhost:8000/plica/", "waitMs": 5000 }
+      "capture": {
+        "url": "https://xyhtamura.github.io/plica/",
+        "localUrl": "http://localhost:8000/plica/",
+        "waitMs": 5000
+      }
     },
     {
       "id": "ombak-lock",
@@ -131,43 +142,66 @@
       "id": "stanzuary",
       "image": "img/works/stanzuary.jpg",
       "alt": "Stanzuary spatial text editor",
-      "capture": { "url": "https://xyhtamura.github.io/stanzuary/", "waitMs": 4000 }
+      "capture": {
+        "url": "https://xyhtamura.github.io/stanzuary/",
+        "waitMs": 4000
+      }
     },
     {
       "id": "w2xdx",
       "image": "img/works/w2xdx.jpg",
       "alt": "W2XDX experimental television instrument",
-      "capture": { "url": "https://xyhtamura.github.io/w2xdx/", "waitMs": 4000 }
+      "capture": {
+        "url": "https://xyhtamura.github.io/w2xdx/",
+        "waitMs": 4000
+      }
     },
     {
       "id": "sgueltch",
       "image": "img/works/sgueltch.jpg",
       "alt": "Sgueltch software suite",
-      "capture": { "url": "https://xyhtamura.github.io/sgueltch/", "waitMs": 4500 }
+      "capture": {
+        "url": "https://xyhtamura.github.io/sgueltch/",
+        "waitMs": 4500
+      }
     },
     {
       "id": "hindcasts",
       "image": "img/works/hindcasts.jpg",
       "alt": "Hindcasts index of causal instruments",
-      "capture": { "url": "https://xyhtamura.github.io/hindcasts/", "waitMs": 4000 }
+      "capture": {
+        "url": "https://xyhtamura.github.io/hindcasts/",
+        "waitMs": 4000
+      }
     },
     {
       "id": "aeropane",
       "image": "img/works/aeropane.jpg",
       "alt": "Aeropane browser instrument",
-      "capture": { "url": "https://xyhtamura.github.io/aeropane/", "waitMs": 4000 }
+      "capture": {
+        "url": "https://xyhtamura.github.io/aeropane/",
+        "waitMs": 4000
+      }
     },
     {
       "id": "anexacta",
       "image": "img/works/anexacta.jpg",
       "alt": "Anexacta browser instrument collection",
-      "capture": { "url": "https://xyhtamura.github.io/anexacta/", "localUrl": "http://localhost:8000/anexacta/", "waitMs": 4000 }
+      "capture": {
+        "url": "https://xyhtamura.github.io/anexacta/",
+        "localUrl": "http://localhost:8000/anexacta/",
+        "waitMs": 4000
+      }
     },
     {
       "id": "moire",
       "image": "img/works/moire.jpg",
       "alt": "Moire phase-modulation instrument",
-      "capture": { "url": "https://xyhtamura.github.io/anexacta/moire/", "localUrl": "http://localhost:8000/anexacta/moire/", "waitMs": 4500 }
+      "capture": {
+        "url": "https://xyhtamura.github.io/anexacta/moire/",
+        "localUrl": "http://localhost:8000/anexacta/moire/",
+        "waitMs": 4500
+      }
     },
     {
       "id": "physa",
@@ -180,34 +214,59 @@
       }
     },
     {
+      "id": "unbounded-organ",
+      "image": "img/works/unbounded-organ.jpg",
+      "alt": "The Unbounded Organ digital waveguide instrument",
+      "capture": {
+        "url": "https://xyhtamura.github.io/unbounded-organ/",
+        "localUrl": "http://localhost:8000/unbounded-organ/",
+        "waitMs": 4000
+      }
+    },
+    {
       "id": "electropond",
       "image": "img/works/electropond.jpg",
       "alt": "Electropond browser instrument",
-      "capture": { "url": "https://xyhtamura.github.io/electropond/", "waitMs": 4000 }
+      "capture": {
+        "url": "https://xyhtamura.github.io/electropond/",
+        "waitMs": 4000
+      }
     },
     {
       "id": "cornice",
       "image": "img/works/cornice.jpg",
       "alt": "Cornice ASCII terrarium and art game",
-      "capture": { "url": "https://xyhtamura.github.io/cornice/", "waitMs": 4000 }
+      "capture": {
+        "url": "https://xyhtamura.github.io/cornice/",
+        "waitMs": 4000
+      }
     },
     {
       "id": "72-munting-panahon",
       "image": "img/works/72-munting-panahon.jpg",
       "alt": "72 Munting Panahon microseason timeline",
-      "capture": { "url": "https://xyhtamura.github.io/72-munting-panahon/", "waitMs": 3500 }
+      "capture": {
+        "url": "https://xyhtamura.github.io/72-munting-panahon/",
+        "waitMs": 3500
+      }
     },
     {
       "id": "eosforos",
       "image": "img/works/eosforos.jpg",
       "alt": "Eosforos audiovisual suite",
-      "capture": { "url": "https://xyhtamura.github.io/hadeanflare/", "waitMs": 4500 }
+      "capture": {
+        "url": "https://xyhtamura.github.io/hadeanflare/",
+        "waitMs": 4500
+      }
     },
     {
       "id": "open4",
       "image": "img/works/open4.jpg",
       "alt": "Open4 video work page",
-      "capture": { "url": "https://xyhtamura.github.io/open4/", "waitMs": 5000 }
+      "capture": {
+        "url": "https://xyhtamura.github.io/open4/",
+        "waitMs": 5000
+      }
     },
     {
       "id": "tanim-kalye",
@@ -217,107 +276,169 @@
     },
     {
       "id": "insulae-incognita",
-      "aliases": ["insulae-incognita"],
+      "aliases": [
+        "insulae-incognita"
+      ],
       "image": "img/works/insulae-incognita.jpg",
       "alt": "Insulae Incognita algorithmic archipelago",
       "capture": {
         "url": "https://xyhtamura.github.io/insulaeincognita/",
         "waitMs": 4500,
-        "crop": { "x": 420, "y": 315, "width": 600, "height": 450 }
+        "crop": {
+          "x": 420,
+          "y": 315,
+          "width": 600,
+          "height": 450
+        }
       }
     },
     {
       "id": "whisper-house",
-      "aliases": ["whisperhouse"],
+      "aliases": [
+        "whisperhouse"
+      ],
       "image": "img/works/whisper-house.jpg",
       "alt": "Whisper House performance score",
-      "capture": { "url": "https://xyhtamura.github.io/whisperhouse/", "waitMs": 3500 }
+      "capture": {
+        "url": "https://xyhtamura.github.io/whisperhouse/",
+        "waitMs": 3500
+      }
     },
     {
       "id": "chanidae",
       "image": "img/works/chanidae.jpg",
       "alt": "Chanidae animated slide poem",
-      "capture": { "url": "https://xyhtamura.github.io/chanidae.html", "waitMs": 3500 }
+      "capture": {
+        "url": "https://xyhtamura.github.io/chanidae.html",
+        "waitMs": 3500
+      }
     },
     {
       "id": "love-letter-for-you-txt",
-      "aliases": ["love-letter"],
+      "aliases": [
+        "love-letter"
+      ],
       "image": "img/works/love-letter-for-you-txt.jpg",
       "alt": "LOVE-LETTER-FOR-YOU.TXT algorithmic poem",
-      "capture": { "url": "https://xyhtamura.github.io/loveletterforyou/", "waitMs": 3500 }
+      "capture": {
+        "url": "https://xyhtamura.github.io/loveletterforyou/",
+        "waitMs": 3500
+      }
     },
     {
       "id": "kubocities",
       "image": "img/works/kubocities.jpg",
       "alt": "KuboCities Web 1.0 poem",
-      "capture": { "url": "https://xyhtamura.github.io/kubocities/", "waitMs": 4500 }
+      "capture": {
+        "url": "https://xyhtamura.github.io/kubocities/",
+        "waitMs": 4500
+      }
     },
     {
       "id": "galvanism",
       "image": "img/works/galvanism.jpg",
       "alt": "Galvanism conductive-body web poem",
-      "capture": { "url": "https://xyhtamura.github.io/galvanism/", "waitMs": 4000 }
+      "capture": {
+        "url": "https://xyhtamura.github.io/galvanism/",
+        "waitMs": 4000
+      }
     },
     {
       "id": "hunitsura",
       "image": "img/works/hunitsura.jpg",
       "alt": "Hunitsura browser tool",
-      "capture": { "url": "https://xyhtamura.github.io/hunitsura/", "waitMs": 4000 }
+      "capture": {
+        "url": "https://xyhtamura.github.io/hunitsura/",
+        "waitMs": 4000
+      }
     },
     {
       "id": "istorya",
-      "aliases": ["istorya-sang-balatyagon"],
+      "aliases": [
+        "istorya-sang-balatyagon"
+      ],
       "image": "img/works/istorya.jpg",
       "alt": "Istorya Sang Balatyagon interface",
-      "capture": { "url": "https://xyhtamura.github.io/istorya-sang-balatyagon/", "waitMs": 4500 }
+      "capture": {
+        "url": "https://xyhtamura.github.io/istorya-sang-balatyagon/",
+        "waitMs": 4500
+      }
     },
     {
       "id": "where-you-were-last-seen",
       "image": "img/works/where-you-were-last-seen.jpg",
       "alt": "Where You Were Last Seen textual-visual map",
-      "capture": { "url": "https://xyhtamura.github.io/where-you-were-last-seen/", "waitMs": 4000 }
+      "capture": {
+        "url": "https://xyhtamura.github.io/where-you-were-last-seen/",
+        "waitMs": 4000
+      }
     },
     {
       "id": "gahuema",
       "image": "img/works/gahuema.jpg",
       "alt": "Gahuema browser tool",
-      "capture": { "url": "https://xyhtamura.github.io/gahuema/", "waitMs": 4000 }
+      "capture": {
+        "url": "https://xyhtamura.github.io/gahuema/",
+        "waitMs": 4000
+      }
     },
     {
       "id": "of-another-shore",
       "image": "img/works/of-another-shore.jpg",
       "alt": "Of Another Shore hypertext constellation",
-      "capture": { "url": "https://xyhtamura.github.io/of-another-shore/", "waitMs": 5000 }
+      "capture": {
+        "url": "https://xyhtamura.github.io/of-another-shore/",
+        "waitMs": 5000
+      }
     },
     {
       "id": "second-life",
       "image": "img/works/second-life.jpg",
       "alt": "Second Life performance archive",
-      "capture": { "url": "https://xyhtamura.github.io/sl/arbzn.html", "waitMs": 4000 }
+      "capture": {
+        "url": "https://xyhtamura.github.io/sl/arbzn.html",
+        "waitMs": 4000
+      }
     },
     {
       "id": "typebojangler",
       "image": "img/works/typebojangler.jpg",
       "alt": "TypeBojangler typographic distortion interface",
-      "capture": { "url": "https://xyhtamura.github.io/typebojangler/", "localUrl": "http://localhost:8000/sgueltch/typebojangler/", "waitMs": 4000 }
+      "capture": {
+        "url": "https://xyhtamura.github.io/typebojangler/",
+        "localUrl": "http://localhost:8000/sgueltch/typebojangler/",
+        "waitMs": 4000
+      }
     },
     {
       "id": "ooid",
       "image": "img/works/ooid.jpg",
       "alt": "Ooid structure-based image codec",
-      "capture": { "url": "https://xyhtamura.github.io/sgueltch/goopCodecs/ooid/", "localUrl": "http://localhost:8000/sgueltch/goopCodecs/ooid/", "waitMs": 4000 }
+      "capture": {
+        "url": "https://xyhtamura.github.io/sgueltch/goopCodecs/ooid/",
+        "localUrl": "http://localhost:8000/sgueltch/goopCodecs/ooid/",
+        "waitMs": 4000
+      }
     },
     {
       "id": "scute",
       "image": "img/works/scute.jpg",
       "alt": "Scute structure-based image codec",
-      "capture": { "url": "https://xyhtamura.github.io/sgueltch/goopCodecs/scute/", "localUrl": "http://localhost:8000/sgueltch/goopCodecs/scute/", "waitMs": 4000 }
+      "capture": {
+        "url": "https://xyhtamura.github.io/sgueltch/goopCodecs/scute/",
+        "localUrl": "http://localhost:8000/sgueltch/goopCodecs/scute/",
+        "waitMs": 4000
+      }
     },
     {
       "id": "vermis",
       "image": "img/works/vermis.jpg",
       "alt": "Vermis structure-based image codec",
-      "capture": { "url": "https://xyhtamura.github.io/sgueltch/goopCodecs/vermis/", "localUrl": "http://localhost:8000/sgueltch/goopCodecs/vermis/", "waitMs": 4000 }
+      "capture": {
+        "url": "https://xyhtamura.github.io/sgueltch/goopCodecs/vermis/",
+        "localUrl": "http://localhost:8000/sgueltch/goopCodecs/vermis/",
+        "waitMs": 4000
+      }
     },
     {
       "id": "urumizuri",
@@ -330,7 +451,11 @@
       "id": "benzaiten",
       "image": "img/works/benzaiten.jpg",
       "alt": "Benzaiten image-sonification instrument",
-      "capture": { "url": "https://xyhtamura.github.io/benzaiten/", "localUrl": "http://localhost:8000/benzaiten/", "waitMs": 4500 }
+      "capture": {
+        "url": "https://xyhtamura.github.io/benzaiten/",
+        "localUrl": "http://localhost:8000/benzaiten/",
+        "waitMs": 4500
+      }
     },
     {
       "id": "glitterizer",
