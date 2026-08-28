@@ -628,6 +628,19 @@ const slides = [
   {
     kind: "piece",
     piece: {
+      id: "element-projections",
+      title: "Element Projections",
+      year: "2026",
+      tags: ["periodic table", "PCA", "dimensional reduction", "ordering keys", "chemical property space", "distortion metrics"],
+      blurb: "An interactive exploration of the periodic table of chemical elements as a two-dimensional projection of multidimensional property space. Formulates every layout as a pair of (ordering key, wrap rule), allowing users to switch between classical tables, chemical property PCA (Besalú 2013), Mendeleev number scales, and Archimedean spirals while measuring residual displacement vectors, Sneath atypicality, and topological neighborhood preservation.",
+      links: [
+        { label: "Launch Explorer", url: "https://xyhtamura.github.io/element-projections/" }
+      ]
+    }
+  },
+  {
+    kind: "piece",
+    piece: {
       id: "stanzuary",
       title: "Stanzuary",
       year: "2026",

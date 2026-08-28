@@ -234,6 +234,19 @@
       "skipReason": "Needs a deliberate 3-second hold gesture on the safety warning gate to reveal the light field."
     },
     {
+      "id": "element-projections",
+      "aliases": [
+        "elements"
+      ],
+      "image": "img/works/element-projections.jpg",
+      "alt": "Element Projections interactive periodic table interface",
+      "capture": {
+        "url": "https://xyhtamura.github.io/element-projections/",
+        "localUrl": "http://localhost:8000/xyhtamura.github.io/element-projections/",
+        "waitMs": 4000
+      }
+    },
+    {
       "id": "electropond",
       "image": "img/works/electropond.jpg",
       "alt": "Electropond browser instrument",
