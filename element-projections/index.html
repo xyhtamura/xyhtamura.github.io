@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Element Projections — The Periodic Table as One Arrangement Among Many</title>
+<meta name="description" content="An interactive table of elements whose layout is the variable: exploring the periodic table as a 2D projection of multidimensional chemical property space.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=20260828">
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-content">
+    <div class="masthead-brand">
+      <h1>Element Projections</h1>
+      <span class="masthead-tag">Layout = (ordering key, wrap rule)</span>
+    </div>
+    <p class="standfirst">
+      The standard table sorts elements by atomic number <span class="m">Z</span> and wraps at shell closures to preserve valence groups. Each projection changes the ordering key or wrap rule so you can compare what stays adjacent and what moves.
+    </p>
+    <div class="masthead-actions">
+      <button type="button" id="btn-open-thesis" class="btn btn-primary">Literature & Theory Notes</button>
+    </div>
+  </div>
+</header>
+
+<main class="app-layout">
+  
+  <!-- Left/Center Primary Workspace -->
+  <section class="workspace-panel">
+    
+    <!-- Controls Toolbar -->
+    <div class="controls-toolbar">
+      <div class="control-group">
+        <label class="control-label" for="projection-select">Projection</label>
+        <select id="projection-select" class="select-control projection-select" aria-label="Projection">
+          <!-- Populated by JS -->
+        </select>
+        <div class="preset-buttons" id="layout-presets" role="group" aria-label="Periodic Table Projections">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <div class="control-row secondary-controls">
+        <!-- Scatter Axes Picker (visible only on scatter mode) -->
+        <div class="control-subgroup" id="scatter-controls" style="display: none;">
+          <label for="scatter-x-prop">X Axis:
+            <select id="scatter-x-prop" class="select-control">
+              <option value="electronegativity" selected>Electronegativity (Pauling)</option>
+              <option value="atomicRadius">Atomic Radius (Slater pm)</option>
+              <option value="ionizationEnergy1">1st Ionization Potential</option>
+              <option value="atomicMass">Atomic Mass (amu)</option>
+              <option value="electronAffinity">Electron Affinity</option>
+              <option value="density">Density at STP</option>
+              <option value="meltingPoint">Melting Point (K)</option>
+              <option value="boilingPoint">Boiling Point (K)</option>
+              <option value="valence">Nominal Valence</option>
+              <option value="discoveryYear">Discovery Year</option>
+            </select>
+          </label>
+          <label for="scatter-y-prop">Y Axis:
+            <select id="scatter-y-prop" class="select-control">
+              <option value="electronegativity">Electronegativity (Pauling)</option>
+              <option value="atomicRadius" selected>Atomic Radius (Slater pm)</option>
+              <option value="ionizationEnergy1">1st Ionization Potential</option>
+              <option value="atomicMass">Atomic Mass (amu)</option>
+              <option value="electronAffinity">Electron Affinity</option>
+              <option value="density">Density at STP</option>
+              <option value="meltingPoint">Melting Point (K)</option>
+              <option value="boilingPoint">Boiling Point (K)</option>
+              <option value="valence">Nominal Valence</option>
+              <option value="discoveryYear">Discovery Year</option>
+            </select>
+          </label>
+        </div>
+
+        <!-- Color Mode -->
+        <div class="control-subgroup">
+          <label for="color-mode-select">Color Overlay:
+            <select id="color-mode-select" class="select-control">
+              <option value="category" selected>Chemical Category</option>
+              <option value="block">Electron Subshell Block (s, p, d, f)</option>
+              <option value="displacement">Displacement Distance from Baseline</option>
+              <option value="atypicality">Sneath (2000) Atypicality Index</option>
+              <option value="heatmap">Continuous Property Heatmap</option>
+            </select>
+          </label>
+          <select id="heatmap-prop-select" class="select-control" style="display: none;">
+            <option value="electronegativity" selected>Pauling Electronegativity</option>
+            <option value="atomicRadius">Atomic Radius</option>
+            <option value="ionizationEnergy1">1st Ionization Energy</option>
+            <option value="electronAffinity">Electron Affinity</option>
+            <option value="density">Density</option>
+            <option value="meltingPoint">Melting Point</option>
+          </select>
+        </div>
+
+        <!-- Residual Filter Toggle -->
+        <div class="control-subgroup">
+          <span class="subgroup-label">Residual Focus:</span>
+          <div class="btn-group-toggle">
+            <button type="button" id="filter-all" class="btn btn-toggle active">All Elements</button>
+            <button type="button" id="filter-residuals" class="btn btn-toggle" title="Dim all elements except Besalú / Sneath / Diagonal / Triad anomalies">Highlight Residuals</button>
+          </div>
+        </div>
+
+        <!-- Visual Toggles -->
+        <div class="control-subgroup toggle-options">
+          <label class="checkbox-label">
+            <input type="checkbox" id="toggle-trails" checked>
+            <span>Motion Trails</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="toggle-guides" checked>
+            <span>Diagonal & Triad Links</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Projection Stage Container -->
+    <div class="stage-wrapper">
+      <div class="stage-scroll" tabindex="0" aria-label="Projection chart. Scroll horizontally when the chart is wider than the screen.">
+        <div id="stage-container"></div>
+      </div>
+      <div class="stage-footer">
+        <div id="hover-hint" class="hover-hint">Select an element to inspect its coordinates and properties.</div>
+        <div class="stage-scroll-note">Drag horizontally to inspect the full projection.</div>
+      </div>
+    </div>
+
+    <!-- Projection Thesis & Diagnostic Bar -->
+    <div class="diagnostics-panel">
+      <div class="diag-column main-diag">
+        <h2 id="diag-title" class="diag-title">Standard Form (18-Column IUPAC)</h2>
+        <div class="diag-meta-row">
+          <div class="meta-item">
+            <span class="meta-label">Ordering Key:</span>
+            <span id="diag-key" class="meta-val">Atomic Number Z</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Wrap Rule:</span>
+            <span id="diag-wrap" class="meta-val">Shell closures (Noble gases)</span>
+          </div>
+        </div>
+        <p id="diag-thesis" class="diag-thesis">Preserves valence recurrence and group homology in vertical columns at the cost of metric continuity.</p>
+        <p id="diag-desc" class="diag-desc">The ubiquitous medium-form table. Splits the f-block into detached rows below to keep an 18-column aspect ratio.</p>
+      </div>
+
+      <div class="diag-column metrics-diag">
+        <h3>Topological Diagnostics</h3>
+        <div class="metric-card">
+          <span class="metric-num" id="metric-displacement">0.00 grid units</span>
+          <span class="metric-desc">Mean Displacement from Baseline</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-num" id="metric-preservation">100.0%</span>
+          <span class="metric-desc">5-NN Property Neighborhood Preservation</span>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Right Inspector Sidebar -->
+  <aside class="inspector-panel" aria-label="Element Details Inspector">
+    <h2 class="visually-hidden">Element Inspector</h2>
+    <div id="inspector-card" class="inspector-card">
+      <!-- Populated dynamically by app.js -->
+    </div>
+  </aside>
+
+</main>
+
+<!-- Literature & Theory Modal -->
+<div id="thesis-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-window">
+    <div class="modal-header">
+      <h2 id="modal-title">Periodic Table Projections & Literature Grounding</h2>
+      <button type="button" id="btn-close-thesis" class="btn-close" aria-label="Close modal">&times;</button>
+    </div>
+    <div class="modal-body">
+      
+      <section class="modal-section">
+        <h3>1. The core thesis: <span class="mono">Layout = (ordering key, wrap rule)</span></h3>
+        <p>
+          The standard periodic table is not an absolute geometric truth, but a specific projection designed to prioritize <strong>chemical valence recurrence</strong> in vertical columns. By giving spatial adjacency to elements with homologous valence configurations, it distorts continuous physical metrics (electronegativity, atomic radius, ionization energy, density, and melting points).
+        </p>
+        <p>
+          Unlike cartographic map projections—which all project one shared sphere with a single true metric—element property space has no commensurable ground-truth metric (Pauling units, picometers, and kelvin are not dimensionally unified). Therefore, every periodic table layout is a formal decision about <em>which relation gets to be adjacency</em>.
+        </p>
+      </section>
+
+      <section class="modal-section">
+        <h3>2. Besalú (2013): Empirical PCA Reconstructs Periods and Groups</h3>
+        <p>
+          <strong>Besalú, E. (2013). "From Periodic Properties to a Periodic Table Arrangement." <em>J. Chem. Educ.</em>, 90(8), 1009–1013. doi:10.1021/ed3004534.</strong>
+        </p>
+        <p>
+          Principal Component Analysis on 35 representative main-group elements across 5 periodic properties (atomic weight, atomic radius, 1st IP, 1st electron affinity, and Pauling electronegativity) naturally reproduces the periodic system without relying on quantum mechanical electron shells:
+        </p>
+        <ul>
+          <li><strong>PC1 (64.9% variance)</strong>: Dominated by ionization potential and electronegativity against atomic radius &rarr; <strong>corresponds to periods (horizontal rows)</strong>.</li>
+          <li><strong>PC2 (23.7% variance)</strong>: Dominated by atomic weight &rarr; <strong>corresponds to groups (vertical columns)</strong>.</li>
+          <li><strong>Empirical Residuals</strong>: Hydrogen lands anomalously between Carbon and Nitrogen; Carbon and Nitrogen are displaced from their period lines; Li–Mg and Na–Ca cluster together, recovering the diagonal relationships; Döbereiner's triads align evenly along PC2.</li>
+        </ul>
+      </section>
+
+      <section class="modal-section">
+        <h3>3. Sneath (2000): The Limit of Two Dimensions</h3>
+        <p>
+          <strong>Sneath, P. H. A. (2000). "Numerical Classification of the Chemical Elements and Its Relation to the Periodic System." <em>Foundations of Chemistry</em>, 2(3), 237–263.</strong>
+        </p>
+        <p>
+          Analyzing 69 elements across 54 chemical and physical properties revealed that the elements segregate cleanly into <span class="m">s</span>-, <span class="m">p</span>-, and <span class="m">d</span>-blocks, with period tracks forming continuous oval trajectories. Sneath proved that <strong>"more than three axes were required to give good representation of the variation"</strong>: Axis III separates the platinum-group metals from tungsten-like metals—a genuine similarity split that no 2D table can make adjacent. His centroid distance yields a formal <strong>atypicality index</strong>, under which iron and metalloids are central/typical, while fluorine and alkali metals are peripheral/atypical.
+        </p>
+      </section>
+
+      <section class="modal-section">
+        <h3>4. Allahyari & Oganov (2020): Universal Sequence of Elements</h3>
+        <p>
+          <strong>Allahyari, Z., & Oganov, A. R. (2020). "Nonempirical definition of the Mendeleev numbers: Organizing the chemical space." <em>J. Phys. Chem. C</em>, 124(43), 23867–23878.</strong>
+        </p>
+        <p>
+          Projects elements onto the regression line in <span class="m">(&chi;, R<sub>a</sub>)</span> space to obtain a nonempirical 1D Mendeleev sequence (USE). Tested against 500,000 crystal structures, showing that rival element orderings can be objectively evaluated by their <strong>clustering rate</strong> of compound phase stability.
+        </p>
+      </section>
+
+      <section class="modal-section">
+        <h3>5. Leach (2012): The Standing Objection</h3>
+        <p>
+          <strong>Leach, M. R. (2012). "Concerning electronegativity as a basic elemental property and why the periodic table is usually represented in its medium form." <em>Foundations of Chemistry</em>, 15(1), 13–29.</strong>
+        </p>
+        <p>
+          Argues that the medium form is determined by four quantum numbers and four rules, and that adding electronegativity completes the construction so that it displays the multi-parameter periodic law in two dimensions with minimal ambiguity.
+        </p>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<script type="module" src="src/app.js?v=20260828f"></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "name": "element-projections",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "The periodic table as one arrangement among many — Layout = (ordering key, wrap rule)"
+}
