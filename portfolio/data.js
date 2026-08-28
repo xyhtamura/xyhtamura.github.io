@@ -615,6 +615,19 @@ const slides = [
   {
     kind: "piece",
     piece: {
+      id: "lamp-for-stilling-the-sun",
+      title: "Lamp for Stilling the Sun",
+      year: "2026",
+      tags: ["light instrument", "stroboscopic", "flicker", "frequency drift", "visual perception"],
+      blurb: "A browser light instrument with adjustable 4–18 Hz flicker, frequency drift, duty-cycle jitter, brightness, color temperature, and masks. Optional network seeding and camera feedback are off by default.",
+      links: [
+        { label: "Launch Instrument", url: "https://xyhtamura.github.io/lamp-for-stilling-the-sun/" }
+      ]
+    }
+  },
+  {
+    kind: "piece",
+    piece: {
       id: "stanzuary",
       title: "Stanzuary",
       year: "2026",

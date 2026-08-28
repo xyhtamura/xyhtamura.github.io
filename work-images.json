@@ -224,6 +224,16 @@
       }
     },
     {
+      "id": "lamp-for-stilling-the-sun",
+      "aliases": [
+        "lamp"
+      ],
+      "image": "img/works/lamp-for-stilling-the-sun.jpg",
+      "alt": "Lamp for Stilling the Sun browser light instrument",
+      "page": "https://xyhtamura.github.io/lamp-for-stilling-the-sun/",
+      "skipReason": "Needs a deliberate 3-second hold gesture on the safety warning gate to reveal the light field."
+    },
+    {
       "id": "electropond",
       "image": "img/works/electropond.jpg",
       "alt": "Electropond browser instrument",
