@@ -171,6 +171,7 @@
       "alt": "Hindcasts index of causal instruments",
       "capture": {
         "url": "https://xyhtamura.github.io/hindcasts/",
+        "localUrl": "http://localhost:8000/hindcasts/",
         "waitMs": 4000
       }
     },
