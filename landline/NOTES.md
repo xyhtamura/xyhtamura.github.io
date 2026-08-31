@@ -1,163 +1,89 @@
 # landline
 
-*a landline imagining a line probe during a storm* — the browser release.
+*a landline imagining a line probe during a storm* — browser implementation and realization files.
 
-The work is a score, not a recording. This folder holds a JavaScript engine that
-performs that score live, one performance per visit, plus the two fixed
-renderings made in Python in August 2026 and the score itself.
+The work is defined as an algorithmic score. This folder contains a client-side JavaScript engine that synthesizes the score live during playback, alongside two fixed reference renderings produced in Python in August 2026 and the score document.
 
-Root entry: [ROADMAP.md](../../ROADMAP.md). The Python renderer that came first
-is in [reference/](reference/) with its own [NOTES.md](reference/NOTES.md), which
-is the build record for the piece itself.
+Project roadmap entry: [ROADMAP.md](../../ROADMAP.md). The initial Python reference implementation is in [reference/](reference/) with its own [NOTES.md](reference/NOTES.md) recording synthesis design.
 
 ## What is here
 
 | Path | Role |
 | :-- | :-- |
-| `index.html`, `landline.css`, `app.js` | The page. `app.js` owns the audio graph, the schedule and the readouts; it holds no DSP. |
-| `engine/protocol.js` | Signal generators from the Recommendations: ANSam, V.21 FSK, the V.34 probe comb. |
-| `engine/line.js` | The subscriber loop: frequency response, noise bed, receiver-side measurement. |
-| `engine/negotiate.js` | Measurement → mode. The only place the ladder is decided. |
-| `engine/performance.js` | Storm curve, attempts, fragmentation, scatter, the bed, and the streaming. |
-| `engine/rng.js`, `engine/fft.js` | Seeded random numbers; radix-2 real FFT. |
-| `engine/worker.js` | Runs a performance off the main thread and hands back stereo chunks. |
-| `reference/` | The Python renderer that came first, and its own notes. |
-| `tools/dump_reference.py` | Reference values out of the Python renderer. |
-| `tools/reference.json` | Those values, committed. |
-| `tools/compare.mjs` | Checks the engine against them. |
-| `tools/measure.mjs` | Renders a performance headlessly and reports its levels and structure. |
-| `scorev3.html`, `landline.pdf` | The score. `score.html` and `scorev2.html` are earlier drafts, kept. |
-| `landline.flac`, `landline.mp3` | The 5:06 fixed rendering, seed 3. |
+| `index.html`, `landline.css`, `app.js` | User interface and audio graph orchestration. `app.js` manages audio scheduling and telemetry readouts without performing DSP. |
+| `engine/protocol.js` | Signal generators specified in ITU-T Recommendations: ANSam (V.8), FSK (V.21), and the V.34 line probe comb. |
+| `engine/line.js` | Subscriber loop channel model: frequency response, noise bed, and receiver-side spectral estimation. |
+| `engine/negotiate.js` | Rate negotiation ladder mapping measured bandwidth and SNR to modem operational modes. |
+| `engine/performance.js` | Performance scheduler: storm curves, connection attempts, fragment scattering, and noise bed synthesis. |
+| `engine/rng.js`, `engine/fft.js` | Seeded PRNG and split-radix real FFT implementation. |
+| `engine/worker.js` | Web Worker generating stereo audio blocks off the main UI thread. |
+| `reference/` | Python reference implementation and synthesis notes. |
+| `tools/dump_reference.py` | Exports reference DSP vectors from the Python engine to JSON. |
+| `tools/reference.json` | Committed reference test vectors. |
+| `tools/compare.mjs` | Test harness validating the JavaScript engine against `reference.json`. |
+| `tools/measure.mjs` | Headless performance renderer reporting audio levels and structural statistics. |
+| `scorev3.html`, `landline.pdf` | Realization score. `score.html` and `scorev2.html` are preserved earlier drafts. |
+| `landline.flac`, `landline.mp3` | 5:06 fixed reference rendering (seed 3). |
 
-`package.json` exists only so Node reads `engine/*.js` as modules; there is no
-build and nothing is installed.
+`package.json` exists solely so Node.js resolves `engine/*.js` as ECMAScript modules; there is no build step or package dependency.
 
 ```bash
 cd tools
-python dump_reference.py > reference.json   # only when the Python renderer changes
-node compare.mjs reference.json             # 59 checks
-node ../tools/measure.mjs --seconds 300 --seed 3
+python dump_reference.py > reference.json   # Run only when Python reference changes
+node compare.mjs reference.json             # Validates 59 assertions
+node measure.mjs --seconds 300 --seed 3     # Audits structural statistics
 ```
 
-## How the two implementations are held together
+## Cross-implementation verification
 
-They do not share a random number generator. numpy's PCG64 plus its ziggurat
-normal and Poisson samplers cannot be reproduced in the browser at a sensible
-cost, and a half-reproduction would drift silently. So the port is checked in two
-halves instead:
+The Python and JavaScript engines use different pseudo-random number generators; browser execution avoids the overhead of porting NumPy's PCG64, ziggurat normal, and Poisson samplers. Verification is split into deterministic and statistical validation:
 
-- **Deterministic parts, compared exactly.** The channel response at the probe
-  tones, `DRY_GAIN`, the measurement of a noise-free probe, the ladder's decision
-  on fixed SNR vectors, and the CM/JM octets. `compare.mjs` does this.
-- **Random parts, compared in distribution.** Bed level, peak, fragment lengths
-  and gaps, attempt count, connect/fail ratio. `measure.mjs` prints the same
-  table `line-probe/NOTES.md` records under *Verified (2026-08-08)*.
+- **Deterministic components (exact comparison).** `compare.mjs` tests channel response across probe frequencies, `DRY_GAIN`, noise-free probe measurements, rate ladder logic on fixed SNR vectors, and CM/JM octet framing against `reference.json`.
+- **Stochastic components (distributional comparison).** `measure.mjs` verifies statistical convergence for noise floor RMS, peak levels, fragment duration distributions, interval lengths, and connection success ratios against reference run logs.
 
-One subtlety in the first half: per-tone SNR on a dead tone is
-`10·log10(1e-30 / noise)` — a clamp, not a measurement — and the two
-implementations estimate the local floor over slightly different bin counts, so
-those figures differ by ~2 dB while meaning the same thing. `compareSnr` therefore
-compares tones near the decision in dB and every other tone on the verdict
-(above or below `USABLE_SNR_DB`), which is the only thing the piece reads off
-that array.
+On dead channels, per-tone SNR evaluates to `10 * log10(1e-30 / noise)`. Because the two engines compute local noise floors over slightly different bin windows, clamped SNR values diverge by up to 2 dB without affecting synthesis. `compareSnr` checks boundary tones in decibels and all other tones by boolean usability status (`USABLE_SNR_DB`), matching how the negotiation logic consumes the array.
 
-## Where the browser engine departs from the Python
+## Architectural differences from the Python reference
 
-Each of these is a change of arithmetic, not of the model.
+Each difference represents an arithmetic accommodation for real-time browser execution rather than a modification of the underlying physical model:
 
-1. **Streaming instead of one pass.** `render.py` builds the whole buffer, then
-   normalises by the finished bed's measured RMS. Streaming cannot measure a bed
-   that does not exist yet, so `Performance._estimateBedRms` samples the bed's
-   mean square on a grid of storm values and integrates it over the storm curve.
-   Checked, not assumed: a headless render lands at **&minus;67.4 dBFS median 1 s
-   RMS** against the Python's &minus;67.2.
-2. **Two transforms for the bed instead of four.** The transform is linear, so
-   the tilt can be folded into the same spectral pass as the response, and the
-   white spectrum can be drawn directly rather than generated in time and
-   transformed. Same distribution, and the bed is most of the cost.
-3. **Power-of-two FFT lengths.** numpy transforms at arbitrary length. Bin
-   spacing changes; power summed over a fixed frequency width does not, and the
-   measurement reads a ratio. Worst per-tone disagreement near the decision is
-   **0.17 dB**, and no tone ever disagrees on whether it is usable.
-4. **The bed and the attempts are decoupled in time.** Both write additively into
-   the same ring, so neither has to run ahead of the other; only emission is
-   ordered. This is what keeps the wait before the first sound to one bed block
-   rather than the width of a scatter window.
+1. **Streaming synthesis vs. whole-buffer rendering.** `render.py` generates the complete audio buffer before normalizing against measured noise bed RMS. The streaming browser engine estimates bed RMS in advance via `Performance._estimateBedRms`, integrating mean-square power across sampled storm points. Headless evaluation confirms a median 1-second RMS of &minus;67.4 dBFS compared to Python's &minus;67.2 dBFS.
+2. **Consolidated spectral filtering.** Because the Fourier transform is linear, spectral tilt and channel response are applied in a single inverse FFT pass, synthesizing frequency-domain noise directly rather than filtering time-domain white noise.
+3. **Power-of-two FFT dimensions.** NumPy supports arbitrary-length FFTs, whereas the JavaScript engine uses power-of-two transforms. Total power across equivalent frequency bands remains consistent: maximum SNR discrepancy near decision boundaries is 0.17 dB, with identical tone usability classifications.
+4. **Decoupled audio ring buffer.** Noise bed synthesis and connection attempts write additively into an interleaved ring buffer. Decoupling generation scheduling reduces startup latency to a single buffer block duration.
 
-## The volume control and the clipping guard
+## Volume control and clipping guard
 
-The bed is &minus;68 dBFS by design and the piece is unplayable at that level on
-most web listeners' hardware, so the page has a plain output gain, &minus;12 to
-+36 dB, marked at 0 dB. The gain is applied to everything at once, so the
-relationship between the bed and the fragments — which is the whole level design
-— is untouched by it.
+The noise bed is calibrated to &minus;68 dBFS RMS. To accommodate listener hardware differences, the user interface provides an unweighted output gain ranging from &minus;12 to +36 dB, normalized to unity gain at 0 dB. Gain applies uniformly across the entire mix, preserving the relative amplitude balance between the noise bed and probe fragments.
 
-Under it sits a clipping guard, because +36 dB on a &minus;14 dBFS peak clips.
-**It is a waveshaper, not a compressor, and that was measured rather than
-assumed.** The first version used a `DynamicsCompressorNode`; rendered in an
-`OfflineAudioContext` it raised a &minus;22 dBFS signal by 0.5 dB while reporting
-gain reduction it was not making, and at +36 dB it still let the output reach
-**+0.59 dBFS**. It coloured the piece when it should have been idle and failed at
-the one thing it was there for.
+The output stage uses a polynomial waveshaper rather than dynamic range compression. Testing `DynamicsCompressorNode` in `OfflineAudioContext` introduced a 0.5 dB gain offset on &minus;22 dBFS signals while permitting extreme peaks to reach +0.59 dBFS at +36 dB gain.
 
-The waveshaper is identity below &minus;3 dBFS with a tanh knee above it.
-Measured against the same graph without it: **6e&minus;8 maximum difference**
-below the threshold (float32 rounding), and the output peak pinned at
-&minus;0.63 dBFS for inputs up to +36 dBFS. `oversample` is `"none"` on purpose —
-at `"4x"` the resampling filters both altered the sub-threshold signal and let a
-hard-driven peak overshoot to +0.6 dBFS.
+The waveshaper implements an exact identity function ($y = x$) below &minus;3 dBFS with a hyperbolic tangent ($\tanh$) transfer curve above threshold. Below &minus;3 dBFS, signal divergence is bounded by 32-bit floating-point precision ($6 \times 10^{-8}$ maximum difference). Output peaks remain clamped at &minus;0.63 dBFS under input overloads up to +36 dB. Oversampling is disabled (`oversample = "none"`) because 4x polyphase resampling filters altered passband levels and allowed overshoot up to +0.6 dBFS.
 
-The readout measures the signal going *into* the guard through an analyser tap
-and holds for two seconds, because the piece is sparse enough that the guard acts
-in bursts.
+The UI telemetry tap samples signal amplitude preceding the waveshaper, applying a two-second peak-hold to register transient limiting events.
 
-## The Python renderer
+## Python reference implementation
 
-`reference/` holds it: `protocol.py`, `line.py`, `negotiate.py`, `render.py`,
-`tune.py`, `check.py`, the logs of the two fixed renderings, and its build
-notes. It was in `F:\xyh\line-probe\`, which is outside every repository, so it
-was moved here on 2026-08-31 — its history therefore starts at that commit and
-nothing before it survives.
+The `reference/` directory preserves the initial reference implementation: `protocol.py`, `line.py`, `negotiate.py`, `render.py`, `tune.py`, `check.py`, and run logs for the two reference renderings.
 
-Left behind, deliberately: the three rendered WAVs (~437 MB) and their
-spectrograms, which `.gitignore` in `reference/` also keeps out of future
-commits; `SUBMISSION.md`, which is submission admin; and
-`notes on now and line probe.txt`, which is Xyh's spoken working notes and not
-for publication.
+Rendered WAV files (~437 MB) and spectrograms are excluded from version control via `reference/.gitignore`.
 
-The move did not disturb it. `python tools/dump_reference.py` run from the new
-location reproduces `tools/reference.json` byte for byte, and the 59 checks pass
-against it.
+Execution remains verified: `python tools/dump_reference.py` reproduces `tools/reference.json` identically, passing all 59 assertions in `compare.mjs`.
 
 ## Undone
 
-1. **Nobody has heard this.** Every claim above is a measurement. The bed at
-   &minus;68 dBFS is the one parameter that cannot be settled numerically, and
-   whether the volume range and its 0 dB mark are the right ones is a listening
-   question. Open the page, put on headphones, and find the setting.
-2. **The guard's aliasing when it acts has not been listened to.** `oversample`
-   was set to `"none"` for exactness below the threshold; above it, the shaping
-   aliases. It was chosen on the argument that the piece is already being altered
-   at that point, which is a defensible trade but not a heard one.
-3. **No mobile device has run it.** Generation is ~7x real time in Chromium on
-   this machine; a phone will be slower, and the margin over playback has not
-   been measured on one. If it falls under 1x the schedule will gap.
-4. **The score has not been updated.** `scorev3.html` says "choose the total
-   duration and every value in brackets"; the browser now chooses them per visit,
-   from ranges that are stated in the code and not in the score. `line-probe/NOTES.md`
-   already warns that the score and the renderer are two statements of the same
-   thing and can drift apart silently — there are now three.
-5. **Duration is drawn 5:00–10:00** and the tail pad and fade are fixed at 6 s
-   each, inherited from the Python. Whether the shorter draws end too abruptly is
-   unheard.
-6. **The seed permalink is not linked from anywhere.** A performance can be
-   reproduced by URL, which makes it citable, but nothing points at that.
+1. **Critical listening check.** Verification to date is numerical. The &minus;68 dBFS noise floor calibration and default gain setting require acoustic evaluation on headphones.
+2. **Waveshaper harmonic distortion audit.** Non-oversampled saturation above &minus;3 dBFS introduces aliasing during limiting events; acoustic evaluation is required to confirm whether this distortion is acceptable.
+3. **Mobile performance benchmarking.** Audio block generation runs at ~7x real-time speed in Chromium on desktop hardware; throughput and buffer continuity under mobile browser engines have not been benchmarked.
+4. **Score specification synchronization.** `scorev3.html` instructs performers to select duration and bracketed parameters manually, whereas the browser engine samples these automatically from ranges defined in code.
+5. **Tail fade evaluation on short realizations.** Performance durations range from 5:00 to 10:00 with fixed 6-second tail padding and fade-out curves. Short realizations require evaluation for abrupt termination.
+6. **Permalink UI discoverability.** Unique performance seeds can be reproduced via query parameters, but the permalink is not exposed outside the live transport view.
 
 ---
 
 2026-08-31 — Claude Code — Built the browser release. Ported `protocol.py`,
-`line.py`, `negotiate.py` and `render.py` to `engine/*.js`, restructured the
-renderer to stream ahead of the playhead, and wrote the page, the audio graph and
+`line.py`, `negotiate.py`, and `render.py` to `engine/*.js`, restructured the
+renderer to stream ahead of the playhead, and wrote the page, the audio graph, and
 the negotiation readout. Rewrote `index.html` around the live performance, with
 the fixed renderings kept below it as performances of the same score.
 

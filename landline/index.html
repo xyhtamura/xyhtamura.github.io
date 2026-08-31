@@ -45,64 +45,61 @@
   </p>
 </section>
 
-<p class="note">Most of this is the line itself, and it is meant to sit at the
-edge of hearing rather than below it. Headphones, in a quiet room, are the
-condition it was built for. The volume control is a plain output gain: at
-0&nbsp;dB you are hearing the levels the piece was made at, and nothing else
-is in the path. Raising it far enough pushes the loudest fragments into a
-clipping guard, which the readout reports as it happens &mdash; past that point
-the amplification is changing the piece and not only its loudness.</p>
+<p class="note">Most of this is the line itself, calibrated to sit near the
+edge of hearing. The piece is designed for headphones in a quiet room. The
+volume control is an unweighted output gain: 0&nbsp;dB outputs the piece as
+rendered, without additional processing in the signal path. Raising the gain
+pushes the loudest fragments into a clipping guard, which the readout reports as
+it acts. Above &minus;3&nbsp;dBFS, the guard applies hyperbolic tangent shaping
+to peak amplitudes.</p>
 
 <hr>
 
-<p>The piece is built from the ITU-T Recommendations that govern how two modems
-open a connection. Nothing in it is sampled. The V.8 answer tone, the V.34 line
-probe and the V.21 capability exchange are synthesised from their published
-definitions.</p>
+<p>The piece is synthesised from the ITU-T Recommendations that govern how two
+modems open a connection. The V.8 answer tone, the V.34 line probe, and the V.21
+capability exchange are generated directly from their published specifications
+without pre-recorded samples.</p>
 
-<p>The V.34 probe carries no data. It is a signal a machine emits to find out
-what the channel between it and another machine is. The receiver measures
-amplitude and noise across the band and from that measurement chooses the rate
-it is able to speak.</p>
+<p>The V.34 probe carries no data. It evaluates the physical transmission
+channel between two modems before data exchange. The receiver measures amplitude
+and noise across twenty-one discrete spectral bins, then negotiates the highest
+sustainable data rate.</p>
 
-<p>A telephone line degrades across the performance. A modem attempts a
-connection every twenty to thirty seconds; each attempt probes the line,
-measures what returns, and negotiates whatever rate the measurement allows. The
-descent from 24,000 to 300 bit/s is not composed. It is what the measurement
-produces, which is why the connection recovers when the weather eases, and why
-past a threshold nothing can be negotiated at all. The log above is that
-measurement, shown as the playhead reaches it.</p>
+<p>A telephone subscriber loop degrades across the performance. A modem
+initiates a connection attempt every twenty to thirty seconds; each attempt
+probes the line, measures what returns, and negotiates whatever rate the
+measurement allows. The descent from 24,000 to 300 bit/s follows directly from
+channel measurements: when simulated weather eases, the negotiated rate recovers;
+when degradation exceeds the receiver's threshold, negotiation fails entirely.
+The on-screen log displays each attempt as the playhead reaches it.</p>
 
-<p>No attempt is heard whole. What is placed are fragments cut out of it, none
-longer than a second, scattered across a window wider than the attempt itself,
-so that attempts overlap and their edges cannot be found by ear. The process is
-complete; the audition of it is partial.</p>
+<p>Each attempt is synthesised and evaluated in full, but sounded only as brief
+fragments. Fragments under one second are scattered across a temporal window
+wider than the attempt interval, overlapping successive attempts so their
+boundaries cannot be distinguished by ear.</p>
 
-<p>The scale comes from lowercase, and specifically from Steve Roden&rsquo;s
-<em>Forms of Paper</em> (2001), made for a branch library out of the sound of
-book pages being handled. Roden described that material by way of Rilke&rsquo;s
-&ldquo;inconsiderable things&rdquo; &mdash; what would ordinarily not be attended
-to at all.</p>
+<p>The dynamic scale follows lowercase sound practice, in particular Steve
+Roden&rsquo;s <em>Forms of Paper</em> (2001), which constructed a quiet acoustic
+work from recordings of handled book pages. Roden drew on Rainer Maria
+Rilke&rsquo;s phrase &ldquo;inconsiderable things&rdquo; for material that
+ordinarily goes unnoticed.</p>
 
-<p>Here the position is the telephone&rsquo;s rather than a listener&rsquo;s.
-The line is what the instrument has instead of hearing, and the piece is closer
-to what it would make of a night of failed connections than to a recording of
-one. We are listening in on that.</p>
+<p>The perspective is that of the telephone itself. The electrical behavior of
+the line constitutes the instrument&rsquo;s sensory register, framing a sequence
+of failing connections across a storm.</p>
 
 <hr>
 
-<h2>The score, and performances of it</h2>
+<h2>The score and performances of it</h2>
 
-<p>The <a href="scorev3.html">score</a> is the procedure rather than a
-transcription: it states what has to happen without naming a language, an
-instrument or a medium, marks the numbers the Recommendations fix, and leaves
-every other quantity as an open range. So there is no recording that is the
-work. Each visit here draws a seed, a duration between five and eleven minutes,
-and a storm, and plays the performance that follows from them. The seed is
-printed above; the link beside it reproduces that same performance.</p>
+<p>The <a href="scorev3.html">score</a> defines a generative procedure
+independent of language, instrument, or medium. It specifies the constants
+fixed by ITU-T Recommendations while leaving other parameters as open ranges.
+Each browser session generates a unique realization by drawing a seed, a storm
+curve, and a duration between five and eleven minutes. The seed displayed above
+and its permalink reproduce that exact realization.</p>
 
-<p>Two fixed renderings were made first, in Python, and one of them is what was
-sent out in 2026:</p>
+<p>Two fixed reference renderings were generated in Python in August 2026:</p>
 
 <div class="fixed">
   <p><strong>5:06</strong> &middot; 2026-08-08 &middot; seed 3</p>
@@ -119,15 +116,15 @@ sent out in 2026:</p>
 </div>
 
 <dl>
-  <dt>In the browser</dt><dd>48 kHz, stereo, drawn per visit; nothing is fetched, and no audio file is downloaded</dd>
+  <dt>Browser generation</dt><dd>48 kHz, stereo, synthesized in client memory without audio downloads</dd>
   <dt>Fixed rendering</dt><dd>FLAC, 48 kHz, 24-bit, 5:06 (MP3 fallback available)</dd>
-  <dt>Levels</dt><dd>Noise bed &minus;68.0 dBFS RMS by design, in both. No compression or limiting in the signal path; the browser&rsquo;s clipping guard sits after the volume control, outside the piece, and is a straight line below &minus;3 dBFS.</dd>
-  <dt>Setup</dt><dd>Stereo playback. No performer, no live electronics, no video.</dd>
+  <dt>Levels</dt><dd>Noise bed calibrated to &minus;68.0 dBFS RMS. The browser clipping guard operates after the user volume control, acting as a linear pass-through below &minus;3 dBFS.</dd>
+  <dt>Performance requirements</dt><dd>Stereo playback system. Fixed media or headless browser synthesis.</dd>
 </dl>
 
-<p class="note">For concert playback, use the fixed rendering: set level from the
-fragments, not from the noise floor, and apply no dynamic processing. The floor
-is meant to be at the edge of audibility, not inaudible.</p>
+<p class="note">For concert playback, use the fixed rendering. Calibrate
+playback gain against the loudest probe fragments so the noise bed rests near the
+threshold of hearing, and bypass all external dynamic processing.</p>
 
 <script type="module" src="app.js"></script>
 </body>

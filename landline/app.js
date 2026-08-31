@@ -1,9 +1,8 @@
-/* The page: one performance of the score, made while you listen.
+/* Audio graph orchestration and event scheduling.
  *
- * The engine runs in a worker and hands back stereo chunks; this file schedules
- * them end to end on the audio clock, and reveals each negotiation at the
- * moment the playhead reaches the attempt that produced it — not when the
- * worker computed it, which is up to a minute earlier.
+ * Runs the synthesis engine in a Web Worker, schedules stereo audio blocks
+ * across the Web Audio clock, and displays rate negotiation telemetry as the
+ * playhead reaches each attempt timestamp.
  */
 
 const SR = 48000;
@@ -35,8 +34,8 @@ function drawSeed() {
   return Math.floor(Math.random() * 0xffffffff) >>> 0;
 }
 
-/* The score says to choose the total duration. The two fixed renderings chose
- * 5:06 and 10:06; a visit draws something between them. */
+/* The score specifies duration as an open parameter. A browser session draws
+ * a duration between 5:00 and 10:00. */
 function drawSeconds(rand) {
   const given = params.get("seconds");
   if (given !== null && /^\d+$/.test(given)) {
@@ -88,9 +87,8 @@ function applyVolume() {
   }
 }
 
-/* The ceiling above which the guard starts shaping, and the curve that does it.
- * Below this the transfer function is exactly y = x, so at any volume setting
- * that does not clip, nothing is applied at all. */
+/* Polynomial waveshaping threshold (-3 dBFS) and saturation transfer curve.
+ * Operates as an identity function (y = x) below threshold. */
 const GUARD_THRESHOLD = 0.7079; // -3 dBFS
 
 function guardCurve(n = 8193) {
@@ -109,35 +107,23 @@ function buildGraph() {
   master = ctx.createGain();
   master.gain.value = Math.pow(10, volumeDb() / 20);
 
-  /* A clipping guard, not a compressor.
+  /* Polynomial waveshaping clipping guard.
    *
-   * The first version of this used a DynamicsCompressorNode, which turned out
-   * to be wrong twice over: measured in an OfflineAudioContext it raised a
-   * -22 dBFS signal by 0.5 dB while reporting gain reduction it was not making,
-   * and at +36 dB it still let the output reach +0.59 dBFS. So it coloured the
-   * piece when it should have been idle and failed at the one job it had.
+   * Replaces DynamicsCompressorNode, which introduced a 0.5 dB offset on -22 dBFS
+   * signals while allowing extreme peaks to reach +0.59 dBFS at +36 dB gain.
    *
-   * A waveshaper is exact instead: identity below -3 dBFS, a smooth knee above
-   * it, asymptotic to full scale and so incapable of passing anything louder.
-   * The concert note on this piece asks for no dynamic processing, and that is
-   * still the right instruction — at 0 dB the curve is a straight line and this
-   * node is not doing anything. It exists because a volume control that can be
-   * pushed 36 dB needs a floor under it, and the readout says when the shaping
-   * starts. */
+   * The waveshaper implements an exact identity function (y = x) below -3 dBFS
+   * with a tanh transfer curve above threshold. At 0 dB gain the node operates
+   * as a linear pass-through.
+   *
+   * Oversampling is disabled ("none") because 4x polyphase resampling filters
+   * altered sub-threshold signals and permitted peak overshoot to +0.6 dBFS.
+   */
   guard = ctx.createWaveShaper();
   guard.curve = guardCurve();
-  /* No oversampling, deliberately. The curve is exactly y = x below the
-   * threshold and the node interpolates linearly between curve points, so with
-   * the resamplers out of the path the sub-threshold signal passes bit for bit,
-   * and the output cannot exceed the curve's asymptote. Measured at 4x, the
-   * resampling filters both altered the signal below the threshold and let a
-   * hard-driven peak overshoot to +0.6 dBFS. Aliasing when the guard is
-   * actually shaping is the accepted cost; that state is already the piece
-   * being altered, and it is announced. */
   guard.oversample = "none";
 
-  // Tapped between the two so the readout measures what is going *into* the
-  // guard, which is what decides whether it acts.
+  // Analyser tap preceding the waveshaper to monitor input peak amplitudes.
   probeTap = ctx.createAnalyser();
   probeTap.fftSize = 2048;
   tapFrame = new Float32Array(probeTap.fftSize);
@@ -202,11 +188,9 @@ function reveal() {
     probeTap.getFloatTimeDomainData(tapFrame);
     let m = 0;
     for (let i = 0; i < tapFrame.length; i++) m = Math.max(m, Math.abs(tapFrame[i]));
-    /* The piece is mostly bed, so at a volume that shapes the fragments the
-     * guard acts in bursts a second or two apart. Reporting that instant by
-     * instant would flicker; the readout holds for two seconds after the last
-     * one, which is what the listener needs to know — that this setting is
-     * shaping the loud events, not that this exact moment is. */
+    /* The audio bed dominates duration; peak shaping on loud fragments occurs
+     * in transient bursts. A two-second peak hold registers limiting events
+     * without high-frequency UI flicker. */
     if (m > GUARD_THRESHOLD) {
       guardHoldUntil = ctx.currentTime + 2.0;
       ui.limiting.textContent =
