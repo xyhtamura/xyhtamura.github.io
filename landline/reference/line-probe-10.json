@@ -1,0 +1,1432 @@
+{
+  "title": "Line Probe",
+  "duration_s": 606.0,
+  "sample_rate": 48000,
+  "channels": 2,
+  "bit_depth": 24,
+  "seed": 3,
+  "storm_ceiling": 3.06,
+  "bed_dbfs": -68.0,
+  "peak_dbfs": -19.01,
+  "attempts": 28,
+  "fragments": 187,
+  "log": [
+    {
+      "attempt": 1,
+      "negotiated_at_s": 11.71,
+      "storm": 0.032,
+      "scatter_window_s": 22.1,
+      "fragments": [
+        {
+          "source": "probe",
+          "at_s": 12.41,
+          "len_s": 0.04
+        },
+        {
+          "source": "cm",
+          "at_s": 13.05,
+          "len_s": 0.045
+        },
+        {
+          "source": "jm",
+          "at_s": 22.46,
+          "len_s": 0.24
+        },
+        {
+          "source": "jm",
+          "at_s": 23.4,
+          "len_s": 0.24
+        },
+        {
+          "source": "data",
+          "at_s": 30.49,
+          "len_s": 0.667
+        },
+        {
+          "source": "ansam",
+          "at_s": 32.44,
+          "len_s": 0.284
+        },
+        {
+          "source": "cm",
+          "at_s": 32.98,
+          "len_s": 0.24
+        },
+        {
+          "source": "probe",
+          "at_s": 33.25,
+          "len_s": 0.415
+        }
+      ],
+      "result": {
+        "mode": "V.34 24000",
+        "bit_rate": 24000,
+        "symbol_rate": 3000,
+        "carrier_hz": 1800,
+        "bits_per_symbol": 8.0,
+        "low_hz": 150.0,
+        "high_hz": 3750.0,
+        "bandwidth_hz": 3150.0,
+        "mean_snr_db": 29.43
+      }
+    },
+    {
+      "attempt": 2,
+      "negotiated_at_s": 25.75,
+      "storm": 0.085,
+      "scatter_window_s": 39.3,
+      "fragments": [
+        {
+          "source": "probe",
+          "at_s": 20.36,
+          "len_s": 0.828
+        },
+        {
+          "source": "jm",
+          "at_s": 22.6,
+          "len_s": 0.092
+        },
+        {
+          "source": "data",
+          "at_s": 23.82,
+          "len_s": 0.041
+        },
+        {
+          "source": "jm",
+          "at_s": 38.96,
+          "len_s": 0.064
+        },
+        {
+          "source": "ansam",
+          "at_s": 42.83,
+          "len_s": 0.231
+        },
+        {
+          "source": "data",
+          "at_s": 49.44,
+          "len_s": 0.057
+        },
+        {
+          "source": "ansam",
+          "at_s": 56.66,
+          "len_s": 0.55
+        },
+        {
+          "source": "probe",
+          "at_s": 63.76,
+          "len_s": 0.828
+        }
+      ],
+      "result": {
+        "mode": "V.34 24000",
+        "bit_rate": 24000,
+        "symbol_rate": 3000,
+        "carrier_hz": 1800,
+        "bits_per_symbol": 8.0,
+        "low_hz": 150.0,
+        "high_hz": 3750.0,
+        "bandwidth_hz": 3150.0,
+        "mean_snr_db": 29.7
+      }
+    },
+    {
+      "attempt": 3,
+      "negotiated_at_s": 44.1,
+      "storm": 0.041,
+      "scatter_window_s": 46.1,
+      "fragments": [
+        {
+          "source": "data",
+          "at_s": 52.48,
+          "len_s": 0.144
+        },
+        {
+          "source": "data",
+          "at_s": 54.96,
+          "len_s": 0.439
+        },
+        {
+          "source": "probe",
+          "at_s": 66.59,
+          "len_s": 0.045
+        },
+        {
+          "source": "ansam",
+          "at_s": 71.29,
+          "len_s": 0.244
+        },
+        {
+          "source": "data",
+          "at_s": 74.23,
+          "len_s": 0.062
+        },
+        {
+          "source": "data",
+          "at_s": 81.59,
+          "len_s": 0.063
+        },
+        {
+          "source": "ansam",
+          "at_s": 83.05,
+          "len_s": 0.065
+        }
+      ],
+      "result": {
+        "mode": "V.34 24000",
+        "bit_rate": 24000,
+        "symbol_rate": 3000,
+        "carrier_hz": 1800,
+        "bits_per_symbol": 8.0,
+        "low_hz": 150.0,
+        "high_hz": 3750.0,
+        "bandwidth_hz": 3150.0,
+        "mean_snr_db": 28.26
+      }
+    },
+    {
+      "attempt": 4,
+      "negotiated_at_s": 69.18,
+      "storm": 0.024,
+      "scatter_window_s": 31.8,
+      "fragments": [
+        {
+          "source": "cm",
+          "at_s": 74.32,
+          "len_s": 0.24
+        },
+        {
+          "source": "ansam",
+          "at_s": 78.86,
+          "len_s": 0.413
+        },
+        {
+          "source": "data",
+          "at_s": 80.6,
+          "len_s": 0.375
+        },
+        {
+          "source": "probe",
+          "at_s": 82.29,
+          "len_s": 0.354
+        },
+        {
+          "source": "ansam",
+          "at_s": 91.11,
+          "len_s": 0.436
+        },
+        {
+          "source": "cm",
+          "at_s": 94.74,
+          "len_s": 0.092
+        },
+        {
+          "source": "probe",
+          "at_s": 100.17,
+          "len_s": 0.569
+        }
+      ],
+      "result": {
+        "mode": "V.34 24000",
+        "bit_rate": 24000,
+        "symbol_rate": 3000,
+        "carrier_hz": 1800,
+        "bits_per_symbol": 8.0,
+        "low_hz": 150.0,
+        "high_hz": 3750.0,
+        "bandwidth_hz": 3150.0,
+        "mean_snr_db": 28.82
+      }
+    },
+    {
+      "attempt": 5,
+      "negotiated_at_s": 92.58,
+      "storm": 0.099,
+      "scatter_window_s": 36.2,
+      "fragments": [
+        {
+          "source": "jm",
+          "at_s": 93.22,
+          "len_s": 0.24
+        },
+        {
+          "source": "probe",
+          "at_s": 98.91,
+          "len_s": 0.049
+        },
+        {
+          "source": "data",
+          "at_s": 113.57,
+          "len_s": 0.058
+        },
+        {
+          "source": "probe",
+          "at_s": 124.47,
+          "len_s": 0.328
+        },
+        {
+          "source": "probe",
+          "at_s": 126.54,
+          "len_s": 0.765
+        },
+        {
+          "source": "ansam",
+          "at_s": 128.04,
+          "len_s": 0.335
+        }
+      ],
+      "result": {
+        "mode": "V.34 24000",
+        "bit_rate": 24000,
+        "symbol_rate": 3000,
+        "carrier_hz": 1800,
+        "bits_per_symbol": 8.0,
+        "low_hz": 150.0,
+        "high_hz": 3750.0,
+        "bandwidth_hz": 3150.0,
+        "mean_snr_db": 28.29
+      }
+    },
+    {
+      "attempt": 6,
+      "negotiated_at_s": 109.78,
+      "storm": 0.183,
+      "scatter_window_s": 37.7,
+      "fragments": [
+        {
+          "source": "data",
+          "at_s": 116.42,
+          "len_s": 0.089
+        },
+        {
+          "source": "data",
+          "at_s": 117.49,
+          "len_s": 0.414
+        },
+        {
+          "source": "data",
+          "at_s": 118.6,
+          "len_s": 0.152
+        },
+        {
+          "source": "probe",
+          "at_s": 119.14,
+          "len_s": 0.753
+        },
+        {
+          "source": "probe",
+          "at_s": 120.48,
+          "len_s": 0.182
+        },
+        {
+          "source": "data",
+          "at_s": 124.23,
+          "len_s": 0.134
+        },
+        {
+          "source": "jm",
+          "at_s": 129.05,
+          "len_s": 0.24
+        },
+        {
+          "source": "jm",
+          "at_s": 132.44,
+          "len_s": 0.24
+        },
+        {
+          "source": "data",
+          "at_s": 136.81,
+          "len_s": 0.067
+        },
+        {
+          "source": "probe",
+          "at_s": 137.61,
+          "len_s": 0.18
+        },
+        {
+          "source": "ansam",
+          "at_s": 141.46,
+          "len_s": 0.061
+        }
+      ],
+      "result": {
+        "mode": "V.34 24000",
+        "bit_rate": 24000,
+        "symbol_rate": 3000,
+        "carrier_hz": 1800,
+        "bits_per_symbol": 8.0,
+        "low_hz": 150.0,
+        "high_hz": 3750.0,
+        "bandwidth_hz": 3150.0,
+        "mean_snr_db": 27.89
+      }
+    },
+    {
+      "attempt": 7,
+      "negotiated_at_s": 131.81,
+      "storm": 0.248,
+      "scatter_window_s": 27.0,
+      "fragments": [
+        {
+          "source": "cm",
+          "at_s": 129.88,
+          "len_s": 0.062
+        },
+        {
+          "source": "cm",
+          "at_s": 131.12,
+          "len_s": 0.059
+        },
+        {
+          "source": "probe",
+          "at_s": 142.41,
+          "len_s": 0.286
+        },
+        {
+          "source": "data",
+          "at_s": 146.56,
+          "len_s": 0.146
+        },
+        {
+          "source": "jm",
+          "at_s": 154.69,
+          "len_s": 0.049
+        },
+        {
+          "source": "ansam",
+          "at_s": 155.35,
+          "len_s": 0.521
+        }
+      ],
+      "result": {
+        "mode": "V.34 24000",
+        "bit_rate": 24000,
+        "symbol_rate": 3000,
+        "carrier_hz": 1800,
+        "bits_per_symbol": 8.0,
+        "low_hz": 150.0,
+        "high_hz": 3750.0,
+        "bandwidth_hz": 3150.0,
+        "mean_snr_db": 28.2
+      }
+    },
+    {
+      "attempt": 8,
+      "negotiated_at_s": 145.37,
+      "storm": 0.198,
+      "scatter_window_s": 43.8,
+      "fragments": [
+        {
+          "source": "probe",
+          "at_s": 141.03,
+          "len_s": 0.154
+        },
+        {
+          "source": "data",
+          "at_s": 141.7,
+          "len_s": 0.683
+        },
+        {
+          "source": "data",
+          "at_s": 143.12,
+          "len_s": 0.322
+        },
+        {
+          "source": "probe",
+          "at_s": 144.34,
+          "len_s": 0.47
+        },
+        {
+          "source": "probe",
+          "at_s": 148.18,
+          "len_s": 0.571
+        },
+        {
+          "source": "jm",
+          "at_s": 152.4,
+          "len_s": 0.052
+        },
+        {
+          "source": "probe",
+          "at_s": 154.04,
+          "len_s": 0.492
+        },
+        {
+          "source": "probe",
+          "at_s": 157.89,
+          "len_s": 0.116
+        },
+        {
+          "source": "ansam",
+          "at_s": 158.85,
+          "len_s": 0.105
+        },
+        {
+          "source": "probe",
+          "at_s": 170.08,
+          "len_s": 0.303
+        },
+        {
+          "source": "data",
+          "at_s": 177.27,
+          "len_s": 0.605
+        }
+      ],
+      "result": {
+        "mode": "V.34 24000",
+        "bit_rate": 24000,
+        "symbol_rate": 3000,
+        "carrier_hz": 1800,
+        "bits_per_symbol": 8.0,
+        "low_hz": 150.0,
+        "high_hz": 3750.0,
+        "bandwidth_hz": 3150.0,
+        "mean_snr_db": 28.42
+      }
+    },
+    {
+      "attempt": 9,
+      "negotiated_at_s": 174.88,
+      "storm": 0.431,
+      "scatter_window_s": 49.8,
+      "fragments": [
+        {
+          "source": "jm",
+          "at_s": 179.55,
+          "len_s": 0.052
+        },
+        {
+          "source": "data",
+          "at_s": 187.38,
+          "len_s": 0.168
+        },
+        {
+          "source": "ansam",
+          "at_s": 199.09,
+          "len_s": 0.216
+        },
+        {
+          "source": "data",
+          "at_s": 204.56,
+          "len_s": 0.364
+        },
+        {
+          "source": "probe",
+          "at_s": 208.94,
+          "len_s": 0.061
+        },
+        {
+          "source": "ansam",
+          "at_s": 222.6,
+          "len_s": 0.344
+        },
+        {
+          "source": "ansam",
+          "at_s": 222.62,
+          "len_s": 0.066
+        },
+        {
+          "source": "probe",
+          "at_s": 222.89,
+          "len_s": 0.548
+        }
+      ],
+      "result": {
+        "mode": "V.34 24000",
+        "bit_rate": 24000,
+        "symbol_rate": 3000,
+        "carrier_hz": 1800,
+        "bits_per_symbol": 8.0,
+        "low_hz": 150.0,
+        "high_hz": 3750.0,
+        "bandwidth_hz": 3150.0,
+        "mean_snr_db": 28.54
+      }
+    },
+    {
+      "attempt": 10,
+      "negotiated_at_s": 204.83,
+      "storm": 0.379,
+      "scatter_window_s": 50.5,
+      "fragments": [
+        {
+          "source": "ansam",
+          "at_s": 197.4,
+          "len_s": 0.076
+        },
+        {
+          "source": "ansam",
+          "at_s": 209.49,
+          "len_s": 0.195
+        },
+        {
+          "source": "ansam",
+          "at_s": 218.34,
+          "len_s": 0.601
+        },
+        {
+          "source": "data",
+          "at_s": 219.58,
+          "len_s": 0.324
+        },
+        {
+          "source": "probe",
+          "at_s": 236.98,
+          "len_s": 0.05
+        },
+        {
+          "source": "ansam",
+          "at_s": 238.5,
+          "len_s": 0.038
+        }
+      ],
+      "result": {
+        "mode": "V.34 24000",
+        "bit_rate": 24000,
+        "symbol_rate": 3000,
+        "carrier_hz": 1800,
+        "bits_per_symbol": 8.0,
+        "low_hz": 150.0,
+        "high_hz": 3750.0,
+        "bandwidth_hz": 3150.0,
+        "mean_snr_db": 28.08
+      }
+    },
+    {
+      "attempt": 11,
+      "negotiated_at_s": 234.07,
+      "storm": 0.427,
+      "scatter_window_s": 25.8,
+      "fragments": [
+        {
+          "source": "probe",
+          "at_s": 236.2,
+          "len_s": 0.224
+        },
+        {
+          "source": "jm",
+          "at_s": 239.47,
+          "len_s": 0.24
+        },
+        {
+          "source": "data",
+          "at_s": 240.32,
+          "len_s": 0.039
+        },
+        {
+          "source": "cm",
+          "at_s": 245.12,
+          "len_s": 0.24
+        },
+        {
+          "source": "probe",
+          "at_s": 246.33,
+          "len_s": 0.064
+        },
+        {
+          "source": "cm",
+          "at_s": 247.77,
+          "len_s": 0.24
+        },
+        {
+          "source": "jm",
+          "at_s": 250.61,
+          "len_s": 0.121
+        },
+        {
+          "source": "ansam",
+          "at_s": 251.18,
+          "len_s": 0.863
+        },
+        {
+          "source": "data",
+          "at_s": 256.72,
+          "len_s": 0.314
+        },
+        {
+          "source": "data",
+          "at_s": 258.54,
+          "len_s": 0.73
+        },
+        {
+          "source": "probe",
+          "at_s": 259.41,
+          "len_s": 0.169
+        }
+      ],
+      "result": {
+        "mode": "V.34 24000",
+        "bit_rate": 24000,
+        "symbol_rate": 3000,
+        "carrier_hz": 1800,
+        "bits_per_symbol": 8.0,
+        "low_hz": 150.0,
+        "high_hz": 3750.0,
+        "bandwidth_hz": 3150.0,
+        "mean_snr_db": 28.44
+      }
+    },
+    {
+      "attempt": 12,
+      "negotiated_at_s": 263.94,
+      "storm": 0.734,
+      "scatter_window_s": 34.6,
+      "fragments": [
+        {
+          "source": "data",
+          "at_s": 261.45,
+          "len_s": 0.038
+        },
+        {
+          "source": "probe",
+          "at_s": 266.77,
+          "len_s": 0.2
+        },
+        {
+          "source": "cm",
+          "at_s": 267.1,
+          "len_s": 0.203
+        },
+        {
+          "source": "ansam",
+          "at_s": 269.63,
+          "len_s": 0.072
+        },
+        {
+          "source": "jm",
+          "at_s": 281.9,
+          "len_s": 0.24
+        },
+        {
+          "source": "data",
+          "at_s": 283.57,
+          "len_s": 0.29
+        },
+        {
+          "source": "ansam",
+          "at_s": 285.48,
+          "len_s": 0.068
+        }
+      ],
+      "result": {
+        "mode": "V.34 19200",
+        "bit_rate": 19200,
+        "symbol_rate": 2800,
+        "carrier_hz": 1800,
+        "bits_per_symbol": 6.86,
+        "low_hz": 150.0,
+        "high_hz": 3750.0,
+        "bandwidth_hz": 3150.0,
+        "mean_snr_db": 24.82
+      }
+    },
+    {
+      "attempt": 13,
+      "negotiated_at_s": 275.97,
+      "storm": 0.782,
+      "scatter_window_s": 40.2,
+      "fragments": [
+        {
+          "source": "data",
+          "at_s": 270.17,
+          "len_s": 0.209
+        },
+        {
+          "source": "probe",
+          "at_s": 271.25,
+          "len_s": 0.395
+        },
+        {
+          "source": "cm",
+          "at_s": 272.91,
+          "len_s": 0.129
+        },
+        {
+          "source": "ansam",
+          "at_s": 283.09,
+          "len_s": 0.318
+        },
+        {
+          "source": "cm",
+          "at_s": 293.08,
+          "len_s": 0.07
+        },
+        {
+          "source": "data",
+          "at_s": 293.22,
+          "len_s": 0.047
+        },
+        {
+          "source": "cm",
+          "at_s": 303.31,
+          "len_s": 0.074
+        }
+      ],
+      "result": {
+        "mode": "V.34 19200",
+        "bit_rate": 19200,
+        "symbol_rate": 2800,
+        "carrier_hz": 1800,
+        "bits_per_symbol": 6.86,
+        "low_hz": 150.0,
+        "high_hz": 3750.0,
+        "bandwidth_hz": 3150.0,
+        "mean_snr_db": 24.46
+      }
+    },
+    {
+      "attempt": 14,
+      "negotiated_at_s": 294.1,
+      "storm": 0.737,
+      "scatter_window_s": 45.5,
+      "fragments": [
+        {
+          "source": "data",
+          "at_s": 296.07,
+          "len_s": 0.441
+        },
+        {
+          "source": "jm",
+          "at_s": 297.13,
+          "len_s": 0.106
+        },
+        {
+          "source": "probe",
+          "at_s": 305.05,
+          "len_s": 0.497
+        },
+        {
+          "source": "probe",
+          "at_s": 310.95,
+          "len_s": 0.075
+        },
+        {
+          "source": "ansam",
+          "at_s": 312.0,
+          "len_s": 0.381
+        },
+        {
+          "source": "probe",
+          "at_s": 314.7,
+          "len_s": 0.069
+        },
+        {
+          "source": "ansam",
+          "at_s": 337.61,
+          "len_s": 0.252
+        }
+      ],
+      "result": {
+        "mode": "V.34 19200",
+        "bit_rate": 19200,
+        "symbol_rate": 2800,
+        "carrier_hz": 1800,
+        "bits_per_symbol": 6.86,
+        "low_hz": 150.0,
+        "high_hz": 3750.0,
+        "bandwidth_hz": 3150.0,
+        "mean_snr_db": 24.67
+      }
+    },
+    {
+      "attempt": 15,
+      "negotiated_at_s": 310.97,
+      "storm": 0.783,
+      "scatter_window_s": 42.7,
+      "fragments": [
+        {
+          "source": "probe",
+          "at_s": 312.86,
+          "len_s": 0.144
+        },
+        {
+          "source": "probe",
+          "at_s": 315.55,
+          "len_s": 0.724
+        },
+        {
+          "source": "probe",
+          "at_s": 322.97,
+          "len_s": 0.37
+        },
+        {
+          "source": "probe",
+          "at_s": 339.58,
+          "len_s": 0.068
+        },
+        {
+          "source": "ansam",
+          "at_s": 353.49,
+          "len_s": 0.068
+        }
+      ],
+      "result": {
+        "mode": "V.34 19200",
+        "bit_rate": 19200,
+        "symbol_rate": 2800,
+        "carrier_hz": 1800,
+        "bits_per_symbol": 6.86,
+        "low_hz": 150.0,
+        "high_hz": 3750.0,
+        "bandwidth_hz": 3150.0,
+        "mean_snr_db": 24.49
+      }
+    },
+    {
+      "attempt": 16,
+      "negotiated_at_s": 327.28,
+      "storm": 0.902,
+      "scatter_window_s": 50.7,
+      "fragments": [
+        {
+          "source": "ansam",
+          "at_s": 345.79,
+          "len_s": 0.147
+        },
+        {
+          "source": "probe",
+          "at_s": 348.28,
+          "len_s": 0.271
+        },
+        {
+          "source": "probe",
+          "at_s": 355.36,
+          "len_s": 0.102
+        },
+        {
+          "source": "cm",
+          "at_s": 365.08,
+          "len_s": 0.24
+        },
+        {
+          "source": "cm",
+          "at_s": 369.03,
+          "len_s": 0.142
+        },
+        {
+          "source": "cm",
+          "at_s": 369.86,
+          "len_s": 0.24
+        },
+        {
+          "source": "data",
+          "at_s": 374.73,
+          "len_s": 0.147
+        }
+      ],
+      "result": {
+        "mode": "V.34 14400",
+        "bit_rate": 14400,
+        "symbol_rate": 2743,
+        "carrier_hz": 1800,
+        "bits_per_symbol": 5.25,
+        "low_hz": 150.0,
+        "high_hz": 3750.0,
+        "bandwidth_hz": 3150.0,
+        "mean_snr_db": 21.8
+      }
+    },
+    {
+      "attempt": 17,
+      "negotiated_at_s": 340.52,
+      "storm": 1.023,
+      "scatter_window_s": 51.9,
+      "fragments": [
+        {
+          "source": "data",
+          "at_s": 347.71,
+          "len_s": 0.231
+        },
+        {
+          "source": "probe",
+          "at_s": 353.91,
+          "len_s": 0.039
+        },
+        {
+          "source": "jm",
+          "at_s": 361.49,
+          "len_s": 0.036
+        },
+        {
+          "source": "ansam",
+          "at_s": 364.98,
+          "len_s": 0.097
+        },
+        {
+          "source": "cm",
+          "at_s": 368.2,
+          "len_s": 0.24
+        },
+        {
+          "source": "data",
+          "at_s": 380.27,
+          "len_s": 0.511
+        },
+        {
+          "source": "probe",
+          "at_s": 392.12,
+          "len_s": 0.106
+        }
+      ],
+      "result": {
+        "mode": "V.32bis 14400",
+        "bit_rate": 14400,
+        "symbol_rate": 2400,
+        "carrier_hz": 1800,
+        "bits_per_symbol": 6.0,
+        "low_hz": 150.0,
+        "high_hz": 3750.0,
+        "bandwidth_hz": 3150.0,
+        "mean_snr_db": 18.78
+      }
+    },
+    {
+      "attempt": 18,
+      "negotiated_at_s": 355.85,
+      "storm": 1.123,
+      "scatter_window_s": 20.8,
+      "fragments": [
+        {
+          "source": "data",
+          "at_s": 355.48,
+          "len_s": 0.336
+        },
+        {
+          "source": "jm",
+          "at_s": 356.83,
+          "len_s": 0.042
+        },
+        {
+          "source": "cm",
+          "at_s": 359.44,
+          "len_s": 0.2
+        },
+        {
+          "source": "probe",
+          "at_s": 362.31,
+          "len_s": 0.106
+        },
+        {
+          "source": "cm",
+          "at_s": 365.04,
+          "len_s": 0.134
+        },
+        {
+          "source": "jm",
+          "at_s": 367.99,
+          "len_s": 0.16
+        }
+      ],
+      "result": {
+        "mode": "V.32bis 14400",
+        "bit_rate": 14400,
+        "symbol_rate": 2400,
+        "carrier_hz": 1800,
+        "bits_per_symbol": 6.0,
+        "low_hz": 150.0,
+        "high_hz": 3750.0,
+        "bandwidth_hz": 3000.0,
+        "mean_snr_db": 17.13
+      }
+    },
+    {
+      "attempt": 19,
+      "negotiated_at_s": 376.13,
+      "storm": 1.241,
+      "scatter_window_s": 42.7,
+      "fragments": [
+        {
+          "source": "cm",
+          "at_s": 377.59,
+          "len_s": 0.24
+        },
+        {
+          "source": "jm",
+          "at_s": 394.38,
+          "len_s": 0.094
+        },
+        {
+          "source": "probe",
+          "at_s": 398.03,
+          "len_s": 0.036
+        },
+        {
+          "source": "data",
+          "at_s": 400.09,
+          "len_s": 0.157
+        },
+        {
+          "source": "probe",
+          "at_s": 400.68,
+          "len_s": 0.431
+        },
+        {
+          "source": "probe",
+          "at_s": 406.8,
+          "len_s": 0.579
+        },
+        {
+          "source": "probe",
+          "at_s": 416.45,
+          "len_s": 0.179
+        },
+        {
+          "source": "ansam",
+          "at_s": 417.38,
+          "len_s": 0.151
+        }
+      ],
+      "result": {
+        "mode": "V.32 9600",
+        "bit_rate": 9600,
+        "symbol_rate": 2400,
+        "carrier_hz": 1800,
+        "bits_per_symbol": 4.0,
+        "low_hz": 150.0,
+        "high_hz": 3150.0,
+        "bandwidth_hz": 2250.0,
+        "mean_snr_db": 16.24
+      }
+    },
+    {
+      "attempt": 20,
+      "negotiated_at_s": 390.73,
+      "storm": 1.361,
+      "scatter_window_s": 43.5,
+      "fragments": [
+        {
+          "source": "probe",
+          "at_s": 390.84,
+          "len_s": 0.113
+        },
+        {
+          "source": "ansam",
+          "at_s": 396.18,
+          "len_s": 0.078
+        },
+        {
+          "source": "data",
+          "at_s": 419.0,
+          "len_s": 0.171
+        },
+        {
+          "source": "probe",
+          "at_s": 426.49,
+          "len_s": 0.326
+        },
+        {
+          "source": "data",
+          "at_s": 429.09,
+          "len_s": 0.46
+        }
+      ],
+      "result": {
+        "mode": "V.32 4800",
+        "bit_rate": 4800,
+        "symbol_rate": 2400,
+        "carrier_hz": 1800,
+        "bits_per_symbol": 2.0,
+        "low_hz": 150.0,
+        "high_hz": 2850.0,
+        "bandwidth_hz": 1950.0,
+        "mean_snr_db": 15.13
+      }
+    },
+    {
+      "attempt": 21,
+      "negotiated_at_s": 408.14,
+      "storm": 1.554,
+      "scatter_window_s": 24.7,
+      "fragments": [
+        {
+          "source": "probe",
+          "at_s": 410.18,
+          "len_s": 0.245
+        },
+        {
+          "source": "jm",
+          "at_s": 413.08,
+          "len_s": 0.112
+        },
+        {
+          "source": "probe",
+          "at_s": 414.11,
+          "len_s": 0.446
+        },
+        {
+          "source": "jm",
+          "at_s": 422.11,
+          "len_s": 0.24
+        },
+        {
+          "source": "data",
+          "at_s": 426.01,
+          "len_s": 0.16
+        },
+        {
+          "source": "cm",
+          "at_s": 426.42,
+          "len_s": 0.09
+        },
+        {
+          "source": "data",
+          "at_s": 429.26,
+          "len_s": 0.335
+        },
+        {
+          "source": "ansam",
+          "at_s": 432.76,
+          "len_s": 0.415
+        }
+      ],
+      "result": {
+        "mode": "V.22bis 2400",
+        "bit_rate": 2400,
+        "symbol_rate": 600,
+        "carrier_hz": 1700,
+        "bits_per_symbol": 4.0,
+        "low_hz": 300.0,
+        "high_hz": 1650.0,
+        "bandwidth_hz": 1200.0,
+        "mean_snr_db": 15.4
+      }
+    },
+    {
+      "attempt": 22,
+      "negotiated_at_s": 436.6,
+      "storm": 1.564,
+      "scatter_window_s": 40.5,
+      "fragments": [
+        {
+          "source": "data",
+          "at_s": 440.07,
+          "len_s": 0.066
+        },
+        {
+          "source": "ansam",
+          "at_s": 444.85,
+          "len_s": 0.283
+        },
+        {
+          "source": "probe",
+          "at_s": 456.94,
+          "len_s": 0.041
+        },
+        {
+          "source": "cm",
+          "at_s": 457.38,
+          "len_s": 0.24
+        },
+        {
+          "source": "data",
+          "at_s": 460.78,
+          "len_s": 0.614
+        }
+      ],
+      "result": {
+        "mode": "V.22bis 2400",
+        "bit_rate": 2400,
+        "symbol_rate": 600,
+        "carrier_hz": 1700,
+        "bits_per_symbol": 4.0,
+        "low_hz": 150.0,
+        "high_hz": 1650.0,
+        "bandwidth_hz": 1350.0,
+        "mean_snr_db": 13.61
+      }
+    },
+    {
+      "attempt": 23,
+      "negotiated_at_s": 465.27,
+      "storm": 1.899,
+      "scatter_window_s": 32.8,
+      "fragments": [
+        {
+          "source": "data",
+          "at_s": 460.64,
+          "len_s": 0.096
+        },
+        {
+          "source": "data",
+          "at_s": 473.51,
+          "len_s": 0.091
+        },
+        {
+          "source": "jm",
+          "at_s": 475.53,
+          "len_s": 0.24
+        },
+        {
+          "source": "data",
+          "at_s": 481.92,
+          "len_s": 0.29
+        },
+        {
+          "source": "probe",
+          "at_s": 483.64,
+          "len_s": 0.08
+        },
+        {
+          "source": "cm",
+          "at_s": 488.74,
+          "len_s": 0.24
+        },
+        {
+          "source": "data",
+          "at_s": 493.45,
+          "len_s": 0.293
+        }
+      ],
+      "result": {
+        "mode": "V.21 300",
+        "bit_rate": 300,
+        "symbol_rate": 300,
+        "carrier_hz": 1080,
+        "bits_per_symbol": 1.0,
+        "low_hz": 300.0,
+        "high_hz": 1050.0,
+        "bandwidth_hz": 750.0,
+        "mean_snr_db": 12.15
+      }
+    },
+    {
+      "attempt": 24,
+      "negotiated_at_s": 494.77,
+      "storm": 2.197,
+      "scatter_window_s": 46.2,
+      "fragments": [
+        {
+          "source": "probe",
+          "at_s": 488.71,
+          "len_s": 0.21
+        },
+        {
+          "source": "probe",
+          "at_s": 493.59,
+          "len_s": 0.07
+        },
+        {
+          "source": "cm",
+          "at_s": 493.65,
+          "len_s": 0.173
+        },
+        {
+          "source": "probe",
+          "at_s": 505.05,
+          "len_s": 0.066
+        },
+        {
+          "source": "probe",
+          "at_s": 538.72,
+          "len_s": 0.43
+        }
+      ],
+      "result": null
+    },
+    {
+      "attempt": 25,
+      "negotiated_at_s": 522.95,
+      "storm": 2.332,
+      "scatter_window_s": 31.2,
+      "fragments": [
+        {
+          "source": "probe",
+          "at_s": 541.41,
+          "len_s": 0.071
+        },
+        {
+          "source": "probe",
+          "at_s": 551.6,
+          "len_s": 0.218
+        },
+        {
+          "source": "jm",
+          "at_s": 553.4,
+          "len_s": 0.066
+        }
+      ],
+      "result": null
+    },
+    {
+      "attempt": 26,
+      "negotiated_at_s": 547.67,
+      "storm": 2.564,
+      "scatter_window_s": 22.7,
+      "fragments": [
+        {
+          "source": "probe",
+          "at_s": 546.9,
+          "len_s": 0.156
+        },
+        {
+          "source": "probe",
+          "at_s": 557.35,
+          "len_s": 0.227
+        },
+        {
+          "source": "probe",
+          "at_s": 559.73,
+          "len_s": 0.105
+        },
+        {
+          "source": "cm",
+          "at_s": 563.64,
+          "len_s": 0.164
+        },
+        {
+          "source": "jm",
+          "at_s": 567.38,
+          "len_s": 0.057
+        }
+      ],
+      "result": null
+    },
+    {
+      "attempt": 27,
+      "negotiated_at_s": 572.0,
+      "storm": 2.766,
+      "scatter_window_s": 34.0,
+      "fragments": [
+        {
+          "source": "probe",
+          "at_s": 599.46,
+          "len_s": 0.037
+        }
+      ],
+      "result": null
+    },
+    {
+      "attempt": 28,
+      "negotiated_at_s": 593.39,
+      "storm": 3.019,
+      "scatter_window_s": 33.4,
+      "fragments": [
+        {
+          "source": "jm",
+          "at_s": 588.7,
+          "len_s": 0.165
+        },
+        {
+          "source": "probe",
+          "at_s": 589.61,
+          "len_s": 0.217
+        },
+        {
+          "source": "probe",
+          "at_s": 605.34,
+          "len_s": 0.14
+        },
+        {
+          "source": "probe",
+          "at_s": 621.35,
+          "len_s": 0.039
+        },
+        {
+          "source": "cm",
+          "at_s": 621.41,
+          "len_s": 0.039
+        }
+      ],
+      "result": null
+    }
+  ]
+}

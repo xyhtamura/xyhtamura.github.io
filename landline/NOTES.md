@@ -7,8 +7,8 @@ performs that score live, one performance per visit, plus the two fixed
 renderings made in Python in August 2026 and the score itself.
 
 Root entry: [ROADMAP.md](../../ROADMAP.md). The Python renderer that came first
-lives at `F:\xyh\line-probe\` with its own `NOTES.md`, and is **not under version
-control anywhere** — see the warning below.
+is in [reference/](reference/) with its own [NOTES.md](reference/NOTES.md), which
+is the build record for the piece itself.
 
 ## What is here
 
@@ -21,6 +21,7 @@ control anywhere** — see the warning below.
 | `engine/performance.js` | Storm curve, attempts, fragmentation, scatter, the bed, and the streaming. |
 | `engine/rng.js`, `engine/fft.js` | Seeded random numbers; radix-2 real FFT. |
 | `engine/worker.js` | Runs a performance off the main thread and hands back stereo chunks. |
+| `reference/` | The Python renderer that came first, and its own notes. |
 | `tools/dump_reference.py` | Reference values out of the Python renderer. |
 | `tools/reference.json` | Those values, committed. |
 | `tools/compare.mjs` | Checks the engine against them. |
@@ -110,14 +111,23 @@ The readout measures the signal going *into* the guard through an analyser tap
 and holds for two seconds, because the piece is sparse enough that the guard acts
 in bursts.
 
-## Warning: the Python renderer is not versioned
+## The Python renderer
 
-`F:\xyh\line-probe\` is outside every repository — the root `.gitignore`
-whitelist does not include it, and it is not its own repo. It holds `protocol.py`,
-`line.py`, `negotiate.py`, `render.py`, `tune.py`, `check.py`, the two rendered
-WAVs and the JSON logs, and if that folder is lost there is no history to recover
-it from. `tools/reference.json` here is currently the only versioned trace of its
-behaviour, and it covers the deterministic parts only.
+`reference/` holds it: `protocol.py`, `line.py`, `negotiate.py`, `render.py`,
+`tune.py`, `check.py`, the logs of the two fixed renderings, and its build
+notes. It was in `F:\xyh\line-probe\`, which is outside every repository, so it
+was moved here on 2026-08-31 — its history therefore starts at that commit and
+nothing before it survives.
+
+Left behind, deliberately: the three rendered WAVs (~437 MB) and their
+spectrograms, which `.gitignore` in `reference/` also keeps out of future
+commits; `SUBMISSION.md`, which is submission admin; and
+`notes on now and line probe.txt`, which is Xyh's spoken working notes and not
+for publication.
+
+The move did not disturb it. `python tools/dump_reference.py` run from the new
+location reproduces `tools/reference.json` byte for byte, and the 59 checks pass
+against it.
 
 ## Undone
 

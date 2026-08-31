@@ -11,7 +11,7 @@ random is checked in distribution instead, by `measure.mjs`.
 
     python dump_reference.py > reference.json
 
-Run from this directory; it imports the renderer out of ../../../line-probe/.
+Run from this directory; it imports the renderer out of ../reference/.
 """
 
 import json
@@ -20,7 +20,7 @@ import sys
 
 sys.path.insert(
     0,
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "line-probe"),
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "reference"),
 )
 
 import numpy as np  # noqa: E402

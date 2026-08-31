@@ -1,0 +1,9 @@
+# Renders and their by-products. render.py writes a 24-bit WAV beside itself and
+# check.py writes a spectrogram PNG; the 5- and 10-minute renders are ~88 MB and
+# ~175 MB, which is not what a repository is for. The published audio is the
+# FLAC and MP3 one level up, and line-probe-5.json / line-probe-10.json record
+# what those renders did.
+*.wav
+*.reapeaks
+*-spectrogram.png
+__pycache__/
