@@ -301,7 +301,7 @@ function stop() {
   ui.stop.hidden = true;
   ui.begin.hidden = false;
   ui.begin.textContent = "begin another performance";
-  setState("stopped.");
+  setState("stopped");
 }
 
 ui.begin.addEventListener("click", begin);
