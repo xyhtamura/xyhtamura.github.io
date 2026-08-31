@@ -1,0 +1,6 @@
+{
+  "name": "landline",
+  "private": true,
+  "type": "module",
+  "//": "Not a build. The page is plain static files and loads engine/*.js as browser modules. This file exists only so Node treats the same .js files as ESM when tools/compare.mjs and tools/measure.mjs import them; without it Node reads them as CommonJS and the named exports fail. Renaming them to .mjs would break the browser instead, because python -m http.server serves .mjs as application/octet-stream."
+}

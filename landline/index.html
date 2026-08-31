@@ -4,68 +4,54 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>a landline imagining a line probe during a storm — Xyh Tamura</title>
-<style>
-  :root {
-    --bg: #0b0c0e;
-    --fg: #c9c6c0;
-    --dim: #6e6b66;
-    --rule: #232527;
-  }
-  @media (prefers-color-scheme: light) {
-    :root { --bg: #f4f3f1; --fg: #24262a; --dim: #6e6b66; --rule: #dedbd6; }
-  }
-  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--fg); }
-  body {
-    font: 16px/1.65 ui-serif, Georgia, "Times New Roman", serif;
-    padding: 8vh 6vw 12vh;
-    max-width: 40rem;
-  }
-  h1 {
-    font-size: 1.5rem;
-    font-weight: 400;
-    letter-spacing: 0.01em;
-    margin: 0 0 0.35rem;
-    line-height: 1.3;
-  }
-  .byline { color: var(--dim); margin: 0 0 2.5rem; font-size: 0.95rem; }
-  audio { width: 100%; margin: 0 0 0.75rem; }
-  .alt { font-size: 0.85rem; color: var(--dim); margin: 0 0 2.5rem; }
-  .alt a { color: var(--dim); }
-  a { color: var(--fg); text-underline-offset: 0.2em; }
-  p { margin: 0 0 1.1rem; }
-  hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
-  dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 0.3rem 1.2rem; }
-  dt { color: var(--dim); font-size: 0.85rem; }
-  dd { margin: 0; font-size: 0.9rem; }
-  .note {
-    font-size: 0.9rem;
-    color: var(--dim);
-    border-left: 1px solid var(--rule);
-    padding-left: 1rem;
-    margin-top: 2.5rem;
-  }
-</style>
+<link rel="stylesheet" href="landline.css">
 </head>
 <body>
 
 <h1>a landline imagining a line probe during a storm</h1>
-<p class="byline">Xyh Tamura, 2026 &middot; fixed media, stereo, 5:06</p>
+<p class="byline">Xyh Tamura, 2026 &middot; algorithmic, stereo, generated in the browser</p>
 
-<audio controls preload="metadata">
-  <source src="landline.flac" type="audio/flac">
-  <source src="landline.mp3" type="audio/mpeg">
-  Your browser cannot play this file.
-  <a href="landline.mp3">Download the MP3</a>.
-</audio>
-<p class="alt">
-  <a href="landline.pdf">Score (PDF)</a> &middot;
-  direct files: <a href="landline.flac">FLAC, 17.8 MB</a> &middot;
-  <a href="landline.mp3">MP3, 11.7 MB</a>
-</p>
+<section id="instrument" aria-label="performance">
+  <p id="state" role="status">Nothing has been generated yet.</p>
 
-<p>Play this quietly, but not so quietly that the noise floor disappears. Most of
-the piece is the line itself, and it is meant to sit at the edge of hearing
-rather than below it.</p>
+  <p class="controls">
+    <button id="begin" type="button">begin a performance</button>
+    <button id="stop" type="button" hidden>stop</button>
+  </p>
+
+  <div id="transport" hidden>
+    <div class="meterline">
+      <span class="label">elapsed</span>
+      <span id="elapsed" class="value">0:00</span>
+      <span class="label">negotiated</span>
+      <span id="rate" class="value">&mdash;</span>
+      <span class="label">storm</span>
+      <span id="storm" class="value gauge">0.00</span>
+    </div>
+    <ol id="ladder" aria-label="negotiation log"></ol>
+  </div>
+
+  <div class="volume">
+    <label for="volume">volume</label>
+    <input id="volume" type="range" min="-12" max="36" step="1" value="0" list="volume-marks">
+    <datalist id="volume-marks"><option value="0" label="as recorded"></option></datalist>
+    <span id="volume-read" class="value">0 dB &mdash; as recorded</span>
+    <span id="limiting" class="warn" hidden></span>
+  </div>
+
+  <p class="alt">
+    seed <span id="seed">&mdash;</span> &middot;
+    <a id="permalink" href="./">this performance again</a>
+  </p>
+</section>
+
+<p class="note">Most of this is the line itself, and it is meant to sit at the
+edge of hearing rather than below it. Headphones, in a quiet room, are the
+condition it was built for. The volume control is a plain output gain: at
+0&nbsp;dB you are hearing the levels the piece was made at, and nothing else
+is in the path. Raising it far enough pushes the loudest fragments into a
+clipping guard, which the readout reports as it happens &mdash; past that point
+the amplification is changing the piece and not only its loudness.</p>
 
 <hr>
 
@@ -79,12 +65,13 @@ what the channel between it and another machine is. The receiver measures
 amplitude and noise across the band and from that measurement chooses the rate
 it is able to speak.</p>
 
-<p>A telephone line degrades across the piece. A modem attempts a connection
-every twenty to thirty seconds; each attempt probes the line, measures what
-returns, and negotiates whatever rate the measurement allows. The descent from
-24,000 to 300 bit/s is not composed. It is what the measurement produces, which
-is why the connection recovers when the weather eases, and why past a threshold
-nothing can be negotiated at all.</p>
+<p>A telephone line degrades across the performance. A modem attempts a
+connection every twenty to thirty seconds; each attempt probes the line,
+measures what returns, and negotiates whatever rate the measurement allows. The
+descent from 24,000 to 300 bit/s is not composed. It is what the measurement
+produces, which is why the connection recovers when the weather eases, and why
+past a threshold nothing can be negotiated at all. The log above is that
+measurement, shown as the playhead reaches it.</p>
 
 <p>No attempt is heard whole. What is placed are fragments cut out of it, none
 longer than a second, scattered across a window wider than the attempt itself,
@@ -104,21 +91,44 @@ one. We are listening in on that.</p>
 
 <hr>
 
+<h2>The score, and performances of it</h2>
+
+<p>The <a href="scorev3.html">score</a> is the procedure rather than a
+transcription: it states what has to happen without naming a language, an
+instrument or a medium, marks the numbers the Recommendations fix, and leaves
+every other quantity as an open range. So there is no recording that is the
+work. Each visit here draws a seed, a duration between five and eleven minutes,
+and a storm, and plays the performance that follows from them. The seed is
+printed above; the link beside it reproduces that same performance.</p>
+
+<p>Two fixed renderings were made first, in Python, and one of them is what was
+sent out in 2026:</p>
+
+<div class="fixed">
+  <p><strong>5:06</strong> &middot; 2026-08-08 &middot; seed 3</p>
+  <audio controls preload="none">
+    <source src="landline.flac" type="audio/flac">
+    <source src="landline.mp3" type="audio/mpeg">
+    Your browser cannot play this file. <a href="landline.mp3">Download the MP3</a>.
+  </audio>
+  <p class="alt">
+    <a href="landline.flac">FLAC, 17.8&nbsp;MB</a> &middot;
+    <a href="landline.mp3">MP3, 11.7&nbsp;MB</a> &middot;
+    <a href="landline.pdf">score as PDF</a>
+  </p>
+</div>
+
 <dl>
-  <dt>Format</dt><dd>FLAC, 48 kHz, 24-bit (MP3 fallback available)</dd>
-  <dt>Duration</dt><dd>5:06</dd>
-  <dt>Channels</dt><dd>2, stereo</dd>
+  <dt>In the browser</dt><dd>48 kHz, stereo, drawn per visit; nothing is fetched, and no audio file is downloaded</dd>
+  <dt>Fixed rendering</dt><dd>FLAC, 48 kHz, 24-bit, 5:06 (MP3 fallback available)</dd>
+  <dt>Levels</dt><dd>Noise bed &minus;68.0 dBFS RMS by design, in both. No compression or limiting in the signal path; the browser&rsquo;s clipping guard sits after the volume control, outside the piece, and is a straight line below &minus;3 dBFS.</dd>
   <dt>Setup</dt><dd>Stereo playback. No performer, no live electronics, no video.</dd>
-  <dt>Levels</dt><dd>Noise bed &minus;68.0 dBFS RMS by design; peak &minus;14.2 dBFS. No compression or limiting anywhere in the signal path.</dd>
 </dl>
 
-<p class="note">For concert playback: set level from the fragments, not from the
-noise floor, and apply no dynamic processing. The floor is meant to be at the
-edge of audibility, not inaudible.</p>
+<p class="note">For concert playback, use the fixed rendering: set level from the
+fragments, not from the noise floor, and apply no dynamic processing. The floor
+is meant to be at the edge of audibility, not inaudible.</p>
 
-<p class="note">The <a href="landline.pdf">score</a> is the procedure rather than a
-transcription, so this recording is one performance of it. The ten-minute version
-is a second performance, not an extension of this one.</p>
-
+<script type="module" src="app.js"></script>
 </body>
 </html>
