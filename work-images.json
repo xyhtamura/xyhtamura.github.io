@@ -472,6 +472,20 @@
       "skipReason": "Needs a curated native .urumizuri fixture; the default page is an empty drop target."
     },
     {
+      "id": "landline",
+      "aliases": [
+        "line-probe",
+        "a-landline-imagining-a-line-probe-during-a-storm"
+      ],
+      "image": "img/works/landline.jpg",
+      "alt": "a landline imagining a line probe during a storm performance interface",
+      "capture": {
+        "url": "https://xyhtamura.github.io/landline/",
+        "localUrl": "http://localhost:8000/xyhtamura.github.io/landline/",
+        "waitMs": 4000
+      }
+    },
+    {
       "id": "benzaiten",
       "image": "img/works/benzaiten.jpg",
       "alt": "Benzaiten image-sonification instrument",

@@ -428,6 +428,18 @@ const slides = [
         ]
       },
       {
+        id: "landline",
+        title: "a landline imagining a line probe during a storm",
+        year: "2026",
+        blurb: "An algorithmic sound piece that performs its own score in the browser, drawing a seed, duration, and storm per visit. A telephone line degrades across the performance while a modem attempts connection; each attempt synthesises ITU-T Recommendations (V.8 answer tone, V.34 line probe, V.21 capability exchange) directly from published definitions, measures the subscriber loop channel, and negotiates transmission rates in real time as weather worsens.",
+        tags: ["algorithmic composition", "telecommunications", "sound art", "ITU-T", "browser synthesis", "Web Audio"],
+        links: [
+          { label: "Launch Piece", url: "https://xyhtamura.github.io/landline/" },
+          { label: "Score (PDF)", url: "https://xyhtamura.github.io/landline/landline.pdf" },
+          { label: "Reference Audio (FLAC)", url: "https://xyhtamura.github.io/landline/landline.flac" }
+        ]
+      },
+      {
         title: "Open Play Assembly 2",
         year: "2026",
         blurb: "Open Play Assembly 2 was a curated live free-improvisation performance organized by Joee Mejias, featuring Xyh on voice and synthesizer with bower gra! on processed electric violin and Blend Earth on electronics, loops, effects, and Filipino instruments. The set moved through loose sections: bright folktronica, moody violin-synth call-and-response, and a final ambient sound bed.",

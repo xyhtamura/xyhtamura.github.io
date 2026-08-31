@@ -217,6 +217,12 @@
     <priority>0.80</priority>
   </url>
   <url>
+    <loc>https://xyhtamura.github.io/landline/</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
     <loc>https://xyhtamura.github.io/media/</loc>
     <lastmod>2026-06-11</lastmod>
     <changefreq>monthly</changefreq>
