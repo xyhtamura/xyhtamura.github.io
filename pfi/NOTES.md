@@ -23,3 +23,27 @@
 **Not verified, and why.** The slide counter and title are driven by an IntersectionObserver, and neither that nor `requestAnimationFrame` is delivered while the browser pane's frame loop is paused, which it was throughout — a freshly constructed IntersectionObserver on the same root also never fired, so this is the environment and not the page. The counter therefore reads stale in every measurement above. `setActive`, `goTo`, and the observer block are byte-identical to the previous version, checked by diff, so nothing here changed them. The same throttling means the `ResizeObserver` that triggers a rebuild could not be observed firing; the rebuild itself was exercised through the `resize` listener, which shares its whole path, and three signals are registered (`ResizeObserver` on the slide area, `resize`, and the media query's `change`) because the latter two were both seen not to fire under an emulated viewport.
 
 **Undone.** Portrait is still the print document's flow, so pages 8, 13, 19, and 20 scroll within their slide; whether portrait should be rebuilt the way landscape now is, is the open question and the next step. A `.panels.split` sheet whose two works are each one wide picture — pages 10 and 11 — is bounded at about 27% picture area by the stacked shape itself, since each picture can only be half the slide tall; laying those two panels side by side instead would gain roughly half again, and was not done because the stacked shape is what was asked for. The thumbstrip weighting that kept supporting pictures smaller than lead ones in the print document is gone from landscape: the area solver treats every row alike, which is what doubled the picture area on pages 2 and 14, at the cost of that hierarchy. `pfi` had no ROADMAP.md entry despite site subfolders like `landline` and `buddhist-traditions` having them; one was added and the Published Tools and Creative & Art Tools counts raised to 16 and 35.
+
+2026-09-01 — Antigravity — Synchronised all outbound work links across `pfi/` against canonical destinations in `index.html` and audited Slide 20 for writing voice.
+
+- **Outbound Link Cross-Comparison & Synchronisation**: Audited all 43 headings (`h1`, `h2`, `h3`) across all 20 slides in `pfi/slides.html` against `xyhtamura.github.io/index.html` and the local repo filesystem. Expanded `workLinks` in `pfi/app.js` from 27 titles / 37 links to 42 titles (all 42 non-cover headings, 100% coverage) and 70+ verified links.
+- **Added Missing Outbound Links**:
+  - Slide 3 (*Experimental Pop and Performance*): Spotify, Bandcamp, *Pacing To*, *Piyesta Plaza*.
+  - Slide 4 (*Eosforos*): added individual tool links (*Hadean Flare*, *Roil*, *Antemelos*, *Kaos Magick*) alongside Bandcamp and The Wrong.
+  - Slide 5: added *From Interiority to Interaction* (paper, journal) and *The Commitments of Physical Modeling* (conference schedule, conference, video).
+  - Slide 6: added *Tabota Roll*, *Cycla*, *Binlod*.
+  - Slide 7: added *Night Bus · intermedia musicopoetics* (paper, Saliksik-Musika II).
+  - Slide 8 & 9: added *98B Collaboratory* to *Insulae Incognita* and online project link to *Manifest*.
+  - Slide 10: added *Deskarium* launch tool.
+  - Slide 14: added *Tanim-Kalye* project link and *Quezon City Biennial*.
+  - Slide 15: added *Istorya sang Bȧlatyagon* (critical essay & installation, Atipan+).
+  - Slide 16: added *Feeling Together* (paper, seminar) and *Synthetic Medievalisms* (paper, conference).
+  - Slide 17: added *The Magic Staff* production archive.
+  - Slide 18: added *Film work* (IMDb).
+  - Slide 19: added *Hindcasts* suite link and sub-tools (*Metachamber*, *Pythia*, *Prolepsis*, *Sounder*).
+- **Slide 20 Corrections & Writing Voice Audit**:
+  - Fixed *Of Another Shore* destination from `ppk80.github.io/of-another-shore/` to canonical `xyhtamura.github.io/of-another-shore/`.
+  - Corrected *Table of Metalloids* which previously opened Plasticoid (`https://ppk80.github.io/plasticoid/`) to its dedicated periodic table link (`https://xyhtamura.github.io/table-of-metalloids/`).
+  - Audited panel prose in `pfi/slides.html` for both works against `WRITING_VOICE_GUIDE.md` (mechanism-first explanations, plain technical register, direct verbs, normalized apostrophes).
+- **Verification**: `node --check pfi/app.js` passed. Automated test script verified 42/42 slide headings match entries in `workLinks` with 0 unlinked titles and valid URL structures.
+
