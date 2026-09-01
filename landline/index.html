@@ -55,38 +55,53 @@ to peak amplitudes.</p>
 
 <hr>
 
-<p>The piece is synthesised from the ITU-T Recommendations that govern how two
-modems open a connection. The V.8 answer tone, the V.34 line probe, and the V.21
-capability exchange are generated directly from their published specifications
+<p>The piece is synthesised from the ITU-T Recommendations that govern voiceband
+modem connections over copper subscriber loops:
+<a href="https://www.itu.int/rec/T-REC-V.8" target="_blank" rel="noopener">V.8</a>
+(network interaction and the 2100&nbsp;Hz ANSam answer tone),
+<a href="https://www.itu.int/rec/T-REC-V.34" target="_blank" rel="noopener">V.34</a>
+(Phase 2 line probing and discrete spectral SNR estimation), and
+<a href="https://www.itu.int/rec/T-REC-V.21" target="_blank" rel="noopener">V.21</a>
+(300&nbsp;bit/s frequency-shift keying). All audio is generated in the browser
 without pre-recorded samples.</p>
 
-<p>The V.34 probe carries no data. It evaluates the physical transmission
-channel between two modems before data exchange. The receiver measures amplitude
-and noise across twenty-one discrete spectral bins, then negotiates the highest
-sustainable data rate.</p>
+<p>The V.34 line probe carries no user data. It evaluates the transmission
+channel before data transfer by emitting two probing comb signals across
+twenty-one discrete frequencies between 150 and 3750&nbsp;Hz. The receiver
+measures attenuation and noise across each bin, calculating signal-to-noise
+ratios to determine the maximum sustainable data rate under Claude
+Shannon&rsquo;s
+<a href="https://doi.org/10.1002/j.1538-7305.1948.tb01338.x" target="_blank" rel="noopener">channel capacity theorem</a>.</p>
 
-<p>A telephone subscriber loop degrades across the performance. A modem
+<p>A simulated telephone line degrades across the performance. A modem
 initiates a connection attempt every twenty to thirty seconds; each attempt
-probes the line, measures what returns, and negotiates whatever rate the
-measurement allows. The descent from 24,000 to 300 bit/s follows directly from
-channel measurements: when simulated weather eases, the negotiated rate recovers;
-when degradation exceeds the receiver's threshold, negotiation fails entirely.
-The on-screen log displays each attempt as the playhead reaches it.</p>
+probes the line, measures channel response, and negotiates down an ordered rate
+ladder from 24,000 to 300&nbsp;bit/s. The descent is not scripted: when simulated
+weather eases, the negotiated rate recovers; when degradation exceeds receiver
+tolerances, negotiation fails entirely. The on-screen log displays these
+measurements in step with the playhead.</p>
 
 <p>Each attempt is synthesised and evaluated in full, but sounded only as brief
-fragments. Fragments under one second are scattered across a temporal window
+fragments under one second. Fragments are scattered across a temporal window
 wider than the attempt interval, overlapping successive attempts so their
 boundaries cannot be distinguished by ear.</p>
 
 <p>The dynamic scale follows lowercase sound practice, in particular Steve
-Roden&rsquo;s <em>Forms of Paper</em> (2001), which constructed a quiet acoustic
-work from recordings of handled book pages. Roden drew on Rainer Maria
-Rilke&rsquo;s phrase &ldquo;inconsiderable things&rdquo; for material that
-ordinarily goes unnoticed.</p>
+Roden&rsquo;s
+<a href="https://lineimprint.bandcamp.com/album/forms-of-paper" target="_blank" rel="noopener"><em>Forms of Paper</em></a>
+(2001, LINE), which built a quiet acoustic environment from contact-microphone
+recordings of handled book pages. Roden drew on Rainer Maria Rilke&rsquo;s phrase
+&ldquo;inconsiderable things&rdquo; (<em>inconsiderable Dinge</em>) for material
+that ordinarily goes unnoticed.</p>
 
-<p>The perspective is that of the telephone itself. The electrical behavior of
-the line constitutes the instrument&rsquo;s sensory register, framing a sequence
-of failing connections across a storm.</p>
+<p>The perspective is that of the telephone itself, echoing Alvin Lucier&rsquo;s
+<a href="https://www.lovely.com/titles/cd1011.html" target="_blank" rel="noopener"><em>Music on a Long Thin Wire</em></a>
+(1977) in allowing the autonomous physical behavior of a wire to dictate the
+sound. The electrical state of the subscriber loop constitutes the
+instrument&rsquo;s sensory register, framing a sequence of failing connections
+across a storm.</p>
+
+<p class="alt"><a href="scorev3.html">View the executable score</a></p>
 <script type="module" src="app.js"></script>
 </body>
 </html>
