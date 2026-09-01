@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#e2e7d7">
+  <meta name="description" content="Xyh Tamura — Diagrammata: Creative code, generative systems, browser instruments, and executable literature portfolio for Future Sketches.">
+  <title>Xyh Tamura — Diagrammata</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Averia+Libre:ital,wght@0,400;0,700;1,400&amp;family=Averia+Sans+Libre:wght@400;700&amp;family=Lexend+Deca:wght@400;500&amp;family=Rubik:wght@400;500&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../pfi/styles.css?v=8">
+</head>
+<body>
+  <header class="site-header">
+    <a class="site-name" href="../">Xyh Tamura</a>
+    <span class="current-title" id="currentTitle">Diagrammata</span>
+    <a class="full-index" href="../portfolio/">Full index <span aria-hidden="true">↗</span></a>
+  </header>
+
+  <main id="slides" aria-label="Portfolio slides">
+    <p class="loading" id="loading">Loading portfolio…</p>
+  </main>
+
+  <footer class="site-footer">
+    <button class="nav-button" id="prevButton" type="button" aria-label="Previous slide">← <span>prev</span></button>
+    <nav class="slide-nav" id="slideNav" aria-label="Slides"></nav>
+    <p class="counter" aria-live="polite"><span id="currentNumber">01</span><span class="counter-rule">/</span><span id="totalNumber">10</span></p>
+    <button class="nav-button" id="nextButton" type="button" aria-label="Next slide"><span>next</span> →</button>
+  </footer>
+
+  <dialog class="viewer" id="viewer" aria-label="Image viewer">
+    <button class="viewer-close" id="viewerClose" type="button" aria-label="Close image viewer">×</button>
+    <img id="viewerImage" alt="">
+    <p id="viewerCaption"></p>
+  </dialog>
+
+  <noscript>This portfolio needs JavaScript to load its slides.</noscript>
+  <script src="app.js?v=1"></script>
+</body>
+</html>
