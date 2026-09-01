@@ -148,8 +148,13 @@ function prepareSlides() {
   slides.forEach((slide, index) => {
     const heading = slide.querySelector("h1, h2");
     const name = heading ? headingName(heading) : `Slide ${index + 1}`;
+    const mediaCount = slide.querySelectorAll("img").length;
+    const wordCount = slide.textContent.trim().split(/\s+/).filter(Boolean).length;
     slide.classList.add("slide");
+    slide.classList.add(mediaCount >= 7 ? "media-rich" : mediaCount >= 4 ? "media-set" : "media-sparse");
+    if (wordCount >= 150) slide.classList.add("copy-dense");
     slide.dataset.index = index;
+    slide.dataset.mediaCount = mediaCount;
     slide.id = `${pad(index + 1)}-${slug(name) || "portfolio"}`;
     slide.setAttribute("aria-label", `Slide ${index + 1}: ${name}`);
 
@@ -193,7 +198,7 @@ function prepareSlides() {
 
 async function init() {
   try {
-    const response = await fetch("slides.html");
+    const response = await fetch("slides.html?v=2");
     if (!response.ok) throw new Error(`Slide request failed: ${response.status}`);
     slidesRoot.innerHTML = await response.text();
     prepareSlides();

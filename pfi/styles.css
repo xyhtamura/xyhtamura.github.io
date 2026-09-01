@@ -391,7 +391,7 @@ p {
   padding: clamp(1.25rem, 2.8vw, 2.8rem);
   transform: translateY(-50%);
   border: 1px solid rgba(35, 33, 59, .2);
-  border-radius: .3rem;
+  border-radius: 1.2rem;
   background: rgba(226, 231, 215, .94);
   box-shadow: 0 1.1rem 4rem rgba(35, 33, 59, .18);
   backdrop-filter: blur(13px);
@@ -405,6 +405,132 @@ p {
 .blob-1 { left: -8rem; top: -8rem; background: #52c6b5; }
 .blob-2 { right: -6rem; top: 12%; background: #7650cf; }
 .blob-3 { left: 35%; bottom: -12rem; background: #f2ca64; }
+
+/* Landscape screens trade print-page scale for complete slide readings. Media
+   count classes come from app.js, so picture-heavy slides receive smaller cells
+   while sparse slides retain larger lead images. Portrait screens keep the
+   roomier layouts below and use their extra vertical measure. */
+@media (min-width: 801px) and (orientation: landscape) {
+  .page {
+    padding: clamp(1rem, 2.4vh, 1.8rem) clamp(1.5rem, 4.2vw, 4rem);
+  }
+
+  h2 { font-size: clamp(1.65rem, 3vw, 2.65rem); }
+  h3 { font-size: clamp(.92rem, 1.35vw, 1.2rem); }
+
+  p {
+    font-size: clamp(.76rem, .92vw, .9rem);
+    line-height: 1.43;
+  }
+
+  .copy-dense p { font-size: clamp(.72rem, .84vw, .84rem); line-height: 1.38; }
+  .band, .panel-band { margin-bottom: .35rem; font-size: .58rem; }
+  .credit { margin: .3rem 0 .7rem; font-size: .66rem; line-height: 1.38; }
+  .lede { font-size: clamp(.86rem, 1.05vw, 1rem); line-height: 1.45; }
+  .work-links { gap: .25rem .7rem; margin: .25rem 0 .45rem; font-size: .6rem; }
+
+  .row {
+    grid-template-columns: minmax(0, 1.15fr) minmax(14rem, .85fr);
+    gap: clamp(.8rem, 2vw, 1.7rem);
+    margin: clamp(.55rem, 1.2vh, .9rem) 0;
+  }
+
+  .row > .slot { max-height: 30vh; }
+  .row > .slot { height: 28vh; min-height: 0; aspect-ratio: auto; }
+  .row .col .slot { height: 13.5vh; min-height: 0; aspect-ratio: auto; }
+  .justified { height: 15vh; gap: .45rem; margin-bottom: .55rem; }
+  .justified > .slot { height: 100%; min-height: 0; }
+  .media-rich .justified { height: 11vh; }
+
+  .thumbstrip { height: 9vh; gap: .4rem; margin-top: .55rem; padding-top: .5rem; }
+  .thumbstrip > .slot {
+    flex-basis: clamp(5.5rem, 10vw, 8.5rem);
+    height: 100%;
+    min-height: 0;
+    aspect-ratio: auto;
+  }
+  .thumbstrip-note { margin-top: .25rem; font-size: .58rem; }
+
+  .feature-grid {
+    gap: .5rem;
+    margin: .65rem 0;
+  }
+  .feature-grid > .slot { height: 15vh; min-height: 0; aspect-ratio: auto; }
+  .feature-grid.triple-tools > .slot:first-child { height: auto; }
+  .media-rich .feature-grid > .slot { height: 12vh; }
+
+  .page[data-index="5"] .feature-grid.triple-tools {
+    grid-template-rows: repeat(2, 15vh);
+  }
+  .page[data-index="5"] .feature-grid.triple-tools > .slot:first-child {
+    height: 100%;
+  }
+
+  .p03-study-grid { gap: .45rem; margin: .65rem 0; }
+  .p03-study-grid > .slot { height: 16vh; min-height: 0; aspect-ratio: auto; }
+
+  .practice-note {
+    gap: 1rem;
+    padding-top: .55rem;
+  }
+
+  .col-3,
+  .anexacta-grid,
+  .film-grid,
+  .mosaic-digital {
+    gap: clamp(.55rem, 1vw, .9rem);
+    margin-top: .65rem;
+  }
+
+  .anexacta-grid article,
+  .film-grid article,
+  .mosaic-digital article,
+  .panel { padding: clamp(.55rem, .9vw, .8rem); }
+
+  .anexacta-grid .slot,
+  .film-grid .slot,
+  .mosaic-digital .slot {
+    height: 12vh;
+    min-height: 0;
+    aspect-ratio: auto;
+    margin-bottom: .45rem;
+  }
+
+  .panels { gap: clamp(.55rem, 1.15vw, .9rem); }
+  .panel > .slot { height: 15vh; min-height: 0; aspect-ratio: auto; margin-bottom: .55rem; }
+  .panel > .justified { height: 10vh; margin-bottom: .55rem; }
+  .panel > .justified > .slot { min-height: 0; }
+  .panels.six .panel > .slot { height: 9vh; min-height: 0; }
+  .panels.six .panel p { font-size: clamp(.69rem, .76vw, .76rem); line-height: 1.34; }
+
+  .media-rich .slot { border-radius: clamp(.35rem, .65vw, .65rem); }
+  .media-rich .panel { padding: clamp(.45rem, .75vw, .68rem); }
+
+  .page > .slot {
+    height: 24vh;
+    min-height: 0;
+    aspect-ratio: auto;
+  }
+
+  .page[data-index="1"] .row > .grow:first-child .slot { height: 24vh; aspect-ratio: auto; }
+  .page[data-index="1"] .row > .grow:last-child .slot { height: 11.5vh; aspect-ratio: auto; }
+  .page[data-index="13"] > .row {
+    grid-template-columns: .72fr .72fr 1.3fr;
+  }
+
+  .cover { padding: clamp(.65rem, 1.3vh, 1rem); }
+  .mosaic-cover-cells { gap: .4rem; }
+  .mosaic-cover-cells > .justified { height: 19vh; min-height: 0; }
+  .cover .plate { border-radius: 1.35rem; }
+}
+
+@media (min-width: 801px) and (orientation: portrait) {
+  .page[data-index="2"] .p03-study-grid > .slot {
+    height: 19vh;
+    min-height: 0;
+    aspect-ratio: auto;
+  }
+}
 
 .site-footer {
   min-height: var(--footer-h);
