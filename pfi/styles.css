@@ -645,6 +645,10 @@ p {
   .panels.quad > .panel,
   .panels.six > .panel { --panel-share: 1.15fr; }
 
+  /* Slide 13's four text-heavy projects need more copy measure than their
+     landscape screenshots ask for. Portrait keeps the general media sizing. */
+  .page[data-index="12"] .panel { --media-max: 32; }
+
   /* `container-type: size` on the panel makes 100cqh its content box, and the
      panel's own top padding is outside that. Nothing to subtract. */
   .panel-media { --stack-gap: clamp(.25rem, .7vh, .5rem); }

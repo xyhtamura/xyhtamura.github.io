@@ -331,7 +331,10 @@ function fillMedia(column, figures, frame) {
   if (frame) {
     const wanted = planWidth(plan, ratios, box.height || 1, stackGap, rowGap);
     const frameWidth = frame.getBoundingClientRect().width || 1;
-    const share = Math.min(70, Math.max(24, (wanted / frameWidth) * 100));
+    const frameStyle = getComputedStyle(frame);
+    const minShare = Number.parseFloat(frameStyle.getPropertyValue("--media-min")) || 24;
+    const maxShare = Number.parseFloat(frameStyle.getPropertyValue("--media-max")) || 70;
+    const share = Math.min(maxShare, Math.max(minShare, (wanted / frameWidth) * 100));
     frame.style.setProperty("--media-w", `${share.toFixed(2)}%`);
     box = column.getBoundingClientRect();
     plan = planRows(ratios, box.width || 1, box.height || 1, stackGap, rowGap);

@@ -47,3 +47,5 @@
   - Audited panel prose in `pfi/slides.html` for both works against `WRITING_VOICE_GUIDE.md` (mechanism-first explanations, plain technical register, direct verbs, normalized apostrophes).
 - **Verification**: `node --check pfi/app.js` passed. Automated test script verified 42/42 slide headings match entries in `workLinks` with 0 unlinked titles and valid URL structures.
 
+2026-09-01 — Codex — Added optional CSS bounds to the landscape media-width solver and capped Slide 13's four media columns at 32% of each panel. At 1280 × 720, the image columns changed from 57–70% to 32%, all four copy columns fit without internal scrolling, all four images retained their source ratios, and the slide had no horizontal overflow. At 1024 × 640, all four copy columns also fit without internal scrolling. A 760 × 1100 portrait check confirmed that the slide retained its previous media sizing and had no copy or horizontal overflow. `node --check pfi/app.js` and `git diff --check` passed. Undone: none for this adjustment.
+
