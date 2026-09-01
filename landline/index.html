@@ -87,45 +87,6 @@ ordinarily goes unnoticed.</p>
 <p>The perspective is that of the telephone itself. The electrical behavior of
 the line constitutes the instrument&rsquo;s sensory register, framing a sequence
 of failing connections across a storm.</p>
-
-<hr>
-
-<h2>The score and performances of it</h2>
-
-<p>The <a href="scorev3.html">score</a> defines a generative procedure
-independent of language, instrument, or medium. It specifies the constants
-fixed by ITU-T Recommendations while leaving other parameters as open ranges.
-Each browser session generates a unique realization by drawing a seed, a storm
-curve, and a duration between five and eleven minutes. The seed displayed above
-and its permalink reproduce that exact realization.</p>
-
-<p>Two fixed reference renderings were generated in Python in August 2026:</p>
-
-<div class="fixed">
-  <p><strong>5:06</strong> &middot; 2026-08-08 &middot; seed 3</p>
-  <audio controls preload="none">
-    <source src="landline.flac" type="audio/flac">
-    <source src="landline.mp3" type="audio/mpeg">
-    Your browser cannot play this file. <a href="landline.mp3">Download the MP3</a>.
-  </audio>
-  <p class="alt">
-    <a href="landline.flac">FLAC, 17.8&nbsp;MB</a> &middot;
-    <a href="landline.mp3">MP3, 11.7&nbsp;MB</a> &middot;
-    <a href="landline.pdf">score as PDF</a>
-  </p>
-</div>
-
-<dl>
-  <dt>Browser generation</dt><dd>48 kHz, stereo, synthesized in client memory without audio downloads</dd>
-  <dt>Fixed rendering</dt><dd>FLAC, 48 kHz, 24-bit, 5:06 (MP3 fallback available)</dd>
-  <dt>Levels</dt><dd>Noise bed calibrated to &minus;68.0 dBFS RMS. The browser clipping guard operates after the user volume control, acting as a linear pass-through below &minus;3 dBFS.</dd>
-  <dt>Performance requirements</dt><dd>Stereo playback system. Fixed media or headless browser synthesis.</dd>
-</dl>
-
-<p class="note">For concert playback, use the fixed rendering. Calibrate
-playback gain against the loudest probe fragments so the noise bed rests near the
-threshold of hearing, and bypass all external dynamic processing.</p>
-
 <script type="module" src="app.js"></script>
 </body>
 </html>

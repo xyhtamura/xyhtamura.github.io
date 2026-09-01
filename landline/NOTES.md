@@ -109,3 +109,7 @@ nothing was heard and nothing was seen. See Undone.
 **Context.** Electronic Thinking (Weimar) did not select the piece
 (2026-08-31), which is what freed it for release. The 5:06 FLAC submitted there
 is unchanged and stays on the page.
+
+2026-09-01 — Antigravity — Removed the "The score and performances of it" section from `index.html` (score link, fixed renderings player, download links, and performance parameter table) and cleaned up unused CSS rules in `landline.css`. Updated `ROADMAP.md` mechanism line to remove the reference to on-page fixed renderings.
+
+**Verified.** `index.html` structure verified; browser synthesis UI, volume controls, telemetry ladder, and conceptual descriptions remain intact.

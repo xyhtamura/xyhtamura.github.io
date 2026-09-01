@@ -151,18 +151,6 @@ button:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
   padding-left: 1rem;
 }
 
-.fixed { margin: 0 0 2rem; }
-.fixed p:first-child {
-  font: 0.78rem/1.4 ui-monospace, Menlo, Consolas, monospace;
-  color: var(--dim);
-  margin-bottom: 0.5rem;
-}
-audio { width: 100%; margin: 0 0 0.6rem; }
-
-dl { margin: 0 0 1.5rem; display: grid; grid-template-columns: max-content 1fr; gap: 0.3rem 1.2rem; }
-dt { color: var(--dim); font-size: 0.85rem; }
-dd { margin: 0; font-size: 0.9rem; }
-
 @media (max-width: 30rem) {
   #ladder li { grid-template-columns: 3rem 1fr; }
   #ladder .bw { display: none; }
