@@ -3,6 +3,7 @@ import path from 'node:path';
 
 const cuts = ['pfo', 'pfs', 'pft'];
 const baseDir = path.resolve('xyhtamura.github.io');
+const sharedCss = fs.readFileSync(path.join(baseDir, 'pfi', 'styles.css'), 'utf8');
 
 let allPassed = true;
 
@@ -98,6 +99,35 @@ for (const cut of cuts) {
     console.warn(`⚠️ Heading titles without exact match in app.js workLinks:`, unlinkedH2);
   } else {
     console.log(`✅ All h2 heading titles have matching entries in app.js.`);
+  }
+
+  // 5. Verify the cut loads the shared layout engine rather than its own copy.
+  //    A cut that carries its own builder drifts from ../pfi/styles.css and its
+  //    landscape pictures collapse to thumbnails without anything erroring.
+  const indexContent = fs.readFileSync(indexHtmlPath, 'utf8');
+  if (!/<script src="\.\.\/pfi\/engine\.js/.test(indexContent)) {
+    console.error(`❌ ${cut}/index.html does not load ../pfi/engine.js.`);
+    allPassed = false;
+  } else if (/function (buildSpread|buildPanels|fillMedia|planRows)/.test(appJsContent)) {
+    console.error(`❌ ${cut}/app.js defines its own layout builder; it should hold only the link registry.`);
+    allPassed = false;
+  } else {
+    console.log(`✅ Loads the shared engine, app.js holds only the link registry.`);
+  }
+
+  // 6. Verify every layout class the slides use has a rule in the shared
+  //    stylesheet. `.panels.triple` reached production with no rule at all.
+  const layoutClasses = new Set();
+  const panelsRegex = /class="panels ([^"]+)"/g;
+  while ((match = panelsRegex.exec(slidesContent)) !== null) {
+    match[1].split(/\s+/).filter(Boolean).forEach((name) => layoutClasses.add(name));
+  }
+  const unstyled = [...layoutClasses].filter((name) => !sharedCss.includes(`.${name}`));
+  if (unstyled.length > 0) {
+    console.error(`❌ Layout classes with no rule in pfi/styles.css:`, unstyled);
+    allPassed = false;
+  } else {
+    console.log(`✅ All ${layoutClasses.size} panel layout classes are styled in pfi/styles.css.`);
   }
 }
 
