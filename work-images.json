@@ -472,6 +472,16 @@
       "skipReason": "Needs a curated native .urumizuri fixture; the default page is an empty drop target."
     },
     {
+      "id": "catchment",
+      "image": "img/works/catchment.jpg",
+      "alt": "Catchment particle detector arcade game interface",
+      "capture": {
+        "url": "https://xyhtamura.github.io/catchment/",
+        "localUrl": "http://localhost:8000/catchment/",
+        "waitMs": 4000
+      }
+    },
+    {
       "id": "landline",
       "aliases": [
         "line-probe",

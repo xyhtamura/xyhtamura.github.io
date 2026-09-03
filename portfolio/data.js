@@ -613,6 +613,19 @@ const slides = [
   {
     kind: "piece",
     piece: {
+      id: "catchment",
+      title: "Catchment",
+      year: "2026",
+      tags: ["particle physics", "arcade game", "detector aperture", "Particle Data Group", "physical installation", "Raspberry Pi"],
+      blurb: "A particle-catcher arcade game and physical detector panel driven by Particle Data Group physics tables. Particles fall through a magnetic field where charge determines curvature and momentum sets the bend radius. Players steer a detector aperture across three quantum-number channels—charge (colour), parity (fill), and spin (shape)—absorbing matching particles into a six-slot detector stack where real decay lifetimes, matter-antimatter annihilation, pair production, and nuclear binding govern reactions before pile-up. Neutrinos pass as missing energy, free quarks hadronize into jets, and an in-game model card documents experimental provenance versus play idealizations.",
+      links: [
+        { label: "Play Game", url: "https://xyhtamura.github.io/catchment/" }
+      ]
+    }
+  },
+  {
+    kind: "piece",
+    piece: {
       id: "unbounded-organ",
       title: "The Unbounded Organ",
       year: "2026",
