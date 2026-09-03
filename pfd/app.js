@@ -95,8 +95,8 @@ window.portfolioLinks = {
   "Element Projections": [
     ["Launch tool", "https://xyhtamura.github.io/element-projections/"]
   ],
-  "Cornice": [
-    ["Launch work", "https://xyhtamura.github.io/cornice/"]
+  "Catchment": [
+    ["Play it", "https://xyhtamura.github.io/catchment/"]
   ],
   "Istorya sang Bȧlatyagon": [
     ["Critical essay & installation", "https://xyhtamura.github.io/istorya-sang-balatyagon/"],

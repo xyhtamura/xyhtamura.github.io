@@ -79,3 +79,21 @@
   - Verified layout via CDP headless Edge across 1440 × 820 landscape, 1280 × 720 landscape, and 430 × 860 portrait: 13 slides, 100 images, 0 aspect ratio mismatches in landscape, 0 slide overflows, 0 document horizontal overflows, all 17 H2 headings and 23 workLinks built.
 - **Roadmap**: Updated `pfi` entry in `ROADMAP.md` to document the 5 routes served by `pfi/engine.js`.
 - **Undone**: None.
+
+2026-09-03 — Claude Code — Added Catchment to `pfd` (*Limina*, the Platform Dalí cut) as the lead panel of page 11, replacing Cornice.
+
+**Why.** Draft 7 of the residency proposal names Catchment in ¶6 as the object that makes the selection decision the whole proposal is about — an aperture that accepts a particle only when charge, parity and spin agree, so whatever the player was not ready for passes through uncaught. The cut was built from a revision of `PORTFOLIO-CUT.md` that predated that decision, so a juror following the portfolio link would have found the proposal's key example missing.
+
+**What changed.** `pfd/slides.html` page 11 went from `.panels.split` to `.panels.split.insulae-heavy`, which is the rule for a split whose *second* work carries the pictures — Catchment leads with one image, Table of Metalloids and Element Projections follow with three. The Cornice panel came out to make the room. `pfd/app.js` swapped Cornice's registry entry for Catchment's, pointing at `xyhtamura.github.io/catchment/`.
+
+**Cornice was not deleted from the cut**, only from a panel: it keeps `cornice-cover` on the cover mosaic and `ws-07` on the page 13 shelf sheet, so it stays visible as part of the practice without owning a page.
+
+**A spec error corrected by checking.** `PORTFOLIO-CUT.md` claimed three captures were missing — the Unbounded Organ's limits grid, Gliese, and Catchment. All three exist: `img/works/catchment.jpg`, `img/works/gliese.jpg`, and `img/works/unbounded-organ.jpg`, each 1440 x 1080, and all three are in `work-images.json` with capture specs. Nothing was blocked on a capture. The spec is corrected.
+
+**Verified.** `node scripts/audit-cuts.mjs`, run from the repository root rather than the site folder, passes all four cuts: `pfd` reports 13 slides, 100 image references all present on disk, 100 slots carrying explicit `--ar`, 17 h2 headings all matched in the registry, the shared engine loaded, and all three panel layout classes styled in `pfi/styles.css`. `node --check pfd/app.js` passes. At 1440 x 820 landscape: 13 slides, every one exactly the 715 px scroll container and none taller, no document-level horizontal overflow, and zero rendered boxes disagreeing with their picture among the images the browser had decoded. Page 11 measures 715 px with 35.1% picture area — inside the 34–44% band recorded for `pfi` — and neither panel's copy column scrolls internally.
+
+**The ratio invariant was checked off disk rather than in the browser**, because the pane was hidden throughout and images would not decode: all 100 figures were parsed out of `slides.html` and each declared `--ar` compared against the file's real pixel dimensions with PIL. Zero disagreed by more than 1%, `catchment.jpg` included, and the browser measurement separately confirmed each rendered box matches its declared `--ar`.
+
+**Not verified, and why.** `naturalWidth` was zero for every image on page 11 throughout, so the browser-side box-against-picture comparison could not run on that page specifically; the disk check above covers the same invariant by another route. The hidden pane also means the IntersectionObserver counter and the `ResizeObserver` rebuild path were not observed, the same environment limit recorded in the 2026-09-01 entry above.
+
+**Undone.** Catchment's panel copy was written from its ROADMAP mechanism rather than from playing it, so the claim that the bend identifies a particle before its letter is legible is the project's own description and not an observation. Nothing was captured fresh: `catchment.jpg` is whatever the existing capture shows, and `PORTFOLIO-CUT.md` asks for a frame carrying the aperture legend and a bent track together, which was not checked against the file. The cut has not been measured in portrait.
