@@ -1,13 +1,20 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const cuts = ['pfo', 'pfs', 'pft'];
+const cuts = [
+  { name: 'pfo', expectedSlides: 10 },
+  { name: 'pfs', expectedSlides: 10 },
+  { name: 'pft', expectedSlides: 10 },
+  { name: 'pfd', expectedSlides: 13 }
+];
 const baseDir = path.resolve('xyhtamura.github.io');
 const sharedCss = fs.readFileSync(path.join(baseDir, 'pfi', 'styles.css'), 'utf8');
 
 let allPassed = true;
 
-for (const cut of cuts) {
+for (const cutConfig of cuts) {
+  const cut = typeof cutConfig === 'string' ? cutConfig : cutConfig.name;
+  const expectedSlides = typeof cutConfig === 'object' ? cutConfig.expectedSlides : 10;
   console.log(`\n========================================`);
   console.log(`AUDITING CUT: ${cut}`);
   console.log(`========================================`);
@@ -35,12 +42,12 @@ for (const cut of cuts) {
 
   // 1. Verify slide count
   const sections = slidesContent.match(/<section class="page/g) || [];
-  console.log(`Slide count: ${sections.length} / 10`);
-  if (sections.length !== 10) {
-    console.error(`❌ Expected 10 slides, found ${sections.length}`);
+  console.log(`Slide count: ${sections.length} / ${expectedSlides}`);
+  if (sections.length !== expectedSlides) {
+    console.error(`❌ Expected ${expectedSlides} slides, found ${sections.length}`);
     allPassed = false;
   } else {
-    console.log(`✅ Slide count matches 10 exactly.`);
+    console.log(`✅ Slide count matches ${expectedSlides} exactly.`);
   }
 
   // 2. Verify images on disk
