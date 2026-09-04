@@ -1,4 +1,4 @@
-/* Work-link registry for the Limina (Platform Dalí) portfolio cut route.
+/* Work-link registry for the Platform Dalí portfolio cut route.
 
    The slide behaviour and the landscape layout engine are shared: index.html
    loads this file first, then ../pfi/engine.js, which reads the two globals set
@@ -20,6 +20,17 @@ window.portfolioLinks = {
   "The Commitments of Physical Modeling · From Interiority to Interaction": [
     ["Interiority paper", "https://journals.ub.uni-koeln.de/index.php/phidi/article/view/11659"],
     ["Timbre 2026", "https://timbreconference.org/"]
+  ],
+  "Aeropane": [
+    ["Launch tool", "https://xyhtamura.github.io/aeropane/"]
+  ],
+  "W2XDX": [
+    ["Launch instrument", "https://xyhtamura.github.io/w2xdx/"]
+  ],
+  "Cytophones": [
+    ["Open the collection", "https://xyhtamura.github.io/cytophone/"],
+    ["halocline", "https://xyhtamura.github.io/cytophone/cytophone-halocline.html"],
+    ["seismocyte", "https://xyhtamura.github.io/cytophone/cytophone-seismocyte.html"]
   ],
   "Tabota · Cycla": [
     ["Tabota", "https://xyhtamura.github.io/tabota/"],
@@ -115,4 +126,4 @@ window.portfolioLinks = {
   ]
 };
 
-window.portfolioSlides = "slides.html?v=1";
+window.portfolioSlides = "slides.html?v=2";
