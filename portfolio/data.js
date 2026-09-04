@@ -630,6 +630,10 @@ const slides = [
       title: "The Unbounded Organ",
       year: "2026",
       tags: ["digital waveguide", "physical modeling", "categorical drift", "acoustic cutoff", "offline render"],
+      media: [
+        { type: "image", src: "../img/unboundedorgan1.png", label: "The Unbounded Organ interface showing pipe length controls, harmonic modes, and reference lengths" },
+        { type: "image", src: "../img/unboundedorgan2.png", label: "The Unbounded Organ explainer showing the invariant waveguide recursion and 1D wave equation" }
+      ],
       blurb: "A digital waveguide instrument and pipe organ model evaluated without range restriction, spanning pipe lengths from 8.575 mm to 40,075 km and rendered at its true rate. The same 1D physical waveguide specification produces three distinct acoustic categories as mode density increases: a musical note at human scale, a diffuse echo across kilometres, and a continuous ultra-slow drift at planetary scale. Compares physical atmospheric cutoff with digital medium constraints and renders offline audio with Markdown score export.",
       links: [
         { label: "Launch Instrument", url: "https://xyhtamura.github.io/unbounded-organ/" },
