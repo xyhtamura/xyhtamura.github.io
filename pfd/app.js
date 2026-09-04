@@ -141,4 +141,4 @@ window.portfolioLinks = {
   ]
 };
 
-window.portfolioSlides = "slides.html?v=6";
+window.portfolioSlides = "slides.html?v=7";

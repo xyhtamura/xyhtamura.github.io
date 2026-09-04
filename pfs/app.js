@@ -80,4 +80,4 @@ window.portfolioLinks = {
   "Aeropane": [["Launch tool", "https://xyhtamura.github.io/aeropane/"]]
 };
 
-window.portfolioSlides = "slides.html?v=2";
+window.portfolioSlides = "slides.html?v=3";

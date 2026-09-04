@@ -118,7 +118,15 @@
   - Eliminated over-explanation and overly evocative abstractions.
   - Preserved all exact slide structures, figure slots, `--ar` styles, and heading titles for full link-registry and engine compatibility.
 - **Cache Busters**: Bumped `portfolioSlides` to `v=3` in `pfi/app.js` (`index.html` `v=6`), and to `v=2` in `pfo/app.js`, `pfs/app.js`, `pft/app.js` (`index.html` `v=3`).
+2026-09-05 — Antigravity — Replaced photos for Metachamber, Pythia, and Prolepsis in `pfi`, `pfs`, and `pfd`.
+- **Media Asset Replacement**: Copied new capture files from `profiles/open-calls/inhabit/portfolio/images/` into `pfi/media/`:
+  - `p19-b.png` (Metachamber): `1144 × 1179`, `--ar:0.9703` (replaced old `p19-b.jpg`, `--ar:1.3327`).
+  - `p19-c.png` (Pythia): `992 × 830`, `--ar:1.1952` (replaced old `p19-c.jpg`, `--ar:1.3327`).
+  - `p19-d.png` (Prolepsis): `1256 × 1055`, `--ar:1.1905` (replaced old `p19-d.jpg`, `--ar:1.3327`).
+- **Slides Updated**: Updated image sources and exact `--ar` values in `pfi/slides.html` (slide 19), `pfs/slides.html` (slide 9), and `pfd/slides.html` (slide 8).
+- **Cache Busters**: Bumped `portfolioSlides` in `pfi/app.js` (`v=4`), `pfs/app.js` (`v=3`), and `pfd/app.js` (`v=7`).
 - **Verification**:
-  - `node xyhtamura.github.io/scripts/audit-cuts.mjs` passed cleanly with 0 errors across all cuts (`pfo`, `pfs`, `pft`, `pfd`).
-  - `node portfolio-studio/scripts/check-source.mjs` verified all 5 cuts (`pfi`, `pfo`, `pfs`, `pft`, `pfd`): 366 figures, 366 slots, all ratios finite and positive, 0 missing files on disk.
+  - `node xyhtamura.github.io/scripts/audit-cuts.mjs` passed cleanly with 0 errors across all 4 cuts.
+  - `node portfolio-studio/scripts/check-source.mjs` passed across all 5 cuts (`pfi`, `pfo`, `pfs`, `pft`, `pfd`): 366 figures, 366 slots, all 366 ratios finite and positive, 0 missing files.
+
 
