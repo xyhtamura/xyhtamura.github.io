@@ -121,7 +121,8 @@ window.portfolioLinks = {
     ["Launch tool", "https://xyhtamura.github.io/element-projections/"]
   ],
   "Catchment": [
-    ["Play it", "https://xyhtamura.github.io/catchment/"]
+    ["Play it", "https://xyhtamura.github.io/catchment/"],
+    ["Demo reel", "https://www.instagram.com/p/Dcy2SiXhNXA/"]
   ],
   "Istorya sang Bȧlatyagon": [
     ["Critical essay & installation", "https://xyhtamura.github.io/istorya-sang-balatyagon/"],
@@ -135,9 +136,9 @@ window.portfolioLinks = {
     ["Open project", "https://xyhtamura.github.io/tanim-kalye/"],
     ["Quezon City Biennial", "https://www.quezoncitybiennial.com/"]
   ],
-  "The browser shelf, and the static-first rule": [
-    ["Full index", "https://xyhtamura.github.io/portfolio/"]
+  "The browser shelf": [
+    ["xyhtamura.github.io", "https://xyhtamura.github.io/"]
   ]
 };
 
-window.portfolioSlides = "slides.html?v=3";
+window.portfolioSlides = "slides.html?v=4";
