@@ -48,4 +48,4 @@ window.portfolioLinks = {
   ]
 };
 
-window.portfolioSlides = "slides.html?v=1";
+window.portfolioSlides = "slides.html?v=2";

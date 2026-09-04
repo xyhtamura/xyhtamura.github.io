@@ -117,4 +117,4 @@ window.portfolioLinks = {
   "Table of Metalloids": [["Open table", "https://xyhtamura.github.io/table-of-metalloids/"]]
 };
 
-window.portfolioSlides = "slides.html?v=2";
+window.portfolioSlides = "slides.html?v=3";

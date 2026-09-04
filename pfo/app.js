@@ -53,4 +53,4 @@ window.portfolioLinks = {
   "Physa": [["Launch instrument", "https://xyhtamura.github.io/anexacta/physa/"]]
 };
 
-window.portfolioSlides = "slides.html?v=1";
+window.portfolioSlides = "slides.html?v=2";

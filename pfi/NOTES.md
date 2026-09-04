@@ -105,3 +105,20 @@
 - **Verification**: Ran `node xyhtamura.github.io/scripts/audit-cuts.mjs` from root; all 4 cuts passed (`pfd`: 16/16 slides, 107 images, 107 figure slots with `--ar`, 20 headings matched, 0 errors).
 
 2026-09-04 — Codex — Rewrote the `pfd` cover bio as a short statement of practice for the Platform Dalí context. It now connects browser instruments, games, electronic literature, and music through the question of how technical systems shape perception and representation, while leaving biographical detail to the separately submitted bio. Kept public pronouns as they/them, removed em dashes, and bumped the `pfd` cache keys to `v=6`. Verified with the portfolio-cut audit and by loading the served page at 1440 × 820; the bio rendered in full without overflow. No other `pfd` copy was changed. Existing uncommitted work in the same files was preserved.
+
+2026-09-04 — Antigravity — Plain-first rewrites across `pfi`, `pfo`, `pfs`, `pft` slide decks and cache buster updates.
+- **Draft Backups Created**:
+  - `profiles/open-calls/inhabit/PFI-SLIDES-DRAFT-2026-09-04.md` (20 slides)
+  - `profiles/PFO-SLIDES-DRAFT-2026-09-04.md` (10 slides)
+  - `profiles/PFS-SLIDES-DRAFT-2026-09-04.md` (10 slides)
+  - `profiles/PFT-SLIDES-DRAFT-2026-09-04.md` (10 slides)
+- **Slide Copy Rewrites**: Rewrote all slide copy in `pfi/slides.html`, `pfo/slides.html`, `pfs/slides.html`, and `pft/slides.html` following the plain-first rule from `WRITING_VOICE_GUIDE.md`:
+  - Plainly identify the instrument, software tool, sound artwork, or electronic text and describe what a player/user does with it.
+  - State acoustic models, wave equations, particle dynamics, or structural concepts only after the concrete medium and function are established.
+  - Eliminated over-explanation and overly evocative abstractions.
+  - Preserved all exact slide structures, figure slots, `--ar` styles, and heading titles for full link-registry and engine compatibility.
+- **Cache Busters**: Bumped `portfolioSlides` to `v=3` in `pfi/app.js` (`index.html` `v=6`), and to `v=2` in `pfo/app.js`, `pfs/app.js`, `pft/app.js` (`index.html` `v=3`).
+- **Verification**:
+  - `node xyhtamura.github.io/scripts/audit-cuts.mjs` passed cleanly with 0 errors across all cuts (`pfo`, `pfs`, `pft`, `pfd`).
+  - `node portfolio-studio/scripts/check-source.mjs` verified all 5 cuts (`pfi`, `pfo`, `pfs`, `pft`, `pfd`): 366 figures, 366 slots, all ratios finite and positive, 0 missing files on disk.
+
