@@ -69,6 +69,20 @@ window.portfolioLinks = {
     ["The Wrong Eclipse", "https://thewrong.org"],
     ["xyhnthesizer demo", "https://www.instagram.com/p/DXrk60ITOau/"]
   ],
+  "Anexacta": [
+    ["Open the suite", "https://xyhtamura.github.io/anexacta/"],
+    ["Aliquoto", "https://xyhtamura.github.io/anexacta/aliquoto/"],
+    ["Cella", "https://xyhtamura.github.io/anexacta/cella/"],
+    ["Moire", "https://xyhtamura.github.io/anexacta/moire/"],
+    ["Physa", "https://xyhtamura.github.io/anexacta/physa/"],
+    ["Spolium", "https://xyhtamura.github.io/anexacta/spolium/"]
+  ],
+  "Aliquoto": [["Launch instrument", "https://xyhtamura.github.io/anexacta/aliquoto/"]],
+  "Cella": [["Launch instrument", "https://xyhtamura.github.io/anexacta/cella/"]],
+  "Moire": [["Launch instrument", "https://xyhtamura.github.io/anexacta/moire/"]],
+  "Physa": [["Launch instrument", "https://xyhtamura.github.io/anexacta/physa/"]],
+  "Spolium": [["Launch instrument", "https://xyhtamura.github.io/anexacta/spolium/"]],
+  "Benzaiten": [["Launch instrument", "https://xyhtamura.github.io/benzaiten/"]],
   "Experimental Pop and Performance": [
     ["Spotify", "https://open.spotify.com/artist/6sC8YWzht783z5DhjB1j0N"],
     ["Bandcamp", "https://xyhtamura.bandcamp.com"],
@@ -126,4 +140,4 @@ window.portfolioLinks = {
   ]
 };
 
-window.portfolioSlides = "slides.html?v=2";
+window.portfolioSlides = "slides.html?v=3";
