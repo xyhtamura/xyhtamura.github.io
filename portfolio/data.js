@@ -1267,6 +1267,27 @@ links: [
       blurb: "A paper analyzing artificial interaction partners through the social roles they already perform rather than as containers of hidden consciousness. AIBO, android Buddhist figures, companion robots, and LLMs show personhood emerging through communicative affordances involving affect, ritual, kinship, and care; the cases are drawn from Japanese robotics and relational accounts of personhood."
     },
     {
+      id: "indeterminate-turn",
+      title: "The Indeterminate Turn: Characterizing a Type of Poetic Experience Across Media",
+      year: "2025",
+      tags: ["intermedia poetics"],
+      blurb: "A paper naming a type of poetic experience that recurs across videopoetry, poetic film, and conceptual art, and characterizing it as the indeterminate turn. Starting from Tom Konyves’s videopoetry manifesto and Brandon Gass’s account of poeticism in cinema, it argues the effect depends on juxtaposition that suggests rather than illustrates — image, text, and sound that decline to restate each other — and works through the volta, compression, affordance, the vanitas and Magritte, cliché, surprise, and non-narrativity to locate where the turn happens."
+    },
+    {
+      id: "qualias-barber",
+      title: "Qualia’s Barber",
+      year: "2025",
+      tags: ["philosophy of mind"],
+      blurb: "An essay arguing that qualia are artifacts of partial attention. Reading Russell’s barber paradox against introspection, it holds that reporting an experience needs attention left over to report with, so the states of full absorption described in Zen and Dzogchen — shikantaza, rigpa — dissolve the observer that would do the reporting; and treating the noticing as part of the experience opens a recursion of being aware of being aware that settles at no particular level."
+    },
+    {
+      id: "liquid-mind",
+      title: "The Liquid Mind",
+      year: "2025",
+      tags: ["philosophy of mind"],
+      blurb: "An essay arguing that a mind moves between integration and fragmentation rather than holding to either. Dissociative identity disorder, split-brain cases, and alien hand syndrome are read against Hilary Putnam’s anti-nesting principle, which holds that a conscious organism cannot have consciously experiencing parts; mental liquidity proposes coherence and separation as states a mind shifts between under internal and external conditions, with the dissociative cases carrying distinct neural signatures rather than only distinct reports."
+    },
+    {
       id: "commitments-of-physical-modeling",
       title: "The Commitments of Physical Modeling: Timbre, Mediation, and Virtual Instrument Construction",
       year: "2026",
