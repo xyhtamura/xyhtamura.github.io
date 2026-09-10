@@ -1,9 +1,12 @@
-/* Cutaway: Sims-like dialog box for a house that has lost its walls. */
+/* Cutaway: Sims 1-like dialog box for a house that has lost its walls. */
 .cutaway-sims {
   --sims-sky: #99ddf1;
   --sims-sky-deep: #62bbe0;
   --sims-ui-blue: #2b75bb;
   --sims-ui-deep: #17518d;
+  --sims-dialog: #155fa5;
+  --sims-dialog-deep: #06417f;
+  --sims-dialog-light: #4eb5ec;
   --sims-ui-light: #e9fbff;
   --sims-ui-mid: #bce9eb;
   --sims-lawn: #5fb85f;
@@ -90,7 +93,7 @@
     linear-gradient(135deg, transparent 0 45.2%, rgba(145,83,45,0.24) 45.4% 47%, transparent 47.2%),
     linear-gradient(90deg, rgba(43,117,187,0.08) 1px, transparent 1px),
     linear-gradient(0deg, rgba(43,117,187,0.08) 1px, transparent 1px),
-    linear-gradient(180deg, var(--sims-ui-mid) 0 45%, var(--sims-wall) 45% 72%, var(--sims-floor) 72% 100%);
+    linear-gradient(180deg, var(--sims-ui-mid) 0 35%, var(--sims-sky) 35% 52%, var(--sims-lawn) 52% 100%);
   background-size: 100% 100%, 32px 32px, 32px 32px, 100% 100%;
   box-shadow:
     inset 4px 4px 0 rgba(255,255,255,0.82),
@@ -135,47 +138,63 @@
   position: relative;
   z-index: 1;
   max-width: 650px;
-  border: 2px solid #ffffff;
+  border: 3px solid #dff9ff;
   border-radius: 8px;
   box-shadow:
-    inset 2px 2px 0 rgba(255,255,255,0.86),
-    inset -3px -3px 0 rgba(57,132,158,0.22),
-    0 8px 0 rgba(33,98,148,0.14);
+    inset 2px 2px 0 rgba(255,255,255,0.72),
+    inset -4px -4px 0 rgba(5,41,86,0.42),
+    0 8px 0 rgba(33,98,148,0.18);
 }
 
 .cutaway-sims .poem-header {
-  margin-bottom: 18px;
-  padding: 18px 22px 20px;
-  background: linear-gradient(180deg, #fbffff 0%, var(--sims-ui-light) 52%, var(--sims-ui-mid) 100%);
+  margin-bottom: 0;
+  padding: 14px 20px 16px;
+  color: #ffffff;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,0.18) 0 12px, transparent 12px 24px),
+    linear-gradient(180deg, var(--sims-dialog-light) 0%, var(--sims-dialog) 42%, var(--sims-dialog-deep) 100%);
+  box-shadow:
+    inset 2px 2px 0 rgba(255,255,255,0.72),
+    inset -4px -2px 0 rgba(5,41,86,0.4);
 }
 
 .cutaway-sims .kicker {
-  color: var(--sims-ui-deep);
+  color: #d8f9ff;
+  text-shadow: 1px 1px 0 rgba(1,30,69,0.76);
 }
 
 .cutaway-sims .poem-header h1 {
   max-width: 18ch;
-  color: var(--sims-ink);
-  text-shadow: 1px 2px 0 rgba(255,255,255,0.82);
+  color: #ffffff;
+  text-shadow:
+    2px 2px 0 rgba(0,38,86,0.76),
+    0 0 8px rgba(180,239,255,0.28);
 }
 
 .cutaway-sims .poem-body {
-  padding: 22px 24px;
+  padding: 24px 26px 28px;
+  border-top: 0;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
   background:
-    linear-gradient(90deg, rgba(23,81,141,0.08) 1px, transparent 1px),
-    linear-gradient(0deg, rgba(23,81,141,0.08) 1px, transparent 1px),
-    rgba(255, 253, 234, 0.94);
-  background-size: 24px 24px;
+    linear-gradient(180deg, rgba(255,255,255,0.18), transparent 54px),
+    linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255,255,255,0.05) 1px, transparent 1px),
+    linear-gradient(180deg, #1b72b8 0%, var(--sims-dialog) 48%, var(--sims-dialog-deep) 100%);
+  background-size: 100% 100%, 24px 24px, 24px 24px, 100% 100%;
   box-shadow:
-    inset 2px 2px 0 rgba(255,255,255,0.86),
-    inset -3px -3px 0 rgba(179,139,71,0.18),
-    0 8px 0 rgba(118,85,45,0.14);
+    inset 2px 0 0 rgba(255,255,255,0.62),
+    inset -4px -4px 0 rgba(3,31,70,0.48),
+    0 8px 0 rgba(17,68,112,0.22);
 }
 
 .cutaway-sims .poem-text {
-  color: #17223a;
+  color: #ffffff;
   font-size: clamp(1.03rem, 2vw, 1.15rem);
   line-height: 1.62;
+  text-shadow: 1px 1px 0 rgba(0,31,75,0.78);
 }
 
 .cutaway-sims .poem-switcher {
