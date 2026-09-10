@@ -1,0 +1,232 @@
+/* Cutaway: Sims-like dialog box for a house that has lost its walls. */
+.cutaway-sims {
+  --sims-sky: #99ddf1;
+  --sims-sky-deep: #62bbe0;
+  --sims-ui-blue: #2b75bb;
+  --sims-ui-deep: #17518d;
+  --sims-ui-light: #e9fbff;
+  --sims-ui-mid: #bce9eb;
+  --sims-lawn: #5fb85f;
+  --sims-lawn-deep: #338a43;
+  --sims-floor: #f2d28b;
+  --sims-wall: #f7e7bf;
+  --sims-wood: #ae7042;
+  --sims-ink: #10233c;
+  --sims-soft-shadow: rgba(18, 69, 104, 0.32);
+  color: var(--sims-ink);
+  background:
+    linear-gradient(90deg, rgba(255,255,255,0.42) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255,255,255,0.42) 1px, transparent 1px),
+    linear-gradient(135deg, transparent 0 44%, rgba(70,153,76,0.72) 44.3% 46.2%, transparent 46.5%),
+    linear-gradient(180deg, var(--sims-sky) 0 47%, #7cd0e8 47% 49%, var(--sims-lawn) 49% 100%);
+  background-size: 48px 48px, 48px 48px, 100% 100%, 100% 100%;
+  background-attachment: fixed;
+}
+
+.cutaway-sims::before {
+  opacity: 0.35;
+  background:
+    linear-gradient(150deg, transparent 0 49%, rgba(255,255,255,0.54) 49.15% 49.8%, transparent 50%),
+    linear-gradient(30deg, transparent 0 58%, rgba(23,81,141,0.22) 58.15% 58.7%, transparent 59%);
+}
+
+.cutaway-sims .ambient {
+  opacity: 0.78;
+  filter: none;
+}
+
+.cutaway-sims .ambient-a,
+.cutaway-sims .ambient-b {
+  width: 74px;
+  height: 112px;
+  border-radius: 0;
+  background:
+    linear-gradient(135deg, transparent 0 29%, #68f46e 29% 50%, transparent 50%),
+    linear-gradient(45deg, transparent 0 29%, #18a947 29% 50%, transparent 50%);
+  clip-path: polygon(50% 0, 100% 48%, 50% 100%, 0 48%);
+  box-shadow: 0 18px 34px rgba(13, 91, 45, 0.34);
+}
+
+.cutaway-sims .ambient-a {
+  top: 74px;
+  right: max(24px, calc((100vw - 920px) / 2));
+}
+
+.cutaway-sims .ambient-b {
+  bottom: 42px;
+  left: max(18px, calc((100vw - 920px) / 2));
+  opacity: 0.42;
+  transform: scale(0.58) rotate(11deg);
+}
+
+.cutaway-sims .reading-shell {
+  width: min(100% - 24px, 980px);
+}
+
+.cutaway-sims .reading-nav {
+  margin-bottom: 18px;
+}
+
+.cutaway-sims .skip-link,
+.cutaway-sims .pearl-link,
+.cutaway-sims .site-link {
+  color: #f8fdff;
+  border: 2px solid rgba(255,255,255,0.72);
+  border-radius: 7px;
+  background: linear-gradient(180deg, #5aa7e0 0%, var(--sims-ui-blue) 54%, var(--sims-ui-deep) 100%);
+  box-shadow:
+    inset 1px 1px 0 rgba(255,255,255,0.74),
+    inset -2px -2px 0 rgba(10,43,82,0.34),
+    0 4px 0 rgba(16,69,112,0.28);
+}
+
+.cutaway-sims .poem-page {
+  width: min(100%, 860px);
+  overflow: hidden;
+  color: var(--sims-ink);
+  border: 3px solid #ffffff;
+  border-radius: 10px;
+  background:
+    linear-gradient(135deg, transparent 0 45.2%, rgba(145,83,45,0.24) 45.4% 47%, transparent 47.2%),
+    linear-gradient(90deg, rgba(43,117,187,0.08) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(43,117,187,0.08) 1px, transparent 1px),
+    linear-gradient(180deg, var(--sims-ui-mid) 0 45%, var(--sims-wall) 45% 72%, var(--sims-floor) 72% 100%);
+  background-size: 100% 100%, 32px 32px, 32px 32px, 100% 100%;
+  box-shadow:
+    inset 4px 4px 0 rgba(255,255,255,0.82),
+    inset -5px -5px 0 rgba(42,116,137,0.26),
+    0 22px 0 -12px rgba(30,115,64,0.46),
+    0 30px 48px var(--sims-soft-shadow);
+  backdrop-filter: none;
+}
+
+.cutaway-sims .poem-page::before {
+  top: -72px;
+  right: -72px;
+  bottom: auto;
+  left: auto;
+  width: 282px;
+  height: 252px;
+  border-radius: 6px;
+  background:
+    linear-gradient(90deg, rgba(95,52,26,0.17) 0 12%, transparent 12% 22%, rgba(95,52,26,0.17) 22% 34%, transparent 34%),
+    linear-gradient(135deg, #d69a65, #f5dca9 44%, #9c5a32 45% 48%, #f9e9c7 49%);
+  box-shadow: 0 16px 26px rgba(96,61,33,0.24);
+  transform: rotate(24deg);
+}
+
+.cutaway-sims .poem-page::after {
+  content: "";
+  position: absolute;
+  right: 28px;
+  bottom: 92px;
+  width: 170px;
+  height: 112px;
+  pointer-events: none;
+  opacity: 0.7;
+  background:
+    linear-gradient(90deg, var(--sims-wood) 0 10px, transparent 10px 38px, var(--sims-wood) 38px 48px, transparent 48px 76px, var(--sims-wood) 76px 86px, transparent 86px 114px, var(--sims-wood) 114px 124px, transparent 124px),
+    linear-gradient(0deg, var(--sims-wood) 0 10px, transparent 10px 51px, var(--sims-wood) 51px 61px, transparent 61px 102px, var(--sims-wood) 102px);
+  transform: rotate(-7deg) skewY(-10deg);
+}
+
+.cutaway-sims .poem-header,
+.cutaway-sims .poem-body {
+  position: relative;
+  z-index: 1;
+  max-width: 650px;
+  border: 2px solid #ffffff;
+  border-radius: 8px;
+  box-shadow:
+    inset 2px 2px 0 rgba(255,255,255,0.86),
+    inset -3px -3px 0 rgba(57,132,158,0.22),
+    0 8px 0 rgba(33,98,148,0.14);
+}
+
+.cutaway-sims .poem-header {
+  margin-bottom: 18px;
+  padding: 18px 22px 20px;
+  background: linear-gradient(180deg, #fbffff 0%, var(--sims-ui-light) 52%, var(--sims-ui-mid) 100%);
+}
+
+.cutaway-sims .kicker {
+  color: var(--sims-ui-deep);
+}
+
+.cutaway-sims .poem-header h1 {
+  max-width: 18ch;
+  color: var(--sims-ink);
+  text-shadow: 1px 2px 0 rgba(255,255,255,0.82);
+}
+
+.cutaway-sims .poem-body {
+  padding: 22px 24px;
+  background:
+    linear-gradient(90deg, rgba(23,81,141,0.08) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(23,81,141,0.08) 1px, transparent 1px),
+    rgba(255, 253, 234, 0.94);
+  background-size: 24px 24px;
+  box-shadow:
+    inset 2px 2px 0 rgba(255,255,255,0.86),
+    inset -3px -3px 0 rgba(179,139,71,0.18),
+    0 8px 0 rgba(118,85,45,0.14);
+}
+
+.cutaway-sims .poem-text {
+  color: #17223a;
+  font-size: clamp(1.03rem, 2vw, 1.15rem);
+  line-height: 1.62;
+}
+
+.cutaway-sims .poem-switcher {
+  position: relative;
+  z-index: 1;
+  max-width: 650px;
+  border-top-color: rgba(23,81,141,0.26);
+}
+
+.cutaway-sims .poem-switcher a {
+  min-height: 34px;
+  padding: 6px 12px;
+  color: #f8fdff;
+  border: 2px solid rgba(255,255,255,0.62);
+  border-radius: 7px;
+  background: linear-gradient(180deg, #40b979 0%, #228c55 58%, #126b3f 100%);
+  box-shadow:
+    inset 1px 1px 0 rgba(255,255,255,0.54),
+    inset -2px -2px 0 rgba(10,76,44,0.34),
+    0 4px 0 rgba(12,81,47,0.26);
+}
+
+.cutaway-sims .poem-switcher a:hover,
+.cutaway-sims .poem-switcher a:focus-visible {
+  color: #ffffff;
+  border-bottom-color: rgba(255,255,255,0.62);
+}
+
+@media (max-width: 700px) {
+  .cutaway-sims .reading-shell {
+    width: min(100% - 16px, 980px);
+  }
+
+  .cutaway-sims .poem-page {
+    padding: 28px 14px 30px;
+  }
+
+  .cutaway-sims .poem-header,
+  .cutaway-sims .poem-body {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .cutaway-sims .poem-page::before {
+    width: 190px;
+    height: 180px;
+    right: -92px;
+  }
+
+  .cutaway-sims .poem-page::after {
+    opacity: 0.28;
+    right: -18px;
+  }
+}
