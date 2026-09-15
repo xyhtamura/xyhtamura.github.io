@@ -555,6 +555,14 @@ h1 {
   tab-size: 3;
 }
 
+/* Lineated poems: a line never wraps. shortlit-lines.js scales the font down
+   when the longest line is wider than the column; without the script, the
+   poem scrolls sideways rather than breaking a line. Prose keeps wrapping. */
+body:not(.prose-poem) pre.poem-text {
+  white-space: pre;
+  overflow-x: auto;
+}
+
 .prose-poem .poem-text { max-width: 54ch; line-height: 1.75; }
 
 .poem-switcher {
@@ -598,7 +606,7 @@ h1 {
   line-height: 1.55;
 }
 
-.mouth-poem > span, .translation { display: block; width: max-content; max-width: 100%; }
+.mouth-poem > span, .translation { display: block; width: max-content; white-space: nowrap; }
 
 .translation {
   position: relative;
