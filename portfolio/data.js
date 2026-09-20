@@ -40,8 +40,8 @@ const slides = [
       id: "fashion-hour-omnipresence",
       title: "Fashion Hour Omnipresence",
       year: "2026",
-      tags: ["intermedia", "videopoem", "3D computer graphics", "early web", "electronic literature"],
-      blurb: "A 17.5-second videopoem in procedural 3D graphics contemplating early internet life. The camera travels through a space bounded by a cloud ceiling, rippling ocean, and sand wall, passing warped non-Platonic solids and eight animated graphics from the early web that assemble into a found image-text poem. The rendering reproduces the material artifacts of mid-90s consumer 3D (affine texture mapping, vertex snapping, and 5/6/5 colour under an ordered Bayer dither), scored to a synthesized, EQ-dampened classic-rock ballad intro, and accompanied by a companion poem in its video caption.",
+      tags: ["intermedia", "videopoem", "3D computer graphics", "early web", "electronic literature", "IDM"],
+      blurb: "A 17.5-second videopoem in procedural 3D graphics contemplating early internet life. The camera travels through a space bounded by a cloud ceiling, rippling ocean, and sand wall, passing warped non-Platonic solids and eight animated graphics from the early web that assemble into a found image-text poem. The rendering reproduces the material artifacts of mid-90s consumer 3D (affine texture mapping, vertex snapping, and 5/6/5 colour under an ordered Bayer dither), scored to a synthesized, EQ-dampened classic-rock ballad intro with IDM elements, and accompanied by a companion poem in its video caption.",
       links: [
         { label: "Watch on Instagram", url: "https://www.instagram.com/p/DdhDkZMz4zr/" }
       ]
