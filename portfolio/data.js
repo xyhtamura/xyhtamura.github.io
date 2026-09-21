@@ -362,10 +362,14 @@ const slides = [
         ]
       },
       {
-        title: "breakfast",
+        id: "443am",
+        title: "4:43 A.M.",
         year: "2025",
         blurb: "A lo-fi spoken-word poem recorded on a phone during an early-morning walk. Breath, footsteps, and traffic hold together a roadside animal death and an eroticized approaching runner, placing observation, fantasy, desire, violence, and complicity in the same field recording.",
-        tags: ["spoken word", "field recording", "sound sketch"]
+        tags: ["spoken word", "field recording", "sound sketch"],
+        links: [
+          { label: "Listen", url: "https://xyhtamura.github.io/443am.mp3" }
+        ]
       },
       {
         title: "Uniform",
