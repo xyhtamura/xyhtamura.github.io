@@ -5,7 +5,8 @@ const cuts = [
   { name: 'pfo', expectedSlides: 10 },
   { name: 'pfs', expectedSlides: 10 },
   { name: 'pft', expectedSlides: 10 },
-  { name: 'pfd', expectedSlides: 16 }
+  { name: 'pfd', expectedSlides: 16 },
+  { name: 'pfm', expectedSlides: 10 }
 ];
 const baseDir = path.resolve('xyhtamura.github.io');
 const sharedCss = fs.readFileSync(path.join(baseDir, 'pfi', 'styles.css'), 'utf8');

@@ -1,0 +1,44 @@
+/* Route-local rules for the SAM cut. Everything else comes from ../pfi/styles.css.
+
+   One page needs something no other cut has: a contents list on the cover. SAM
+   reads this as a 10-page PDF rather than as a scrolling site, and a PDF wants a
+   first page you can navigate from. The links use the slide ids the engine
+   assigns (`02-istorya-sang-balatyagon` and so on), so they become page jumps
+   when the route is printed. */
+
+.cover .contents {
+  list-style: none;
+  margin: .9rem 0 .8rem;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: .12rem 1.4rem;
+  font-family: "Lexend Deca", system-ui, sans-serif;
+  font-size: .72rem;
+}
+
+.cover .contents li {
+  display: flex;
+  align-items: baseline;
+  gap: .4rem;
+  border-bottom: 1px solid rgba(35, 33, 59, .18);
+  padding: .16rem 0;
+}
+
+.cover .contents a {
+  color: inherit;
+  text-decoration: none;
+  flex: 1 1 auto;
+}
+
+.cover .contents a:hover,
+.cover .contents a:focus-visible { text-decoration: underline; }
+
+.cover .contents .page-number {
+  font-variant-numeric: tabular-nums;
+  opacity: .65;
+}
+
+@media (max-width: 700px) {
+  .cover .contents { font-size: .78rem; gap: .1rem .8rem; }
+}
