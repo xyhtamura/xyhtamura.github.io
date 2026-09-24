@@ -6,19 +6,19 @@
       "file": "pages/cover.html"
     },
     {
-      "from": "pfi",
-      "heading": "Istorya sang Bȧlatyagon"
-    },
-    {
-      "from": "pfi",
-      "heading": "Tanim-Kalye"
+      "file": "pages/ombak-lock.html"
     },
     {
       "from": "pfi",
       "heading": "Eosforos"
     },
     {
-      "file": "pages/ombak-lock.html"
+      "from": "pfi",
+      "heading": "Istorya sang Bȧlatyagon"
+    },
+    {
+      "from": "pfi",
+      "heading": "Tanim-Kalye"
     },
     {
       "from": "pfo",

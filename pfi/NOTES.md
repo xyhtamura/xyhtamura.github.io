@@ -6,6 +6,11 @@
 
 ## Work log
 
+2026-09-24 (later) — Claude Code — Resequenced `pfm` and retitled its last page, on Xyh's decision. *Ombak Lock* and *Eosforos* move to pages 2 and 3, so the deck opens on the tuning argument the SAM statement proposes; *Istorya* and *Tanim-Kalye* follow at 4 and 5. Page 10 is *Tools, instruments, web art* and now says what the three words mean — a tool makes something you take away, an instrument sounds while it is open, a web art piece is read rather than operated — instead of presenting a wall of thumbnails under "Further browser works". Reordering was three lines in `plan.json`; the contents list, the link-registry key and the folios followed.
+
+Two print-only faults fixed in `portfolio-studio/scripts/print-route.mjs` rather than here, since they are about sheets and not screens: the big translucent number is `data-index`, which is zero-based, so page 10 printed a **9** — the builder now writes the real page number — and every sheet from 2 on carries a line reading `Xyh Tamura · Contents · N / 10`, whose *Contents* is a link back to page 1. Verified in the rebuilt PDF: all ten pages reachable from inside the document, up from nine.
+
+
 2026-09-24 — Claude Code — Xyh's four captures landed in `img/`, and `pfm` used them: *Drawing the Hours* (two, the midnight meadow and a Noon story card), *Ombak Lock* with a lock open, and *kíkik* with a cicada recording analysed. Page 8 became three works, page 9 gained *kíkik* as a fourth tool, and page 5 leads with the current *Ombak Lock* interface.
 
 **`.panels.triple.across` is new in `styles.css`, and it is why page 8 works.** A stacked landscape triple gives each panel a third of the slide's height and puts a landscape picture beside its copy inside that band, which is how `pfs` slide 6 ends up at 8% picture area. Across, each panel takes a full-height column and stacks picture over copy, so the picture is as wide as the column rather than as tall as a third of the slide. The slot caps both dimensions against the panel's own container height (`52cqh`, and a matching `max-width` of that times the ratio), which is the invariant this stylesheet is built on. Measured on page 8: **18% picture area stacked, 40% across.** `audit-cuts.mjs` enforces that a modifier used in a cut has a rule here, so the new class was checked the moment it was used.

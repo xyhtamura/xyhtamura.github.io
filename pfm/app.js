@@ -45,7 +45,7 @@ window.portfolioLinks = {
     ["kíkik", "https://xyhtamura.github.io/kikik/"],
     ["Binlod", "https://xyhtamura.github.io/binlod/"]
   ],
-  "Further browser works": [["The whole shelf", "https://xyhtamura.github.io"]]
+  "Tools, instruments, web art": [["The whole shelf", "https://xyhtamura.github.io"]]
 };
 
 window.portfolioSlides = "slides.html?v=1";
