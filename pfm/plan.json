@@ -2,15 +2,40 @@
   "title": "Xyh Tamura — Portfolio for SAM Residencies Cycle 4",
   "out": "slides.html",
   "pages": [
-    { "file": "pages/cover.html" },
-    { "from": "pfi", "heading": "Istorya sang Bȧlatyagon" },
-    { "from": "pfi", "heading": "Tanim-Kalye" },
-    { "from": "pfi", "heading": "Eosforos" },
-    { "file": "pages/ombak-lock.html" },
-    { "from": "pfo", "heading": "Cytophones" },
-    { "from": "pfi", "heading": "Experimental Pop and Performance" },
-    { "file": "pages/playable.html" },
-    { "from": "pfi", "heading": "Tabota · Cycla · Stanzuary" },
-    { "file": "pages/shelf.html" }
+    {
+      "file": "pages/cover.html"
+    },
+    {
+      "from": "pfi",
+      "heading": "Istorya sang Bȧlatyagon"
+    },
+    {
+      "from": "pfi",
+      "heading": "Tanim-Kalye"
+    },
+    {
+      "from": "pfi",
+      "heading": "Eosforos"
+    },
+    {
+      "file": "pages/ombak-lock.html"
+    },
+    {
+      "from": "pfo",
+      "heading": "Cytophones"
+    },
+    {
+      "from": "pfi",
+      "heading": "Experimental Pop and Performance"
+    },
+    {
+      "file": "pages/playable.html"
+    },
+    {
+      "file": "pages/notation.html"
+    },
+    {
+      "file": "pages/shelf.html"
+    }
   ]
 }

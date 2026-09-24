@@ -37,7 +37,7 @@ window.portfolioLinks = {
     ["Electropond", "https://xyhtamura.github.io/electropond/"],
     ["Drawing the Hours", "https://xyhtamura.github.io/drawing-the-hours/"]
   ],
-  "Tabota · Cycla · Stanzuary": [
+  "Tabota · Cycla · Stanzuary · kíkik": [
     ["Tabota", "https://xyhtamura.github.io/tabota/"],
     ["Tabota Roll", "https://xyhtamura.github.io/tabota/roll/"],
     ["Cycla", "https://xyhtamura.github.io/tabota/cycla/builder/"],

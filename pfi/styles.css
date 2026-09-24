@@ -629,6 +629,32 @@ p {
   /* The mirror of `uneven`, for a split whose second work carries the pictures. */
   .panels.split.insulae-heavy { grid-template-rows: minmax(0, 1fr) minmax(0, 1.3fr); }
   .panels.triple { grid-template-columns: minmax(0, 1fr); grid-template-rows: repeat(3, minmax(0, 1fr)); }
+  /* Three side by side instead of three stacked. A stacked triple gives each
+     panel a third of the slide's height, and a landscape picture beside its copy
+     inside that band comes out small — measured at 8% picture area on pfs slide
+     6. Across, each panel gets a full-height column and stacks its picture over
+     its copy, so the picture is as wide as the column instead of as tall as a
+     third of the slide. */
+  .panels.triple.across {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: minmax(0, 1fr);
+  }
+  .panels.triple.across > .panel {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    align-items: start;
+    gap: clamp(.4rem, 1vh, .8rem);
+  }
+  /* The panel is a size container, so the ceiling is in its own height. Both
+     dimensions are capped, or the width outruns the clamped height and the box
+     stops being the picture. */
+  .panels.triple.across > .panel > .slot {
+    max-height: 52cqh;
+    max-width: min(100%, calc(52cqh * var(--ar, 1)));
+  }
+  .panels.triple.across .panel p { font-size: clamp(.68rem, .76vw, .78rem); line-height: 1.36; }
+  .panels.triple.across .panel h3 { font-size: clamp(.82rem, 1vw, .95rem); }
+  .panels.triple.across .work-links { margin-bottom: .2rem; font-size: .55rem; }
   .panels.quad { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); }
   .panels.six { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(3, minmax(0, 1fr)); }
 

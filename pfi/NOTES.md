@@ -6,6 +6,18 @@
 
 ## Work log
 
+2026-09-24 — Claude Code — Xyh's four captures landed in `img/`, and `pfm` used them: *Drawing the Hours* (two, the midnight meadow and a Noon story card), *Ombak Lock* with a lock open, and *kíkik* with a cicada recording analysed. Page 8 became three works, page 9 gained *kíkik* as a fourth tool, and page 5 leads with the current *Ombak Lock* interface.
+
+**`.panels.triple.across` is new in `styles.css`, and it is why page 8 works.** A stacked landscape triple gives each panel a third of the slide's height and puts a landscape picture beside its copy inside that band, which is how `pfs` slide 6 ends up at 8% picture area. Across, each panel takes a full-height column and stacks picture over copy, so the picture is as wide as the column rather than as tall as a third of the slide. The slot caps both dimensions against the panel's own container height (`52cqh`, and a matching `max-width` of that times the ratio), which is the invariant this stylesheet is built on. Measured on page 8: **18% picture area stacked, 40% across.** `audit-cuts.mjs` enforces that a modifier used in a cut has a rule here, so the new class was checked the moment it was used.
+
+**Page 9 is now authored rather than lifted.** It carries four tools where `pfi` slide 6 carries three, so it lives in `pfm/pages/notation.html` and the plan points at the file. Its heading changed with it, which moved the slide id and the registry key; the cover's contents link was updated to match.
+
+**Verified** at 1440 × 810 after regenerating: `audit-cuts.mjs` passes all five cuts, `check-source.mjs` reports 73 figures, 73 slots, 73 distinct files with every ratio present. In the browser, 73 of 73 pictures load and **every rendered box agrees with its picture's own ratio to within 1%**, every slide is exactly 705 px against a 705 px container, all nine contents anchors resolve, nine link lists build, and there are no console errors. Picture area per page reads 65, 43, 39, 36, 35, 46, 38, 40, 57, 47%.
+
+**Not verified by eye.** The pane's compositor did not paint reliably — one screenshot came back with two of page 8's three frames blank while the DOM reported both images `complete`, at the right box sizes and fully opaque, and later screenshots timed out. The layout claims above are DOM measurements. A human look at pages 5, 8 and 9 is still worth having before the PDF goes out.
+
+**Undone.** The second *Drawing the Hours* capture (`drawingthehours2.png`, the Noon story card) is unused — page 8 has room for one picture per panel. Page 5 shows two *Ombak Lock* interfaces, the current one and the older `p13-c`; if the older one reads as a different design rather than a second state, drop it. The new `img/` files are not in `work-images.json`, so a future capture run will not regenerate them.
+
 2026-09-23 — Claude Code — Built `pfm/`, the 10-page SAM Residencies Cycle 4 cut, and gave cuts a generator instead of copy-and-paste. Spec: `profiles/open-calls/packages/SAM 2026/PORTFOLIO-CUT.md`.
 
 **The route is a plan, not a document.** `pfm/plan.json` names ten pages — six lifted from `pfi` and `pfo` by heading, four authored in `pfm/pages/` — and `scripts/lift-slides.mjs` generates `slides.html` from it. The two things that break when a page is copied by hand are what the script does: media paths get rewritten (`media/` becomes `../pfi/media/`) and folios get renumbered into the new order. Editing `slides.html` directly is pointless; the next run overwrites it. Matching is by heading with the `.year` span stripped, the same way `engine.js` reads a heading.
