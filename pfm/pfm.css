@@ -6,15 +6,23 @@
    assigns (`02-istorya-sang-balatyagon` and so on), so they become page jumps
    when the route is printed. */
 
+/* This cover carries a contents list the other cuts' covers do not, so the name
+   and the biography give up the height it needs. Printed at 1440 × 810 with the
+   pfi sizes, the list ran off the bottom of the sheet and took three of its nine
+   links with it. */
+.cover .plate h1 { font-size: clamp(1.9rem, 3.6vw, 3rem); line-height: 1.02; }
+.cover .plate .sub { font-size: .78rem; }
+.cover .plate .bio { font-size: .72rem; line-height: 1.45; max-width: 62ch; }
+
 .cover .contents {
   list-style: none;
-  margin: .9rem 0 .8rem;
+  margin: .7rem 0 .6rem;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
-  gap: .12rem 1.4rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .05rem 1.2rem;
   font-family: "Lexend Deca", system-ui, sans-serif;
-  font-size: .72rem;
+  font-size: .64rem;
 }
 
 .cover .contents li {

@@ -649,8 +649,8 @@ p {
      dimensions are capped, or the width outruns the clamped height and the box
      stops being the picture. */
   .panels.triple.across > .panel > .slot {
-    max-height: 52cqh;
-    max-width: min(100%, calc(52cqh * var(--ar, 1)));
+    max-height: 62cqh;
+    max-width: min(100%, calc(62cqh * var(--ar, 1)));
   }
   .panels.triple.across .panel p { font-size: clamp(.68rem, .76vw, .78rem); line-height: 1.36; }
   .panels.triple.across .panel h3 { font-size: clamp(.82rem, 1vw, .95rem); }
