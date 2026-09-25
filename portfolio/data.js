@@ -37,6 +37,26 @@ const slides = [
 {
     kind: "piece",
     piece: {
+      id: "the-impossibility-of-form-in-the-mind",
+      title: "The Impossibility of Form in the Mind",
+      year: "2026",
+      tags: ["film", "animated short", "3D computer graphics", "early CGI", "spoken word", "voiceover", "tape print-through", "CRT"],
+      blurb: "A 1 min 47 s animated short in the manner of early 1980s computer graphics, narrated by Xyh. Asked to imagine sleeping, the viewer watches a room disappear and a bed unfold into the floor of an open world beneath a sky painted on a ceiling. As pain and vertigo shrink the space the speaker can sense, the horizon curves, gravity lets go, and the body tumbles, changing into unnamed folded forms and finally an egg on a plate that stops falling and accelerates away. The render reproduces early consumer 3D (flat shading, vertex snapping, affine texture warp, a chrome egg) and is finished through two of Xyh's own tools: Remanence, which simulates magnetic tape print-through on picture and sound, and SiltCRT, a phosphor-screen emulator.",
+      media: [
+        { type: "image", src: "../img/impossibility-of-form-13.jpg", label: "bedroom marble environment fading away" },
+        { type: "image", src: "../img/impossibility-of-form-40.jpg", label: "bed unfolding into open floor" },
+        { type: "image", src: "../img/impossibility-of-form-85.jpg", label: "figure floating over curved horizon" },
+        { type: "image", src: "../img/impossibility-of-form-101.jpg", label: "faceted chrome egg on chrome plate" }
+      ],
+      links: [
+        { label: "Watch on YouTube", url: "https://youtu.be/BXfktUThxjs" }
+      ]
+    }
+  },
+
+{
+    kind: "piece",
+    piece: {
       id: "fashion-hour-omnipresence",
       title: "Fashion Hour Omnipresence",
       year: "2026",
