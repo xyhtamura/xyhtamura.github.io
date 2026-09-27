@@ -1028,8 +1028,8 @@ links: [
 	{
 	  title: "kíkik",
 	  year: "2026",
-	  tags: ["swarm dequantizer", "audio onset analyzer", "hit-seeded granulator", "MIDI generator"],
-	  blurb: "A swarm dequantizer, audio onset analyzer, and hit-seeded event/sound granulator. Derived from field recordings of Platypleura fulvigera (cicada), the tool detects micro-peaks to extract a found score, which simultaneously feeds a swarm of MIDI notes (mapping spectral centroids to pitch) and a granulation engine (rendering voice/poem files at the recording's pace), maintaining deterministic playback from a stable seed.",
+	  tags: ["swarm dequantizer", "audio onset analyzer", "hit-seeded granulator", "MIDI generator", "electroacoustic poem", "text poem"],
+	  blurb: "A swarm dequantizer, audio onset analyzer, and hit-seeded event/sound granulator. Derived from field recordings of Platypleura fulvigera (cicada), the tool detects micro-peaks to extract a found score, which simultaneously feeds a swarm of MIDI notes (mapping spectral centroids to pitch) and a granulation engine (rendering voice/poem files at the recording's pace), maintaining deterministic playback from a stable seed. kíkik is also a poem in Hiligaynon, Japanese, and English, made in two versions from the same cicada recording: an electroacoustic piece in which the detected chirps trigger grains of the recorded poem, and a text poem in which they place the poem's letters on a monospaced grid, one character cell per tenth of a second.",
 	  links: [
 	    { label: "Launch App", url: "https://xyhtamura.github.io/kikik/" }
 	  ]
