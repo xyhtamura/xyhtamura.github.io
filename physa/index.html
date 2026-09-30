@@ -1,0 +1,2944 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Physa</title>
+<meta name="description" content="Physa is an equation-first browser instrument whose sounding element is a charge-controlled memristor. The memristance curve M(q) is written as an equation, wears with playing, and can be run beside the capacitance that Physarum polycephalum turned out to have instead of memristance.">
+<link rel="icon" type="image/svg+xml" href="./favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Averia+Sans+Libre:wght@400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<style>
+@font-face{
+  font-family:"GOMini Goofy";
+  src:url("./fonts/GOMini-Goofy.ttf") format("truetype");
+  font-display:swap;
+}
+:root{
+  /* Biometallic. A bronze plate that did not stop being tissue: oxide interference
+     runs amber -> verdigris -> violet unaided, which lands the 45/165/285 fallback
+     triad without imposing it, and a flesh hue at 340 sits in the seam where the
+     metal turns soft. Physarum's own chrome yellow is reserved for the memoryless
+     branch: the mould dial, and the wear it leaves behind. */
+  --plate:hsl(287 26% 8%); --plate2:hsl(274 22% 12%); --plate-d:hsl(292 34% 4%);
+
+  --tissue:hsl(28 16% 81%); --tissue2:hsl(20 14% 71%); --tissue-d:hsl(14 13% 59%);
+  --tissue-hi:hsl(36 26% 90%);
+  --flesh:hsl(340 24% 44%); --flesh-d:hsl(342 30% 24%); --flesh-hi:hsl(346 34% 66%);
+
+  --ink:hsl(290 30% 12%); --dim:hsl(285 14% 31%); --faint:hsl(280 11% 44%);
+  --pale:hsl(40 20% 86%);
+
+  --bronze:hsl(38 44% 44%); --bronze-d:hsl(31 46% 19%); --bronze-hi:hsl(46 66% 70%);
+  --verd:hsl(165 49% 40%); --verd-hi:hsl(165 62% 64%); --verd-d:hsl(168 46% 17%);
+  --iris:hsl(285 54% 63%);
+  --slime:hsl(52 89% 57%); --slime-d:hsl(46 74% 34%);
+  --hot:hsl(27 80% 57%);
+  --bad:hsl(352 58% 46%);
+
+  --edge:hsl(287 26% 22%); --edge2:hsl(292 42% 5%);
+  --disp:"GOMini Goofy","Averia Sans Libre",system-ui,sans-serif;
+  --ui:"Averia Sans Libre",system-ui,sans-serif;
+  --mono:"Space Mono",ui-monospace,Consolas,monospace;
+
+  --age:0;
+}
+*{box-sizing:border-box}
+html{min-height:100%}
+body{
+  margin:0; min-height:100vh;
+  color:var(--pale);
+  font:13px/1.5 var(--mono);
+  background:
+    radial-gradient(920px 640px at 10% -8%, hsl(165 60% 32% / .16), transparent 58%),
+    radial-gradient(780px 540px at 88% 2%, hsl(285 58% 44% / .18), transparent 54%),
+    radial-gradient(620px 520px at 52% 46%, hsl(340 44% 34% / .14), transparent 62%),
+    radial-gradient(700px 720px at 66% 108%, hsl(45 68% 44% / .12), transparent 62%),
+    linear-gradient(163deg, var(--plate2) 0%, var(--plate) 52%, var(--plate-d) 100%);
+  background-attachment:fixed;
+}
+/* corrosion grain over the whole plate */
+body::before{
+  content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+  opacity:.17; mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='3'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='.6'/></svg>");
+}
+/* the culture, creeping in as the substrate wears. Opacity only, no motion. */
+body::after{
+  content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+  opacity:calc(var(--age) * .5); mix-blend-mode:screen;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='620' height='620'><filter id='b'><feTurbulence type='fractalNoise' baseFrequency='0.011' numOctaves='4' seed='7'/><feColorMatrix values='0 0 0 0 .84  0 0 0 0 .78  0 0 0 0 .18  0 0 0 -1.4 .78'/></filter><rect width='100%25' height='100%25' filter='url(%23b)'/></svg>");
+  background-size:cover;
+}
+body > *{position:relative; z-index:1}
+svg.defs{position:absolute;width:0;height:0;overflow:hidden}
+
+/* ---------- the skin ------------------------------------------------------
+   Every shell paints its surface on a .skin layer behind its content, and the
+   tear filter runs on that layer alone. Displacing a backdrop gives a ragged,
+   wet outline; displacing the shell itself would drag the type and the controls
+   with it. Content sits above at z-index 1. */
+.skin{
+  position:absolute; inset:0; z-index:0; pointer-events:none;
+  border-radius:26px 34px 18px 30px / 30px 18px 32px 22px;
+  background:
+    radial-gradient(120% 90% at 22% 8%, hsl(36 30% 92% / .95), transparent 62%),
+    radial-gradient(90% 70% at 88% 96%, hsl(340 26% 62% / .3), transparent 60%),
+    linear-gradient(168deg, var(--tissue), var(--tissue2) 72%, var(--tissue-d));
+  box-shadow:
+    inset 0 1px 0 hsl(36 50% 97% / .8),
+    inset 0 -18px 30px hsl(14 24% 40% / .2),
+    0 16px 30px -18px hsl(292 60% 3% / .95);
+  filter:url(#tear);
+}
+.cell > .skin, .deck > .skin{
+  background:
+    radial-gradient(120% 90% at 20% 6%, hsl(165 44% 30% / .3), transparent 60%),
+    radial-gradient(80% 70% at 86% 94%, hsl(340 40% 34% / .28), transparent 62%),
+    linear-gradient(158deg, hsl(287 26% 10%), hsl(200 22% 7%));
+  box-shadow:
+    inset 0 0 0 1px hsl(165 40% 44% / .16),
+    inset 0 3px 16px hsl(292 70% 2% / .9),
+    0 18px 32px -22px #000;
+  filter:url(#tear2);
+}
+.organism > *:not(.skin), .cell > *:not(.skin), .deck > *:not(.skin){position:relative; z-index:1}
+
+/* ---------- header ---------- */
+header{
+  display:flex; align-items:stretch; gap:clamp(12px,2.2vw,24px); flex-wrap:wrap;
+  padding:15px clamp(14px,2.6vw,26px) 17px;
+  border-bottom:1px solid var(--edge);
+  background:linear-gradient(178deg, hsl(287 24% 14% / .84), hsl(290 32% 7% / .76));
+}
+.nameplate{
+  display:flex; flex-direction:column; justify-content:center;
+  padding:10px 20px 12px;
+  border:1px solid hsl(38 40% 38% / .55);
+  border-radius:22px 32px 15px 27px / 26px 15px 30px 18px;
+  background:
+    radial-gradient(90% 120% at 26% 10%, hsl(46 44% 52% / .5), transparent 66%),
+    linear-gradient(166deg, hsl(38 32% 30%), hsl(340 20% 18%) 58%, hsl(290 26% 11%));
+  box-shadow:inset 0 1px 0 hsl(46 62% 74% / .42), inset 0 -12px 22px hsl(292 50% 3% / .5),
+             0 10px 22px -16px #000;
+}
+.brand{
+  font:400 30px/1 var(--disp); letter-spacing:.05em; color:var(--bronze-hi);
+  text-shadow:0 1px 0 hsl(31 40% 10%), 0 0 20px hsl(45 70% 50% / .25);
+}
+.brand span{color:var(--slime); text-shadow:0 0 15px hsl(52 90% 55% / .55)}
+.tag{margin-top:5px; font-size:10px; letter-spacing:.15em; text-transform:uppercase; color:hsl(40 26% 66%)}
+
+.defn{
+  flex:1 1 28rem; min-width:0;
+  display:flex; flex-direction:column; justify-content:center; gap:5px;
+  padding:11px 17px 12px;
+  border:1px solid hsl(165 40% 32% / .34);
+  border-radius:15px 27px 19px 24px / 23px 17px 26px 15px;
+  background:linear-gradient(150deg, hsl(200 22% 8% / .9), hsl(287 26% 6% / .86));
+  box-shadow:inset 0 2px 12px hsl(292 60% 2% / .8), inset 0 0 0 1px hsl(165 40% 44% / .12);
+  overflow-x:auto;
+}
+.defn .row{display:flex; align-items:baseline; gap:10px; white-space:nowrap}
+.defn .who{
+  flex:0 0 5.2rem; font-size:9.5px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--verd-hi); opacity:.82;
+}
+.defn .tex{color:var(--pale); font-size:13px}
+
+.hactions{display:flex; flex-direction:column; justify-content:center; gap:9px; min-width:13rem}
+.viewsel{display:flex; gap:6px}
+.viewsel button{flex:1 1 0}
+/* A VIEW, not a mode: this hides controls and never stops a signal path. Both
+   paths share one substrate - singing wears the curve the keyboard then plays -
+   and switching the hidden one off would turn that from something you can do
+   into something you have to be told. */
+body[data-view="synth"] [data-only="voice"]{display:none !important}
+body[data-view="voice"] [data-only="synth"]{display:none !important}
+.chips{display:flex; flex-wrap:wrap; gap:5px}
+.chip{
+  padding:4px 9px 5px;
+  border:1px solid hsl(38 30% 34% / .6);
+  border-radius:9px 12px 8px 11px;
+  background:linear-gradient(172deg, hsl(290 20% 15%), hsl(292 30% 9%));
+  color:hsl(40 18% 62%);
+  font:400 10px/1.3 var(--mono); letter-spacing:.05em;
+  max-width:15rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.chip.on{
+  color:hsl(52 70% 76%); border-color:hsl(46 54% 40%);
+  background:linear-gradient(172deg, hsl(44 34% 24%), hsl(38 40% 14%));
+  box-shadow:0 0 12px hsl(52 80% 50% / .22);
+}
+
+/* ---------- shell ---------- */
+main{
+  display:grid; grid-template-columns:clamp(300px,25vw,350px) minmax(0,1fr);
+  gap:clamp(14px,1.8vw,22px);
+  padding:clamp(14px,2.2vw,24px) clamp(14px,2.6vw,26px) 8px;
+  align-items:start;
+}
+
+/* ---------- the organism: one body, chambers inside it ---------- */
+.organism{position:relative; padding:4px 0}
+.veins{
+  position:absolute; z-index:0; top:10px; bottom:10px; left:-13px;
+  width:30px; height:calc(100% - 20px); overflow:visible; pointer-events:none;
+  opacity:.72;
+}
+.chamber{
+  position:relative; z-index:1;
+  padding:15px 17px 16px;
+  color:var(--ink);
+}
+.chamber + .chamber{
+  border-top:1.5px solid;
+  border-image:linear-gradient(90deg, hsl(31 40% 30% / .1), hsl(340 26% 38% / .6) 22%, hsl(165 40% 30% / .5) 74%, hsl(31 40% 30% / .1)) 1;
+}
+
+h2{
+  margin:0 0 11px; font:700 10px/1.2 var(--ui);
+  letter-spacing:.19em; text-transform:uppercase; color:hsl(290 22% 26%);
+  display:flex; align-items:center; gap:9px;
+}
+h2::after{
+  content:""; flex:1; height:2px; border-radius:2px;
+  background:linear-gradient(90deg, hsl(340 30% 40% / .5), hsl(165 45% 34% / .3), transparent);
+}
+.cell h2, .deck h2{color:hsl(40 22% 68%)}
+.cell h2::after, .deck h2::after{background:linear-gradient(90deg, hsl(165 45% 42% / .45), hsl(340 34% 46% / .22), transparent)}
+
+/* ---------- the equation, as a card in a slot ---------- */
+.slot{
+  position:relative;
+  padding:7px 8px 8px;
+  border-radius:8px 11px 8px 11px;
+  background:linear-gradient(180deg, hsl(14 18% 44% / .5), hsl(292 24% 16% / .5));
+  box-shadow:inset 0 3px 7px hsl(292 50% 4% / .6), 0 1px 0 hsl(36 40% 94% / .5);
+}
+.slot::after{
+  content:""; position:absolute; left:9px; right:9px; top:2px; height:2px;
+  border-radius:2px; background:hsl(292 40% 6% / .7);
+}
+input[type=text]{
+  width:100%; font:12px/1.4 var(--mono); color:var(--ink);
+  background:linear-gradient(180deg, hsl(38 24% 90%), hsl(28 16% 80%));
+  border:1px solid hsl(31 24% 42% / .8); border-radius:5px 7px 5px 7px;
+  padding:7px 9px;
+  box-shadow:0 2px 4px hsl(292 40% 6% / .35), inset 0 1px 0 hsl(40 50% 96% / .7);
+}
+input[type=text]:focus{outline:none; border-color:var(--verd); box-shadow:0 0 0 2px hsl(165 50% 42% / .35)}
+#eqErr{color:hsl(352 66% 30%); min-height:1.2em; font-size:11px; margin:6px 0 9px}
+
+.pick select{
+  width:100%; font:inherit; color:var(--ink); cursor:pointer;
+  -webkit-appearance:none; appearance:none; padding:7px 28px 7px 9px;
+  border:1px solid hsl(31 22% 44% / .8); border-radius:9px 13px 8px 12px;
+  background:
+    linear-gradient(135deg,transparent 0 44%,var(--verd) 45% 55%,transparent 56%) right 15px top 53%/7px 7px no-repeat,
+    linear-gradient(225deg,transparent 0 44%,var(--verd) 45% 55%,transparent 56%) right 10px top 53%/7px 7px no-repeat,
+    linear-gradient(180deg, hsl(38 24% 89%), hsl(26 16% 78%));
+  box-shadow:inset 0 2px 5px hsl(14 24% 40% / .22);
+}
+.pick select:focus{outline:none; border-color:var(--verd); box-shadow:0 0 0 2px hsl(165 50% 42% / .3)}
+
+/* ---------- dials ----------------------------------------------------------
+   The range input stays under the knob: still focusable, still arrow-key
+   operable, still carries the accessible name. Clipped rather than hidden. */
+.dials{display:flex; flex-wrap:wrap; gap:14px 16px; align-items:flex-start}
+.dial, .rocker{
+  position:relative;
+  display:grid; grid-template-columns:auto 1fr; grid-template-rows:auto auto;
+  column-gap:9px; align-items:center;
+  min-width:8.2rem; margin:0;
+}
+.dial input[type=range], .rocker input[type=checkbox]{
+  position:absolute; width:1px; height:1px; margin:0; padding:0;
+  clip:rect(0 0 0 0); clip-path:inset(50%); overflow:hidden; white-space:nowrap;
+}
+.knob{
+  grid-row:1 / 3; width:42px; height:42px; border-radius:50%;
+  cursor:ns-resize; touch-action:none;
+  display:block; position:relative;
+  background:
+    radial-gradient(circle at 34% 26%, hsl(36 40% 88% / .85), transparent 44%),
+    radial-gradient(circle at 62% 78%, hsl(340 36% 40% / .7), transparent 56%),
+    conic-gradient(from 210deg, hsl(38 40% 52%), hsl(31 34% 26%) 28%, hsl(46 56% 62%) 52%, hsl(31 36% 22%) 76%, hsl(38 40% 52%));
+  border:1px solid hsl(31 44% 12%);
+  box-shadow:
+    inset 0 1px 2px hsl(46 70% 88% / .5),
+    inset 0 -5px 10px hsl(292 50% 4% / .55),
+    0 3px 7px -3px #000;
+}
+.knob::after{
+  content:""; position:absolute; inset:7px; border-radius:50%;
+  background:
+    radial-gradient(circle at 36% 30%, hsl(346 40% 62% / .9), hsl(340 26% 30%) 58%, hsl(292 30% 12%));
+  box-shadow:inset 0 2px 5px hsl(292 60% 3% / .7), inset 0 -1px 0 hsl(346 40% 60% / .35);
+}
+.knob i{
+  position:absolute; inset:0; border-radius:50%;
+  transform:rotate(var(--deg,0deg)); z-index:2;
+}
+.knob i::before{
+  content:""; position:absolute; left:50%; top:5px;
+  width:2.5px; height:12px; margin-left:-1.25px; border-radius:2px;
+  background:linear-gradient(180deg, var(--slime), hsl(46 70% 44%));
+  box-shadow:0 0 7px hsl(52 88% 56% / .6);
+}
+.dial.sm .knob{width:34px; height:34px}
+.dial.sm .knob i::before{height:9px; top:4px}
+.dial input:focus-visible ~ .knob{outline:2px solid var(--verd-hi); outline-offset:3px}
+.mould ~ .knob i::before{background:linear-gradient(180deg, hsl(56 95% 78%), var(--slime-d))}
+.mould ~ .knob::after{background:radial-gradient(circle at 36% 30%, hsl(56 80% 66% / .8), hsl(46 50% 28%) 58%, hsl(292 30% 12%))}
+
+.dl{grid-column:2; align-self:end; font:700 11px/1.25 var(--ui); letter-spacing:.045em; color:var(--ink)}
+.dv{grid-column:2; align-self:start; font:400 10.5px/1.3 var(--mono); color:hsl(168 46% 24%)}
+.cell .dl, .deck .dl{color:hsl(40 24% 82%)}
+.cell .dv, .deck .dv{color:var(--verd-hi)}
+
+/* ---------- rocker ---------- */
+.lever{
+  grid-row:1 / 3; width:44px; height:26px; border-radius:7px 9px 7px 9px;
+  position:relative; cursor:pointer;
+  background:linear-gradient(180deg, hsl(292 26% 8%), hsl(287 20% 16%));
+  border:1px solid hsl(31 40% 14%);
+  box-shadow:inset 0 2px 6px hsl(292 60% 2% / .8);
+}
+.lever b{
+  position:absolute; top:2px; left:2px; width:20px; height:20px;
+  border-radius:5px 7px 5px 7px;
+  background:linear-gradient(168deg, hsl(38 38% 54%), hsl(31 34% 22%));
+  box-shadow:inset 0 1px 0 hsl(46 64% 76% / .5), 0 2px 4px hsl(292 60% 3% / .6);
+  transition:transform .09s ease-out;
+}
+.rocker input:checked ~ .lever b{transform:translateX(18px)}
+.rocker input:checked ~ .lever{
+  background:linear-gradient(180deg, hsl(44 30% 18%), hsl(46 40% 26%));
+  box-shadow:inset 0 2px 6px hsl(292 60% 2% / .6), 0 0 10px hsl(52 80% 50% / .2);
+}
+.rocker input:focus-visible ~ .lever{outline:2px solid var(--verd-hi); outline-offset:3px}
+
+/* ---------- buttons ---------- */
+button{
+  font:700 11px/1 var(--ui); letter-spacing:.09em; text-transform:uppercase;
+  color:hsl(42 42% 90%); cursor:pointer;
+  background:linear-gradient(178deg, hsl(38 34% 38%), hsl(340 20% 20%) 62%, hsl(31 40% 14%));
+  border:1px solid hsl(31 44% 11%); border-radius:11px 14px 10px 13px;
+  padding:9px 12px;
+  box-shadow:inset 0 1px 0 hsl(46 62% 74% / .44), inset 0 -6px 12px hsl(292 50% 3% / .42),
+             0 3px 7px -4px #000;
+}
+button:hover{border-color:var(--verd); box-shadow:inset 0 1px 0 hsl(46 62% 74% / .5), 0 0 0 2px hsl(165 50% 42% / .28)}
+button:active{transform:translateY(1px); box-shadow:inset 0 3px 8px hsl(292 60% 3% / .6)}
+button:focus-visible{outline:2px solid var(--verd-hi); outline-offset:2px}
+button.wide{width:100%}
+button.big{padding:12px 14px; font-size:12px}
+button.sm{padding:7px 10px; font-size:10px}
+button.lit{
+  color:hsl(50 62% 12%);
+  background:linear-gradient(178deg, hsl(52 86% 66%), hsl(46 72% 42%));
+  border-color:hsl(44 60% 20%);
+  box-shadow:inset 0 1px 0 hsl(56 90% 90% / .7), 0 0 15px hsl(52 88% 56% / .3);
+}
+
+.cap{margin:9px 0 0; color:hsl(288 12% 29%); font:400 11.5px/1.5 var(--ui)}
+.cap code{font-family:var(--mono); font-size:10.8px; color:hsl(168 50% 22%)}
+.cap b{color:var(--ink)}
+.cell .cap, .deck .cap{color:hsl(40 15% 60%)}
+.cell .cap code, .deck .cap code{color:var(--verd-hi)}
+.cell .cap b, .deck .cap b{color:hsl(40 28% 82%)}
+
+.readout{display:flex; justify-content:space-between; gap:10px; padding:4px 0;
+  border-bottom:1px dashed hsl(40 18% 46% / .28)}
+.readout:last-child{border-bottom:0}
+.readout span:first-child{font:400 11.5px/1.4 var(--ui); color:hsl(40 12% 56%)}
+.readout span:last-child{color:var(--verd-hi); font-weight:700}
+
+/* ---------- stage ---------- */
+.stage{display:flex; flex-direction:column; gap:clamp(14px,1.8vw,20px); min-width:0}
+.bank{display:grid; grid-template-columns:1.16fr .84fr; gap:16px 15px; min-width:0}
+.cell{position:relative; min-width:0; padding:12px 14px 14px}
+.cell:nth-child(1){grid-column:1 / -1}
+.cellhead{display:flex; align-items:flex-start; justify-content:space-between; gap:14px; flex-wrap:wrap}
+.cellhead h2{flex:1 1 7rem; min-width:6rem}
+.inset{
+  display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  margin:0 0 10px; padding:8px 12px 9px;
+  border:1px solid hsl(340 24% 34% / .45);
+  border-radius:14px 20px 12px 18px / 18px 12px 20px 14px;
+  background:linear-gradient(160deg, hsl(340 20% 16% / .6), hsl(292 26% 9% / .6));
+  box-shadow:inset 0 1px 0 hsl(346 40% 60% / .16);
+}
+.gauge{display:flex; align-items:center; gap:8px}
+.gauge svg{width:64px; height:40px; overflow:visible}
+.gauge .arc{stroke-dashoffset:calc(100 - var(--w,0) * 100)}
+.gauge .needle{transform:rotate(calc(-90deg + var(--w,0) * 180deg)); transform-origin:42px 45px}
+.gv{font:400 10.5px/1.3 var(--mono); color:var(--slime)}
+
+canvas{width:100%; display:block; border-radius:11px 15px 11px 15px;
+  background:linear-gradient(168deg, hsl(288 30% 6%), hsl(198 26% 4%));
+  box-shadow:inset 0 0 0 1px hsl(165 40% 40% / .18), inset 0 3px 14px hsl(292 70% 2% / .9);}
+#curve{height:210px}
+#loop,#scope{height:232px}
+#circ{height:196px}
+.cell.wiring{grid-column:1 / -1}
+.cell.voxcell{grid-column:1 / -1}
+.srcsel{display:flex; align-items:center; gap:6px}
+.srcsel .dl{margin-right:2px}
+.srcsel button[disabled]{opacity:.4; cursor:default}
+#vbands{height:212px}
+.filebtn{position:relative; overflow:hidden; display:inline-flex; align-items:center;
+  padding:7px 10px; font-size:10px; cursor:pointer;
+  font-family:var(--mono); letter-spacing:.06em; text-transform:uppercase;
+  color:var(--bronze-hi); border:1px solid hsl(40 30% 52% / .5);
+  border-radius:12px 7px 13px 8px / 8px 13px 7px 12px;
+  background:linear-gradient(168deg, hsl(36 26% 20% / .8), hsl(292 24% 10% / .8))}
+.filebtn input{position:absolute; inset:0; opacity:0; cursor:pointer; width:100%}
+button.lit, .filebtn.lit{color:var(--slime); border-color:hsl(64 60% 60% / .6)}
+
+.legend{display:flex; flex-wrap:wrap; gap:6px 15px; margin:9px 0 0;
+  font-size:11px; color:hsl(40 14% 58%)}
+.legend b{font-size:12.5px}
+#memPct{color:var(--hot)} #harmPct{color:var(--verd-hi)} #openPct{color:var(--iris)}
+
+/* ---------- deck ---------- */
+.deck{position:relative; padding:13px 15px 15px}
+.deckhead{display:flex; align-items:center; justify-content:space-between;
+  gap:18px; flex-wrap:wrap; margin-bottom:12px}
+.surf{display:flex; gap:6px}
+.dials.perf{gap:12px 18px}
+
+/* ---------- footrow ---------- */
+.cell.flat{padding:14px 15px 15px}
+.status .readouts{display:flex; flex-wrap:wrap; gap:4px 26px}
+.status .readout{flex:1 1 9rem; border-bottom:1px dashed hsl(40 18% 46% / .28)}
+
+footer{
+  max-width:98ch; margin:0 auto;
+  padding:clamp(18px,3vw,30px) clamp(14px,2.6vw,26px) clamp(28px,4vw,44px);
+  color:hsl(40 12% 60%); font:400 13px/1.62 var(--ui);
+}
+footer h3{margin:0 0 7px; font:700 11px/1.3 var(--ui); letter-spacing:.17em;
+  text-transform:uppercase; color:var(--verd-hi)}
+footer section{margin:0 0 20px}
+footer section:last-child{margin-bottom:0}
+footer p{margin:0 0 9px}
+footer code{font-family:var(--mono); font-size:11.5px; color:hsl(40 32% 76%)}
+footer b{color:hsl(40 30% 84%)}
+footer a{color:var(--verd-hi)}
+footer .sib{display:flex; flex-wrap:wrap; gap:8px 10px; margin-top:12px; font-size:11px}
+footer .sib a{
+  padding:5px 11px; border:1px solid hsl(165 34% 34% / .4); border-radius:10px 14px 9px 13px;
+  color:hsl(40 24% 78%); text-decoration:none;
+  background:linear-gradient(170deg, hsl(287 22% 14% / .7), hsl(290 30% 8% / .7));
+}
+footer .sib a:hover{border-color:var(--verd-hi); color:var(--verd-hi)}
+
+.katex{font-size:1em}
+@media(max-width:1080px){
+  main{grid-template-columns:1fr}
+  .bank{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .dials{gap:12px}
+}
+@media(prefers-reduced-motion:reduce){
+  button, .lever b{transition:none}
+}
+
+/* ---------- soft ecology terminal ---------------------------------------
+   Kioskarium is the closer reference: milk-plastic cabinets, olive housings,
+   gel controls and CRT-green specimen windows. Physa keeps the conductive
+   traces and state-dependent bloom, but the palette is keyed to a damp field
+   terminal rather than to the suite fallback hues. */
+body{
+  --plate:#172219;
+  --plate2:#293827;
+  --plate-d:#11150f;
+  --tissue:#e7e0b2;
+  --tissue2:#c8cc8e;
+  --tissue-d:#788263;
+  --tissue-hi:#fff8d3;
+  --flesh:#d58bab;
+  --flesh-d:#6c355b;
+  --flesh-hi:#ffc3dd;
+  --ink:#172219;
+  --dim:#58654e;
+  --faint:#74806a;
+  --pale:#f4edca;
+  --bronze:#a78b45;
+  --bronze-d:#50441f;
+  --bronze-hi:#f3d879;
+  --verd:#4cae92;
+  --verd-hi:#94ead8;
+  --verd-d:#214c3f;
+  --iris:#b991cf;
+  --slime:#d5ef74;
+  --slime-d:#778e31;
+  --hot:#f08a72;
+  --edge:#43543c;
+  --edge2:#20291d;
+  color:var(--ink);
+  padding:10px 0 24px;
+  background:
+    radial-gradient(circle at 12% 10%,rgba(238,159,195,.22),transparent 19rem),
+    radial-gradient(circle at 82% 8%,rgba(137,229,213,.2),transparent 23rem),
+    radial-gradient(circle at 69% 90%,rgba(204,231,101,.18),transparent 28rem),
+    linear-gradient(138deg,#161d14,#29361f 37%,#1d1930 100%);
+}
+body::before{
+  opacity:.34;
+  mix-blend-mode:screen;
+  background-image:
+    radial-gradient(circle at 18% 64%,rgba(238,159,195,.11),transparent 18rem),
+    radial-gradient(circle at 83% 25%,rgba(137,229,213,.1),transparent 21rem);
+}
+body::after{
+  opacity:calc(.04 + var(--age) * .33);
+  mix-blend-mode:screen;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='680' height='680'><filter id='b'><feTurbulence type='fractalNoise' baseFrequency='.009 .014' numOctaves='4' seed='7'/><feColorMatrix values='0 0 0 0 .76  0 0 0 0 .9  0 0 0 0 .29  0 0 0 -1.35 .68'/></filter><rect width='100%25' height='100%25' filter='url(%23b)'/></svg>");
+}
+.terminal{
+  width:min(1560px,calc(100% - 22px));
+  margin:0 auto;
+  padding:12px;
+  position:relative;
+  z-index:1;
+  border:1px solid rgba(247,240,204,.3);
+  border-radius:30px 25px 34px 24px;
+  background:
+    radial-gradient(circle at 5% 5%,rgba(255,255,255,.32),transparent 13rem),
+    radial-gradient(circle at 96% 91%,rgba(238,159,195,.14),transparent 17rem),
+    linear-gradient(145deg,rgba(239,233,193,.52),rgba(83,107,52,.4) 21%,rgba(64,52,83,.44) 78%,rgba(16,20,13,.76));
+  box-shadow:0 32px 82px rgba(0,0,0,.44),inset 0 2px 0 rgba(255,255,255,.24),inset 0 -34px 64px rgba(0,0,0,.22);
+}
+.terminal::before{
+  content:"";
+  position:absolute;
+  inset:7px;
+  border:1px solid rgba(255,190,218,.3);
+  border-radius:25px 20px 29px 19px;
+  box-shadow:inset 0 0 0 2px rgba(23,34,25,.25),inset 0 0 34px rgba(137,229,213,.08);
+  pointer-events:none;
+}
+
+.terminal header{
+  margin:0;
+  grid-template-columns:minmax(15rem,.72fr) minmax(28rem,1.45fr) minmax(12rem,.55fr);
+  gap:12px;
+  padding:13px;
+  border:1px solid rgba(247,240,204,.34);
+  border-radius:23px 20px 24px 18px;
+  background:
+    radial-gradient(circle at 84% 35%,rgba(238,159,195,.2),transparent 15rem),
+    linear-gradient(102deg,rgba(27,37,26,.86),rgba(73,61,91,.6) 46%,rgba(87,112,55,.58));
+  box-shadow:inset 0 1px rgba(255,255,255,.2),inset 0 -18px 34px rgba(0,0,0,.16);
+  overflow:hidden;
+}
+.terminal header::after{display:none}
+.terminal .nameplate{
+  padding:10px 16px 12px;
+  border:0;
+  border-radius:18px;
+  background:none;
+  box-shadow:none;
+  overflow:visible;
+}
+.terminal .nameplate::after{display:none}
+.terminal .brand{
+  font-family:var(--disp);
+  font-size:clamp(3.1rem,5.2vw,5.9rem);
+  font-weight:400;
+  line-height:.82;
+  letter-spacing:.015em;
+  color:#f7f0cc;
+  text-shadow:1px 2px 0 rgba(238,145,188,.62),-1px -1px 0 rgba(132,225,210,.42),0 8px 16px rgba(0,0,0,.38);
+}
+.terminal .brand span{color:inherit;text-shadow:inherit}
+.terminal .tag{margin-top:12px;color:rgba(247,240,204,.73);letter-spacing:.15em}
+.terminal .defn{
+  padding:13px 16px;
+  border:1px solid rgba(247,240,204,.23);
+  border-radius:19px 24px 17px 22px;
+  background:
+    radial-gradient(circle at 82% 23%,rgba(238,145,188,.13),transparent 10rem),
+    linear-gradient(160deg,rgba(21,45,36,.92),rgba(19,29,21,.94));
+  box-shadow:inset 0 0 0 5px rgba(247,240,204,.04),inset 0 0 25px rgba(0,0,0,.36);
+}
+.terminal .defn .who{color:#a7eddb}
+.terminal .defn .tex{color:#f5edca}
+.terminal .hactions{min-width:0}
+.terminal .chip{color:rgba(247,240,204,.75);border-color:rgba(247,240,204,.22);background:rgba(0,0,0,.24);border-radius:999px}
+
+.terminal main{
+  grid-template-columns:clamp(300px,24vw,366px) minmax(0,1fr);
+  gap:11px;
+  padding:11px 0 0;
+}
+.terminal .organism{padding:10px;isolation:isolate}
+.terminal .organism > .veins{position:absolute;z-index:2;left:-10px;width:27px}
+.terminal .organism > .skin{
+  filter:none;
+  border:1px solid rgba(23,34,25,.34);
+  border-radius:27px 20px 30px 18px;
+  background:
+    radial-gradient(circle at 12% 4%,rgba(255,255,255,.55),transparent 11rem),
+    radial-gradient(circle at 90% 94%,rgba(238,145,188,.18),transparent 13rem),
+    linear-gradient(145deg,rgba(247,240,204,.9),rgba(205,210,151,.86) 62%,rgba(118,137,93,.83));
+  box-shadow:inset 0 1px rgba(255,255,255,.56),inset 0 -27px 44px rgba(72,82,49,.15),0 15px 28px rgba(0,0,0,.22);
+}
+.terminal .organism > .skin::before{
+  inset:8px;
+  border:1px dashed rgba(23,34,25,.19);
+  background:none;
+  opacity:1;
+}
+.terminal .organism > .skin::after{background:linear-gradient(90deg,transparent,#79cbb6,#d08aad,transparent);opacity:.34;box-shadow:none}
+.terminal .chamber{color:#172219;padding:16px 15px 17px}
+.terminal .chamber + .chamber{border-image:linear-gradient(90deg,transparent,rgba(23,34,25,.28) 17%,rgba(23,34,25,.28) 83%,transparent) 1}
+.terminal h2{color:#33442d}
+.terminal h2{font-family:var(--disp);font-size:13px;letter-spacing:.13em}
+.terminal h2::after{height:1px;background:linear-gradient(90deg,rgba(23,34,25,.48),rgba(83,110,48,.25),transparent)}
+.terminal .cap{color:#44533d}
+.terminal .cap b{color:#1b2918}
+.terminal .cap code{color:#315d4f}
+.terminal .slot{background:rgba(40,46,31,.45);box-shadow:inset 0 3px 7px rgba(0,0,0,.27),0 1px rgba(255,255,255,.65)}
+.terminal input[type=text],.terminal .pick select{
+  color:#192418;
+  border-color:rgba(24,37,20,.36);
+  background:linear-gradient(180deg,#f8f0c7,#d9d98f 68%,#a59a57);
+  box-shadow:inset 0 1px rgba(255,255,255,.62),inset 0 -6px 11px rgba(84,77,37,.13);
+}
+.terminal .pick select{
+  background:
+    linear-gradient(135deg,transparent 0 44%,#315d4f 45% 55%,transparent 56%) right 15px top 53%/7px 7px no-repeat,
+    linear-gradient(225deg,transparent 0 44%,#315d4f 45% 55%,transparent 56%) right 10px top 53%/7px 7px no-repeat,
+    linear-gradient(180deg,#f8f0c7,#d9d98f 68%,#a59a57);
+}
+.terminal #eqErr{color:#9b3b35}
+.terminal .dl{color:#26371f}
+.terminal .dv{color:#315d4f}
+
+.terminal .stage{gap:10px}
+.terminal .bank{grid-template-columns:minmax(0,1.18fr) minmax(270px,.82fr);gap:10px}
+.terminal .cell,.terminal .deck{padding:13px 14px 14px;isolation:isolate}
+.terminal .cell > .skin,.terminal .deck > .skin{
+  filter:none;
+  border:1px solid rgba(247,240,204,.34);
+  border-radius:29px 22px 31px 19px;
+  background:
+    radial-gradient(circle at 12% 7%,rgba(255,255,255,.43),transparent 11rem),
+    radial-gradient(circle at 94% 91%,rgba(238,145,188,.18),transparent 12rem),
+    linear-gradient(145deg,rgba(150,222,204,.58),rgba(239,233,193,.39) 46%,rgba(87,70,107,.49));
+  box-shadow:inset 0 2px 1px rgba(255,255,255,.4),inset 0 -26px 42px rgba(27,31,22,.16),0 14px 25px rgba(0,0,0,.2);
+}
+.terminal .cell > .skin::before,.terminal .deck > .skin::before{background:none;border:1px solid rgba(255,255,255,.16);opacity:1}
+.terminal .cell > .skin::after,.terminal .deck > .skin::after{display:none}
+.terminal .cell:nth-child(2) > .skin{background:radial-gradient(circle at 17% 5%,rgba(255,255,255,.44),transparent 9rem),linear-gradient(145deg,rgba(234,213,147,.7),rgba(216,141,174,.42),rgba(73,57,94,.58))}
+.terminal .cell:nth-child(3) > .skin{background:radial-gradient(circle at 84% 7%,rgba(255,255,255,.35),transparent 9rem),linear-gradient(145deg,rgba(126,205,184,.61),rgba(89,117,73,.44),rgba(54,43,72,.58))}
+.terminal .cell.wiring > .skin{background:radial-gradient(circle at 50% 4%,rgba(255,255,255,.34),transparent 11rem),linear-gradient(145deg,rgba(214,178,120,.55),rgba(126,205,184,.4),rgba(54,43,72,.6))}
+.terminal .cell h2,.terminal .deck h2{color:rgba(247,240,204,.8)}
+.terminal .cell h2::after,.terminal .deck h2::after{background:linear-gradient(90deg,rgba(247,240,204,.42),rgba(137,229,213,.27),transparent)}
+.terminal .cell .cap,.terminal .deck .cap{color:rgba(247,240,204,.76)}
+.terminal .cell .cap b,.terminal .deck .cap b{color:#fff8d4}
+.terminal .cell .cap code,.terminal .deck .cap code{color:#a7eddb}
+.terminal .inset{border-color:rgba(247,240,204,.28);background:rgba(22,35,26,.48);border-radius:18px;box-shadow:inset 0 1px rgba(255,255,255,.13)}
+.terminal .inset .dl{color:#f4edca}
+.terminal .inset .dv{color:#a7eddb}
+.terminal canvas{
+  border:1px solid rgba(24,37,20,.5);
+  border-radius:21px;
+  background:
+    radial-gradient(circle at 58% 46%,rgba(238,145,188,.17),transparent 10rem),
+    radial-gradient(circle at 29% 62%,rgba(137,229,213,.16),transparent 11rem),
+    linear-gradient(180deg,#20362a,#101c14);
+  box-shadow:inset 0 0 0 6px rgba(247,240,204,.045),inset 0 0 34px rgba(0,0,0,.42),0 9px 18px rgba(0,0,0,.18);
+}
+.terminal .legend{color:rgba(247,240,204,.76)}
+.terminal .readout{border-color:rgba(24,37,20,.2)}
+.terminal .readout span:first-child{color:#4b5d45}
+.terminal .readout span:last-child{color:#285e4d}
+
+.terminal .knob{
+  border-color:rgba(24,37,20,.45);
+  background:radial-gradient(circle at 32% 21%,rgba(255,255,255,.78),transparent 18%),linear-gradient(145deg,#f7edbd,#9bcf9d 50%,#655174);
+  box-shadow:inset 0 2px 1px rgba(255,255,255,.5),inset 0 -9px 14px rgba(42,29,56,.28),0 6px 12px rgba(0,0,0,.24);
+}
+.terminal .knob::after{background:radial-gradient(circle at 35% 25%,rgba(255,255,255,.7),transparent 18%),linear-gradient(145deg,#b7f2df,#709c74 58%,#55405f);box-shadow:inset 0 -5px 8px rgba(0,0,0,.22)}
+.terminal .mould ~ .knob::after{background:radial-gradient(circle at 35% 25%,rgba(255,255,255,.72),transparent 18%),linear-gradient(145deg,#e5f59c,#c79c72 55%,#70425e)}
+.terminal .knob i::before{background:linear-gradient(#fff7c8,#7b8b2e);box-shadow:0 0 6px rgba(209,238,105,.5)}
+.terminal .lever{border-color:rgba(24,37,20,.35);background:#2b3926}
+.terminal .lever b{background:radial-gradient(circle at 30% 22%,rgba(255,255,255,.7),transparent 20%),linear-gradient(145deg,#f4eebc,#8bc6ac 70%,#4f5c38)}
+
+.terminal button{
+  color:#1b2818;
+  border-color:rgba(24,37,20,.37);
+  border-radius:14px 14px 9px 11px;
+  background:radial-gradient(circle at 25% 10%,rgba(255,255,255,.72),transparent 23%),linear-gradient(180deg,#f7edbd,#d2ce70 68%,#96803c);
+  box-shadow:inset 0 1px rgba(255,255,255,.57),inset 0 -7px 11px rgba(66,58,24,.17),0 6px 10px rgba(0,0,0,.17);
+}
+.terminal button:hover{border-color:#4f7d65;box-shadow:inset 0 1px rgba(255,255,255,.65),0 0 0 2px rgba(137,229,213,.26),0 6px 10px rgba(0,0,0,.17)}
+.terminal button.lit{color:#172219;background:radial-gradient(circle at 25% 10%,rgba(255,255,255,.72),transparent 23%),linear-gradient(180deg,#c9f08d,#8fc875 67%,#4d7146);border-color:#4c765d}
+.terminal .deck > .skin{background:radial-gradient(circle at 12% 2%,rgba(255,255,255,.46),transparent 12rem),linear-gradient(145deg,rgba(238,196,215,.7),rgba(152,220,202,.48),rgba(68,55,88,.55))}
+.terminal .surface{height:168px;cursor:crosshair;touch-action:none}
+.terminal .surface.hex{height:210px}
+.terminal .surface.ribbon{height:138px;cursor:ew-resize}
+.terminal .status > .skin{background:linear-gradient(145deg,rgba(26,53,41,.88),rgba(36,43,29,.82) 55%,rgba(65,48,76,.76))}
+.terminal .status .readout{border-color:rgba(247,240,204,.16)}
+.terminal .status .readout span:first-child{color:rgba(247,240,204,.72)}
+.terminal .status .readout span:last-child{color:#a7eddb}
+
+@media(max-width:1080px){
+  .terminal header{grid-template-columns:minmax(13rem,.72fr) minmax(0,1.35fr)}
+  .terminal .hactions{grid-column:1 / -1;display:grid;grid-template-columns:minmax(12rem,.4fr) 1fr;align-items:center}
+  .terminal main{grid-template-columns:1fr}
+}
+@media(max-width:720px){
+  body{padding-top:6px}
+  .terminal{width:calc(100% - 12px);padding:8px}
+  .terminal header{grid-template-columns:1fr}
+  .terminal .defn{order:3}
+  .terminal .hactions{grid-column:auto;display:flex}
+  .terminal .bank{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<svg class="defs" aria-hidden="true" focusable="false">
+  <defs>
+    <!-- torn edges. The filter runs on a backdrop layer only, never on an element
+         containing controls, so the membrane is ragged and the type stays crisp. -->
+    <filter id="tear" x="-8%" y="-8%" width="116%" height="116%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.021 0.037" numOctaves="3" seed="11" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="17" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="tear2" x="-8%" y="-8%" width="116%" height="116%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.016 0.029" numOctaves="3" seed="4" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="12" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <linearGradient id="vein" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="hsl(38 46% 46%)"/>
+      <stop offset=".5" stop-color="hsl(340 26% 42%)"/>
+      <stop offset="1" stop-color="hsl(165 40% 32%)"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<div class="terminal">
+<header>
+  <div class="nameplate">
+    <div class="brand">PHY<span>S</span>A</div>
+    <div class="tag">charge-controlled memristive element</div>
+  </div>
+
+  <div class="defn">
+    <div class="row"><span class="who">element</span><span class="tex" id="tex1"></span></div>
+    <div class="row"><span class="who">substrate</span><span class="tex" id="tex2"></span></div>
+    <div class="row"><span class="who">output</span><span class="tex" id="tex3"></span></div>
+  </div>
+
+  <div class="hactions">
+    <button id="start" class="wide big">Start audio</button>
+    <div class="viewsel" role="group" aria-label="which controls to show">
+      <button id="viewSynth" class="sm lit">Synth</button>
+      <button id="viewVoice" class="sm">Voice</button>
+    </div>
+    <div class="chips">
+      <span class="chip" id="ctxChip">stopped</span>
+      <span class="chip" id="otherChip" hidden>&mdash;</span>
+      <span class="chip" id="midiStat" data-only="synth">MIDI &mdash;</span>
+      <span class="chip" id="octChip" data-only="synth">oct 0</span>
+      <span class="chip" id="susChip" data-only="synth">sustain</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="side">
+   <div class="organism">
+    <span class="skin" aria-hidden="true"></span>
+    <svg class="veins" viewBox="0 0 100 1000" preserveAspectRatio="none" aria-hidden="true">
+      <path id="v1" d="M50 8 C34 90 66 150 50 236 C36 310 64 372 50 452 C38 530 62 596 50 690 C40 780 60 850 50 972"
+            fill="none" stroke="url(#vein)" stroke-width="3" stroke-linecap="round"/>
+      <path id="v2" d="M50 60 C72 120 30 200 58 280 C80 344 28 420 54 500 C74 566 30 640 52 726"
+            fill="none" stroke="url(#vein)" stroke-width="1.6" stroke-linecap="round" opacity=".55"/>
+    </svg>
+
+    <section class="chamber">
+      <h2>M(q) &mdash; the memristance curve</h2>
+      <div class="slot">
+        <input type="text" id="eq" value="100*((q+1)/2) + 8000*(1-(q+1)/2)" spellcheck="false"
+               aria-label="memristance curve M of q">
+      </div>
+      <p id="eqErr"></p>
+      <label class="pick">
+        <select id="preset" aria-label="preset"><option value="">&mdash; presets &mdash;</option></select>
+      </label>
+      <p class="cap"><code>q</code> runs &minus;1 to 1. Available functions include
+      <code>sin</code>, <code>exp</code>, <code>abs</code> and <code>PI</code>. Minimum 20&thinsp;&Omega;.</p>
+    </section>
+
+    <section class="chamber">
+      <h2>Wear</h2>
+      <div class="dials">
+        <label class="dial">
+          <input type="range" id="mu" min="4" max="7.5" step="0.02" value="6" aria-label="drift rate mu">
+          <span class="knob" aria-hidden="true"><i></i></span>
+          <span class="dl">Rate &mu;</span><span class="dv" id="muL"></span>
+        </label>
+        <label class="dial">
+          <input type="range" id="tau" min="-3" max="1.7" step="0.02" value="0.3" aria-label="relaxation tau">
+          <span class="knob" aria-hidden="true"><i></i></span>
+          <span class="dl">Relax &tau;</span><span class="dv" id="tauL"></span>
+        </label>
+        <label class="rocker">
+          <input type="checkbox" id="edge" aria-label="wrap the charge domain">
+          <span class="lever" aria-hidden="true"><b></b></span>
+          <span class="dl">Charge domain</span>
+          <span class="dv" id="edgeL">clamp</span>
+        </label>
+      </div>
+      <p class="cap"><b>Rate</b> sets charge travel. <b>Relax</b> pulls the charge back
+      toward zero.</p>
+    </section>
+
+    <section class="chamber">
+      <h2>Colony</h2>
+      <div class="dials">
+        <label class="dial" data-only="synth">
+          <input type="range" id="n" min="1" max="8" step="1" value="1" aria-label="number of elements">
+          <span class="knob" aria-hidden="true"><i></i></span>
+          <span class="dl">Elements</span><span class="dv" id="nL">1</span>
+        </label>
+        <label class="dial" data-only="synth">
+          <input type="range" id="spread" min="0" max="1.5" step="0.01" value="0" aria-label="spread in mu">
+          <span class="knob" aria-hidden="true"><i></i></span>
+          <span class="dl">Spread</span><span class="dv" id="spreadL"></span>
+        </label>
+        <label class="dial">
+          <input type="range" id="rein" min="0" max="1" step="0.01" value="0" aria-label="reinforcement">
+          <span class="knob" aria-hidden="true"><i></i></span>
+          <span class="dl">Reinforce</span><span class="dv" id="reinL"></span>
+        </label>
+      </div>
+      <p class="cap" data-only="synth"><b>Spread</b> separates the elements' rates.
+      <b>Reinforce</b> thickens active paths.</p>
+      <p class="cap" data-only="voice">The bands are the colony here. <b>Reinforce</b>
+      thickens whichever of them is carrying current, so the loud part of a voice
+      gets louder.</p>
+    </section>
+
+    <section class="chamber">
+      <h2><span data-only="synth">Drive</span><span data-only="voice">Output</span></h2>
+      <div class="dials">
+        <label class="dial" data-only="synth">
+          <input type="range" id="amp" min="0.05" max="2" step="0.01" value="1" aria-label="amplitude">
+          <span class="knob" aria-hidden="true"><i></i></span>
+          <span class="dl">Amplitude</span><span class="dv" id="ampL"></span>
+        </label>
+        <label class="dial">
+          <input type="range" id="gain" min="0" max="1" step="0.01" value="0.4" aria-label="output level">
+          <span class="knob" aria-hidden="true"><i></i></span>
+          <span class="dl">Output</span><span class="dv" id="gainL"></span>
+        </label>
+        <label class="rocker" data-only="synth">
+          <input type="checkbox" id="auto" checked aria-label="auto level">
+          <span class="lever" aria-hidden="true"><b></b></span>
+          <span class="dl">Auto level</span>
+          <span class="dv" id="autoL">on</span>
+        </label>
+      </div>
+      <p class="cap" data-only="synth"><b>Amplitude</b> changes drive and timbre.
+      <b>Output</b> sets level. Auto level evens out loudness.</p>
+      <p class="cap" data-only="voice"><b>Output</b> sets the master level. What drives
+      the element is <b>Input</b>, in the Voice panel.</p>
+    </section>
+   </div>
+  </div>
+
+  <div class="stage">
+    <div class="bank">
+      <div class="cell">
+        <span class="skin" aria-hidden="true"></span>
+        <div class="cellhead">
+          <h2>Substrate</h2>
+          <div class="inset">
+            <label class="dial sm">
+              <input type="range" id="sen" min="0" max="6" step="0.02" value="0" aria-label="senescence half-life">
+              <span class="knob" aria-hidden="true"><i></i></span>
+              <span class="dl">Senescence</span><span class="dv" id="senL"></span>
+            </label>
+            <div class="gauge" role="img" aria-label="substrate wear">
+              <svg viewBox="0 0 84 52" id="wearGauge">
+                <path d="M9 45 A33 33 0 0 1 75 45" fill="none" stroke="hsl(42 18% 34%)" stroke-width="3"/>
+                <path d="M9 45 A33 33 0 0 1 75 45" fill="none" stroke="var(--slime)" stroke-width="3"
+                      pathLength="100" stroke-dasharray="100" class="arc"/>
+                <g class="needle">
+                  <path d="M42 45 L42 17" stroke="var(--bronze-hi)" stroke-width="2.4" stroke-linecap="round"/>
+                </g>
+                <circle cx="42" cy="45" r="4.2" fill="hsl(33 40% 24%)" stroke="hsl(46 60% 68%)" stroke-width="1"/>
+              </svg>
+              <span class="gv" id="wearL">0.0% worn</span>
+            </div>
+            <button id="fresh" class="sm">Fresh substrate</button>
+          </div>
+        </div>
+        <canvas id="curve" width="1040" height="424"></canvas>
+        <p class="cap"><b>Dashed:</b> authored curve. <b>Solid:</b> worn curve.
+        Fresh substrate clears wear.</p>
+      </div>
+
+      <div class="cell">
+        <span class="skin" aria-hidden="true"></span>
+        <div class="cellhead">
+          <h2>Hysteresis</h2>
+          <div class="inset">
+            <label class="dial sm">
+              <input type="range" id="cap" class="mould" min="0" max="20" step="0.05" value="0"
+                     aria-label="parallel capacitance">
+              <span class="knob" aria-hidden="true"><i></i></span>
+              <span class="dl">Mould</span><span class="dv" id="capL"></span>
+            </label>
+            <div class="srcsel" role="group" aria-label="what the loop and circuit show">
+              <span class="dl">Showing</span>
+              <button id="srcDrive" class="sm lit">Drive</button>
+              <button id="srcInput" class="sm" disabled>Input</button>
+            </div>
+          </div>
+        </div>
+        <canvas id="loop" width="880" height="472"></canvas>
+        <div class="legend" id="legDrive">
+          <span>memory <b id="memPct">&mdash;</b></span>
+          <span>harmonic <b id="harmPct">&mdash;</b></span>
+          <span>opening <b id="openPct">&mdash;</b></span>
+        </div>
+        <div class="legend" id="legInput" hidden>
+          <span>memoryless <b id="mlessPct">&mdash;</b></span>
+          <span>nonlinear <b id="nlinPct">&mdash;</b></span>
+          <span>opening <b id="openPct2">&mdash;</b></span>
+          <span>band <b id="loopBand">&mdash;</b></span>
+        </div>
+        <p class="cap" id="capDrive"><b>Memory</b> is the share of the current that requires
+        internal state. <b>Harmonic</b> is the share above the fundamental; a linear
+        capacitance produces none. <b>Opening</b> is the current still flowing as the voltage
+        crosses zero, so 0% is a pinched loop. A memristor reads harmonics with a pinched
+        loop; a capacitance in parallel reads the reverse. <b>Mould</b> adds that
+        capacitance.</p>
+        <p class="cap" id="capInput" hidden>One band's element, over the last 32&thinsp;ms.
+        An input has no cycle to fold onto, so this is a sliding window rather than one
+        loop &mdash; a scope in X&ndash;Y mode with a voice on it draws exactly this.
+        <b>Memoryless</b> is the share of the current no single-valued <i>i(v)</i> can
+        account for, so a plain resistor reads 0 and a capacitance reads high.
+        <b>Nonlinear</b> is what is left after the best linear model of the band, so a
+        resistor <em>and</em> an RC network both read 0 and only a genuinely nonlinear
+        element reads high &mdash; that is the pair that tells a memristor from the mould.
+        <b>Band</b> is set in the Voice panel.</p>
+      </div>
+
+      <div class="cell">
+        <span class="skin" aria-hidden="true"></span>
+        <div class="cellhead"><h2>Current</h2></div>
+        <canvas id="scope" width="880" height="472"></canvas>
+        <p class="cap">Output current. Lower notes sweep more of the element and produce
+        more harmonics.</p>
+      </div>
+
+      <div class="cell voxcell" data-only="voice">
+        <span class="skin" aria-hidden="true"></span>
+        <div class="cellhead">
+          <h2>Voice</h2>
+          <div class="inset">
+            <label class="dial sm">
+              <input type="range" id="vgain" min="0" max="16" step="0.05" value="1.5" aria-label="input gain">
+              <span class="knob" aria-hidden="true"><i></i></span>
+              <span class="dl">Input</span><span class="dv" id="vgainL"></span>
+            </label>
+            <label class="dial sm">
+              <input type="range" id="vmix" min="0" max="1" step="0.01" value="1" aria-label="dry wet mix">
+              <span class="knob" aria-hidden="true"><i></i></span>
+              <span class="dl">Mix</span><span class="dv" id="vmixL"></span>
+            </label>
+            <label class="dial sm">
+              <input type="range" id="nb" min="4" max="12" step="1" value="8" aria-label="band count">
+              <span class="knob" aria-hidden="true"><i></i></span>
+              <span class="dl">Bands</span><span class="dv" id="nbL">8</span>
+            </label>
+            <label class="dial sm">
+              <input type="range" id="vtilt" min="0" max="1" step="0.01" value="1" aria-label="tilt">
+              <span class="knob" aria-hidden="true"><i></i></span>
+              <span class="dl">Tilt</span><span class="dv" id="vtiltL"></span>
+            </label>
+            <label class="dial sm">
+              <input type="range" id="vout" min="0" max="3" step="0.01" value="1" aria-label="voice level">
+              <span class="knob" aria-hidden="true"><i></i></span>
+              <span class="dl">Level</span><span class="dv" id="voutL"></span>
+            </label>
+            <label class="dial sm">
+              <input type="range" id="tband" min="1" max="12" step="1" value="4"
+                     aria-label="band shown in the hysteresis and circuit panels">
+              <span class="knob" aria-hidden="true"><i></i></span>
+              <span class="dl">Shown</span><span class="dv" id="tbandL">4</span>
+            </label>
+            <button id="micBtn" class="sm">Use microphone</button>
+            <label class="filebtn" id="fileBtn">Load a file<input type="file" id="vfile" accept="audio/*"></label>
+          </div>
+        </div>
+        <canvas id="vbands" width="1560" height="424"></canvas>
+        <div class="legend">
+          <span>source <b id="vsrc">none</b></span>
+          <span>engaged <b id="vEng">&mdash;</b></span>
+          <span>worn most by <b id="vWorn">&mdash;</b></span>
+        </div>
+        <p class="cap">The input runs through the circuit built above &mdash; the same
+        <b>M(q)</b>, mould, reinforcement and senescence, one element per band.
+        <b>Input</b> sets how far each band drives its element and is the timbre
+        control; <b>Mix</b> crossfades against the untouched signal. <b>Tilt</b> scales
+        &mu; with band centre: at 1 every band reaches its element, at 0 only the low
+        ones do, because charge integrates current and so hears the input with a
+        1/<i>f</i> weight. Bars are each band's charge span; the line under them is the
+        wear that band has deposited, which is why the substrate ends up a record of
+        what was said into it.</p>
+      </div>
+
+      <div class="cell wiring">
+        <span class="skin" aria-hidden="true"></span>
+        <div class="cellhead">
+          <h2>Circuit</h2>
+          <div class="inset">
+            <label class="rocker">
+              <input type="checkbox" id="slow" checked aria-label="replay the cycle slowly">
+              <span class="lever" aria-hidden="true"><b></b></span>
+              <span class="dl">Slow cycle</span>
+              <span class="dv" id="slowL">0.5 Hz</span>
+            </label>
+          </div>
+        </div>
+        <canvas id="circ" width="1560" height="392"></canvas>
+        <div class="legend">
+          <span>branches <b id="brCount">1</b></span>
+          <span>mould share <b id="capShare">&mdash;</b></span>
+          <span>total <b id="condTot">&mdash;</b></span>
+        </div>
+        <p class="cap" id="circCapDrive">One drive across every branch. <b>Colony</b> adds
+        memristive branches and sets their thickness; <b>Mould</b> adds the capacitor beside
+        them, which carries current a quarter cycle out of step and holds no state. The
+        cycle is replayed at 0.5&thinsp;Hz &mdash; the element runs at the note's pitch.</p>
+        <p class="cap" id="circCapInput" hidden>One branch per band, each carrying its own
+        filtered share of the input, and when <b>Mould</b> is up each carries its own
+        capacitance beside its element &mdash; that is where the capacitance is, and it is
+        why sibilants come through least processed, since a band's capacitive current goes
+        as its own frequency. Percentages are live current shares, not a replayed cycle:
+        an input has no cycle. The marked branch is the one the Hysteresis loop is
+        showing.</p>
+      </div>
+    </div>
+
+    <div class="deck" data-only="synth">
+      <span class="skin" aria-hidden="true"></span>
+      <div class="deckhead">
+        <div class="surf">
+          <button id="pianoBtn" class="sm lit">Piano</button>
+          <button id="hexBtn" class="sm">Hex</button>
+          <button id="ribBtn" class="sm">Ribbon</button>
+        </div>
+        <div class="dials perf">
+          <label class="dial sm">
+            <input type="range" id="glide" min="0" max="0.4" step="0.005" value="0" aria-label="glide time">
+            <span class="knob" aria-hidden="true"><i></i></span>
+            <span class="dl">Glide</span><span class="dv" id="glideL"></span>
+          </label>
+          <label class="dial sm">
+            <input type="range" id="veld" min="0" max="1" step="0.01" value="0.7" aria-label="velocity depth">
+            <span class="knob" aria-hidden="true"><i></i></span>
+            <span class="dl">Velocity</span><span class="dv" id="veldL"></span>
+          </label>
+        </div>
+      </div>
+      <canvas class="surface" id="surface" width="1200" height="190"></canvas>
+      <p class="cap" id="surfHint"></p>
+    </div>
+
+    <div class="cell flat status">
+      <span class="skin" aria-hidden="true"></span>
+      <h2>State</h2>
+      <div class="readouts">
+        <div class="readout"><span>charge q</span><span id="qVal">&mdash;</span></div>
+        <div class="readout"><span>M(q)</span><span id="mVal">&mdash;</span></div>
+        <div class="readout"><span>peak out</span><span id="pkVal">&mdash;</span></div>
+        <div class="readout"><span>substrate worn</span><span id="wVal">0.0%</span></div>
+        <div class="readout"><span>played</span><span id="ageVal">0.0 s</span></div>
+        <div class="readout"><span>oversampling</span><span id="osVal">8&times;</span></div>
+      </div>
+    </div>
+  </div>
+</main>
+</div>
+
+<script>
+"use strict";
+
+/* ---- the worklet -------------------------------------------------------- */
+const WORKLET = `
+// The senescence half-life is derived below for a charge that sits still. The
+// charge does not sit still: it sweeps a wide stretch of the domain, so the
+// deposit reaching any one bin is diluted by roughly the ratio of the swept width
+// to the width of the deposit kernel. Measured at 42x for the default curve and
+// drive (HP, mu = 1e6, 110 Hz, amplitude 1) by test.html, which is why the quoted
+// half-life is nominal rather than exact: a wider sweep spreads the wear further
+// and takes longer.
+const SWEEP_DILUTION = 42;
+
+class PhysaProc extends AudioWorkletProcessor {
+  constructor(options){
+    super();
+    this.MAXN=8; this.N=1;
+    this.q=new Float64Array(this.MAXN);
+    this.D=new Float64Array(this.MAXN).fill(1);
+    this.muK=new Float64Array(this.MAXN).fill(1e6);
+    this.phase=0; this.env=0; this.gate=0;
+    this.lut=new Float32Array(1024).fill(1200);
+    this.wear=new Float32Array(1024);
+    this.flat=1200;
+    this.mu=1e6; this.tau=2; this.edge=0;
+    this.spread=0; this.rein=0; this.tauD=0.35;
+    this.capF=0; this.thalf=0; this.senes=0;
+    this.freq=110; this.freqT=110; this.lf=Math.log(110); this.glide=0; this.vel=1;
+    this.amp=1; this.OS=8; this.tick=0; this.Rref=1200;
+    this.dcx=0; this.dcy=0; this.ms=1e-4; this.g=1; this.auto=1; this.peak=0;
+    this.age=0;
+
+    // ---- voice path -------------------------------------------------------
+    // The input processed by the same substrate: a filterbank in front of one
+    // element per band. It needs the bank rather than a single element because
+    // q integrates current, so the charge sees the drive with a 1/f weight and a
+    // voice's formant energy is invisible to it - measured at +-0.044 of the
+    // domain at amplitude 1, against -0.686..0.937 for the sine the page is
+    // calibrated on. Scaling mu with band centre is the compensation.
+    this.MAXB=12; this.NB=8;
+    this.vOn=0; this.vGain=1; this.vMix=1; this.vOut=1; this.vTilt=1;
+    this.vLo=110; this.vHi=7000;
+    this.vq=new Float64Array(this.MAXB);
+    this.vD=new Float64Array(this.MAXB).fill(1);
+    this.vmu=new Float64Array(this.MAXB);
+    this.bb0=new Float64Array(this.MAXB); this.bb2=new Float64Array(this.MAXB);
+    this.ba1=new Float64Array(this.MAXB); this.ba2=new Float64Array(this.MAXB);
+    this.bx1=new Float64Array(this.MAXB); this.bx2=new Float64Array(this.MAXB);
+    this.by1=new Float64Array(this.MAXB); this.by2=new Float64Array(this.MAXB);
+    this.bnd=new Float64Array(this.MAXB);   // this sample's band split
+    this.vpb=new Float64Array(this.MAXB);   // previous band sample, for interpolation
+    this.vcp=new Float64Array(this.MAXB);   // previous v, for the mould's dv/dt
+    this.vlev=new Float64Array(this.MAXB);  // per-band level, smoothed
+    this.vwr=new Float64Array(this.MAXB);   // wear this band has deposited
+    this.vqlo=new Float64Array(this.MAXB); this.vqhi=new Float64Array(this.MAXB);
+    this.vdcx=0; this.vdcy=0; this.vox=0; this.voy=0; this.bnorm=1; this.vmk=1;
+    this.vcur=new Float64Array(this.MAXB);  // per-band current, smoothed
+    this.vca=new Float64Array(this.MAXB);   // and its per-sample accumulator
+    this.vcc=0;                             // the mould's share, summed over bands
+    // The (v, i) trail. The synth path samples its loop onto a phase grid, which
+    // makes it one cycle at any pitch; an input has no phase and no cycle, so this
+    // is a plain sliding window instead - which is what an oscilloscope in X-Y
+    // mode actually shows for an aperiodic drive.
+    //
+    // It is ONE band's own voltage against its own current, and it has to be.
+    // Plotting the bank's input against the bank's total current measures the
+    // filterbank as well as the elements, and a bandpass on its own reads as
+    // memory: a plain resistor behind one came out at 36.6% memoryless and 33.5%
+    // opening, where the element itself has neither.
+    this.TL=768; this.TDEC=2; this.tdec=0; this.tw=0; this.tband=0;
+    this.tv=new Float32Array(this.TL); this.ti=new Float32Array(this.TL);
+    this.setBands();
+    // one drive cycle of (v, i) for the hysteresis loop, captured pre-AGC so the
+    // curve shows the element rather than the gain stage
+    this.LOOP=256; this.lv=new Float32Array(this.LOOP); this.li=new Float32Array(this.LOOP);
+    this.lph=new Float32Array(this.LOOP);
+    for(let i=0;i<this.LOOP;i++) this.lph[i]=i/this.LOOP;
+    this.port.onmessage = e => { this.take(e.data); };
+    // Initial state via processorOptions. Port messages are not reliably delivered
+    // before the first process() call in an OfflineAudioContext, so anything that
+    // must be set up front comes through here instead.
+    const o=(options&&options.processorOptions)||null;
+    if(o) this.take(o);
+  }
+
+  take(d){
+    if(d.lut){
+      this.lut=d.lut;
+      // Fixed reference resistance for output scaling. It MUST be constant:
+      // scaling by the instantaneous M(q) would give i*M(q) = v exactly and cancel
+      // the element out, leaving the bare drive sine. Use the MINIMUM of M, not the
+      // mean: output is v*Rref/M(q), so a mean reference lets the gain reach
+      // mean/min - 40x on the HP curve - and clip hard at full wear.
+      let lo=Infinity, sum=0;
+      for(let i=0;i<d.lut.length;i++){ if(d.lut[i]<lo) lo=d.lut[i]; sum+=d.lut[i]; }
+      this.Rref=lo; this.flat=sum/d.lut.length;
+      // Makeup for the voice path. Its gain is Rref/M(q), which averages
+      // Rref/flat - about 1/40 on the HP curve - so without this the wet signal
+      // arrives 32 dB under the dry one and Mix is not a crossfade. The synth
+      // path solves the same problem with the AGC, which the voice path must not
+      // have: run over an input, a level detector flattens the drive axis the
+      // whole effect is played on. A constant M(q) makes this exactly 1, so a
+      // plain resistor passes the input through at its own level.
+      this.vmk = this.flat/this.Rref;
+      this.recalcSen();
+    }
+    if(d.mu!==undefined){ this.mu=d.mu; this.setColony(); this.setBands(); }
+    if(d.tau!==undefined) this.tau=d.tau;
+    if(d.edge!==undefined) this.edge=d.edge;
+    if(d.amp!==undefined) this.amp=d.amp;
+    if(d.auto!==undefined) this.auto=d.auto;
+    if(d.capF!==undefined) this.capF=d.capF;
+    if(d.rein!==undefined) this.rein=d.rein;
+    if(d.thalf!==undefined){ this.thalf=d.thalf; this.recalcSen(); }
+    if(d.N!==undefined){
+      const old=this.N; this.N=d.N;
+      for(let e=old;e<this.N;e++){ this.q[e]=0; this.D[e]=1; }
+      this.setColony();
+    }
+    if(d.spread!==undefined){ this.spread=d.spread; this.setColony(); }
+    if(d.fresh){ this.wear.fill(0); this.age=0; }
+    if(d.glide!==undefined) this.glide=d.glide;
+    if(d.vel!==undefined) this.vel=d.vel;
+    if(d.noteOn!==undefined){
+      this.freqT=d.noteOn;
+      // Glide is between notes, not out of silence: a note struck from rest starts
+      // at its own pitch. Starting every note from the last one's frequency would
+      // put a portamento on the first note of every phrase.
+      if(!this.gate || this.glide<=0){ this.freq=this.freqT; this.lf=Math.log(this.freqT); }
+      this.gate=1;
+    }
+    if(d.noteOff!==undefined) this.gate=0;
+    if(d.vOn!==undefined) this.vOn=d.vOn;
+    if(d.vGain!==undefined) this.vGain=d.vGain;
+    if(d.vMix!==undefined) this.vMix=d.vMix;
+    if(d.vOut!==undefined) this.vOut=d.vOut;
+    if(d.NB!==undefined){
+      const old=this.NB; this.NB=d.NB;
+      for(let b=old;b<this.NB;b++){ this.vq[b]=0; this.vD[b]=1; this.vwr[b]=0; }
+      this.setBands();
+    }
+    if(d.vTilt!==undefined){ this.vTilt=d.vTilt; this.setBands(); }
+    if(d.vLo!==undefined){ this.vLo=d.vLo; this.setBands(); }
+    if(d.vHi!==undefined){ this.vHi=d.vHi; this.setBands(); }
+    if(d.fresh) this.vwr.fill(0);
+    if(d.tband!==undefined && d.tband!==this.tband){
+      // a trail that mixed two bands would be neither
+      this.tband=d.tband; this.tv.fill(0); this.ti.fill(0); this.tw=0;
+    }
+  }
+
+  // Constant-Q bandpasses, log-spaced. Q follows the spacing, so the crossings
+  // stay in the same place at any band count: 1.58 dB of ripple in the summed
+  // response and 6.1 dB of isolation, measured offline at eight bands over
+  // 110-7000 Hz. Isolation is what matters here - it is what makes the per-band
+  // mu compensation mean anything - and the ripple only has to stay under the
+  // threshold where a bank reads as a comb.
+  setBands(){
+    const NB=this.NB, sr=sampleRate;
+    const oct=Math.log2(this.vHi/this.vLo)/Math.max(1,NB-1);
+    const Q=1.2/oct;
+    for(let b=0;b<NB;b++){
+      const fc=this.vLo*Math.pow(2, oct*b);
+      const w=2*Math.PI*fc/sr, al=Math.sin(w)/(2*Q), c=Math.cos(w), a0=1+al;
+      this.bb0[b]=al/a0; this.bb2[b]=-al/a0; this.ba1[b]=-2*c/a0; this.ba2[b]=(1-al)/a0;
+      // mu scales with band centre. Without it every band above the lowest sits
+      // at +-0.04 of the domain and behaves as a linear resistor. Tilt at 0
+      // removes the compensation, which leaves a bass-only effect on purpose.
+      this.vmu[b]=this.mu*(1 + this.vTilt*(0.5*fc/this.vLo - 1));
+    }
+    // Overlapping bands sum to more than unity, and by how much depends on the
+    // band count, so evaluate the summed transfer function rather than carrying
+    // a tuned constant that would silently be wrong at every other setting.
+    let acc=0;
+    for(let p=0;p<25;p++){
+      const f=this.vLo*Math.pow(this.vHi/this.vLo, p/24);
+      const w=2*Math.PI*f/sr, cw=Math.cos(w), sw=Math.sin(w);
+      const c2=Math.cos(2*w), s2=Math.sin(2*w);
+      let re=0, im=0;
+      for(let b=0;b<NB;b++){
+        const nr=this.bb0[b]+this.bb2[b]*c2, ni=-this.bb2[b]*s2;
+        const dr=1+this.ba1[b]*cw+this.ba2[b]*c2, di=-(this.ba1[b]*sw+this.ba2[b]*s2);
+        const dd=dr*dr+di*di;
+        re+=(nr*dr+ni*di)/dd; im+=(ni*dr-nr*di)/dd;
+      }
+      acc+=Math.hypot(re,im);
+    }
+    this.bnorm = acc>0 ? 25/acc : 1;
+  }
+
+  setColony(){
+    const N=this.N;
+    for(let e=0;e<N;e++){
+      const t = N>1 ? (e/(N-1)-0.5) : 0;
+      this.muK[e]=this.mu*Math.pow(10, this.spread*t);
+    }
+  }
+
+  // thalf is the half-life of the wear at amplitude 1, quoted where the charge
+  // dwells. dw/dt = senes*p*(1-w) with p = |v*i|; at amplitude 1 on a curve of
+  // mean resistance flat, the cycle-average of p is 0.5/flat, so senes must be
+  // 2*flat*ln2/thalf for w to reach 0.5 at t = thalf.
+  recalcSen(){
+    this.senes = this.thalf>0
+      ? SWEEP_DILUTION*2*this.flat*Math.LN2/this.thalf : 0;
+  }
+
+  M(q){
+    const L=this.lut, W=this.wear, n=L.length;
+    let u=(q+1)*0.5;
+    if(this.edge){ u=u-Math.floor(u); }    // wrap
+    else { u = u<0?0 : u>1?1 : u; }        // clamp
+    const x=u*(n-1), i=Math.floor(x), f=x-i, j=i+1<n?i+1:n-1;
+    const a=L[i]+(L[j]-L[i])*f;
+    const w=W[i]+(W[j]-W[i])*f;
+    const m = w>0 ? a+(this.flat-a)*w : a;
+    return m<20?20:m;                      // keep the current finite
+  }
+
+  // Abrasion. Deposited over a few bins so the wear map stays smooth; the kernel
+  // peaks at 1 rather than summing to 1, so a stationary charge wears its own bin
+  // at exactly the quoted rate.
+  deposit(q, amt){
+    const W=this.wear, n=W.length, R=6;
+    let u=(q+1)*0.5;
+    if(this.edge){ u=u-Math.floor(u); } else { u = u<0?0 : u>1?1 : u; }
+    const c=Math.round(u*(n-1));
+    for(let d=-R;d<=R;d++){
+      let i=c+d;
+      if(this.edge){ i=((i%n)+n)%n; } else if(i<0||i>=n) continue;
+      const a=amt*(1-Math.abs(d)/(R+1));
+      W[i]+=a*(1-W[i]);
+      if(W[i]>1) W[i]=1;
+    }
+  }
+
+  process(inputs, outputs){
+    const out=outputs[0][0], sr=sampleRate, OS=this.OS, N=this.N;
+    // An input is present only once something is connected to it; until then
+    // inputs[0] is an empty array, so the voice path stays off and the output
+    // is bit-for-bit what it was before this path existed.
+    const vin = inputs[0] && inputs[0][0];
+    const vOn = this.vOn && vin ? 1 : 0, NB=this.NB;
+    if(this.glide>0 && this.freq!==this.freqT){
+      const c=Math.exp(-out.length/(this.glide*sr));
+      const lt=Math.log(this.freqT);
+      this.lf = lt + (this.lf-lt)*c;
+      this.freq = Math.exp(this.lf);
+      if(Math.abs(this.lf-lt) < 1e-4){ this.freq=this.freqT; this.lf=lt; }
+    }
+    const dt=1/(sr*OS), om=2*Math.PI*this.freq;
+    const relax = this.tau>0 ? 1/this.tau : 0;
+    const aC=Math.exp(-1/(0.004*sr)), rC=Math.exp(-1/(0.25*sr));
+    const dD=dt/this.tauD;
+    const Dlo=1-0.85*this.rein, Dhi=1+3*this.rein;
+    const iRef=1/this.flat, capOn=this.capF>0, reinOn=this.rein>0;
+    const senOn=this.senes>0, vDry=1-this.vMix, vWet=this.vMix*this.vOut*this.vmk;
+    for(let s=0;s<out.length;s++){
+      this.env = this.gate ? 1+(this.env-1)*aC : this.env*rC;
+      let acc=0, wsum=0, vLast=0, iLast=0;
+      for(let k=0;k<OS;k++){
+        this.phase += om*dt;
+        if(this.phase>2*Math.PI) this.phase-=2*Math.PI;
+        const drv=this.amp*this.vel*this.env;
+        const v=drv*Math.sin(this.phase);
+        let isum=0;
+        for(let e=0;e<N;e++){
+          const m=this.M(this.q[e]);
+          const ie=v*this.D[e]/m;
+          this.q[e] += (this.muK[e]*ie - this.q[e]*relax)*dt;
+          if(!this.edge){ if(this.q[e]<-1)this.q[e]=-1; else if(this.q[e]>1)this.q[e]=1; }
+          if(reinOn){
+            // Tero's tube law: conductance climbs with the current the tube carries
+            // and relaxes otherwise. Saturating, so the positive feedback is bounded.
+            const t=Math.abs(ie)/iRef;
+            this.D[e] += (Dlo+(Dhi-Dlo)*(t/(1+t))-this.D[e])*dD;
+          }
+          isum+=ie;
+        }
+        isum/=N;
+        // The mould branch. A capacitance in parallel carries current and holds no
+        // state at all, so it contributes pure quadrature at the fundamental: the
+        // loop opens into an ellipse and nothing appears above the fundamental.
+        const ic = capOn ? this.capF*drv*om*Math.cos(this.phase) : 0;
+        const itot=isum+ic;
+        // Hann-weighted average over the oversampled substeps: a cheap but real
+        // decimation filter. Not a designed half-band; see the notes.
+        const wt=0.5-0.5*Math.cos(2*Math.PI*(k+0.5)/OS);
+        acc+=itot*this.Rref*wt; wsum+=wt;
+        vLast=v; iLast=itot*this.Rref;
+      }
+      let y=acc/wsum;
+
+      if(this.env>1e-4){
+        this.age+=1/sr;
+        if(this.senes>0){
+          for(let e=0;e<N;e++){
+            const me=this.M(this.q[e]);
+            this.deposit(this.q[e], this.senes*vLast*vLast*this.D[e]/me/sr);
+          }
+        }
+      }
+
+      // sample the loop on a phase grid, so it is one cycle regardless of pitch
+      const ph=this.phase/(2*Math.PI);
+      const slot=Math.min(this.LOOP-1, Math.floor(ph*this.LOOP));
+      // Store the sample's own phase, not the slot's nominal phase. Several samples
+      // fall in one slot and the last one wins, which lands systematically near the
+      // top of the slot; assuming the nominal phase therefore skews every reading by
+      // about half a slot and reports memory where there is none.
+      this.lv[slot]=vLast; this.li[slot]=iLast; this.lph[slot]=ph;
+
+      // DC blocker. Asymmetric traversal of M(q) half-wave rectifies the current,
+      // which puts a large offset on the output and wastes headroom. One-pole
+      // highpass at ~15 Hz.
+      const dc = y - this.dcx + 0.998*this.dcy;
+      this.dcx = y; this.dcy = dc; y = dc;
+
+      if(this.auto){
+        // Slow AGC. Output gain is min(M)/M(q), which for a curve spanning
+        // 100..8000 ohms swings 80:1 - inaudible at one end, blaring at the other.
+        // The detector runs at ~80 ms so it flattens that swing without touching
+        // the waveform shape inside a cycle, leaving the harmonic content (and so
+        // the keyfollow and level-dependence behaviour) intact.
+        const c = Math.exp(-1/(0.08*sr));
+        this.ms = this.ms*c + y*y*(1-c);
+        const rms = Math.sqrt(this.ms);
+        let g = rms > 1e-6 ? 0.25/rms : 0;
+        if(g > 200) g = 200;
+        this.g = this.g*c + g*(1-c);
+        y *= this.g;
+      }
+
+      // ---- voice path ------------------------------------------------------
+      // Added after the AGC on purpose. The AGC exists to flatten the 80:1 swing
+      // of 1/M across a held note; run over the input it would also flatten the
+      // drive level, which is the axis the whole effect is played on.
+      if(vOn){
+        const xin=vin[s];
+        // DC block the input before anything else. A glottal waveform is
+        // non-negative and the charge integrates current, so an unblocked voice
+        // walks q to the clamp and parks it there - measured q reaching 1.000 at
+        // every input level tested, with the resulting +29 dB of top end being
+        // the clamp rather than memristance.
+        const xd = xin - this.vdcx + 0.998*this.vdcy;
+        this.vdcx=xin; this.vdcy=xd;
+        const x=xd*this.vGain;
+        let cacc=0, tvv=0, tii=0;
+        for(let b=0;b<NB;b++){
+          const yb = this.bb0[b]*x + this.bb2[b]*this.bx2[b]
+                   - this.ba1[b]*this.by1[b] - this.ba2[b]*this.by2[b];
+          this.bx2[b]=this.bx1[b]; this.bx1[b]=x;
+          this.by2[b]=this.by1[b]; this.by1[b]=yb;
+          this.bnd[b]=yb*this.bnorm;
+        }
+        let wet=0, wws=0;
+        for(let k=0;k<OS;k++){
+          const fr=(k+0.5)/OS, wt=0.5-0.5*Math.cos(2*Math.PI*fr);
+          let tot=0;
+          for(let b=0;b<NB;b++){
+            const v=this.vpb[b]+(this.bnd[b]-this.vpb[b])*fr;
+            this.vca[b]=k?this.vca[b]:0;
+            const m=this.M(this.vq[b]);
+            const ie=v*this.vD[b]/m;
+            this.vq[b] += (this.vmu[b]*ie - this.vq[b]*relax)*dt;
+            if(!this.edge){ if(this.vq[b]<-1)this.vq[b]=-1; else if(this.vq[b]>1)this.vq[b]=1; }
+            if(reinOn){
+              const tt=Math.abs(ie)/iRef;
+              this.vD[b] += (Dlo+(Dhi-Dlo)*(tt/(1+tt))-this.vD[b])*dD;
+            }
+            // the mould as a real differentiator: with no single drive phase
+            // there is no closed form for its quadrature
+            const icb = capOn ? this.capF*(v-this.vcp[b])/dt : 0;
+            this.vcp[b]=v;
+            this.vca[b]+=Math.abs(ie)*this.Rref/OS;
+            cacc+=Math.abs(icb)*this.Rref/OS;
+            if(b===this.tband){ tvv=v; tii=(ie+icb)*this.Rref; }
+            tot += (ie+icb)*this.Rref;
+          }
+          wet += tot*wt; wws += wt;
+        }
+        wet/=wws;
+        // captured before the output DC blocker, so the trail shows the element
+        // rather than the stage after it - the same reason the synth loop is
+        // captured pre-AGC
+        if((this.tdec=(this.tdec+1)%this.TDEC)===0){
+          this.tv[this.tw]=tvv; this.ti[this.tw]=tii; this.tw=(this.tw+1)%this.TL;
+        }
+        for(let b=0;b<NB;b++) this.vcur[b] += (this.vca[b]-this.vcur[b])*0.0012;
+        this.vcc += (cacc-this.vcc)*0.0012;
+        for(let b=0;b<NB;b++){
+          const bv=this.bnd[b];
+          this.vpb[b]=bv;
+          if(this.vq[b]<this.vqlo[b]) this.vqlo[b]=this.vq[b];
+          if(this.vq[b]>this.vqhi[b]) this.vqhi[b]=this.vq[b];
+          this.vlev[b] += (Math.abs(bv)-this.vlev[b])*0.0012;
+          // One deposit per output sample per band, matching the synth path's
+          // rate, so the quoted half-life means the same thing on both.
+          if(senOn){
+            const m=this.M(this.vq[b]);
+            const amt=this.senes*bv*bv*this.vD[b]/m/sr;
+            this.deposit(this.vq[b], amt);
+            this.vwr[b]+=amt;
+          }
+        }
+        if(this.env<=1e-4) this.age+=1/sr;
+        // the element half-wave rectifies, so the voice path needs its own DC
+        // blocker before it is mixed back against the dry signal
+        const d2 = wet - this.vox + 0.998*this.voy;
+        this.vox=wet; this.voy=d2;
+        y += xin*vDry + d2*vWet;
+      }
+
+      // Soft limiter: identity below the threshold, smooth above it, so it does not
+      // colour normal playing and only catches transients.
+      const t=0.9, a=Math.abs(y);
+      if(a>t) y = Math.sign(y)*(t + (1-t)*Math.tanh((a-t)/(1-t)));
+
+      if(a>this.peak) this.peak=a;
+      out[s]=y;
+    }
+    if((this.tick=(this.tick+1)%12)===0){
+      const N=this.N;
+      const qs=new Float32Array(N), ds=new Float32Array(N);
+      let msum=0;
+      for(let e=0;e<N;e++){ qs[e]=this.q[e]; ds[e]=this.D[e]; msum+=this.M(this.q[e]); }
+      const wn=128, ws=new Float32Array(wn), step=this.wear.length/wn;
+      let wsum=0;
+      for(let i=0;i<wn;i++){ ws[i]=this.wear[Math.floor(i*step)]; wsum+=ws[i]; }
+      let vsp=null, vlv=null, vwr=null, vdd=null, vcu=null, tv=null, ti=null;
+      if(this.vOn){
+        const NB=this.NB;
+        vsp=new Float32Array(NB); vlv=new Float32Array(NB);
+        vwr=new Float32Array(NB); vdd=new Float32Array(NB); vcu=new Float32Array(NB);
+        tv=this.tv.slice(); ti=this.ti.slice();
+        for(let b=0;b<NB;b++){
+          vsp[b]=(this.vqhi[b]-this.vqlo[b])/2;
+          vlv[b]=this.vlev[b]; vwr[b]=this.vwr[b]; vdd[b]=this.vD[b];
+          vcu[b]=this.vcur[b];
+          // decay the span trackers so the display follows the voice rather than
+          // latching on the loudest thing said so far
+          this.vqlo[b]*=0.72; this.vqhi[b]*=0.72;
+        }
+      }
+      this.port.postMessage({qs:qs, ds:ds, m:msum/N, peak:this.peak, age:this.age, f:this.freq,
+                             wear:ws, wmean:wsum/wn, lv:this.lv.slice(), li:this.li.slice(),
+                             lph:this.lph.slice(),
+                             vsp:vsp, vlv:vlv, vwr:vwr, vdd:vdd, vcu:vcu, nb:this.NB,
+                             tv:tv, ti:ti, tw:this.tw, vcc:this.vcc, vOn:this.vOn});
+      this.peak=0;
+    }
+    return true;
+  }
+}
+registerProcessor('physa', PhysaProc);
+`;
+
+/* ---- presets ------------------------------------------------------------ */
+/* A preset sets the curve and every control under it, so the two that are about
+   a whole configuration rather than a curve can exist at all. */
+const BASE = {mu:6, tau:0.3, edge:"clamp", sen:0, n:1, spread:0, rein:0, cap:0, amp:1};
+const PRESETS = [
+  {name:"Constant — a plain resistor, no memory", eq:"1200"},
+  {name:"HP linear drift", eq:"100*((q+1)/2) + 8000*(1-(q+1)/2)"},
+  {name:"Periodic in charge (unbuildable)", eq:"1200 + 1000*sin(9*PI*q)"},
+  {name:"Narrow well at q=0", eq:"8000 - 7700*exp(-30*q*q)"},
+  {name:"Hard switch", eq:"q < 0 ? 7000 : 400"},
+  {name:"Quartic soft knee", eq:"600 + 5000*q*q*q*q"},
+  {name:"Physarum as measured, 2025 — RC only", eq:"1200", cap:1.4},
+  {name:"Colony — six tubes, reinforcing", eq:"100*((q+1)/2) + 8000*(1-(q+1)/2)",
+   n:6, spread:0.75, rein:0.7},
+  {name:"Senescent — wears out in a minute", eq:"1200 + 1000*sin(9*PI*q)",
+   sen:2*Math.log10(60), tau:1.0}
+];
+
+/* ---- main thread -------------------------------------------------------- */
+const NOTES=["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+const KEYROW="awsedftgyhujk";
+const LUTN=1024;
+let ctx=null, node=null, gainNode=null, analyser=null, held=new Set();
+const ui = id => document.getElementById(id);
+
+function compile(src){
+  const f = new Function("q", "with(Math){ return ("+src+"); }");
+  const lut = new Float32Array(LUTN);
+  for(let i=0;i<LUTN;i++){
+    const q = -1 + 2*i/(LUTN-1);
+    const v = f(q);
+    if(!isFinite(v)) throw new Error("M(q) is not finite at q="+q.toFixed(2));
+    lut[i] = Math.max(20, v);
+  }
+  return lut;
+}
+
+let LUT = compile(ui("eq").value);
+let FLAT = 1200;
+function flatten(){ let s=0; for(const v of LUT) s+=v; FLAT=s/LUT.length; }
+flatten();
+
+function pushLUT(){
+  try{
+    LUT = compile(ui("eq").value);
+    flatten();
+    ui("eqErr").textContent="";
+    if(node) node.port.postMessage({lut:LUT});
+  }catch(err){ ui("eqErr").textContent = err.message; }
+}
+
+const halfLife = () => { const v=+ui("sen").value; return v<=0 ? 0 : Math.pow(10, v/2); };
+
+function params(){
+  if(!node) return;
+  node.port.postMessage({
+    mu: Math.pow(10, +ui("mu").value),
+    tau: ui("tau").value>=1.69 ? 0 : Math.pow(10, +ui("tau").value),
+    edge: ui("edge").checked ? 1 : 0,
+    amp: +ui("amp").value,
+    auto: ui("auto").checked ? 1 : 0,
+    capF: (+ui("cap").value)*1e-6,
+    thalf: halfLife(),
+    N: +ui("n").value,
+    spread: +ui("spread").value,
+    rein: +ui("rein").value,
+    glide: +ui("glide").value,
+    vOn: vSource==="none" ? 0 : 1,
+    vGain: +ui("vgain").value,
+    vMix: +ui("vmix").value,
+    vOut: +ui("vout").value,
+    NB: +ui("nb").value,
+    vTilt: +ui("vtilt").value,
+    tband: Math.min(+ui("nb").value, +ui("tband").value) - 1
+  });
+}
+
+function labels(){
+  ui("muL").textContent = Math.pow(10,+ui("mu").value).toExponential(1);
+  ui("tauL").textContent = ui("tau").value>=1.69 ? "off (no relaxation)"
+    : (Math.pow(10,+ui("tau").value)*1000).toFixed(0)+" ms";
+  ui("ampL").textContent = (+ui("amp").value).toFixed(2);
+  ui("gainL").textContent = (+ui("gain").value).toFixed(2);
+  const T=halfLife();
+  ui("senL").textContent = T===0 ? "off (no ageing)"
+    : T<90 ? T.toFixed(T<10?1:0)+" s" : (T/60).toFixed(T<600?1:0)+" min";
+  const n=+ui("n").value;
+  ui("nL").textContent = n===1 ? "1 (single element)" : n;
+  const sp=+ui("spread").value;
+  ui("spreadL").textContent = sp===0 ? "identical" : "±"+(sp/2).toFixed(2)+" decades";
+  const re=+ui("rein").value;
+  ui("reinL").textContent = re===0 ? "off (tubes fixed)" : re.toFixed(2);
+  const c=+ui("cap").value;
+  ui("capL").textContent = c===0 ? "none" : c.toFixed(2)+" µF";
+  const g=+ui("glide").value;
+  ui("glideL").textContent = g===0 ? "off" : Math.round(g*1000)+" ms";
+  const vd=+ui("veld").value;
+  ui("veldL").textContent = vd===0 ? "fixed" : Math.round(vd*100)+"%";
+  ui("edgeL").textContent = ui("edge").checked ? "wrap" : "clamp";
+  ui("slowL").textContent = ui("slow").checked ? "0.5 Hz" : "0.12 Hz";
+  ui("autoL").textContent = ui("auto").checked ? "on" : "off";
+  ui("vgainL").textContent = (+ui("vgain").value).toFixed(2)+"×";
+  const vm=+ui("vmix").value;
+  ui("vmixL").textContent = vm===0 ? "dry" : vm===1 ? "wet" : Math.round(vm*100)+"% wet";
+  ui("nbL").textContent = ui("nb").value;
+  const nbv=+ui("nb").value, tb=ui("tband");
+  tb.max=String(nbv);
+  if(+tb.value>nbv) tb.value=String(nbv);
+  ui("tbandL").textContent = tb.value+" — "+bandHz(+tb.value-1);
+  const vt=+ui("vtilt").value;
+  ui("vtiltL").textContent = vt===0 ? "off (low bands only)" : vt===1 ? "full" : vt.toFixed(2);
+  ui("voutL").textContent = (+ui("vout").value).toFixed(2)+"×";
+  for(const d of document.querySelectorAll(".dial")) setKnob(d);
+}
+
+let vSpan=null, vLev=null, vWear=null, vTube=null, vCur=null, vNB=8;
+let trailV=null, trailI=null, trailW=0, vCapCur=0, vRunning=0;
+let loopSrc="drive", view="synth";
+let micStream=null, micNode=null, fileNode=null, vSource="none";
+let qs=new Float32Array(1), ds=new Float32Array([1]), mNow=0, pkNow=0;
+let wearArr=null, wMean=0, ageNow=0, loopV=null, loopI=null, loopP=null;
+let freqNow=110;
+
+async function start(){
+  if(ctx){ if(ctx.state==="suspended") ctx.resume(); return; }
+  ctx = new (window.AudioContext||window.webkitAudioContext)();
+  const url = URL.createObjectURL(new Blob([WORKLET],{type:"application/javascript"}));
+  await ctx.audioWorklet.addModule(url);
+  URL.revokeObjectURL(url);
+  node = new AudioWorkletNode(ctx,"physa",{numberOfInputs:1,outputChannelCount:[1]});
+  node.port.onmessage = e => {
+    const d=e.data;
+    qs=d.qs; ds=d.ds; mNow=d.m; pkNow=d.peak||0;
+    wearArr=d.wear; wMean=d.wmean; ageNow=d.age;
+    if(d.f) freqNow=d.f;
+    if(d.lv){ loopV=d.lv; loopI=d.li; loopP=d.lph; }
+    if(d.nb!==undefined) vNB=d.nb;
+    vSpan=d.vsp; vLev=d.vlv; vWear=d.vwr; vTube=d.vdd; vCur=d.vcu;
+    if(d.tv){ trailV=d.tv; trailI=d.ti; trailW=d.tw; }
+    if(d.vcc!==undefined) vCapCur=d.vcc;
+    vRunning=d.vOn||0;
+  };
+  gainNode = ctx.createGain(); gainNode.gain.value = +ui("gain").value;
+  analyser = ctx.createAnalyser(); analyser.fftSize=2048;
+  node.connect(analyser).connect(gainNode).connect(ctx.destination);
+  node.port.postMessage({lut:LUT});
+  params();
+  ui("start").textContent="Audio running";
+  ui("ctxChip").textContent="running";
+  ui("ctxChip").classList.add("on");
+  ui("osVal").textContent = "8× @ "+ctx.sampleRate+" Hz";
+}
+
+/* ---- performance: keys, QWERTY, MIDI, ribbon ---------------------------- */
+/* Monophonic on purpose. One element means one history, and one history is what
+   makes the wear legible, so the note model is last-note priority rather than a
+   voice pool. Everything below decides which single note is sounding. */
+const QMAP={a:0,w:1,s:2,e:3,d:4,f:5,t:6,g:7,y:8,h:9,u:10,j:11,k:12,o:13,l:14,p:15};
+const order=[];                    // held notes, most recent last
+const sustained=new Set(), vels=new Map(), qHeld=new Map();
+let octave=0, bend=0, sustainOn=false, ribHz=null, ribVel=0.85;
+
+const hzOf = m => 440*Math.pow(2,(m-69+bend)/12);
+/* Velocity enters the drive amplitude, so it enters the state the way amplitude
+   does and changes harmonic content by physics. With Auto level on it moves
+   timbre without moving loudness. */
+const velAmt = v => 1 + (+ui("veld").value)*(v-1);
+
+function sound(){
+  if(!node) return;
+  if(ribHz!=null){ node.port.postMessage({noteOn:ribHz, vel:velAmt(ribVel)}); return; }
+  const m = order.length ? order[order.length-1] : null;
+  if(m==null) node.port.postMessage({noteOff:1});
+  else node.port.postMessage({noteOn:hzOf(m), vel:velAmt(vels.get(m)!=null?vels.get(m):0.8)});
+}
+
+function noteOn(midi, vel){
+  if(!ctx){ start().then(()=>noteOn(midi,vel)); return; }
+  vels.set(midi, vel==null?0.8:vel);
+  sustained.delete(midi);
+  const i=order.indexOf(midi); if(i>=0) order.splice(i,1);
+  order.push(midi);
+  sound(); paintKeys();
+}
+function noteOff(midi){
+  if(sustainOn && order.includes(midi)){ sustained.add(midi); return; }
+  const i=order.indexOf(midi); if(i>=0) order.splice(i,1);
+  vels.delete(midi); sustained.delete(midi);
+  sound(); paintKeys();
+}
+function setSustain(on){
+  if(on===sustainOn) return;
+  sustainOn=on;
+  ui("susChip").classList.toggle("on", on);
+  if(!on){
+    for(const m of sustained){ const i=order.indexOf(m); if(i>=0) order.splice(i,1); vels.delete(m); }
+    sustained.clear(); sound(); paintKeys();
+  }
+}
+function allOff(){ ribHz=null; order.length=0; sustained.clear(); vels.clear(); qHeld.clear(); surfacePtrs.clear(); sound(); paintKeys(); }
+function showOct(){ ui("octChip").textContent = "oct "+(octave>0?"+":"")+octave; }
+
+function paintKeys(){ /* the canvas is repainted in frame() */ }
+
+/* Aliquoto/Cella's 37-note range and isomorphic mapping, housed in the single
+   canvas surface used by Moire. Physa remains last-note-priority monophonic. */
+const SURF={low:48,high:84};
+const HEX={base:48,a:2,b:1,cols:12,rows:4,cells:[]};
+const RIB={base:36,oct:4};
+const surfacePtrs=new Map();
+const pianoCells=[];
+const HEXKMAP=(()=>{ const rows=["zxcvbnm,./","asdfghjkl;","qwertyuiop","1234567890"], map={};
+  rows.forEach((row,r)=>[...row].forEach((ch,c)=>{ map[ch]={c,r}; })); return map; })();
+let SURFACE="piano";
+
+function setSurface(s){
+  SURFACE=s; ribHz=null; surfacePtrs.clear(); allOff();
+  const cv=ui("surface");
+  cv.classList.toggle("hex",s==="hex");
+  cv.classList.toggle("ribbon",s==="ribbon");
+  ui("pianoBtn").classList.toggle("lit",s==="piano");
+  ui("hexBtn").classList.toggle("lit",s==="hex");
+  ui("ribBtn").classList.toggle("lit",s==="ribbon");
+  ui("surfHint").textContent = s==="piano"
+    ? "37 notes. QWERTY uses the a w s e d f… row. z and x shift octave."
+    : s==="hex"
+      ? "Isomorphic: right +2 semitones, upper-right +1. QWERTY uses four rows."
+      : "Four octaves. Drag left to right for pitch and top to bottom for velocity.";
+}
+
+function surfacePoint(e){
+  const r=ui("surface").getBoundingClientRect();
+  return {x:Math.max(0,Math.min(r.width,e.clientX-r.left)),
+          y:Math.max(0,Math.min(r.height,e.clientY-r.top)),w:r.width,h:r.height};
+}
+function surfaceHit(p){
+  if(SURFACE==="piano"){
+    for(const c of pianoCells) if(c.black&&p.x>=c.x&&p.x<=c.x+c.w&&p.y>=c.y&&p.y<=c.y+c.h) return c.midi;
+    for(const c of pianoCells) if(!c.black&&p.x>=c.x&&p.x<=c.x+c.w&&p.y>=c.y&&p.y<=c.y+c.h) return c.midi;
+  }
+  if(SURFACE==="hex"){
+    let best=null,bd=Infinity;
+    for(const c of HEX.cells){ const d=(p.x-c.x)**2+(p.y-c.y)**2; if(d<bd){bd=d;best=c;} }
+    if(best&&bd<=best.r*best.r) return best.midi;
+  }
+  return null;
+}
+function setRibbonPoint(p){
+  const midi=RIB.base+(p.x/Math.max(1,p.w))*RIB.oct*12;
+  ribHz=440*Math.pow(2,(midi-69)/12); ribVel=Math.max(.15,Math.min(1,p.y/Math.max(1,p.h))); sound();
+}
+
+(function surfaceInput(){
+  const cv=ui("surface");
+  cv.addEventListener("pointerdown",e=>{
+    e.preventDefault();
+    try{cv.setPointerCapture(e.pointerId);}catch(_){}
+    const p=surfacePoint(e), held=SURFACE==="ribbon"
+      ? {ribbon:true,p,started:false}
+      : {midi:surfaceHit(p),p,started:false};
+    if(!held.ribbon&&held.midi==null)return;
+    surfacePtrs.set(e.pointerId,held);
+    const begin=()=>{
+      const live=surfacePtrs.get(e.pointerId); if(!live)return;
+      live.started=true;
+      if(live.ribbon)setRibbonPoint(live.p);
+      else noteOn(live.midi,Math.max(.15,Math.min(1,live.p.y/Math.max(1,live.p.h))));
+    };
+    if(!ctx) start().then(begin); else begin();
+  });
+  cv.addEventListener("pointermove",e=>{
+    const held=surfacePtrs.get(e.pointerId); if(!held)return;
+    const p=surfacePoint(e); held.p=p;
+    if(!held.started)return;
+    if(held.ribbon){setRibbonPoint(p);return;}
+    const midi=surfaceHit(p); if(midi==null||midi===held.midi)return;
+    noteOff(held.midi); held.midi=midi;
+    noteOn(midi,Math.max(.15,Math.min(1,p.y/Math.max(1,p.h))));
+  });
+  const end=e=>{
+    const held=surfacePtrs.get(e.pointerId); if(!held)return;
+    if(held.started){
+      if(held.ribbon){ribHz=null;sound();}
+      else noteOff(held.midi);
+    }
+    surfacePtrs.delete(e.pointerId);
+  };
+  cv.addEventListener("pointerup",end);
+  cv.addEventListener("pointercancel",end);
+})();
+
+addEventListener("keydown",e=>{
+  if(e.repeat) return;
+  const t=e.target.tagName;
+  if(t==="INPUT"||t==="SELECT"||t==="TEXTAREA") return;
+  const k=e.key.toLowerCase();
+  if(k===" "){ e.preventDefault(); setSustain(true); return; }
+  if(SURFACE==="hex" && k in HEXKMAP && !qHeld.has(k)){
+    const g=HEXKMAP[k], m=HEX.base+octave*12+g.c*HEX.a+g.r*HEX.b;
+    qHeld.set(k,m); noteOn(m,.8); return;
+  }
+  if(SURFACE==="hex") return;
+  if(k==="z"){ octave=Math.max(-3,octave-1); showOct(); return; }
+  if(k==="x"){ octave=Math.min(3,octave+1); showOct(); return; }
+  if(SURFACE==="ribbon") return;
+  if(SURFACE==="piano" && k in QMAP && !qHeld.has(k)){
+    // remember the note this key started, so shifting octave while held still
+    // releases the note that is actually sounding
+    const m=60+octave*12+QMAP[k];
+    qHeld.set(k,m); noteOn(m,0.8);
+  }
+});
+addEventListener("keyup",e=>{
+  const k=e.key.toLowerCase();
+  if(k===" "){ setSustain(false); return; }
+  if(qHeld.has(k)){ noteOff(qHeld.get(k)); qHeld.delete(k); }
+});
+addEventListener("blur",()=>allOff());
+
+/* ---- Web MIDI ----------------------------------------------------------- */
+function initMIDI(){
+  const chip=ui("midiStat");
+  if(!navigator.requestMIDIAccess){ chip.textContent="MIDI unsupported"; return; }
+  navigator.requestMIDIAccess().then(acc=>{
+    const bind=()=>{
+      const names=[]; acc.inputs.forEach(i=>{ names.push(i.name); i.onmidimessage=onMIDI; });
+      chip.textContent = names.length ? "MIDI ▸ "+names.join(", ") : "MIDI no device";
+      chip.classList.toggle("on", names.length>0);
+    };
+    bind(); acc.onstatechange=bind;
+  }).catch(()=>{ chip.textContent="MIDI denied"; });
+}
+function onMIDI(e){
+  const [st,d1,d2]=e.data, cmd=st&0xf0;
+  if(cmd===0x90 && d2>0){
+    if(!ctx) ui("midiStat").textContent="MIDI ▸ click the page to start audio";
+    noteOn(d1, d2/127);
+  }
+  else if(cmd===0x80 || (cmd===0x90&&d2===0)) noteOff(d1);
+  else if(cmd===0xe0){ bend=((((d2<<7)|d1)-8192)/8192)*2; sound(); }   // ±2 semitones
+  else if(cmd===0xb0 && d1===64) setSustain(d2>=64);
+  else if(cmd===0xb0 && (d1===120||d1===123)) allOff();
+}
+
+/* ---- dials -------------------------------------------------------------- */
+/* Every dial wraps a real <input type=range>. The input stays in the DOM, keeps
+   its keyboard behaviour and its accessible name, and is the thing every existing
+   listener is bound to; the knob is a skin over it that writes back through the
+   same input event. Rotary controls were the ask, not a rotary reimplementation
+   of a slider. */
+const KNOB_SWEEP = 280;                       // degrees, -140 to +140
+
+function setKnob(d){
+  const inp=d.querySelector("input"), k=d.querySelector(".knob");
+  if(!inp||!k) return;
+  const lo=+inp.min, hi=+inp.max, t=(+inp.value-lo)/(hi-lo||1);
+  k.style.setProperty("--t", t.toFixed(4));
+  k.style.setProperty("--deg", (-KNOB_SWEEP/2 + t*KNOB_SWEEP).toFixed(2)+"deg");
+}
+
+function wireDials(){
+  for(const d of document.querySelectorAll(".dial")){
+    const inp=d.querySelector("input"), k=d.querySelector(".knob");
+    setKnob(d);
+    inp.addEventListener("input", ()=>setKnob(d));
+    let last=null;
+    const step=+inp.step||0.01, span=(+inp.max)-(+inp.min);
+    k.addEventListener("pointerdown", e=>{
+      e.preventDefault(); last=e.clientY;
+      try{ k.setPointerCapture(e.pointerId); }catch(_){}
+      inp.focus();
+    });
+    k.addEventListener("pointermove", e=>{
+      if(last===null) return;
+      // vertical drag, 180 px for the full sweep, finer with shift held
+      const dy=last-e.clientY; last=e.clientY;
+      const delta=(dy/180)*span*(e.shiftKey?0.25:1);
+      let v=+inp.value+delta;
+      v=Math.round(v/step)*step;
+      v=Math.max(+inp.min, Math.min(+inp.max, v));
+      if(v!==+inp.value){ inp.value=v; inp.dispatchEvent(new Event("input",{bubbles:true})); }
+    });
+    const up=e=>{ last=null; try{ k.releasePointerCapture(e.pointerId); }catch(_){} };
+    k.addEventListener("pointerup", up);
+    k.addEventListener("pointercancel", up);
+    k.addEventListener("dblclick", ()=>{
+      const def=inp.getAttribute("value");
+      if(def===null) return;
+      inp.value=def; inp.dispatchEvent(new Event("input",{bubbles:true}));
+    });
+  }
+}
+
+/* The colony's plumbing is the page's plumbing: the vein beside the controls
+   thickens with the element count and the reinforcement. Set on change only —
+   nothing here animates on its own. */
+function setVeins(){
+  const n=+ui("n").value, re=+ui("rein").value;
+  const v1=document.getElementById("v1"), v2=document.getElementById("v2");
+  if(v1) v1.setAttribute("stroke-width", (2.2 + n*0.55 + re*2.4).toFixed(2));
+  if(v2) v2.setAttribute("stroke-width", (1.1 + n*0.28 + re*1.5).toFixed(2));
+}
+
+/* ---- drawing ------------------------------------------------------------ */
+const mono = n => n+"px 'Space Mono',monospace";
+const CSS = {};
+function readCSS(){
+  const s=getComputedStyle(document.body);
+  for(const k of ["hot","verd","verd-hi","verd-d","iris","slime","slime-d","bronze","faint","pale"])
+    CSS[k]=s.getPropertyValue("--"+k).trim();
+}
+
+function fit(cv){
+  const r=cv.getBoundingClientRect(), d=Math.min(devicePixelRatio||1, 2);
+  const W=Math.round(r.width*d), H=Math.round(r.height*d);
+  if(cv.width!==W||cv.height!==H){ cv.width=W; cv.height=H; }
+  const g=cv.getContext("2d"); g.setTransform(d,0,0,d,0,0);
+  return {g,w:r.width,h:r.height};
+}
+
+/* the substrate as the element actually sees it: authored curve blended toward
+   its own mean by however far each part of the domain has worn */
+function wearAt(u){
+  if(!wearArr) return 0;
+  const x=u*(wearArr.length-1), i=Math.floor(x), f=x-i;
+  const j=Math.min(wearArr.length-1,i+1);
+  return wearArr[i]+(wearArr[j]-wearArr[i])*f;
+}
+
+function drawCurve(){
+  const {g,w,h}=fit(ui("curve"));
+  g.clearRect(0,0,w,h);
+  const padL=42, padR=16, padT=14, padB=40;
+  const W=w-padL-padR, H=h-padT-padB;
+  let lo=Infinity, hi=-Infinity;
+  for(const v of LUT){ if(v<lo)lo=v; if(v>hi)hi=v; }
+  if(hi-lo<1) hi=lo+1;
+  const X=q=>padL+(q+1)/2*W, Y=m=>padT+H-(m-lo)/(hi-lo)*H;
+
+  g.strokeStyle="hsl(285 22% 22%)"; g.lineWidth=1; g.beginPath();
+  g.moveTo(padL,padT+H); g.lineTo(padL+W,padT+H); g.moveTo(X(0),padT); g.lineTo(X(0),padT+H);
+  g.stroke();
+
+  // the wear strip: how far each part of the domain has gone
+  if(wearArr){
+    const sh=13;
+    g.fillStyle="hsl(52 30% 18% / .5)";
+    g.fillRect(padL,padT+H+6,W,sh);
+    g.fillStyle=CSS.slime;
+    for(let i=0;i<wearArr.length;i++){
+      const x0=padL+i/wearArr.length*W, bw=W/wearArr.length+0.6;
+      const a=wearArr[i];
+      if(a<=0.002) continue;
+      g.globalAlpha=Math.min(1,a*0.92);
+      g.fillRect(x0,padT+H+6,bw,sh);
+    }
+    g.globalAlpha=1;
+    g.strokeStyle="hsl(46 40% 40% / .55)"; g.strokeRect(padL,padT+H+6,W,sh);
+  }
+
+  // authored curve, dashed
+  g.setLineDash([4,4]); g.strokeStyle="hsl(285 30% 46%)"; g.lineWidth=1.2;
+  g.beginPath();
+  for(let i=0;i<LUTN;i+=2){ const q=-1+2*i/(LUTN-1);
+    i?g.lineTo(X(q),Y(LUT[i])):g.moveTo(X(q),Y(LUT[i])); }
+  g.stroke(); g.setLineDash([]);
+
+  // the worn substrate, solid
+  g.strokeStyle=CSS["verd-hi"]; g.lineWidth=1.8; g.beginPath();
+  for(let i=0;i<LUTN;i+=2){
+    const q=-1+2*i/(LUTN-1), u=i/(LUTN-1), a=LUT[i];
+    const ww=wearAt(u), m=ww>0 ? a+(FLAT-a)*ww : a;
+    i?g.lineTo(X(q),Y(m)):g.moveTo(X(q),Y(m));
+  }
+  g.stroke();
+
+  // one marker per element, sized by tube thickness
+  const wrap = ui("edge").checked;
+  for(let e=0;e<qs.length;e++){
+    let u=(qs[e]+1)/2; u = wrap ? u-Math.floor(u) : Math.max(0,Math.min(1,u));
+    const a=LUT[Math.round(u*(LUTN-1))], ww=wearAt(u);
+    const m=ww>0 ? a+(FLAT-a)*ww : a;
+    const r=3.2+2.6*Math.min(2,(ds[e]||1));
+    g.fillStyle=CSS.hot; g.globalAlpha=qs.length>1?0.82:1;
+    g.beginPath(); g.arc(X(-1+2*u), Y(Math.max(20,m)), r, 0, 7); g.fill();
+    g.globalAlpha=1;
+    g.strokeStyle="hsl(27 60% 16%)"; g.lineWidth=1; g.stroke();
+  }
+
+  g.fillStyle="hsl(46 14% 52%)"; g.font="10px 'Space Mono',monospace";
+  g.fillText(Math.round(hi)+"Ω",4,padT+9);
+  g.fillText(Math.round(lo)+"Ω",4,padT+H);
+  g.fillText("q = −1",padL,h-6);
+  g.textAlign="right"; g.fillText("q = 1",padL+W,h-6); g.textAlign="left";
+}
+
+function drawScope(){
+  const {g,w,h}=fit(ui("scope"));
+  g.clearRect(0,0,w,h);
+  g.strokeStyle="hsl(285 22% 22%)"; g.lineWidth=1;
+  g.beginPath(); g.moveTo(0,h/2); g.lineTo(w,h/2); g.stroke();
+  if(!analyser) return;
+  const buf=new Float32Array(analyser.fftSize);
+  analyser.getFloatTimeDomainData(buf);
+  let peak=1e-6; for(const v of buf) peak=Math.max(peak,Math.abs(v));
+  g.strokeStyle=CSS.hot; g.lineWidth=1.5; g.beginPath();
+  for(let i=0;i<buf.length;i++){
+    const x=i/buf.length*w, y=h/2 - (buf[i]/peak)*(h/2-10);
+    i?g.lineTo(x,y):g.moveTo(x,y);
+  }
+  g.stroke();
+}
+
+/* hysterion's two tests, applied live to the note being played, plus the one that
+   separates them.
+
+   Memory: a device whose current depends only on the instantaneous voltage
+   satisfies I(theta) = I(pi - theta), which forces a_odd = 0 and b_even = 0.
+   Energy in those coefficients cannot occur without internal state.
+   Harmonic: the share above the fundamental. A linear reactance has state and
+   produces none of it, so this is what separates a memristor from an RC network.
+   Opening: |I| at the voltage zero-crossings, as a share of peak current. Named for
+   what it measures rather than for the fingerprint it tests: it reads 0 on a pinched
+   loop and climbs as the loop opens, so calling it `pinch` inverted every call site. */
+function loopMeasures(V, I, PH){
+  const n=V.length; let memE=0, totE=0, harmE=0;
+  for(let k=1;k<=16;k++){
+    let a=0,b=0;
+    for(let j=0;j<n;j++){ const th=2*Math.PI*(PH?PH[j]:j/n);
+      a+=I[j]*Math.cos(k*th); b+=I[j]*Math.sin(k*th); }
+    a=2*a/n; b=2*b/n;
+    const e=a*a+b*b;
+    totE+=e;
+    if(k>1) harmE+=e;
+    if(k%2===1) memE+=a*a; else memE+=b*b;
+  }
+  let peak=0; for(let j=0;j<n;j++) peak=Math.max(peak,Math.abs(I[j]));
+  let zc=0,cnt=0;
+  for(let j=0;j<n;j++){
+    const j2=(j+1)%n;
+    if((V[j]<=0&&V[j2]>0)||(V[j]>=0&&V[j2]<0)){
+      const t=V[j]/(V[j]-V[j2]||1e-12);
+      zc+=Math.abs(I[j]+(I[j2]-I[j])*t); cnt++;
+    }
+  }
+  return {H: totE>0?memE/totE:0, harm: totE>0?harmE/totE:0,
+          opening:(cnt&&peak>0)?(zc/cnt)/peak:0, peak};
+}
+
+/* An input has no fundamental, so memory and harmonic - both defined at one -
+   do not apply to it. These are their aperiodic counterparts, and they keep the
+   distinction the panel exists to carry:
+
+     memoryless  the share of the current no single-valued i(v) can account for.
+                 Zero for a resistor. High for anything with state, a plain
+                 capacitance included.
+     nonlinear   what is left after the best two-pole LINEAR model of the band.
+                 Zero for a resistor AND for an RC network, so only a genuinely
+                 nonlinear element reads high. This is the one that separates a
+                 memristor from the capacitance Physarum turned out to have.
+
+   Measured against the shipping worklet: plain resistor 0.14 / 0.00, resistor
+   with 1.4 uF of mould 68.54 / 0.01, quartic curve 24.33 / 19.73. */
+/* MEASURES-BEGIN - test.html slices from here, so keep this block free of
+   anything defined outside it */
+function solve5(A, b, n){
+  for(let c=0;c<n;c++){
+    let p=c;
+    for(let r=c+1;r<n;r++) if(Math.abs(A[r][c])>Math.abs(A[p][c])) p=r;
+    if(Math.abs(A[p][c])<1e-30) return null;
+    const t=A[c]; A[c]=A[p]; A[p]=t;
+    const u=b[c]; b[c]=b[p]; b[p]=u;
+    for(let r=0;r<n;r++){
+      if(r===c) continue;
+      const f=A[r][c]/A[c][c];
+      if(!f) continue;
+      for(let k=c;k<n;k++) A[r][k]-=f*A[c][k];
+      b[r]-=f*b[c];
+    }
+  }
+  const x=new Float64Array(n);
+  for(let c=0;c<n;c++) x[c]=b[c]/A[c][c];
+  return x;
+}
+/* Ridge-regularised, and it has to be: a plain resistor makes i exactly
+   proportional to v, so the regressors are perfectly collinear, the normal
+   equations are singular, and an unregularised solve reports the one case that
+   must read zero as 100%. Near-collinearity is the same problem more quietly -
+   the fit reaches for huge cancelling coefficients and absorbs the nonlinearity
+   it is there to expose. */
+function residualShare(cols, y, n0){
+  const K=cols.length, N=y.length;
+  const A=[], b=new Float64Array(K);
+  let tr=0;
+  for(let j=0;j<K;j++){
+    A.push(new Float64Array(K));
+    for(let k=0;k<K;k++){ let t=0; for(let n=n0;n<N;n++) t+=cols[j][n]*cols[k][n]; A[j][k]=t; }
+    let t=0; for(let n=n0;n<N;n++) t+=cols[j][n]*y[n]; b[j]=t;
+    tr+=A[j][j];
+  }
+  const lam=(tr/K)*1e-7;
+  for(let j=0;j<K;j++) A[j][j]+=lam;
+  const h=solve5(A, b, K);
+  let mean=0, cnt=0;
+  for(let n=n0;n<N;n++){ mean+=y[n]; cnt++; }
+  mean/=cnt;
+  let ss=0, tot=0;
+  for(let n=n0;n<N;n++){
+    let f=0; if(h) for(let j=0;j<K;j++) f+=h[j]*cols[j][n];
+    ss+=(y[n]-f)*(y[n]-f); tot+=(y[n]-mean)*(y[n]-mean);
+  }
+  return tot>0 ? Math.max(0, Math.min(1, ss/tot)) : 0;
+}
+function trailMeasures(V, I){
+  const N=V.length, BINS=40;
+  let lo=Infinity, hi=-Infinity, pk=0, mean=0;
+  for(let n=0;n<N;n++){
+    if(V[n]<lo)lo=V[n]; if(V[n]>hi)hi=V[n];
+    if(Math.abs(I[n])>pk) pk=Math.abs(I[n]);
+    mean+=I[n];
+  }
+  mean/=N;
+  if(!(hi>lo) || pk<=0) return {mless:0, nlin:0, opening:0, vpk:0, ipk:0};
+
+  // memoryless: bin by v, best single-valued i(v), measure what it misses
+  const sum=new Float64Array(BINS), cnt=new Int32Array(BINS);
+  const bin=v=>{ const k=Math.floor((v-lo)/(hi-lo)*BINS); return k<0?0:k>=BINS?BINS-1:k; };
+  for(let n=0;n<N;n++){ const k=bin(V[n]); sum[k]+=I[n]; cnt[k]++; }
+  let ss=0, tot=0;
+  for(let n=0;n<N;n++){
+    const k=bin(V[n]), f=cnt[k]?sum[k]/cnt[k]:0;
+    ss+=(I[n]-f)*(I[n]-f); tot+=(I[n]-mean)*(I[n]-mean);
+  }
+  const mless = tot>0 ? ss/tot : 0;
+
+  // nonlinear: i[n] = a1 i[n-1] + a2 i[n-2] + b0 v[n] + b1 v[n-1] + b2 v[n-2].
+  // Two poles cover any second-order linear network exactly, which is what a
+  // resistor, a parallel capacitance and a series RC all are. An FIR could not:
+  // the mould at 20 uF is a 24 ms time constant, some 600 taps at this rate.
+  const c=[];
+  for(let j=0;j<5;j++) c.push(new Float64Array(N));
+  for(let n=2;n<N;n++){
+    c[0][n]=I[n-1]; c[1][n]=I[n-2];
+    c[2][n]=V[n];   c[3][n]=V[n-1]; c[4][n]=V[n-2];
+  }
+  const nlin = residualShare(c, I, 2);
+
+  // opening survives unchanged: it never needed a fundamental, only zero
+  // crossings, which any drive has
+  let zc=0, zn=0;
+  for(let n=0;n<N-1;n++){
+    const a=V[n], b2=V[n+1];
+    if((a<=0&&b2>0)||(a>=0&&b2<0)){
+      const t=a/(a-b2||1e-12);
+      zc+=Math.abs(I[n]+(I[n+1]-I[n])*t); zn++;
+    }
+  }
+  return {mless, nlin, opening: zn?(zc/zn)/pk:0,
+          vpk: Math.max(Math.abs(lo),Math.abs(hi)), ipk: pk};
+}
+/* MEASURES-END */
+/* the ring, in time order, oldest first */
+function trailOrdered(){
+  if(!trailV) return null;
+  const N=trailV.length, V=new Float64Array(N), I=new Float64Array(N);
+  for(let k=0;k<N;k++){ const j=(trailW+k)%N; V[k]=trailV[j]; I[k]=trailI[j]; }
+  return {V, I};
+}
+function bandHz(b){
+  const NB=vNB, oct=Math.log2(7000/110)/Math.max(1,NB-1);
+  const f=110*Math.pow(2, oct*b);
+  return f>=1000 ? (f/1000).toFixed(2)+" kHz" : Math.round(f)+" Hz";
+}
+
+function drawLoop(){
+  const {g,w,h}=fit(ui("loop"));
+  g.clearRect(0,0,w,h);
+  const pad=26, W=w-pad*2, H=h-pad*2;
+  g.strokeStyle="hsl(285 22% 22%)"; g.lineWidth=1;
+  g.beginPath(); g.moveTo(pad,pad+H/2); g.lineTo(pad+W,pad+H/2);
+  g.moveTo(pad+W/2,pad); g.lineTo(pad+W/2,pad+H); g.stroke();
+  if(loopSrc==="input"){ drawTrail(g,pad,W,H); return; }
+  if(!loopV) return;
+  const m=loopMeasures(loopV, loopI, loopP);
+  let vm=0; for(const v of loopV) vm=Math.max(vm,Math.abs(v));
+  const im=m.peak||1e-9;
+  if(vm<1e-9) return;
+  const X=v=>pad+W/2+(v/(vm*1.08))*(W/2), Y=i=>pad+H/2-(i/(im*1.08))*(H/2);
+  g.strokeStyle=CSS.hot; g.lineWidth=1.7; g.beginPath();
+  for(let k=0;k<=loopV.length;k++){ const j=k%loopV.length;
+    k?g.lineTo(X(loopV[j]),Y(loopI[j])):g.moveTo(X(loopV[j]),Y(loopI[j])); }
+  g.stroke();
+  g.strokeStyle="hsl(285 40% 40%)"; g.lineWidth=1;
+  g.beginPath(); g.arc(X(0),Y(0),5,0,7); g.stroke();
+  g.fillStyle="hsl(46 14% 52%)"; g.font="10px 'Space Mono',monospace";
+  g.fillText("V",pad+W-9,pad+H/2-7); g.fillText("I",pad+W/2+7,pad+10);
+  ui("memPct").textContent = (m.H*100).toFixed(1)+"%";
+  ui("harmPct").textContent = (m.harm*100).toFixed(1)+"%";
+  ui("openPct").textContent = (m.opening*100).toFixed(1)+"%";
+}
+
+/* The input's I-V, as a sliding window rather than a folded cycle. Drawn oldest
+   to newest with the alpha rising, so the direction of travel is visible without
+   an arrowhead - for an aperiodic drive the trajectory wanders and a single flat
+   polyline reads as a scribble. */
+function drawTrail(g, pad, W, H){
+  const t=trailOrdered();
+  ui("loopBand").textContent = bandHz(Math.min(vNB-1, (+ui("tband").value)-1));
+  if(!t){
+    g.fillStyle="hsl(46 14% 52%)"; g.font=mono(10); g.textAlign="center";
+    g.fillText("No input.", pad+W/2, pad+H/2-10);
+    g.textAlign="left";
+    for(const id of ["mlessPct","nlinPct","openPct2"]) ui(id).textContent="—";
+    return;
+  }
+  const m=trailMeasures(t.V, t.I);
+  if(m.vpk<1e-7 || m.ipk<=0){
+    g.fillStyle="hsl(46 14% 52%)"; g.font=mono(10); g.textAlign="center";
+    g.fillText("This band is carrying nothing.", pad+W/2, pad+H/2-10);
+    g.textAlign="left";
+    for(const id of ["mlessPct","nlinPct","openPct2"]) ui(id).textContent="—";
+    return;
+  }
+  const X=v=>pad+W/2+(v/(m.vpk*1.08))*(W/2), Y=i=>pad+H/2-(i/(m.ipk*1.08))*(H/2);
+  const N=t.V.length;
+  g.lineWidth=1.4; g.lineJoin="round"; g.lineCap="round";
+  g.strokeStyle=CSS.hot;
+  // one path per alpha step rather than per segment: 768 strokes a frame is the
+  // difference between this panel costing nothing and costing the frame
+  const STEPS=16, per=Math.ceil(N/STEPS);
+  for(let sIdx=0;sIdx<STEPS;sIdx++){
+    const a0=sIdx*per, a1=Math.min(N-1,(sIdx+1)*per);
+    if(a1<=a0) continue;
+    g.globalAlpha=0.10+0.90*((sIdx+1)/STEPS);
+    g.beginPath();
+    g.moveTo(X(t.V[a0]),Y(t.I[a0]));
+    for(let k=a0+1;k<=a1;k++) g.lineTo(X(t.V[k]),Y(t.I[k]));
+    g.stroke();
+  }
+  g.globalAlpha=1;
+  // the head, so the present is locatable
+  g.fillStyle=CSS.pale;
+  g.beginPath(); g.arc(X(t.V[N-1]),Y(t.I[N-1]),2.6,0,7); g.fill();
+  g.strokeStyle="hsl(285 40% 40%)"; g.lineWidth=1;
+  g.beginPath(); g.arc(X(0),Y(0),5,0,7); g.stroke();
+  g.fillStyle="hsl(46 14% 52%)"; g.font=mono(10);
+  g.fillText("V",pad+W-9,pad+H/2-7); g.fillText("I",pad+W/2+7,pad+10);
+  ui("mlessPct").textContent = (m.mless*100).toFixed(1)+"%";
+  ui("nlinPct").textContent  = (m.nlin*100).toFixed(1)+"%";
+  ui("openPct2").textContent = (m.opening*100).toFixed(1)+"%";
+}
+
+/* Which panel each source drives. The two panels move together on purpose: the
+   circuit is the topology the loop is a reading of, and showing one for the
+   drive while the other showed the input would be a trap. */
+function setLoopSrc(which){
+  loopSrc = which;
+  ui("srcDrive").classList.toggle("lit", which==="drive");
+  ui("srcInput").classList.toggle("lit", which==="input");
+  ui("circCapDrive").hidden = which!=="drive";
+  ui("circCapInput").hidden = which==="drive";
+  ui("legDrive").hidden = which!=="drive";
+  ui("legInput").hidden = which==="drive";
+  ui("capDrive").hidden = which!=="drive";
+  ui("capInput").hidden = which==="drive";
+}
+
+/* ---- the circuit -------------------------------------------------------- */
+/* The topology the Colony and Mould dials build, drawn from the same numbers the
+   worklet reports: one drive across N memristive branches in parallel, plus a
+   memoryless capacitance beside them, sensed across Rref on the return.
+
+   The branch currents are shown at a replayed phase rather than the real one.
+   The element runs at the note's pitch, which is two orders above the frame rate,
+   so an honest instantaneous reading would alias into nonsense; replaying one
+   cycle at 0.5 Hz keeps the one relationship worth seeing, that the capacitor
+   peaks a quarter cycle away from the memristors. Magnitudes are exact for the
+   state last reported: i_e = v * D_e / M(q_e) / N, and i_C = C w A cos. */
+const flowAcc = new Float64Array(13);
+let circT = 0, circPh = 0;
+
+function memristorSym(g,x,y0,y1,bw){
+  const e=bw*0.26, seg=(y1-y0)/4;
+  g.beginPath();
+  g.moveTo(x,y0);
+  g.lineTo(x+e,y0);      g.lineTo(x+e,y0+seg);
+  g.lineTo(x-e,y0+seg);  g.lineTo(x-e,y0+2*seg);
+  g.lineTo(x+e,y0+2*seg);g.lineTo(x+e,y0+3*seg);
+  g.lineTo(x-e,y0+3*seg);g.lineTo(x-e,y1);
+  g.lineTo(x,y1);
+  g.stroke();
+}
+
+/* The topology the Voice panel builds: one filtered branch per band, each with
+   its own element and, when the mould is up, its own capacitance beside it. The
+   mould is per band and drawn that way rather than as one capacitor across the
+   lot, because that is where it is and because it is why sibilants come through
+   least processed - a band's capacitive current goes as its own omega.
+
+   There is no cycle to replay here. The synth view animates a drive at 0.5 Hz
+   because the drive is a sine with a phase; an input has neither, so the branch
+   currents below are the levels the worklet is reporting, moving at the rate the
+   voice actually moves. */
+function drawBandCircuit(g, w, h, dtF){
+  const NB=Math.max(1,Math.min(12, vNB));
+  const capOn=(+ui("cap").value)>0;
+  const sel=Math.min(NB-1, (+ui("tband").value)-1);
+
+  let iMax=1e-12, iSum=0;
+  for(let b=0;b<NB;b++){ const c=vCur?vCur[b]:0; if(c>iMax) iMax=c; iSum+=c; }
+  const live = vRunning && iMax>1e-7;
+
+  const padT=17, padB=34, padL=15, padR=15;
+  const topY=padT, botY=h-padB, midY=(topY+botY)/2, span=botY-topY;
+  const srcX=padL+21, senX=w-padR-30;
+  const x0=srcX+52, x1=senX-46, sp=(x1-x0)/NB;
+  const bx=b=>x0+sp*(b+0.5);
+  const RAIL="hsl(38 26% 33%)";
+  g.lineJoin="round"; g.lineCap="round";
+
+  g.strokeStyle=RAIL; g.lineWidth=1.6;
+  g.beginPath();
+  g.moveTo(srcX,topY); g.lineTo(senX,topY);
+  g.moveTo(srcX,botY); g.lineTo(senX,botY);
+  g.moveTo(srcX,topY); g.lineTo(srcX,midY-19);
+  g.moveTo(srcX,botY); g.lineTo(srcX,midY+19);
+  g.moveTo(senX,topY); g.lineTo(senX,botY);
+  g.stroke();
+
+  /* source: an input, not an oscillator, so it is drawn as a waveform that is
+     not a sine */
+  g.strokeStyle=CSS["verd-hi"]; g.lineWidth=1.5;
+  g.beginPath(); g.arc(srcX,midY,19,0,7); g.stroke();
+  g.lineWidth=1.3; g.beginPath();
+  const tr=trailOrdered();
+  let vpk=1e-9; if(tr) for(const v of tr.V) if(Math.abs(v)>vpk) vpk=Math.abs(v);
+  for(let i=0;i<=22;i++){
+    const t=i/22, xx=srcX-11+22*t;
+    const yy = tr ? midY-7*(tr.V[Math.floor(t*(tr.V.length-1))]/vpk) : midY;
+    i?g.lineTo(xx,yy):g.moveTo(xx,yy);
+  }
+  g.stroke();
+  g.fillStyle="hsl(46 16% 56%)"; g.font=mono(9.5); g.textAlign="center";
+  g.fillText("in", srcX, botY+13);
+  g.fillText(live ? "live" : "idle", srcX, botY+24);
+
+  const y0=midY-span*0.24, y1=midY+span*0.24;
+  const bw=Math.min(26, sp*0.42), cw=Math.min(11, sp*0.17);
+  for(let b=0;b<NB;b++){
+    const x=bx(b) - (capOn?cw*0.75:0);
+    const D=vTube?vTube[b]:1;
+    const lit=Math.min(1,(vCur?vCur[b]:0)/iMax);
+    flowAcc[b]+= lit*dtF*70;
+
+    g.strokeStyle=RAIL; g.lineWidth=1+Math.min(4,2.1*D);
+    g.beginPath(); g.moveTo(x,topY); g.lineTo(x,y0); g.moveTo(x,y1); g.lineTo(x,botY); g.stroke();
+    if(live && lit>0.02){
+      g.save();
+      g.strokeStyle=CSS.hot; g.globalAlpha=0.25+0.75*lit; g.lineWidth=1.4;
+      g.setLineDash([3,7]); g.lineDashOffset=-flowAcc[b];
+      g.beginPath(); g.moveTo(x,topY); g.lineTo(x,y0); g.moveTo(x,y1); g.lineTo(x,botY); g.stroke();
+      g.restore();
+    }
+    g.strokeStyle = live ? CSS.hot : "hsl(27 34% 38%)";
+    g.globalAlpha = live ? 0.42+0.58*lit : 1;
+    g.lineWidth = b===sel ? 2.6 : 1.7;
+    g.strokeRect(x-bw/2, y0, bw, y1-y0);
+    memristorSym(g,x,y0,y1,bw);
+    g.fillStyle=g.strokeStyle; g.fillRect(x-bw/2, y1-3.2, bw, 3.2);
+    g.globalAlpha=1;
+
+    if(capOn){                       // this band's own mould, in parallel
+      const cx=x+bw/2+cw*0.9;
+      g.strokeStyle=RAIL; g.lineWidth=1.2;
+      g.beginPath(); g.moveTo(cx,topY); g.lineTo(cx,midY-5);
+      g.moveTo(cx,midY+5); g.lineTo(cx,botY); g.stroke();
+      g.strokeStyle=CSS.slime; g.lineWidth=2;
+      g.beginPath();
+      g.moveTo(cx-cw/2,midY-5); g.lineTo(cx+cw/2,midY-5);
+      g.moveTo(cx-cw/2,midY+5); g.lineTo(cx+cw/2,midY+5);
+      g.stroke();
+    }
+    // the selected band is the one the loop above is showing
+    if(b===sel){
+      g.strokeStyle=CSS.iris; g.lineWidth=1; g.globalAlpha=0.7;
+      g.beginPath(); g.moveTo(x-bw/2-3, y0-6); g.lineTo(x+bw/2+3, y0-6); g.stroke();
+      g.globalAlpha=1;
+    }
+    g.fillStyle = b===sel ? CSS.iris : "hsl(46 16% 56%)";
+    g.font=mono(9.5); g.textAlign="center";
+    const fc=110*Math.pow(2, Math.log2(7000/110)/Math.max(1,NB-1)*b);
+    g.fillText(fc>=1000?(fc/1000).toFixed(1)+"k":String(Math.round(fc)), bx(b), botY+13);
+    g.fillStyle=CSS.hot;
+    g.fillText(iSum>0 ? ((vCur?vCur[b]:0)/iSum*100).toFixed(0)+"%" : "—", bx(b), botY+24);
+  }
+
+  const rz=senX, ry0=midY-17, ry1=midY+17;
+  g.strokeStyle=CSS.iris; g.lineWidth=1.6; g.beginPath();
+  g.moveTo(rz,ry0);
+  for(let i=0;i<6;i++) g.lineTo(rz+(i%2?-6:6), ry0+(ry1-ry0)*(i+0.5)/6);
+  g.lineTo(rz,ry1); g.stroke();
+  g.strokeStyle=RAIL; g.lineWidth=1.6;
+  g.beginPath(); g.moveTo(rz,midY); g.lineTo(w-padR+4,midY); g.stroke();
+  g.fillStyle="hsl(46 16% 56%)"; g.font=mono(9.5); g.textAlign="right";
+  g.fillText("out", w-padR+4, midY-7);
+  g.textAlign="center"; g.fillText("Rref", rz, botY+13);
+  g.textAlign="left";
+
+  ui("brCount").textContent = NB+" bands"+(capOn?" + mould each":"");
+  const tot=iSum+vCapCur;
+  ui("capShare").textContent = capOn ? (tot>0?(vCapCur/tot*100).toFixed(1)+"%":"—") : "none";
+  ui("condTot").textContent = live ? "band "+bandHz(sel)+" shown above" : "—";
+}
+
+function drawCircuit(){
+  const {g,w,h}=fit(ui("circ"));
+  g.clearRect(0,0,w,h);
+  const now=performance.now()/1000;
+  const dtF = circT ? Math.min(0.08, now-circT) : 0;
+  circT=now;
+  if(loopSrc==="input"){ drawBandCircuit(g,w,h,dtF); return; }
+
+  const N   = Math.max(1, Math.min(8, +ui("n").value));
+  const capF= (+ui("cap").value)*1e-6;
+  const capOn = capF>0;
+  const wrap= ui("edge").checked;
+
+  /* branch admittances from the state the worklet last reported */
+  const Gs=new Float64Array(N), Ms=new Float64Array(N);
+  let Gsum=0;
+  for(let e=0;e<N;e++){
+    const q = e<qs.length ? qs[e] : 0, D = e<ds.length ? ds[e] : 1;
+    let u=(q+1)/2; u = wrap ? u-Math.floor(u) : Math.max(0,Math.min(1,u));
+    const a=LUT[Math.round(u*(LUTN-1))], ww=wearAt(u);
+    const m=Math.max(20, ww>0 ? a+(FLAT-a)*ww : a);
+    Ms[e]=m;
+    Gs[e]=D/m/N;            // the worklet averages the branches, so each carries 1/N
+    Gsum+=Gs[e];
+  }
+  const om=2*Math.PI*freqNow, Gc=capOn ? capF*om : 0;
+  const Gtot=Math.hypot(Gsum,Gc);
+
+  /* drive amplitude: whatever the loop capture last saw, so this idles at rest */
+  let A=0; if(loopV){ for(const v of loopV) A=Math.max(A,Math.abs(v)); }
+  const live = A>2e-4;
+  const slow = ui("slow").checked;
+  if(live) circPh = (circPh + dtF*(slow?0.5:0.12)) % 1;
+  const th=circPh*2*Math.PI;
+  const v  = live ? A*Math.sin(th) : 0;
+  const ic = live ? A*Gc*Math.cos(th) : 0;
+  const iPk= (A*Gtot)||1e-12;
+  // brightness is relative to the busiest branch, not to the total: the branches
+  // are in parallel, so normalising against the sum would dim every one of them
+  // just for adding another
+  let gMax=Gc; for(let e=0;e<N;e++) if(Gs[e]>gMax) gMax=Gs[e];
+  const iBr=(A*gMax)||1e-12;
+
+  /* geometry */
+  const padT=17, padB=34, padL=15, padR=15;
+  const topY=padT, botY=h-padB, midY=(topY+botY)/2, span=botY-topY;
+  const srcX=padL+21, senX=w-padR-30;
+  const slots=N+(capOn?1:0);
+  const x0=srcX+52, x1=senX-46;
+  const sp=(x1-x0)/slots;
+  const bx=e=>x0+sp*(e+0.5);
+
+  const RAIL="hsl(38 26% 33%)";
+  g.lineJoin="round"; g.lineCap="round";
+
+  /* rails */
+  g.strokeStyle=RAIL; g.lineWidth=1.6;
+  g.beginPath();
+  g.moveTo(srcX,topY); g.lineTo(senX,topY);
+  g.moveTo(srcX,botY); g.lineTo(senX,botY);
+  g.moveTo(srcX,topY); g.lineTo(srcX,midY-19);
+  g.moveTo(srcX,botY); g.lineTo(srcX,midY+19);
+  g.moveTo(senX,topY); g.lineTo(senX,botY);
+  g.stroke();
+
+  /* source */
+  g.strokeStyle=CSS["verd-hi"]; g.lineWidth=1.5;
+  g.beginPath(); g.arc(srcX,midY,19,0,7); g.stroke();
+  g.lineWidth=1.4; g.beginPath();
+  for(let i=0;i<=24;i++){
+    const t=i/24, xx=srcX-11+22*t, yy=midY-7*Math.sin(t*2*Math.PI);
+    i?g.lineTo(xx,yy):g.moveTo(xx,yy);
+  }
+  g.stroke();
+  if(live){                                   // where in the cycle the replay sits
+    g.fillStyle=CSS.hot;
+    g.beginPath(); g.arc(srcX-11+22*circPh, midY-7*Math.sin(th), 2.6, 0, 7); g.fill();
+  }
+  g.fillStyle="hsl(46 16% 56%)"; g.font=mono(9.5); g.textAlign="center";
+  g.fillText("v(t)", srcX, botY+13);
+  g.fillText(live ? A.toFixed(2)+" pk" : "idle", srcX, botY+24);
+
+  /* memristive branches */
+  const y0=midY-span*0.24, y1=midY+span*0.24;
+  for(let e=0;e<N;e++){
+    const x=bx(e), D=(e<ds.length?ds[e]:1);
+    const ie=v*Gs[e], lit=Math.min(1,Math.abs(ie)/iBr);
+    flowAcc[e]+= (ie/iBr)*dtF*110;
+
+    g.strokeStyle=RAIL; g.lineWidth=1+Math.min(4,2.1*D);   // tube thickness
+    g.beginPath(); g.moveTo(x,topY); g.lineTo(x,y0); g.moveTo(x,y1); g.lineTo(x,botY); g.stroke();
+
+    if(live && lit>0.02){                                  // current, as marching dashes
+      g.save();
+      g.strokeStyle=CSS.hot; g.globalAlpha=0.25+0.75*lit; g.lineWidth=1.4;
+      g.setLineDash([3,7]); g.lineDashOffset=-flowAcc[e];
+      g.beginPath(); g.moveTo(x,topY); g.lineTo(x,y0); g.moveTo(x,y1); g.lineTo(x,botY); g.stroke();
+      g.restore();
+    }
+
+    g.strokeStyle = live ? CSS.hot : "hsl(27 34% 38%)";
+    g.globalAlpha = live ? 0.42+0.58*lit : 1;
+    g.lineWidth=1.7;
+    g.strokeRect(x-13, y0, 26, y1-y0);
+    memristorSym(g,x,y0,y1,26);
+    g.fillStyle=g.strokeStyle; g.fillRect(x-13, y1-3.2, 26, 3.2);   // the polarity bar
+    g.globalAlpha=1;
+
+    g.fillStyle="hsl(46 16% 56%)"; g.font=mono(9.5);
+    g.fillText(Math.round(Ms[e])+"Ω", x, botY+13);
+    g.fillStyle=CSS.hot;
+    g.fillText(((Gs[e]/(Gtot||1))*100).toFixed(0)+"%", x, botY+24);
+  }
+
+  /* the mould: a memoryless capacitance beside them */
+  if(capOn){
+    const x=bx(N), lit=Math.min(1,Math.abs(ic)/iBr);
+    flowAcc[8]+= (ic/iBr)*dtF*110;
+    g.strokeStyle=RAIL; g.lineWidth=1.4;
+    g.beginPath(); g.moveTo(x,topY); g.lineTo(x,midY-6); g.moveTo(x,midY+6); g.lineTo(x,botY); g.stroke();
+    if(live && lit>0.02){
+      g.save();
+      g.strokeStyle=CSS.slime; g.globalAlpha=0.25+0.75*lit; g.lineWidth=1.4;
+      g.setLineDash([3,7]); g.lineDashOffset=-flowAcc[8];
+      g.beginPath(); g.moveTo(x,topY); g.lineTo(x,midY-6); g.moveTo(x,midY+6); g.lineTo(x,botY); g.stroke();
+      g.restore();
+    }
+    g.strokeStyle=CSS.slime; g.globalAlpha= live ? 0.42+0.58*lit : 1; g.lineWidth=2.4;
+    g.beginPath();
+    g.moveTo(x-13,midY-6); g.lineTo(x+13,midY-6);
+    g.moveTo(x-13,midY+6); g.lineTo(x+13,midY+6);
+    g.stroke(); g.globalAlpha=1;
+    g.fillStyle="hsl(46 16% 56%)"; g.font=mono(9.5);
+    g.fillText((+ui("cap").value).toFixed(2)+"µF", x, botY+13);
+    g.fillStyle=CSS.slime;
+    g.fillText(((Gc/(Gtot||1))*100).toFixed(0)+"%", x, botY+24);
+  }
+
+  /* sense resistor on the return, and the tap */
+  const rz=senX, ry0=midY-17, ry1=midY+17;
+  g.strokeStyle=CSS.iris; g.lineWidth=1.6; g.beginPath();
+  g.moveTo(rz,ry0);
+  for(let i=0;i<6;i++) g.lineTo(rz+(i%2?-6:6), ry0+(ry1-ry0)*(i+0.5)/6);
+  g.lineTo(rz,ry1); g.stroke();
+  g.strokeStyle=RAIL; g.lineWidth=1.6;
+  g.beginPath(); g.moveTo(rz,midY); g.lineTo(w-padR+4,midY); g.stroke();
+  g.fillStyle="hsl(46 16% 56%)"; g.font=mono(9.5); g.textAlign="right";
+  g.fillText("out", w-padR+4, midY-7);
+  g.textAlign="center";
+  g.fillText("Rref", rz, botY+13);
+  g.textAlign="left";
+
+  ui("brCount").textContent = capOn ? N+" + mould" : String(N);
+  ui("capShare").textContent = capOn ? ((Gc/(Gtot||1))*100).toFixed(1)+"%" : "none";
+  ui("condTot").textContent = (Gtot>0 ? (1/Gtot).toFixed(0)+" Ω seen" : "—");
+}
+
+function roundRectPath(g,x,y,w,h,r){
+  r=Math.min(r,w/2,h/2); g.beginPath();
+  g.moveTo(x+r,y); g.lineTo(x+w-r,y); g.arcTo(x+w,y,x+w,y+r,r);
+  g.lineTo(x+w,y+h-r); g.arcTo(x+w,y+h,x+w-r,y+h,r);
+  g.lineTo(x+r,y+h); g.arcTo(x,y+h,x,y+h-r,r);
+  g.lineTo(x,y+r); g.arcTo(x,y,x+r,y,r); g.closePath();
+}
+function drawPianoSurface(g,w,h){
+  pianoCells.length=0;
+  const isBlack=m=>[1,3,6,8,10].includes((m%12+12)%12);
+  const whites=[]; for(let m=SURF.low;m<=SURF.high;m++) if(!isBlack(m)) whites.push(m);
+  const ww=w/whites.length;
+  for(let i=0;i<whites.length;i++){
+    const m=whites[i],x=i*ww,on=order.includes(m),held=sustained.has(m);
+    const gr=g.createLinearGradient(0,0,0,h);
+    if(held){gr.addColorStop(0,"#ffd0e4");gr.addColorStop(1,"#b66f98");}
+    else if(on){gr.addColorStop(0,"#e7f79b");gr.addColorStop(1,"#78b68d");}
+    else{gr.addColorStop(0,"#f4edc3");gr.addColorStop(1,"#9eb685");}
+    g.fillStyle=gr; roundRectPath(g,x+1,1,ww-2,h-2,Math.min(8,ww*.18)); g.fill();
+    g.strokeStyle="rgba(24,37,20,.38)"; g.stroke();
+    if(m%12===0){g.fillStyle="#243520";g.font="10px 'Space Mono',monospace";g.fillText("C"+(Math.floor(m/12)-1),x+5,h-8);}
+    pianoCells.push({midi:m,x:x+1,y:1,w:ww-2,h:h-2,black:false});
+  }
+  let wi=0;
+  for(let m=SURF.low;m<=SURF.high;m++){
+    if(!isBlack(m)){wi++;continue;}
+    const bw=ww*.62,x=wi*ww-bw*.5,bh=h*.62,on=order.includes(m),held=sustained.has(m);
+    const gr=g.createLinearGradient(0,0,0,bh);
+    if(held){gr.addColorStop(0,"#ffb8d7");gr.addColorStop(1,"#70435f");}
+    else if(on){gr.addColorStop(0,"#b6efcf");gr.addColorStop(1,"#3d7668");}
+    else{gr.addColorStop(0,"#665477");gr.addColorStop(1,"#1a251d");}
+    g.fillStyle=gr; roundRectPath(g,x,1,bw,bh,Math.min(7,bw*.2)); g.fill();
+    g.strokeStyle="rgba(247,240,204,.24)"; g.stroke();
+    pianoCells.push({midi:m,x,y:1,w:bw,h:bh,black:true});
+  }
+}
+function drawHexSurface(g,w,h){
+  HEX.cells.length=0;
+  const rad=Math.max(8,Math.min(w/((HEX.cols+.5)*Math.sqrt(3)),h/(HEX.rows*1.5+.5)));
+  const hx=Math.sqrt(3)*rad,vy=1.5*rad;
+  const x0=hx*.5+(w-(HEX.cols+.5)*hx)/2,y0=rad+(h-((HEX.rows-1)*vy+2*rad))/2;
+  for(let r=0;r<HEX.rows;r++) for(let c=0;c<HEX.cols;c++){
+    const midi=HEX.base+octave*12+c*HEX.a+r*HEX.b;
+    const x=x0+c*hx+(r%2?hx*.5:0),y=y0+r*vy,on=order.includes(midi),held=sustained.has(midi);
+    g.beginPath();
+    for(let k=0;k<6;k++){const a=Math.PI/6+k*Math.PI/3,px=x+Math.cos(a)*rad*.94,py=y+Math.sin(a)*rad*.94;k?g.lineTo(px,py):g.moveTo(px,py);}
+    g.closePath();
+    g.fillStyle=held?"#d58bab":on?"#cfe97b":((r+c)%3===0?"#8dcbb8":"#d6d7a2");
+    g.strokeStyle=on?"#f5f0c8":"rgba(30,54,40,.55)";g.lineWidth=1;g.fill();g.stroke();
+    if(rad>13){g.fillStyle="#20331f";g.textAlign="center";g.textBaseline="middle";g.font="9px 'Space Mono',monospace";g.fillText(NOTES[(midi%12+12)%12],x,y);}
+    HEX.cells.push({midi,x,y,r:rad*.94});
+  }
+  g.textAlign="left";g.textBaseline="alphabetic";
+}
+function drawRibbonSurface(g,w,h){
+  const pad=13,stripY=h*.24,stripH=h*.52;
+  const gr=g.createLinearGradient(pad,0,w-pad,0);
+  gr.addColorStop(0,"#53405f");gr.addColorStop(.28,"#d58bab");gr.addColorStop(.56,"#d6df8a");gr.addColorStop(1,"#72c9b3");
+  g.fillStyle=gr;roundRectPath(g,pad,stripY,w-pad*2,stripH,stripH/2);g.fill();
+  g.strokeStyle="rgba(247,240,204,.46)";g.stroke();
+  g.font="10px 'Space Mono',monospace";
+  for(let o=0;o<=RIB.oct;o++){
+    const x=pad+o/RIB.oct*(w-pad*2),m=RIB.base+o*12;
+    if(o>0&&o<RIB.oct){g.strokeStyle="rgba(25,48,35,.36)";g.beginPath();g.moveTo(x,stripY);g.lineTo(x,stripY+stripH);g.stroke();}
+    g.fillStyle="#f4edca";g.fillText(NOTES[m%12]+(Math.floor(m/12)-1),Math.min(w-28,x+4),h-8);
+  }
+  if(ribHz!=null){
+    const t=(Math.log2(ribHz/440)*12+69-RIB.base)/(RIB.oct*12),x=pad+t*(w-pad*2),y=stripY+ribVel*stripH;
+    g.strokeStyle=CSS.slime;g.lineWidth=2;g.beginPath();g.moveTo(x,stripY-6);g.lineTo(x,stripY+stripH+6);g.stroke();
+    g.fillStyle=CSS.hot;g.beginPath();g.arc(x,y,7,0,Math.PI*2);g.fill();
+    g.fillStyle="#f7f0cc";g.fillText(Math.round(ribHz)+" Hz",Math.min(w-62,x+10),15);
+  }
+}
+function drawSurface(){
+  const {g,w,h}=fit(ui("surface"));
+  g.clearRect(0,0,w,h);
+  const bg=g.createLinearGradient(0,0,w,h);bg.addColorStop(0,"#1d3629");bg.addColorStop(1,"#101a13");g.fillStyle=bg;g.fillRect(0,0,w,h);
+  if(SURFACE==="hex")drawHexSurface(g,w,h);
+  else if(SURFACE==="ribbon")drawRibbonSurface(g,w,h);
+  else drawPianoSurface(g,w,h);
+}
+
+/* ---- voice source ------------------------------------------------------- */
+/* Two ways in, because a microphone needs a permission the automation browser
+   denies and a dropped file does not, so the path stays testable. Only one is
+   connected at a time; connecting either replaces the other. */
+function clearSource(){
+  if(micNode){ micNode.disconnect(); micNode=null; }
+  if(micStream){ for(const t of micStream.getTracks()) t.stop(); micStream=null; }
+  if(fileNode){ try{ fileNode.stop(); }catch(e){} fileNode.disconnect(); fileNode=null; }
+  ui("micBtn").classList.remove("lit");
+  ui("fileBtn").classList.remove("lit");
+}
+function sourceIs(name){
+  vSource=name;
+  ui("vsrc").textContent=name;
+  const on = name!=="none";
+  ui("srcInput").disabled = !on;
+  // connecting a source moves both panels to it, because that is what the
+  // person just asked to look at; disconnecting moves them back rather than
+  // leaving two panels reading a signal that is gone
+  if(on){ if(view!=="voice") setView("voice"); if(loopSrc!=="input") setLoopSrc("input"); }
+  else if(loopSrc==="input") setLoopSrc("drive");
+  params();
+}
+async function useMic(){
+  await start();
+  if(vSource==="microphone"){ clearSource(); sourceIs("none"); ui("micBtn").textContent="Use microphone"; return; }
+  clearSource();
+  try{
+    // the processing chain is the instrument, so ask the browser not to run its
+    // own first
+    micStream = await navigator.mediaDevices.getUserMedia({audio:{
+      echoCancellation:false, noiseSuppression:false, autoGainControl:false}});
+    micNode = ctx.createMediaStreamSource(micStream);
+    micNode.connect(node);
+    ui("micBtn").classList.add("lit");
+    ui("micBtn").textContent="Microphone on";
+    sourceIs("microphone");
+  }catch(err){
+    sourceIs("none");
+    ui("vsrc").textContent = err && err.name==="NotAllowedError" ? "microphone denied"
+      : err && err.name==="NotFoundError" ? "no microphone"
+      : "microphone unavailable";
+  }
+}
+async function useFile(file){
+  if(!file) return;
+  await start();
+  clearSource();
+  try{
+    const buf = await ctx.decodeAudioData(await file.arrayBuffer());
+    fileNode = ctx.createBufferSource();
+    fileNode.buffer=buf; fileNode.loop=true;
+    fileNode.connect(node); fileNode.start();
+    ui("fileBtn").classList.add("lit");
+    ui("micBtn").textContent="Use microphone";
+    sourceIs(file.name.length>22 ? file.name.slice(0,21)+"…" : file.name);
+  }catch(err){ sourceIs("none"); ui("vsrc").textContent="could not decode"; }
+}
+
+/* ---- the band display --------------------------------------------------- */
+/* Three things per band, because they answer different questions: the level is
+   what the voice is putting in, the charge span is how much of the curve that
+   band's element actually travels, and the wear is what it has left behind.
+   A band can be loud and travel nothing - that is what Tilt at 0 looks like. */
+const LBL="hsl(46 16% 56%)";
+function drawBands(){
+  const {g,w,h}=fit(ui("vbands"));
+  g.clearRect(0,0,w,h);
+  const NB=vNB, padL=42, padR=14, padT=16, padB=26;
+  const iw=w-padL-padR, ih=h-padT-padB;
+  const bw=iw/NB;
+  g.font=mono(10);
+  if(vSource==="none" || !vSpan){
+    g.fillStyle=LBL; g.textAlign="center"; g.textBaseline="middle";
+    g.fillText("No input. Use the microphone, or load a file.", w/2, h/2);
+    return;
+  }
+  const lo=+ui("nb").dataset.lo||110, hi=+ui("nb").dataset.hi||7000;
+  const oct=Math.log2(hi/lo)/Math.max(1,NB-1);
+  // baseline
+  g.strokeStyle="hsl(285 22% 22%)"; g.lineWidth=1;
+  g.beginPath(); g.moveTo(padL,padT+ih); g.lineTo(padL+iw,padT+ih); g.stroke();
+  let wmax=0, smax=0, bestW=0, eng=0;
+  for(let b=0;b<NB;b++){
+    if(vWear && vWear[b]>wmax){ wmax=vWear[b]; bestW=b; }
+    if(vSpan[b]>smax) smax=vSpan[b];
+    if(vSpan[b]>0.05) eng++;
+  }
+  const sel=Math.min(NB-1, (+ui("tband").value)-1);
+  for(let b=0;b<NB;b++){
+    const x=padL+b*bw, cx=x+bw/2;
+    if(b===sel){                       // the band the loop and circuit are showing
+      g.fillStyle="hsl(275 40% 22% / .55)";
+      g.fillRect(x+bw*0.08, padT, bw*0.84, ih);
+    }
+    // charge span: the bar
+    const sp=Math.min(1,vSpan[b]);
+    const bh=sp*ih;
+    const grd=g.createLinearGradient(0,padT+ih-bh,0,padT+ih);
+    grd.addColorStop(0,CSS.hot); grd.addColorStop(1,CSS['verd-hi']);
+    g.fillStyle=grd;
+    g.fillRect(x+bw*0.16, padT+ih-bh, bw*0.68, bh);
+    // level: a thin inner column, so a band that is loud but not travelling reads
+    const lv=Math.min(1,(vLev?vLev[b]:0)*6);
+    g.fillStyle="hsl(46 16% 56%)";
+    g.fillRect(x+bw*0.44, padT+ih-lv*ih, bw*0.12, lv*ih);
+    // band label
+    const fc=lo*Math.pow(2,oct*b);
+    g.fillStyle=LBL; g.textAlign="center"; g.textBaseline="top";
+    g.fillText(fc>=1000?(fc/1000).toFixed(fc<10000?1:0)+"k":String(Math.round(fc)), cx, padT+ih+6);
+  }
+  // wear, as a line across the bands
+  if(vWear && wmax>0){
+    g.strokeStyle=CSS.slime; g.lineWidth=1.8; g.beginPath();
+    for(let b=0;b<NB;b++){
+      const x=padL+b*bw+bw/2, y=padT+ih-(vWear[b]/wmax)*ih*0.92;
+      b?g.lineTo(x,y):g.moveTo(x,y);
+    }
+    g.stroke();
+    g.fillStyle=CSS.slime;
+    for(let b=0;b<NB;b++){
+      const x=padL+b*bw+bw/2, y=padT+ih-(vWear[b]/wmax)*ih*0.92;
+      g.beginPath(); g.arc(x,y,2.4,0,7); g.fill();
+    }
+  }
+  g.fillStyle=LBL; g.textAlign="right"; g.textBaseline="middle";
+  g.fillText("1.0", padL-6, padT);
+  g.fillText("0", padL-6, padT+ih);
+  g.save(); g.translate(11, padT+ih/2); g.rotate(-Math.PI/2);
+  g.textAlign="center"; g.fillText("charge span", 0, 0); g.restore();
+  ui("vEng").textContent = eng+" of "+NB+" bands";
+  if(wmax>0){
+    const fc=lo*Math.pow(2,oct*bestW);
+    ui("vWorn").textContent = (fc>=1000?(fc/1000).toFixed(1)+" kHz":Math.round(fc)+" Hz");
+  } else ui("vWorn").textContent="—";
+}
+
+/* A view, not a mode. Both signal paths keep running whatever is on screen:
+   the synth sounds when a note is held, the voice path processes whenever a
+   source is connected, and they share one substrate either way. Switching the
+   hidden half off would make "sing into it, then play the curve you wore" a
+   thing to be told about rather than a thing to do. The chip below is the other
+   half of that bargain - nothing runs unseen without saying so. */
+function setView(v){
+  view = v;
+  document.body.dataset.view = v;
+  ui("viewSynth").classList.toggle("lit", v==="synth");
+  ui("viewVoice").classList.toggle("lit", v==="voice");
+  // The analysis panels follow the view, because choosing a view is choosing what
+  // you are working on. They stay independently switchable afterwards: watching
+  // what a voice is doing to the element while playing it is a real thing to
+  // want, and the Drive/Input switch is still there for it.
+  if(v==="voice" && vSource!=="none") setLoopSrc("input");
+  if(v==="synth") setLoopSrc("drive");
+  labels();
+}
+
+/* what the half you cannot see is doing */
+function otherChip(){
+  const c=ui("otherChip");
+  let t="";
+  if(view==="synth" && vSource!=="none") t="voice live: "+vSource;
+  else if(view==="voice" && (order.length || ribHz!=null)) t="note sounding";
+  c.hidden = !t;
+  if(t) c.textContent = t;
+  c.classList.toggle("on", !!t);
+}
+
+function frame(){
+  ui("qVal").textContent = qs.length>1
+    ? qs[0].toFixed(3)+" … "+qs[qs.length-1].toFixed(3)
+    : qs[0].toFixed(4);
+  ui("mVal").textContent = mNow ? Math.round(mNow)+" Ω" : "—";
+  ui("pkVal").textContent = pkNow ? pkNow.toFixed(3) : "—";
+  const wp=(wMean*100);
+  ui("wVal").textContent = wp.toFixed(1)+"%";
+  ui("wearL").textContent = wp.toFixed(1)+"% worn";
+  ui("ageVal").textContent = ageNow<90 ? ageNow.toFixed(1)+" s"
+    : (ageNow/60).toFixed(1)+" min";
+  document.documentElement.style.setProperty("--age", Math.min(1,wMean*1.6).toFixed(3));
+  const gg=document.getElementById("wearGauge");
+  if(gg) gg.style.setProperty("--w", Math.min(1,wMean).toFixed(4));
+  otherChip();
+  // a hidden canvas has a zero-width box, so drawing into it is work with no
+  // result and some of the measurement it feeds would divide by that zero
+  drawCurve(); drawLoop(); drawScope(); drawCircuit();
+  if(view==="voice") drawBands(); else drawSurface();
+  requestAnimationFrame(frame);
+}
+
+/* ---- wiring ------------------------------------------------------------- */
+function buildPresets(){
+  const sel=ui("preset");
+  PRESETS.forEach((p,i)=>{
+    const o=document.createElement("option");
+    o.value=String(i); o.textContent=p.name;
+    sel.appendChild(o);
+  });
+}
+
+function applyPreset(i){
+  const p=PRESETS[i]; if(!p) return;
+  const cfg=Object.assign({}, BASE, p);
+  ui("eq").value=p.eq;
+  ui("mu").value=cfg.mu; ui("tau").value=cfg.tau; ui("edge").checked = cfg.edge==="wrap";
+  ui("sen").value=cfg.sen; ui("n").value=cfg.n; ui("spread").value=cfg.spread;
+  ui("rein").value=cfg.rein; ui("cap").value=cfg.cap; ui("amp").value=cfg.amp;
+  pushLUT(); labels(); params(); setVeins();
+}
+
+ui("eq").addEventListener("input", pushLUT);
+ui("preset").addEventListener("change", e=>{
+  if(e.target.value==="") return;
+  applyPreset(+e.target.value);
+});
+for(const id of ["mu","tau","amp","edge","auto","cap","sen","n","spread","rein","glide","veld","slow",
+                 "vgain","vmix","nb","vtilt","vout","tband"])
+  ui(id).addEventListener("input", ()=>{ labels(); params(); });
+for(const id of ["n","rein"]) ui(id).addEventListener("input", setVeins);
+ui("pianoBtn").addEventListener("click", ()=>setSurface("piano"));
+ui("hexBtn").addEventListener("click", ()=>setSurface("hex"));
+ui("ribBtn").addEventListener("click", ()=>setSurface("ribbon"));
+ui("gain").addEventListener("input", e=>{
+  labels(); if(gainNode) gainNode.gain.value=+e.target.value;
+});
+ui("start").addEventListener("click", start);
+ui("fresh").addEventListener("click", ()=>{
+  if(node) node.port.postMessage({fresh:1});
+  wearArr=null; wMean=0; ageNow=0; vWear=null;
+});
+ui("viewSynth").addEventListener("click", ()=>setView("synth"));
+ui("viewVoice").addEventListener("click", ()=>setView("voice"));
+ui("srcDrive").addEventListener("click", ()=>setLoopSrc("drive"));
+ui("srcInput").addEventListener("click", ()=>{ if(vSource!=="none") setLoopSrc("input"); });
+ui("micBtn").addEventListener("click", useMic);
+ui("vfile").addEventListener("change", e=>{ useFile(e.target.files[0]); e.target.value=""; });
+ui("nb").dataset.lo="110"; ui("nb").dataset.hi="7000";
+addEventListener("resize", readCSS);
+
+function typeset(){
+  if(!window.katex){ setTimeout(typeset,120); return; }
+  const opt={throwOnError:false, displayMode:false};
+  katex.render("i_e=\\dfrac{v\\,D_e}{M(q_e)},\\quad \\dot q_e=\\mu_e i_e-\\dfrac{q_e}{\\tau},\\quad \\dot D_e=\\dfrac{1}{\\tau_D}\\!\\left(\\dfrac{s}{1+s}-D_e\\right)", ui("tex1"), opt);
+  katex.render("M(q)=\\bigl(1-w(q)\\bigr)M_0(q)+w(q)\\,\\langle M_0\\rangle,\\quad \\dot w=\\sigma\\,|vi|\\,(1-w)", ui("tex2"), opt);
+  katex.render("i=\\dfrac{1}{N}\\sum_e i_e+C\\dfrac{dv}{dt}", ui("tex3"), opt);
+}
+
+readCSS(); buildPresets(); wireDials(); setVeins(); showOct();
+setSurface("piano"); setLoopSrc("drive"); setView("synth"); labels(); pushLUT(); typeset(); initMIDI(); frame();
+</script>
+</body>
+</html>
