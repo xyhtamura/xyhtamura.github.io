@@ -800,7 +800,7 @@ const slides = [
           tags: ["memristive synthesis", "stateful dynamics", "microtonal", "vocal processing", "formants"],
           blurb: "A stateful charge-controlled memristor synthesizer and vocal processor built as a single-file browser instrument. It models dynamic, history-dependent resistance curves over a shared drive substrate, featuring a constant-Q voice filterbank, parallel capacitance (mould), senescence (surface wear), colony scaling, and unified Synth/Voice views.",
           links: [
-            { label: "Launch Instrument", url: "https://xyhtamura.github.io/anexacta/physa/" }
+            { label: "Launch Instrument", url: "https://xyhtamura.github.io/physa/" }
           ]
         }
       ]

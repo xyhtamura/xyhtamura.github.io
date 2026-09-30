@@ -209,8 +209,8 @@
       "image": "img/works/physa.jpg",
       "alt": "Physa browser instrument",
       "capture": {
-        "url": "https://xyhtamura.github.io/anexacta/physa/",
-        "localUrl": "http://localhost:8000/anexacta/physa/",
+        "url": "https://xyhtamura.github.io/physa/",
+        "localUrl": "http://localhost:8000/xyhtamura.github.io/physa/",
         "waitMs": 4000
       }
     },
