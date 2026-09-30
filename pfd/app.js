@@ -74,13 +74,13 @@ window.portfolioLinks = {
     ["Aliquoto", "https://xyhtamura.github.io/anexacta/aliquoto/"],
     ["Cella", "https://xyhtamura.github.io/anexacta/cella/"],
     ["Moire", "https://xyhtamura.github.io/anexacta/moire/"],
-    ["Physa", "https://xyhtamura.github.io/anexacta/physa/"],
+    ["Physa", "https://xyhtamura.github.io/physa/"],
     ["Spolium", "https://xyhtamura.github.io/anexacta/spolium/"]
   ],
   "Aliquoto": [["Launch instrument", "https://xyhtamura.github.io/anexacta/aliquoto/"]],
   "Cella": [["Launch instrument", "https://xyhtamura.github.io/anexacta/cella/"]],
   "Moire": [["Launch instrument", "https://xyhtamura.github.io/anexacta/moire/"]],
-  "Physa": [["Launch instrument", "https://xyhtamura.github.io/anexacta/physa/"]],
+  "Physa": [["Launch instrument", "https://xyhtamura.github.io/physa/"]],
   "Spolium": [["Launch instrument", "https://xyhtamura.github.io/anexacta/spolium/"]],
   "Benzaiten": [["Launch instrument", "https://xyhtamura.github.io/benzaiten/"]],
   "Experimental Pop and Performance": [

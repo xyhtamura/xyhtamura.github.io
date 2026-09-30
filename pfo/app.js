@@ -50,7 +50,7 @@ window.portfolioLinks = {
   "Aliquoto": [["Launch instrument", "https://xyhtamura.github.io/anexacta/aliquoto/"]],
   "Cella": [["Launch instrument", "https://xyhtamura.github.io/anexacta/cella/"]],
   "Moire": [["Launch instrument", "https://xyhtamura.github.io/anexacta/moire/"]],
-  "Physa": [["Launch instrument", "https://xyhtamura.github.io/anexacta/physa/"]]
+  "Physa": [["Launch instrument", "https://xyhtamura.github.io/physa/"]]
 };
 
 window.portfolioSlides = "slides.html?v=2";

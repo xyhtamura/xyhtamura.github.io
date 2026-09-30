@@ -65,7 +65,7 @@ window.portfolioLinks = {
   "Aliquoto": [["Launch instrument", "https://xyhtamura.github.io/anexacta/aliquoto/"]],
   "Cella": [["Launch instrument", "https://xyhtamura.github.io/anexacta/cella/"]],
   "Moire": [["Launch instrument", "https://xyhtamura.github.io/anexacta/moire/"]],
-  "Physa": [["Launch instrument", "https://xyhtamura.github.io/anexacta/physa/"]],
+  "Physa": [["Launch instrument", "https://xyhtamura.github.io/physa/"]],
   "Cornice": [["Launch work", "https://xyhtamura.github.io/cornice/"]],
   "The Unbounded Organ": [
     ["Launch instrument", "https://xyhtamura.github.io/unbounded-organ/"],
