@@ -165,3 +165,11 @@ Safe to change because none of the three has been sent: the MIT applications are
   - `node portfolio-studio/scripts/check-source.mjs` passed across all 5 cuts (`pfi`, `pfo`, `pfs`, `pft`, `pfd`): 366 figures, 366 slots, all 366 ratios finite and positive, 0 missing files.
 
 
+
+2026-10-02 — Claude Code — Built `pfr/`, the 10-page Responsive Environments cut (private nickname Sensoria), for the Joe Paradiso email. Spec: `profiles/MIT-PORTFOLIO-CUTS.md` §4. Four pages are lifted by `scripts/lift-slides.mjs` (Anexacta and Tabota from `pfo`, Cytophones from `pfm`, Desiderata and Hindcasts from `pfi`) and five are authored in `pfr/pages/`: cover, The Unbounded Organ, Gliese · Metachamber, kíkik, and a closing page pairing The Commitments of Physical Modeling with Night Bus. `pfr` carries `noindex`, as `pfm` does, and is added to `scripts/audit-cuts.mjs`.
+
+**Dropped step, on purpose.** The spec pairs *kíkik* with *Ave Maria, Gaia Mystica*. That piece has no project folder, image, or manifest entry, so page 6 shows kíkik alone, which is the fallback the spec names. Adding it back needs a performance photograph, a score page, or a recording still.
+
+**Verified** at 1440 × 810 through the root server: `audit-cuts.mjs` passes all six cuts including `pfr` at 10 slides; in the browser all 45 pictures load once lazy loading is forced, every rendered box matches its picture's own ratio within 2%, every slide is 705 px against a 705 px container, no horizontal overflow, no console errors, and no text overlaps a figure outside the cover (where the plate sits over the mosaic by design). Picture area per page: 64, 24, 44, 40, 48, 57, 42, 47, 17, 44%. Page 9 (Hindcasts, lifted whole) is lowest at 17%, as in `pfs`.
+
+**Not verified.** The pane's compositor timed out on screenshots; one early screenshot of page 4 showed only two of its three figures, but the DOM reports the third (Metachamber) at 320 × 330 px with a correct ratio, so I read it as the known paint fault. Not yet checked by eye. Link targets were not fetched; `gliese/`, `kikik/`, `unbounded-organ/`, `hindcasts/metachamber/`, `cytophone/` and `anexacta/` return 200 on the live site, and the rest are copied from existing registries. No PDF was built.

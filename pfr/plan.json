@@ -1,0 +1,16 @@
+{
+  "title": "Xyh Tamura — Portfolio for Responsive Environments",
+  "out": "slides.html",
+  "pages": [
+    { "file": "pages/cover.html" },
+    { "from": "pfo", "heading": "Anexacta" },
+    { "file": "pages/unbounded-organ.html" },
+    { "file": "pages/gliese.html" },
+    { "from": "pfm", "heading": "Cytophones" },
+    { "file": "pages/kikik.html" },
+    { "from": "pfo", "heading": "Tabota · Cycla · Stanzuary" },
+    { "from": "pfi", "heading": "Desiderata · xyhnthesizer" },
+    { "from": "pfi", "heading": "Hindcasts" },
+    { "file": "pages/close.html" }
+  ]
+}
