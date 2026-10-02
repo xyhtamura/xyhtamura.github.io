@@ -193,3 +193,9 @@ Safe to change because none of the three has been sent: the MIT applications are
 - **Deskarium · Benzaiten**: Converted balanced parataxis ("fish leave the frame in quiet and file back in when there is noise") into causal acoustic interest and threshold mechanics; framed Benzaiten plainly as a real-time GPU fluid-simulation video synthesizer before outlining shader advection and Web Audio FFT coupling.
 - **Research Close**: Exact epistemic verbs and scope precision across *The Commitments of Physical Modeling*, *Night Bus* (UP Diliman, Metro Manila transit), and *From Interiority to Interaction* (relational interaction effect rather than intrinsic property).
 - **Regenerated and verified**: Ran `lift-slides.mjs` to regenerate `pfr/slides.html`. `audit-cuts.mjs` passed cleanly with 10 slides across all 6 cuts (`pfo`, `pfs`, `pft`, `pfd`, `pfm`, `pfr`).
+
+2026-10-02 (later) — Antigravity — Removed Night Bus from `pfr` slide 10 on user request.
+- **Slide 10 Layout**: Converted `pfr/pages/close.html` from `panels triple across` to `panels split`. The slide now directly pairs *The Commitments of Physical Modeling* (`p05-b`, `--ar:0.8533`) and *From Interiority to Interaction* (`p05-a`, `--ar:0.8000`).
+- **Registry & Assets**: Removed `Night Bus` links from `pfr/app.js` and bumped `portfolioSlides` to `v=7`.
+- **Regenerated & Verified**: Ran `lift-slides.mjs` to regenerate `pfr/slides.html`. `audit-cuts.mjs` passed 10/10 slides, 43 slots, 11 headings, and all panel classes across all cuts.
+

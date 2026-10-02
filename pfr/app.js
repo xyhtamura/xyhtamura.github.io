@@ -38,14 +38,10 @@ window.portfolioLinks = {
     ["Timbre 2026", "https://timbreconference.org/"],
     ["Conference video", "https://www.youtube.com/watch?v=un487fhnW2s"]
   ],
-  "Night Bus": [
-    ["Read paper", "https://www.researchgate.net/publication/393631680_Intermedia_Musicopoetics_and_Transpractice_Songwriting_in_Night_Bus"],
-    ["Saliksik-Musika II", "https://www.facebook.com/U.P.Visayas.Official/posts/pfbid0grNNpExXsDdu87idz22Pmt8bue2W4T9jnwKr4FJ3qB8tfGKnCsL68keidgxAURpPl"]
-  ],
   "From Interiority to Interaction": [
     ["Read paper", "https://journals.ub.uni-koeln.de/index.php/phidi/article/view/11659"],
     ["Philosophy & Digitality", "https://journals.ub.uni-koeln.de/index.php/phidi"]
   ]
 };
 
-window.portfolioSlides = "slides.html?v=6";
+window.portfolioSlides = "slides.html?v=7";
