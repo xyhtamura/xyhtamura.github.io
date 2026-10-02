@@ -11,7 +11,10 @@ window.portfolioLinks = {
     ["Launch tool", "https://xyhtamura.github.io/kikik/"]
   ],
   "Gliese": [["Launch tool", "https://xyhtamura.github.io/gliese/"]],
-  "Physa · Biomemristor as Instrument": [["Launch Physa", "https://xyhtamura.github.io/physa/"]],
+  "Physa · Biomemristor as Instrument": [
+    ["Launch Physa", "https://xyhtamura.github.io/physa/"],
+    ["Read abstract", "https://www.researchgate.net/publication/414237766_Biomemristor_as_Instrument"]
+  ],
   "The Unbounded Organ · Composition Without Audition": [
     ["Launch instrument", "https://xyhtamura.github.io/unbounded-organ/"],
     ["Read explainer", "https://xyhtamura.github.io/unbounded-organ/explainer.html"],
@@ -45,4 +48,4 @@ window.portfolioLinks = {
   ]
 };
 
-window.portfolioSlides = "slides.html?v=5";
+window.portfolioSlides = "slides.html?v=6";
