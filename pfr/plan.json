@@ -3,13 +3,13 @@
   "out": "slides.html",
   "pages": [
     { "file": "pages/cover.html" },
-    { "from": "pfo", "heading": "Anexacta" },
-    { "file": "pages/unbounded-organ.html" },
-    { "file": "pages/gliese.html" },
     { "from": "pfm", "heading": "Cytophones" },
     { "file": "pages/kikik.html" },
-    { "from": "pfo", "heading": "Tabota · Cycla · Stanzuary" },
-    { "from": "pfi", "heading": "Desiderata · xyhnthesizer" },
+    { "file": "pages/gliese.html" },
+    { "file": "pages/physa-biomemristor.html" },
+    { "file": "pages/organ-audition.html" },
+    { "file": "pages/deskarium-benzaiten.html" },
+    { "from": "pfi", "heading": "Tanim-Kalye" },
     { "from": "pfi", "heading": "Hindcasts" },
     { "file": "pages/close.html" }
   ]

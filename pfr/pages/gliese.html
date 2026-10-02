@@ -1,14 +1,15 @@
-<!-- Authored for the pfr cut, 2026-10-02. Plots rather than the interface capture, as the cut
-     spec asks: they show what the model computes. Gliese facts are from gliese/gliese.md. -->
+<!-- Authored for the pfr cut, 2026-10-02. Two plots rather than the interface capture: they show
+     what the model computes. Metachamber was removed from this page on 2026-10-02; it stays on
+     the Hindcasts page. Gliese facts are from gliese/gliese.md. -->
 <section class="page">
   <p class="band">Ray tracing · room acoustics</p>
-  <h2>Gliese · Metachamber <span class="year">2025–2026</span></h2>
-  <p class="credit"><em>Gliese</em> generates delay taps by tracing sound rays through a model atmosphere · <em>Metachamber</em> is an offline reverberator that fits each decay to the silence that follows</p>
-  <div class="feature-grid triple-tools">
+  <h2>Gliese <span class="year">2025–2026</span></h2>
+  <p class="credit">A multi-tap delay and reverb generator whose taps come from tracing sound rays through a model atmosphere</p>
+  <div class="feature-grid">
     <figure class="slot is-filled" data-slot="gliese-rays" data-alt="Gliese ray bundle: a dense tangle of rays, coloured by optical path, filling a spherical shell around an inner sphere, with the source and receiver marked" style="--ar:1.1330"><img src="../img/gliese.png" alt="Gliese ray bundle: a dense tangle of rays, coloured by optical path, filling a spherical shell around an inner sphere, with the source and receiver marked"></figure>
     <figure class="slot is-filled" data-slot="gliese-ir" data-alt="Gliese extracted taps by delay and gain, above the impulse response built from them, over two seconds" style="--ar:1.6667"><img src="media/gliese_impulse_response.png" alt="Gliese extracted taps by delay and gain, above the impulse response built from them, over two seconds"></figure>
-    <figure class="slot is-filled" data-slot="p19-b" data-alt="Metachamber browser instrument" style="--ar:0.9703"><img src="../pfi/media/p19-b.png" alt="Metachamber browser instrument"></figure>
   </div>
-  <div class="col-3 mini-copy"><p><strong>Gliese</strong> is a multi-tap delay and reverb generator. The refractive-index profile has a sound channel at its axis, and rays launched from a point source are integrated with the velocity Verlet method, reflecting at an inner and an outer boundary. A tap is recorded each time a ray passes through the receiver, with gain set by geometric spreading and reflection loss.</p><p>The model comes from my 2012 undergraduate thesis at the National Institute of Physics, UP Diliman, on ray propagation in a medium with a spherically symmetric index of refraction, treated through the Lagrangian formulation (adviser Jose Perico H. Esguerra).</p><p><strong>Metachamber</strong> is part of Hindcasts. It reads a whole recording first, measures the gaps between notes that have not yet sounded, and sets each reverb tail to the gap that follows it.</p></div>
+  <p class="lede">The refractive-index profile has a sound channel at its axis. Rays launched from a point source are integrated with the velocity Verlet method and reflect at an inner and an outer boundary. A tap is recorded each time a ray passes through the receiver, with its gain set by geometric spreading and reflection loss, and the taps are scaled so that the first arrival lands on a chosen delay.</p>
+  <p>The model comes from my 2012 undergraduate thesis at the National Institute of Physics, UP Diliman, on ray propagation in a medium with a spherically symmetric index of refraction, treated through the Lagrangian formulation (adviser Jose Perico H. Esguerra).</p>
   <div class="folio"><span>Xyh Tamura</span><span>4</span></div>
 </section>

@@ -1,0 +1,13 @@
+/* Route-local rules for the Responsive Environments cut. Everything else comes from ../pfi/styles.css.
+
+   Two pages carry media no other cut has: a video slot (Deskarium) and an audio player (kíkik).
+   The shared stylesheet draws images only, so the video fills its slot the way an image does,
+   and the player takes the width of the column it sits in. */
+.slot.video { cursor: default; }
+.slot video { display: block; width: 100%; height: 100%; object-fit: contain; background: #000; }
+audio.piece { display: block; width: 100%; margin: 0 0 .8rem; }
+
+/* Two text columns under a row of pictures. The shared .col-3 is three columns, and these pages
+   carry two works each. */
+.col-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 1.6rem; }
+@media (max-width: 900px) { .col-2 { display: block; } }
