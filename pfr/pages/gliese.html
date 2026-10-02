@@ -4,12 +4,12 @@
 <section class="page">
   <p class="band">Ray tracing · room acoustics</p>
   <h2>Gliese <span class="year">2025–2026</span></h2>
-  <p class="credit">A multi-tap delay and reverb generator whose taps come from tracing sound rays through a model atmosphere</p>
+  <p class="credit">A multi-tap delay and reverb generator deriving its delay taps from sound rays traced through a model atmosphere</p>
   <div class="feature-grid">
-    <figure class="slot is-filled" data-slot="gliese-rays" data-alt="Gliese ray bundle: a dense tangle of rays, coloured by optical path, filling a spherical shell around an inner sphere, with the source and receiver marked" style="--ar:1.1330"><img src="../img/gliese.png" alt="Gliese ray bundle: a dense tangle of rays, coloured by optical path, filling a spherical shell around an inner sphere, with the source and receiver marked"></figure>
+    <figure class="slot is-filled" data-slot="gliese-rays" data-alt="Gliese ray bundle: a dense tangle of rays, colored by optical path, filling a spherical shell around an inner sphere, with the source and receiver marked" style="--ar:1.1330"><img src="../img/gliese.png" alt="Gliese ray bundle: a dense tangle of rays, colored by optical path, filling a spherical shell around an inner sphere, with the source and receiver marked"></figure>
     <figure class="slot is-filled" data-slot="gliese-ir" data-alt="Gliese extracted taps by delay and gain, above the impulse response built from them, over two seconds" style="--ar:1.6667"><img src="media/gliese_impulse_response.png" alt="Gliese extracted taps by delay and gain, above the impulse response built from them, over two seconds"></figure>
   </div>
-  <p class="lede">The refractive-index profile has a sound channel at its axis. Rays launched from a point source are integrated with the velocity Verlet method and reflect at an inner and an outer boundary. A tap is recorded each time a ray passes through the receiver, with its gain set by geometric spreading and reflection loss, and the taps are scaled so that the first arrival lands on a chosen delay.</p>
-  <p>The model comes from my 2012 undergraduate thesis at the National Institute of Physics, UP Diliman, on ray propagation in a medium with a spherically symmetric index of refraction, treated through the Lagrangian formulation (adviser Jose Perico H. Esguerra).</p>
+  <p class="lede">A multi-tap delay and acoustic reverberation tool that derives reflection schedules by tracing sound rays through a model planetary atmosphere. The refractive-index profile defines an axial acoustic sound channel. Rays launched from a point source are numerically integrated using the velocity Verlet method, reflecting between concentric inner and outer boundaries. Each receiver intersection records a delay tap whose gain accounts for geometric spreading and boundary absorption, scaled so the first arrival matches a specified pre-delay.</p>
+  <p>The acoustic model derives from undergraduate thesis research at the National Institute of Physics, UP Diliman (2012), on ray propagation in spherically symmetric refractive media treated through a Lagrangian formulation (adviser Jose Perico H. Esguerra).</p>
   <div class="folio"><span>Xyh Tamura</span><span>4</span></div>
 </section>
