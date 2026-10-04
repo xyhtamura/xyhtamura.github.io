@@ -162,7 +162,7 @@ const slides = [
         panels: [
           {
             id: "insulae-incognita",
-            title: "Insulae Incognita",
+            title: "Insulae Incognitae",
             year: "2025→",
             tags: ["intermedia", "algorithmic poetry", "installation", "web art"],
             exhibitions: [
@@ -176,7 +176,7 @@ const slides = [
             ],
             blurb: "A media art algorithmic poem generating a digital archipelago constructed from special Unicode characters and historical scripts of cultures holding precolonial contact with Manila.",
             links: [
-              { label: "Open Poem", url: "https://xyhtamura.github.io/insulaeincognita/" },
+              { label: "Open Poem", url: "https://xyhtamura.github.io/insulae-incognitae/" },
               { label: "Exhibition Note", url: "https://www.dayangyraola.com/2025/07/proposal-for-another-history-98b-fub-9.html" },
               { label: "98B Collaboratory", url: "https://www.instagram.com/98bcollaboratory/" }
             ]

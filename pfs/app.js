@@ -25,14 +25,14 @@ window.portfolioLinks = {
     ["Rabble", "https://xyhtamura.github.io/glossolalia-rabble.html"]
   ],
   "LOVE-LETTER-FOR-YOU.TXT": [["Open work", "https://xyhtamura.github.io/loveletterforyou/"]],
-  "Of Another Shore · Insulae Incognita": [
+  "Of Another Shore · Insulae Incognitae": [
     ["Of Another Shore", "https://xyhtamura.github.io/of-another-shore/"],
-    ["Insulae Incognita", "https://xyhtamura.github.io/insulaeincognita/"],
+    ["Insulae Incognitae", "https://xyhtamura.github.io/insulae-incognitae/"],
     ["98B Collaboratory", "https://www.instagram.com/98bcollaboratory/"]
   ],
   "Of Another Shore": [["Enter the suite", "https://xyhtamura.github.io/of-another-shore/"]],
-  "Insulae Incognita": [
-    ["Open work", "https://xyhtamura.github.io/insulaeincognita/"],
+  "Insulae Incognitae": [
+    ["Open work", "https://xyhtamura.github.io/insulae-incognitae/"],
     ["98B Collaboratory", "https://www.instagram.com/98bcollaboratory/"]
   ],
   "Table of Metalloids · Cybernetic Inquiry · Shook": [

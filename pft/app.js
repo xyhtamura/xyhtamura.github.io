@@ -24,13 +24,13 @@ window.portfolioLinks = {
     ["Online project", "https://www.instagram.com/manifest.0x"],
     ["Bea Mariano", "https://www.beamariano.com/"]
   ],
-  "Insulae Incognita · a landline imagining a line probe during a storm": [
-    ["Insulae Incognita", "https://xyhtamura.github.io/insulaeincognita/"],
+  "Insulae Incognitae · a landline imagining a line probe during a storm": [
+    ["Insulae Incognitae", "https://xyhtamura.github.io/insulae-incognitae/"],
     ["a landline", "https://xyhtamura.github.io/landline/"],
     ["98B Collaboratory", "https://www.instagram.com/98bcollaboratory/"]
   ],
-  "Insulae Incognita": [
-    ["Open work", "https://xyhtamura.github.io/insulaeincognita/"],
+  "Insulae Incognitae": [
+    ["Open work", "https://xyhtamura.github.io/insulae-incognitae/"],
     ["98B Collaboratory", "https://www.instagram.com/98bcollaboratory/"]
   ],
   "a landline imagining a line probe during a storm": [

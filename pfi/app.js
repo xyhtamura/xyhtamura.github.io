@@ -44,8 +44,8 @@ window.portfolioLinks = {
     ["Saliksik-Musika II", "https://www.facebook.com/U.P.Visayas.Official/posts/pfbid0grNNpExXsDdu87idz22Pmt8bue2W4T9jnwKr4FJ3qB8tfGKnCsL68keidgxAURpPl"]
   ],
   "Whisper House": [["View score", "https://xyhtamura.github.io/whisperhouse/"]],
-  "Insulae Incognita": [
-    ["Open work", "https://xyhtamura.github.io/insulaeincognita/"],
+  "Insulae Incognitae": [
+    ["Open work", "https://xyhtamura.github.io/insulae-incognitae/"],
     ["Exhibition note", "https://www.dayangyraola.com/2025/07/proposal-for-another-history-98b-fub-9.html"],
     ["98B Collaboratory", "https://www.instagram.com/98bcollaboratory/"]
   ],

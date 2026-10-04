@@ -304,9 +304,9 @@
         "insulae-incognita"
       ],
       "image": "img/works/insulae-incognita.jpg",
-      "alt": "Insulae Incognita algorithmic archipelago",
+      "alt": "Insulae Incognitae algorithmic archipelago",
       "capture": {
-        "url": "https://xyhtamura.github.io/insulaeincognita/",
+        "url": "https://xyhtamura.github.io/insulae-incognitae/",
         "waitMs": 4500,
         "crop": {
           "x": 420,
