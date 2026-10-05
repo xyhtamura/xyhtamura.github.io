@@ -435,6 +435,16 @@
       }
     },
     {
+      "id": "syncytium",
+      "image": "img/works/syncytium.png",
+      "alt": "Syncytium geodesic cell growth interface",
+      "capture": {
+        "url": "https://xyhtamura.github.io/sgueltch/syncytium/",
+        "localUrl": "http://localhost:8000/sgueltch/syncytium/",
+        "waitMs": 4000
+      }
+    },
+    {
       "id": "ooid",
       "image": "img/works/ooid.jpg",
       "alt": "Ooid structure-based image codec",

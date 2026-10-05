@@ -922,6 +922,16 @@ links: [
         links: [
           { label: "Launch App", url: "https://xyhtamura.github.io/typebojangler/" }
         ]
+      },
+      {
+        id: "syncytium",
+        title: "Syncytium",
+        year: "2026",
+        tags: ["cell growth", "geodesic voronoi", "video effect", "structure tensor", "acausal rendering"],
+        blurb: "A video effect and generative tissue engine that derives cell membranes from an image's structure tensor instead of inking contours. Geodesic Voronoi colonies pool inside anatomical compartments, and Lag Graft allows bodies to sample past or future donor frames while membranes follow the present.",
+        links: [
+          { label: "Launch App", url: "https://xyhtamura.github.io/sgueltch/syncytium/" }
+        ]
       }
     ]
 	

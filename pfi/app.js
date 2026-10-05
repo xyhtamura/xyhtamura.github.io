@@ -113,6 +113,7 @@ window.portfolioLinks = {
   "Prolepsis": [["Launch tool", "https://xyhtamura.github.io/hindcasts/prolepsis/"]],
   "Sounder": [["Launch tool", "https://xyhtamura.github.io/hindcasts/sounder/"]],
   "CyberScotoma": [["Launch tool", "https://xyhtamura.github.io/sgueltch/cyberscotoma/"]],
+  "Syncytium": [["Launch tool", "https://xyhtamura.github.io/sgueltch/syncytium/"]],
   "Of Another Shore": [["Enter the suite", "https://xyhtamura.github.io/of-another-shore/"]],
   "Table of Metalloids": [["Open table", "https://xyhtamura.github.io/table-of-metalloids/"]]
 };

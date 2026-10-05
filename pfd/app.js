@@ -61,6 +61,7 @@ window.portfolioLinks = {
   "Pixel Lesions": [["Launch tool", "https://xyhtamura.github.io/sgueltch/pixellesions/"]],
   "TypeBojangler": [["Launch tool", "https://xyhtamura.github.io/sgueltch/typebojangler/"]],
   "goopCodecs": [["Launch suite", "https://xyhtamura.github.io/sgueltch/goopCodecs/"]],
+  "Syncytium": [["Launch tool", "https://xyhtamura.github.io/sgueltch/syncytium/"]],
   "Gliese": [
     ["Launch instrument", "https://xyhtamura.github.io/gliese/"]
   ],
