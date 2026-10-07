@@ -1,3 +1,5 @@
+@font-face{font-family:"Space Grotesk";src:url("assets/fonts/SpaceGrotesk%5Bwght%5D.ttf") format("truetype");font-weight:300 700;font-style:normal;font-display:swap}
+body.catalogue{font-family:"Space Grotesk",Arial,sans-serif}
 /* Main menu additions; the static studies retain their layouts. */
 .catalogue .slot{grid-column:span 2;min-width:0;display:flex;flex-direction:column;background:var(--cream);border:2px solid;box-shadow:4px 4px 0 var(--ink)}
 .catalogue .slot:nth-child(4),.catalogue .slot:nth-child(5){grid-column:span 3}

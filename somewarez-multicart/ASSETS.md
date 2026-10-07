@@ -16,3 +16,5 @@ The 2026-10-06 samples in `prototypes/` reuse Bungee Shade and Pixelify Sans. Th
 
 The main menu adopts the bootleg catalogue study on 2026-10-06 and uses those same SVG drawings and fonts. `catalogue.css` animates illustration shapes during idle periods. The preceding menu is preserved in `archive/menu-2026-10-06/` with its original fonts and licence files.
 Portrait: portrait.png supplied by Xyh for the artist panel on 2026-10-07, displayed unmodified and uncropped. Photographer credit was not supplied.
+
+Space Grotesk: body paragraphs and game descriptions in the current menu. Downloaded unmodified on 2026-10-07 from [Google Fonts](https://github.com/google/fonts/tree/main/ofl/spacegrotesk); bundled as assets/fonts/SpaceGrotesk[wght].ttf with [SIL OFL 1.1](assets/fonts/spacegrotesk-OFL.txt). Loaded locally from catalogue.css. Pixelify Sans headings and labels are retained.
