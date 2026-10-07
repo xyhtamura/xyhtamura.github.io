@@ -71,6 +71,20 @@ const slides = [
   {
     kind: "piece",
     piece: {
+      id: "foam-green-city",
+      title: "Foam Green City",
+      year: "2026",
+      tags: ["intermedia", "virtual world", "procedural architecture", "walkthrough", "3D graphics", "WebGL"],
+      blurb: "An autonomous browser-based 3D walkthrough of a procedurally arranged Filipino domestic interior. Foam-green walls, small family photos, modest furniture, and household objects recur along a slow, curving and twisting route with automatic or WASD movement, interrupted by occasional vast spaces, covered basketball courts, and open-air roofing-sheet walkways.",
+      links: [
+        { label: "Enter Walkthrough", url: "https://xyhtamura.github.io/foam-green-city/" }
+      ]
+    }
+  },
+
+  {
+    kind: "piece",
+    piece: {
       id: "drawing-the-hours",
       title: "Drawing the Hours",
       year: "2026",

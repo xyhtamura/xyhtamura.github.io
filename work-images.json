@@ -266,6 +266,16 @@
       }
     },
     {
+      "id": "foam-green-city",
+      "image": "img/works/foam-green-city.png",
+      "alt": "Foam Green City procedural 3D walkthrough",
+      "capture": {
+        "url": "https://xyhtamura.github.io/foam-green-city/",
+        "localUrl": "http://localhost:8000/foam-green-city/",
+        "waitMs": 4000
+      }
+    },
+    {
       "id": "72-munting-panahon",
       "image": "img/works/72-munting-panahon.jpg",
       "alt": "72 Munting Panahon microseason timeline",
