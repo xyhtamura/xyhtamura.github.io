@@ -455,8 +455,8 @@ body{
             <button class="pill wrap" id="btnWrap">wrap it up &darr;</button>
           </div>
 		  <div class="legend">
-            stations via <a href="https://www.radio-browser.info/" target="_blank" rel="noopener">radio&#8209;browser</a>
-            &middot; wrap to save your log
+            <a href="https://www.radio-browser.info/" target="_blank" rel="noopener">Radio Browser</a> &middot;
+            <a href="https://locusonus.org/soundmap/" target="_blank" rel="noopener">Locus Sonus</a> &middot; SomaFM &middot; NTS
           </div>
         </div>
 
@@ -480,9 +480,9 @@ body{
           <div class="log-empty" id="logEmpty">nothing tasted yet. tune in and drift.</div>
         </div>
         <div class="log-foot">
-          <div class="credit">stations via the free
+          <div class="credit">directory stations via
             <a href="https://www.radio-browser.info/" target="_blank" rel="noopener">radio&#8209;browser</a>
-            community database<br>session only · nothing stored</div>
+            <br>Curated: Locus Sonus, SomaFM, NTS<br>session only · nothing stored</div>
           <button class="pill wrap" id="btnWrap2">wrap it up &darr;</button>
         </div>
       </div>
@@ -582,6 +582,19 @@ const STRANGE_TAGS=[
 ];
 const STRANGE_BIAS=0.7;  /* share of each refill that leans weird (tune to taste) */
 
+const EXTRA_SHARE=0.2;
+const EXTRA_STREAMS=[
+  ["Locus Sonus: London - Stave Hill","https://locus.creacast.com:9443/london_stave_hill.mp3","United Kingdom","live soundscape,open microphone","Locus Sonus / Soundcamp","https://locusonus.org/soundmap/"],
+  ["Locus Sonus: Kyoto - CyberForest","https://locus.creacast.com:9443/kyoto_cyberforesthydro.mp3","Japan","live soundscape,open microphone","Locus Sonus / CyberForest","https://locusonus.org/soundmap/"],
+  ["Locus Sonus: Amsterdam - Hydrophile 1","https://locus.creacast.com:9443/amsterdam_hydrophile_1.mp3","Netherlands","live soundscape,open microphone","Locus Sonus / Lia Mazzari","https://locusonus.org/soundmap/"],
+  ["SomaFM: SF Public Safety Scanner","https://ice6.somafm.com/scanner-128-mp3","United States","public safety,scanner","SomaFM","https://somafm.com/scanner/"],
+  ["NTS: Field Recordings","https://stream-mixtape-geo.ntslive.net/mixtape23","","field recording","NTS","https://www.nts.live/infinite-mixtapes/field-recordings"]
+].map(([name,url,country,tags,provider,homepage])=>({
+  name,url,url_resolved:url,country,tags,provider,homepage,
+  stationuuid:"curated:"+url,codec:"MP3",hls:0,lastcheckok:1
+}));
+let extraRecent=[];
+
 /* mixed-content reality: an https page can only play https streams, which
    excludes most http-only fringe/AM stations. served locally (file://) or over
    http, anything plays — that's where the truly unusual signals open up. */
@@ -624,6 +637,14 @@ async function fetchPool(){
   return false;
 }
 function pickStation(){
+  if(Math.random()<EXTRA_SHARE || !pool.length){
+    const available=EXTRA_STREAMS.filter(s=>!extraRecent.includes(s.stationuuid));
+    if(!available.length) extraRecent=[];
+    const choices=available.length?available:EXTRA_STREAMS;
+    const chosen=choices[Math.floor(Math.random()*choices.length)];
+    extraRecent.push(chosen.stationuuid);
+    return chosen;
+  }
   let guard=0;
   while(pool.length){
     const i=Math.floor(Math.random()*pool.length);
@@ -727,6 +748,7 @@ function renderCard(st){
   renderName(st.name);
   const tags=(st.tags||"").split(",").map(t=>t.trim()).filter(Boolean).slice(0,4);
   const bits=[];
+  if(st.provider) bits.push(st.provider);
   if(st.country) bits.push(st.country);
   if(st.codec) bits.push(st.codec.toUpperCase()+(st.bitrate?(" "+st.bitrate+"k"):""));
   let line=bits.join(" · ");
@@ -759,6 +781,7 @@ function snapshot(c){
   const s=c.station;
   return { name:(s.name||"(unnamed)").trim(), country:s.country||"", tags:s.tags||"",
     codec:s.codec||"", bitrate:s.bitrate||0, url:s.url_resolved||s.url||"",
+    provider:s.provider||"Radio Browser", homepage:s.homepage||"",
     uuid:s.stationuuid||"", tunedAt:c.tunedAt, leftAt:Date.now(),
     liked:!!c.liked, note:(c.note||"").trim() };
 }
@@ -802,6 +825,7 @@ function buildLog(){
     out+="    heard "+fmtClock(ling)+"\n";
     if(r.note) out+="    note: "+r.note+"\n";
     if(r.url) out+="    "+r.url+"\n";
+    out+="    source: "+r.provider+(r.homepage?" · "+r.homepage:"")+"\n";
     if(r.uuid) out+="    uuid: "+r.uuid+"\n";
     out+="\n";
   });
@@ -830,7 +854,7 @@ el.tune.addEventListener("click",async()=>{
   if(playing){ stopAll(); return; }
   playing=true; frozen=false; updateButtons();
   if(pool.length<25){ setStatus("warming up the dial…"); const ok=await fetchPool();
-    if(!ok){ setStatus("couldn't reach radio-browser. check connection & retry."); playing=false; updateButtons(); return; } }
+    if(!ok) setStatus("Radio Browser unavailable; trying curated streams."); }
   gotoStation("hunt");
 });
 function stopAll(){

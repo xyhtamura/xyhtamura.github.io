@@ -10,6 +10,44 @@ The visual register is Frutiger Aero gone wet and biological — glossy flesh, i
 
 ## What it does
 
+The station pool includes a curated collection with a 20% chance per selection:
+Locus Sonus open microphones in London, Kyoto, and Amsterdam, SomaFM's SF
+public-safety scanner, and NTS Field Recordings. The remaining selections use
+Radio Browser. If that directory is unavailable, selections use the curated
+collection. Streams still pass the browser playback gate before promotion.
+The exported log includes the provider and its website for each source.
+
+Next in development: add a source-mix control for the curated collection.
+
+### 2026-10-08 — Codex — Curated streams and reel verification
+
+Added five HTTPS streams and provider attribution. Each endpoint returned an
+MP3 stream with a sample rate of 32 or 44.1 kHz in `ffprobe`; the Locus Sonus
+server also listed all three microphone mountpoints as active. Radio Browser
+queries confirmed eligible field-recording stations and SomaFM's scanner under
+the existing HTTPS, non-HLS, last-check-OK filter. The default drift interval
+is 30–180 seconds, selected uniformly, so its mean is 105 seconds.
+
+SomaFM's [scanner description](https://somafm.com/scanner/) says most police
+traffic is encrypted and the stream is mainly fire and EMS. Use "emergency-radio
+chatter" rather than "recordings of traffic police" in the reel. A stream's
+availability does not establish what was audible during a particular visit.
+
+Browser check at `http://localhost:8000/xyhtamura.github.io/driftham/`: Tune In
+played a directory station, Skip reached the London Stave Hill microphone with
+"on air" status, and Hold froze its timer. The downloaded text log included the
+current microphone, its HTTPS URL, and Locus Sonus / Soundcamp attribution.
+Node VM checks passed for script syntax, a five-source cycle without repeats,
+selection when the directory pool is empty, and selection from the directory.
+The existing `img/driftham.jpg` manifest image remains representative because
+the device layout is unchanged. These checks confirm decoding and player state,
+not the identity of every sound audible in the feeds.
+
+Deferred broader scanner directories and HLS hydrophones: this pass uses direct
+MP3 streams compatible with the existing audio path. No proxy, media download,
+or rehosting was added. Source availability can change; the playback gate skips
+failed streams. The curated proportion is fixed; a user control remains undone.
+
 The core loop is **drift**: tune in → a station plays for a random interval → it crossfades or cuts to the next, on its own, until you stop it.
 
 - **Auto-drift** through a randomized pool of stations, each held for a duration picked from your **drift range** (a dual-thumb slider, default 0:30–3:00).
