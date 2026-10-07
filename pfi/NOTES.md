@@ -68,7 +68,7 @@ Safe to change because none of the three has been sent: the MIT applications are
   - Slide 5: added *From Interiority to Interaction* (paper, journal) and *The Commitments of Physical Modeling* (conference schedule, conference, video).
   - Slide 6: added *Tabota Roll*, *Cycla*, *Binlod*.
   - Slide 7: added *Night Bus · intermedia musicopoetics* (paper, Saliksik-Musika II).
-  - Slide 8 & 9: added *98B Collaboratory* to *Insulae Incognita* and online project link to *Manifest*.
+  - Slide 8 & 9: added *98B Collaboratory* to *Insulae Incognitae* and online project link to *Manifest*.
   - Slide 10: added *Deskarium* launch tool.
   - Slide 14: added *Tanim-Kalye* project link and *Quezon City Biennial*.
   - Slide 15: added *Istorya sang Bȧlatyagon* (critical essay & installation, Atipan+).

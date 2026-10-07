@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "status": "linked-live-pages",
+  "games": [
+    {
+      "id": "cornice",
+      "title": "Cornice",
+      "entry": "https://xyhtamura.github.io/cornice/",
+      "audio": true,
+      "inputs": [
+        "keyboard",
+        "pointer"
+      ]
+    },
+    {
+      "id": "ombak-lock",
+      "title": "Ombak Lock",
+      "entry": "https://xyhtamura.github.io/ombak-lock/",
+      "audio": true,
+      "inputs": [
+        "pointer",
+        "keyboard"
+      ]
+    },
+    {
+      "id": "foam-green-city",
+      "title": "Foam Green City",
+      "entry": "https://xyhtamura.github.io/foam-green-city/",
+      "audio": false,
+      "inputs": [
+        "pointer",
+        "keyboard"
+      ],
+      "requires": [
+        "webgl"
+      ]
+    },
+    {
+      "id": "drawing-the-hours",
+      "title": "Drawing the Hours",
+      "entry": "https://xyhtamura.github.io/drawing-the-hours/",
+      "audio": true,
+      "inputs": [
+        "pointer",
+        "touch"
+      ]
+    },
+    {
+      "id": "sulat",
+      "title": "Sulat",
+      "entry": "https://xyhtamura.github.io/insulae-incognitae/sulat/",
+      "inputs": [
+        "keyboard"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "artist": {
+    "title": "About the artist",
+    "paragraphs": [
+      "Xyh Tamura is a Filipino/Ilonggo-Japanese artist and musician based in Manila. They make songs, poems, web art, games, and odd software. They are curious about bodies, selfhood, and how people, nature, and machines live together."
+    ],
+    "portrait": "portrait.png"
+  },
+  "cornice": {
+    "title": "Cornice",
+    "paragraphs": [
+      "Cornice is a postcyberpunk balcony made of text, with procedurally generated entities, vistas, and terrain. You can click a point to read through its overlapping layers, or transfer your ability to move from one entity to another. The work draws on the quiet, strange hours of East and Southeast Asian cities, where weather and nature are entangled with the built environment."
+    ]
+  },
+  "ombak-lock": {
+    "title": "Ombak Lock",
+    "paragraphs": [
+      "Ombak Lock is a listening game inspired by paired tuning in Balinese gamelan. Instruments tuned slightly apart produce acoustic beating: a pulse created by the difference between their frequencies. The player listens closely to a target sound, then adjusts their own tones to match its beating. The game makes this pulsing quality the thing to attend to and reproduce."
+    ]
+  },
+  "foam-green-city": {
+    "title": "Foam Green City",
+    "paragraphs": [
+      "Foam Green City is a procedurally generated environment that walks itself. It can run as a screensaver, or you can take control and move through it. The work draws on the seafoam green paint used in residential, commercial, and institutional spaces in the Philippines, and the everyday lives unfolding in and among those spaces."
+    ]
+  },
+  "drawing-the-hours": {
+    "title": "Drawing the Hours",
+    "paragraphs": [
+      "Drawing the Hours is a gesture and matching game in which the player loops, threads, or taps insects and plants to complete levels. New combinations call for different approaches, including waiting for an opening or moving carefully around hazards. The game follows a modern worker through their day, attending to insects and the surrounding environment during transit and breaks."
+    ]
+  },
+  "sulat": {
+    "title": "Sulat",
+    "paragraphs": [
+      "Sulat is a text processor that turns keystrokes into terrain. Its terrain glyphs draw on writing systems associated with cultures connected to the area now known as Manila before colonization. When the text is played, animals and towns appear, weather passes, and words and characters translate between languages, changing the terrain as they go."
+    ]
+  }
+}
