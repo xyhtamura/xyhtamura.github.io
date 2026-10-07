@@ -19,7 +19,7 @@ function art(kind) {
 }
 const mode = document.body.dataset.design;
 document.querySelector('#games').innerHTML = games.map(([title,id,desc,input,url],i)=> {
- const link = `<a class="game ${id}" href="${url}"><div class="art">${art(id)}<span class="number">0${i+1}</span></div><div class="caption"><h2>${title}</h2><p>${desc}</p><span class="input">${input}</span><span class="launch" aria-hidden="true">↗</span></div></a>`;
+ const link = `<a class="game ${id}" href="${url}" target="_blank" rel="noopener noreferrer"><div class="art">${art(id)}<span class="number">0${i+1}</span></div><div class="caption"><h2>${title}</h2><p>${desc}</p><span class="input">${input}</span><span class="launch" aria-hidden="true">↗</span></div></a>`;
  const registryId = ['cornice','ombak-lock','foam-green-city','drawing-the-hours','sulat'][i];
  return document.body.dataset.live ? `<section class="slot">${link}<button class="statement" data-about="${registryId}" aria-label="About ${title}">About this work</button></section>` : link;
 }).join('');
