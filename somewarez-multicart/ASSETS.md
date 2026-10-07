@@ -18,3 +18,5 @@ The main menu adopts the bootleg catalogue study on 2026-10-06 and uses those sa
 Portrait: portrait.png supplied by Xyh for the artist panel on 2026-10-07, displayed unmodified and uncropped. Photographer credit was not supplied.
 
 Space Grotesk: body paragraphs and game descriptions in the current menu. Downloaded unmodified on 2026-10-07 from [Google Fonts](https://github.com/google/fonts/tree/main/ofl/spacegrotesk); bundled as assets/fonts/SpaceGrotesk[wght].ttf with [SIL OFL 1.1](assets/fonts/spacegrotesk-OFL.txt). Loaded locally from catalogue.css. Pixelify Sans headings and labels are retained.
+
+Favicon: favicon.svg is an original cartridge drawing with a path-drawn numeral 5 in the menu palette. Drawn by Codex on 2026-10-07. No third-party artwork or fonts are embedded.
