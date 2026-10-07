@@ -41,3 +41,11 @@ body.idle .art svg *{animation-play-state:running}
 .artist-portrait { display: block; width: 100%; height: auto; border: 1px solid var(--ink); }
 .about-text p:first-child { margin-top: 0; }
 @media(max-width:540px) { .artist-panel #about-copy { grid-template-columns: 1fr; gap: 18px; } }
+
+/* Decorative fragments follow the viewport margin without taking input. */
+.margin-escapes{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:3}
+.margin-escape{position:absolute;left:0;top:0;display:block;will-change:transform,opacity}
+.margin-escape svg{display:block;width:100%;height:100%}
+.escape-wings{transform-box:fill-box;transform-origin:center;animation:escape-flutter .85s ease-in-out infinite alternate}
+@keyframes escape-flutter{from{transform:scaleX(.55)}to{transform:scaleX(1)}}
+@media(prefers-reduced-motion:reduce){.margin-escapes{display:none}}

@@ -39,12 +39,19 @@ dialog.addEventListener('click', e => { if (e.target !== dialog) return; const r
 let paused = false;
 let idleTimer;
 const motion = document.querySelector('#motion');
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 function activity() {
   document.body.classList.remove('idle');
+  marginEscapes.stop();
   clearTimeout(idleTimer);
-  if (!paused && !document.hidden && !dialog.open) idleTimer = setTimeout(() => document.body.classList.add('idle'), 6000);
+  if (!paused && !document.hidden && !dialog.open && !reducedMotion.matches) idleTimer = setTimeout(() => {
+    document.body.classList.add('idle');
+    marginEscapes.start();
+  }, 6000);
 }
 ['pointermove', 'pointerdown', 'keydown', 'scroll'].forEach(name => window.addEventListener(name, activity, {passive: true}));
 document.addEventListener('visibilitychange', activity);
+window.addEventListener('resize', activity);
+reducedMotion.addEventListener('change', activity);
 motion.addEventListener('click', () => { paused = !paused; motion.setAttribute('aria-pressed', String(paused)); motion.textContent = paused ? 'Resume motion' : 'Pause motion'; activity(); });
 activity();

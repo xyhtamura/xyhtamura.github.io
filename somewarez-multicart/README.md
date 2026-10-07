@@ -22,6 +22,10 @@ The menu uses the bootleg catalogue design: a large 5 IN 1 heading, three illust
 
 Edit `content.json` to supply the artist bio and each work's statement. Each entry has a `title` and a `paragraphs` array; put one plain-text paragraph in each array item. Empty arrays show “Text to come.” The artist button and each **About this work** button open the matching panel. The renderer treats text as text, without HTML markup.
 
-Illustrations animate after six seconds without input. Input, an open panel, and a hidden tab pause them. **Pause motion** disables movement for the visit. Reduced-motion preferences disable animation and hide the redundant pause control. Game links work independently of the panel script.
+After six seconds without input, the illustrations animate and occasional fragments leave Cornice, Drawing the Hours, or Sulat to travel along the outside margin. One fragment appears at a time, fades away, and is followed after a variable interval. Mobile fragments shrink to fit the narrower margin. Input, scrolling, resizing, an open panel, and a hidden tab clear the fragments and pause the illustrations. **Pause motion** disables movement for the visit. Reduced-motion preferences disable animation and hide the redundant pause control. The decorative layer ignores pointer input and is hidden from assistive technology. Game links work independently of the panel script.
 Collection title: XYH 5 IN 1 MULTICART 2026-11. The edition code identifies the November 2026 exhibition.
 
+
+## Idle motion check
+
+`scripts/check-idle-motion.cjs` runs the menu in headless Microsoft Edge through Playwright. The shared root server must be running on port 8000. The script accepts `--modules` for a `node_modules` directory containing Playwright and `--screenshots` for an optional output folder. It checks margin paths, pointer transparency, activity resets, pause and resume, artist-panel suppression, reduced motion, and narrow-screen layout.
