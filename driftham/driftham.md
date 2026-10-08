@@ -70,6 +70,12 @@ stepping the animation to 0, 4, 8, and 12 s gave the expected positions and
 angles (119° at the midpoints, so the angle interpolates). The pane reports
 `prefers-reduced-motion`, so the animation was forced on for that check.
 
+Later the same day, at Xyh's request, the sheen was frozen: the `animation`
+declaration is off `.ham .sheen`, which now holds the 0% pose (position
+71% 66%, 115°). The `drift-sheen` keyframes and `--sheen-a` remain, so adding
+`animation:drift-sheen 16s linear infinite` back restores the drift. Do that
+only after a phone check shows the layer staying put.
+
 **Not verified on a phone.** The desktop engine never showed the fault, so the
 cause above is inferred from the code, not observed. If the layer still
 separates on the device, `.gloss` (animated `translate` + `scale`, same clip) is

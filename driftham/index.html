@@ -136,8 +136,9 @@ body{
   background:linear-gradient(var(--sheen-a,115deg),
     transparent 18%, var(--sheen-1) 33%, transparent 41%,
     var(--sheen-2) 52%, transparent 60%, var(--sheen-3) 72%, transparent 84%) 71% 66% / 160% 160% no-repeat;
-  mix-blend-mode:color-dodge; opacity:.32;
-  animation:drift-sheen 16s linear infinite; }
+  mix-blend-mode:color-dodge; opacity:.32; }
+/* Frozen at the 0% pose until the mobile fault is confirmed gone. To bring the
+   drift back, add `animation:drift-sheen 16s linear infinite` to .ham .sheen. */
 @keyframes drift-sheen{
   0%{ background-position:71% 66%; --sheen-a:115deg; }
   50%{ background-position:34% 29%; --sheen-a:123deg; }
