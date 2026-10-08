@@ -48,6 +48,35 @@ MP3 streams compatible with the existing audio path. No proxy, media download,
 or rehosting was added. Source availability can change; the playback gate skips
 failed streams. The curated proportion is fixed; a user control remains undone.
 
+### 2026-10-09 — Claude Code — Sheen no longer leaves the ham on mobile
+
+Xyh reported a rotating layer sliding off the device on a phone. The only
+rotating element is `.ham .sheen`. It was an oversized box (`inset:-30%`,
+832×1082 in design space) with an animated `translate` + `rotate`, kept in shape
+only by `.ham`'s rounded `overflow:hidden`. An animated transform is promoted to
+its own compositor layer, and mobile browsers can skip an ancestor's rounded
+clip for such a layer.
+
+The sheen is now `inset:0` with `border-radius:inherit`, and the animation moves
+the gradient instead of the element: `background-size:160%` is the old box,
+`background-position` 71% 66% → 34% 29% is the old translate, and a registered
+`--sheen-a` angle 115° → 123° is the old rotate. `filter:blur(6px)` was dropped;
+the gradient ramps are 90–160 px wide, so the blur was not visible, and without
+a transform the element repaints each frame.
+
+Checked in the browser pane at `http://localhost:8000/xyhtamura.github.io/driftham/`:
+the sheen's bounding box equals the ham's, computed `transform` is `none`, and
+stepping the animation to 0, 4, 8, and 12 s gave the expected positions and
+angles (119° at the midpoints, so the angle interpolates). The pane reports
+`prefers-reduced-motion`, so the animation was forced on for that check.
+
+**Not verified on a phone.** The desktop engine never showed the fault, so the
+cause above is inferred from the code, not observed. If the layer still
+separates on the device, `.gloss` (animated `translate` + `scale`, same clip) is
+the next suspect. Browsers without `@property` (Safari before 16.4) step the
+angle by 8° twice per cycle instead of easing it. `driftglass.html` has the same
+oversized rotating layer (`prism-slide`) and was not changed.
+
 The core loop is **drift**: tune in → a station plays for a random interval → it crossfades or cuts to the next, on its own, until you stop it.
 
 - **Auto-drift** through a randomized pool of stations, each held for a duration picked from your **drift range** (a dual-thumb slider, default 0:30–3:00).

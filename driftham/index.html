@@ -124,16 +124,24 @@ body{
 .ham .marble{ position:absolute; inset:-0%; z-index:1; pointer-events:none; mix-blend-mode:soft-light; opacity:.5; }
 .ham .rim{ position:absolute; inset:4px; z-index:1; pointer-events:none; border-radius:inherit;
   box-shadow: inset 0 0 0 2px rgba(245,236,221,.18), inset 0 0 22px 6px rgba(239,161,60,.28);}
-.ham .sheen{ position:absolute; inset:-30%; z-index:2; pointer-events:none;
-  background:linear-gradient(115deg,
+/* The sheen stays inside the ham's own box and moves its gradient, not itself.
+   It used to be an oversized (inset:-30%) element with an animated
+   translate+rotate, clipped only by .ham's rounded overflow. Mobile browsers
+   promote an animated transform to its own compositor layer and can skip that
+   rounded clip, so the rotating rectangle showed outside the ham. The numbers
+   below reproduce the old motion: 160% = the old 832x1082 box, the positions
+   = the old -8%/-6% .. 6%/8% translate, the angle = the old 0..8deg rotate. */
+@property --sheen-a{ syntax:"<angle>"; inherits:false; initial-value:115deg; }
+.ham .sheen{ position:absolute; inset:0; z-index:2; pointer-events:none; border-radius:inherit;
+  background:linear-gradient(var(--sheen-a,115deg),
     transparent 18%, var(--sheen-1) 33%, transparent 41%,
-    var(--sheen-2) 52%, transparent 60%, var(--sheen-3) 72%, transparent 84%);
-  mix-blend-mode:color-dodge; opacity:.32; filter:blur(6px);
+    var(--sheen-2) 52%, transparent 60%, var(--sheen-3) 72%, transparent 84%) 71% 66% / 160% 160% no-repeat;
+  mix-blend-mode:color-dodge; opacity:.32;
   animation:drift-sheen 16s linear infinite; }
 @keyframes drift-sheen{
-  0%{ transform:translate(-8%,-6%) rotate(0deg); }
-  50%{ transform:translate(6%,8%) rotate(8deg); }
-  100%{ transform:translate(-8%,-6%) rotate(0deg); } }
+  0%{ background-position:71% 66%; --sheen-a:115deg; }
+  50%{ background-position:34% 29%; --sheen-a:123deg; }
+  100%{ background-position:71% 66%; --sheen-a:115deg; } }
 .ham .gloss{ position:absolute; left:12%; top:5%; width:62%; height:30%; z-index:2; pointer-events:none;
   border-radius:50%;
   background:radial-gradient(closest-side, rgba(255,250,250,.5), rgba(255,250,250,0) 70%);
