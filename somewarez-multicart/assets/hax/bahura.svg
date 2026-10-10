@@ -1,11 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 220">
-  <path fill="#101e24" d="M0 0h300v220H0z"/>
-  <g fill="none" stroke="#43756c" stroke-width="2"><path d="M0 69l34-34 34 34 38-47 46 47 40-29 36 29 35-40 37 40M0 81h300"/></g>
-  <path d="M0 155q44-32 93-12t94-4 113-3v84H0z" fill="#234840"/>
-  <g fill="none" stroke="#87c6d1" stroke-width="2"><path d="M0 180q23-9 46 0t46 0 46 0 46 0 46 0 70 0M0 192q23-9 46 0t46 0 46 0 46 0 46 0 70 0"/></g>
-  <g stroke="#ecba65" stroke-width="2" fill="none"><ellipse cx="65" cy="117" rx="32" ry="38"/><ellipse cx="149" cy="105" rx="37" ry="44"/><ellipse cx="237" cy="122" rx="31" ry="37"/></g>
-  <g fill="#b88048" stroke="#ecba65" stroke-width="3"><ellipse cx="65" cy="117" rx="24" ry="29"/><ellipse cx="149" cy="105" rx="29" ry="35"/><ellipse cx="237" cy="122" rx="23" ry="28"/></g>
-  <g fill="#ecba65" stroke="#17363b" stroke-width="2"><ellipse cx="65" cy="117" rx="8" ry="10"/><ellipse cx="149" cy="105" rx="10" ry="12"/><ellipse cx="237" cy="122" rx="8" ry="10"/></g>
-  <g stroke="#a4c7a5" stroke-width="2"><path d="M65 78V58m84 3V37m88 48V65"/></g>
-  <g font-family="monospace" font-size="20" fill="#a4c7a5"><text x="12" y="164">: ♧ ·</text><text x="112" y="171">木 : 木</text><text x="245" y="166">: ·</text></g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 220">
+  <path fill="#101e24" d="M0 0h180v220H0z"/>
+  <g fill="none" stroke="#43756c" stroke-width="1.5"><path d="M31 62q12-5 24 0t24 0M100 178q12-5 24 0t24 0"/></g>
+  <path fill="#43756c" d="M38 77q-7-18 9-24l21-3q17 3 13 21l-5 18q-10 10-26 1z"/>
+  <path fill="#6b9d8d" d="M92 77q-4-16 13-20l24 3q14 7 8 23l-9 13q-19 9-31-4z"/>
+  <path fill="#b8a16b" d="M58 117q-3-20 17-23l17 6q16 7 8 25l-8 11q-21 7-32-6z"/>
+  <path fill="#437f8a" d="M105 129q-7-19 12-25l20 5q16 10 7 28l-13 10q-20 4-25-9z"/>
+  <path fill="#527365" d="M37 155q-7-17 11-24l19 1q17 8 10 26l-11 13q-20 7-28-7z"/>
+  <g font-family="monospace" font-size="26" text-anchor="middle" fill="#e8e0c1">
+    <text x="59" y="79">木</text><text x="114" y="84">珊</text><text x="124" y="133">≈</text><text x="56" y="157">∴</text>
+    <text x="79" y="122" fill="#17363b">砂</text>
+  </g>
 </svg>

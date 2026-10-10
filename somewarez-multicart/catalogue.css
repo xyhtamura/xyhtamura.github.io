@@ -62,7 +62,6 @@ body.idle .art svg *{animation-play-state:running}
 .hax-art{position:relative;flex:0 0 42%;min-height:138px;overflow:hidden;border-right:2px solid #6b9d8d;background:#101e24}
 .hax-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .hack.reskin .hax-art img{filter:hue-rotate(165deg) saturate(1.3)}
-.hax-art::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,#17363b2e 0 2px,transparent 2px 5px);pointer-events:none}
 .hax-art .number{z-index:1;background:var(--amber);color:var(--ink)}
 .hax-caption{position:relative;flex:1;min-width:0;padding:12px 40px 14px 14px}
 .hax-caption h3{margin:0;font:700 23px/1 Pixel,monospace}
