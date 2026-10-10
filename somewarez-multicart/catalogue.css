@@ -49,3 +49,25 @@ body.idle .art svg *{animation-play-state:running}
 .escape-wings{transform-box:fill-box;transform-origin:center;animation:escape-flutter .85s ease-in-out infinite alternate}
 @keyframes escape-flutter{from{transform:scaleX(.55)}to{transform:scaleX(1)}}
 @media(prefers-reduced-motion:reduce){.margin-escapes{display:none}}
+
+/* Sixth panel: three hacks, each drawn from its parents' illustrations. */
+#hax{margin-top:16px;padding:16px;background:var(--ink);color:var(--cream);border:2px dashed var(--amber);box-shadow:4px 4px 0 var(--coral)}
+#hax header{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:14px}
+#hax header h2{font:700 30px/1 Pixel,monospace;color:var(--ink);background:var(--amber);padding:6px 12px 8px;transform:rotate(-2deg);box-shadow:3px 3px 0 var(--coral)}
+#hax header h2 span{color:#a3271a}
+#hax header p{font:15px Pixel,monospace}
+#hax-list{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;font:15px Pixel,monospace}
+.hack{display:flex;min-width:0;text-decoration:none;color:var(--ink);background:var(--cream);border:2px solid var(--cream)}
+.hack:nth-child(2){transform:rotate(.6deg)}.hack:nth-child(3){transform:rotate(-.5deg)}
+.hax-art{position:relative;flex:0 0 42%;min-height:118px;overflow:hidden;border-right:2px solid var(--ink)}
+.hax-art svg{position:absolute;inset:0;width:100%;height:100%}
+.hax-art svg+svg{clip-path:polygon(58% 0,100% 0,100% 100%,42% 100%)}
+.hack.reskin .hax-art svg{filter:hue-rotate(165deg) saturate(1.3)}
+.hax-art::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,#17363b2e 0 2px,transparent 2px 5px);pointer-events:none}
+.hax-art .number{z-index:1;background:var(--amber)}
+.hax-caption{position:relative;flex:1;min-width:0;padding:12px 40px 14px 14px}
+.hax-caption h3{margin:0;font:700 23px/1 Pixel,monospace}
+.hax-caption p{font-size:13px;margin:7px 0 0;font-family:"Space Grotesk",Arial,sans-serif}
+.hax-caption .hax-from{font:12px Pixel,monospace;text-transform:uppercase;letter-spacing:.04em;color:#a3271a}
+.hack:hover h3{text-decoration:underline;text-underline-offset:4px}
+@media(max-width:900px){#hax-list{grid-template-columns:1fr}.hack:nth-child(n){transform:none}.hax-art{flex-basis:38%}}

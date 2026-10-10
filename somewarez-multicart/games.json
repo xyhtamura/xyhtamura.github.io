@@ -53,5 +53,39 @@
         "keyboard"
       ]
     }
+  ],
+  "extras": [
+    {
+      "id": "between-banks",
+      "title": "Between Banks",
+      "entry": "https://xyhtamura.github.io/drawing-the-hours/between-banks/",
+      "kind": "reskin",
+      "parents": [
+        "drawing-the-hours"
+      ],
+      "summary": "Draw among fish"
+    },
+    {
+      "id": "crawl",
+      "title": "Foam Green Crawl",
+      "entry": "https://xyhtamura.github.io/foam-green-city/crawl/",
+      "kind": "cross",
+      "parents": [
+        "foam-green-city",
+        "cornice"
+      ],
+      "summary": "Glyph crawl through rooms"
+    },
+    {
+      "id": "bahura",
+      "title": "Bahura",
+      "entry": "https://xyhtamura.github.io/insulae-incognitae/bahura/",
+      "kind": "cross",
+      "parents": [
+        "sulat",
+        "ombak-lock"
+      ],
+      "summary": "Gong keyboard on terrain"
+    }
   ]
 }

@@ -5,7 +5,7 @@ A five-work browser menu for TOUCH-SCREEN: Cornice, Ombak Lock, Foam Green City,
 The working folder name is `somewarez-multicart`; the public title remains Xyh's choice. The collection is intended to move as one folder into the GitHub site, with an offline exhibition copy served over local HTTP.
 
 - [Architecture](ARCHITECTURE.md): visitor flow, runtime boundaries, packaging, and implementation stages.
-- [Game registry](games.json): the five selected works and their live URLs.
+- [Game registry](games.json): the five selected works and their live URLs, plus an `extras` array for the three hacks, each with its `kind` and `parents`.
 - [Offline game summaries](GAME-SUMMARIES.md): descriptions from local source folders and a review of their documentation.
 - [Shareable descriptions](DESCRIPTIONS.md): self-contained descriptions of the multicart and its five works.
 - Design studies: [cartridge label](prototypes/cartridge-label.html), [bootleg catalogue](prototypes/bootleg-catalogue.html), and [strange room](prototypes/strange-room.html). Each sample links to the five live games and includes navigation between designs.
@@ -15,7 +15,7 @@ The working folder name is `somewarez-multicart`; the public title remains Xyh's
 Review the live-link menu first. The source games remain authoritative; export snapshots into the eventual bundle rather than moving or editing their repositories here.
 
 
-The menu uses the bootleg catalogue design: a large 5 IN 1 heading, three illustrated panels followed by two wider panels, and a cream, coral, amber, and foam-green palette. [The preceding menu](archive/menu-2026-10-06/index.html) is preserved with its scripts, statement data, styles, and fonts. [Asset credits](ASSETS.md) record the three bundled display fonts and their licences.
+The menu uses the bootleg catalogue design: a large 5 IN 1 heading, three illustrated panels followed by two wider panels, and a cream, coral, amber, and foam-green palette. Below the five, a +3 HAX panel lists Between Banks, Foam Green Crawl, and Bahura, each labelled with the works it was made from; `hax.js` renders it from the `extras` array and draws each tile from its parents' illustrations. [The preceding menu](archive/menu-2026-10-06/index.html) is preserved with its scripts, statement data, styles, and fonts. [Asset credits](ASSETS.md) record the three bundled display fonts and their licences.
 
 
 ## Artist and work text

@@ -2,9 +2,15 @@
 
 ## Next step
 
-Review the live-link menu and play through its five destinations before consolidating the games nearer delivery.
+Publish Between Banks, Foam Green Crawl, and Bahura from their parent repositories so the three hax links resolve, then review the menu and play through all eight destinations.
 
 ## Log
+
+2026-10-10 — Claude Code — Added a sixth panel, +3 HAX, at Xyh's request. It sits below the five and lists Between Banks (Drawing the Hours, reskinned), Foam Green Crawl (Foam Green City × Cornice), and Bahura (Sulat × Ombak Lock). The title stays 5 IN 1: Xyh wants the three read as hacks that make sense after the five. games.json gained an `extras` array with `kind` and `parents`; hax.js renders the panel from it and builds each tile's picture from the parents' existing drawings, split diagonally for a cross and hue-shifted for the reskin, so no new asset was added. index.html holds the panel shell and a no-script link list; styles are appended to catalogue.css. The panel is a separate `nav` after `#games` because the five panels are laid out by `nth-child` and `last-child` rules.
+
+Checks: loaded the page through the root server and read the DOM at 1280 and 375 wide. Five game links and three hax links are present, the parent lines and hrefs match games.json, no horizontal overflow at either width, and the five panels keep their previous widths. Inspected headless Edge screenshots at 1280 and about 500 wide. `node --check hax.js` passes.
+
+Known broken: all three hax URLs return 404 on xyhtamura.github.io as of this date, because the folders are not pushed; each loads locally at /drawing-the-hours/between-banks/, /foam-green-city/crawl/, and /insulae-incognitae/bahura/. Not done: About panels and statements for the three (the parent line stands in; statements are Xyh's to write), idle motion in the hax pictures, `inputs` and `audio` fields for the extras, the prototypes (unchanged, still five), a physical touch check, and scripts/check-idle-motion.cjs was not re-run. The five titles in prototypes/designs.js are still hardcoded apart from games.json. Dropped: a tag on each parent panel pointing to its hack, proposed as optional and not requested.
 
 2026-10-08 — Claude Code — Xyh asked for multicart-style remix versions of the five works. Proposed three kinds in conversation: padded entries (one build relaunched under a different setting and listed as another game), transplants between works, and cart-level behaviour such as an inflated count. Xyh took up one transplant, Foam Green City in Cornice's glyph grammar, as [Foam Green Crawl](../../foam-green-crawl/SPEC.md), which is specified in its own root folder and unbuilt. Nothing in this folder changed apart from this entry, and no game was opened or tested. The other ideas are recorded nowhere else. Whether Foam Green Crawl joins the menu is decision 9 in its spec. Known broken: the local source links in GAME-SUMMARIES.md still use `../cornice/` and similar paths from before the 2026-10-07 move into `xyhtamura.github.io/`, so they no longer resolve.
 
