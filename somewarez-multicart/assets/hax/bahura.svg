@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 220">
+  <path fill="#101e24" d="M0 0h300v220H0z"/>
+  <g fill="none" stroke="#43756c" stroke-width="2"><path d="M0 69l34-34 34 34 38-47 46 47 40-29 36 29 35-40 37 40M0 81h300"/></g>
+  <path d="M0 155q44-32 93-12t94-4 113-3v84H0z" fill="#234840"/>
+  <g fill="none" stroke="#87c6d1" stroke-width="2"><path d="M0 180q23-9 46 0t46 0 46 0 46 0 46 0 70 0M0 192q23-9 46 0t46 0 46 0 46 0 46 0 70 0"/></g>
+  <g stroke="#ecba65" stroke-width="2" fill="none"><ellipse cx="65" cy="117" rx="32" ry="38"/><ellipse cx="149" cy="105" rx="37" ry="44"/><ellipse cx="237" cy="122" rx="31" ry="37"/></g>
+  <g fill="#b88048" stroke="#ecba65" stroke-width="3"><ellipse cx="65" cy="117" rx="24" ry="29"/><ellipse cx="149" cy="105" rx="29" ry="35"/><ellipse cx="237" cy="122" rx="23" ry="28"/></g>
+  <g fill="#ecba65" stroke="#17363b" stroke-width="2"><ellipse cx="65" cy="117" rx="8" ry="10"/><ellipse cx="149" cy="105" rx="10" ry="12"/><ellipse cx="237" cy="122" rx="8" ry="10"/></g>
+  <g stroke="#a4c7a5" stroke-width="2"><path d="M65 78V58m84 3V37m88 48V65"/></g>
+  <g font-family="monospace" font-size="20" fill="#a4c7a5"><text x="12" y="164">: ♧ ·</text><text x="112" y="171">木 : 木</text><text x="245" y="166">: ·</text></g>
+</svg>

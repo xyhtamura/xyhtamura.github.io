@@ -15,7 +15,7 @@ The working folder name is `somewarez-multicart`; the public title remains Xyh's
 Review the live-link menu first. The source games remain authoritative; export snapshots into the eventual bundle rather than moving or editing their repositories here.
 
 
-The menu uses the bootleg catalogue design: a large 5 IN 1 heading, three illustrated panels followed by two wider panels, and a cream, coral, amber, and foam-green palette. Below the five, a +3 HAX panel lists Between Banks, Foam Green Crawl, and Bahura, each labelled with the works it was made from; `hax.js` renders it from the `extras` array and draws each tile from its parents' illustrations. [The preceding menu](archive/menu-2026-10-06/index.html) is preserved with its scripts, statement data, styles, and fonts. [Asset credits](ASSETS.md) record the three bundled display fonts and their licences.
+The menu uses the bootleg catalogue design: a large 5 IN 1 heading, three illustrated panels followed by two wider panels, and a cream, coral, amber, and foam-green palette. Below the five, a +3 HAX panel lists Between Banks, Foam Green Crawl, and Bahura on dark cards, each labelled with the works it was made from. `hax.js` renders it from the `extras` array with original SVG illustrations in `assets/hax/`: fish inside a cord loop, a glyph corridor, and gongs over terrain. [The preceding menu](archive/menu-2026-10-06/index.html) is preserved with its scripts, statement data, styles, and fonts. [Asset credits](ASSETS.md) record the illustrations and bundled fonts.
 
 
 ## Artist and work text
@@ -29,3 +29,5 @@ Collection title: XYH 5 IN 1 MULTICART 2026-11. The edition code identifies the 
 ## Idle motion check
 
 `scripts/check-idle-motion.cjs` runs the menu in headless Microsoft Edge through Playwright. The shared root server must be running on port 8000. The script accepts `--modules` for a `node_modules` directory containing Playwright and `--screenshots` for an optional output folder. It checks margin paths, pointer transparency, activity resets, pause and resume, artist-panel suppression, reduced motion, and narrow-screen layout.
+
+`scripts/check-hax.cjs` uses the same server and arguments to check the three card images, dark backgrounds, registry destinations, five main game links, and layout overflow at 1280, 900, 768, and 375 pixels wide.

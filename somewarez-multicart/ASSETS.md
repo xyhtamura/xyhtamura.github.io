@@ -22,3 +22,5 @@ Space Grotesk: body paragraphs and game descriptions in the current menu. Downlo
 Favicon: favicon.svg is an original cartridge drawing with a path-drawn numeral 5 in the menu palette. Drawn by Codex on 2026-10-07. No third-party artwork or fonts are embedded.
 
 Margin escapes: margin-escapes.js contains original SVG drawings of a moth, mountain/water marks, and a radial mote, drawn by Codex on 2026-10-07 from the existing menu motifs and palette. No third-party assets or fonts are embedded.
+
+Hax illustrations: three original SVG files drawn by Codex on 2026-10-10 in `assets/hax/`. `between-banks.svg` retains the cord, vegetation, dots, and palette of the original Drawing the Hours menu drawing, replacing its insects with fish; the existing hue rotation remains in CSS. `foam-green-crawl.svg` depicts a glyph-lined corridor. `bahura.svg` depicts three gongs over terrain and water. These are menu illustrations, not gameplay captures. No third-party artwork or embedded fonts are included; glyphs use the viewer's monospace font.
