@@ -17,7 +17,9 @@ Radio Browser. If that directory is unavailable, selections use the curated
 collection. Streams still pass the browser playback gate before promotion.
 The exported log includes the provider and its website for each source.
 
-Next in development: add a source-mix control for the curated collection.
+Next in development: build the Android background-playback prototype in the
+[mobile app spec](SPEC-mobile.md) and prove automatic drift with the screen locked.
+The source-mix control remains deferred until that prototype passes.
 
 ### 2026-10-08 — Codex — Curated streams and reel verification
 
@@ -358,3 +360,21 @@ Held loosely — directions, not commitments.
 ---
 
 *Stations via the free [radio-browser](https://www.radio-browser.info/) community database. Built as a single self-contained HTML file.*
+
+### 2026-10-11 — Codex — Mobile app spec
+
+Added [SPEC-mobile.md](SPEC-mobile.md) for an Android-first mobile app that
+retains the ham interface and moves station selection, stream probes, drift
+deadlines, fades, recovery, and log writes into a native playback controller.
+The spec defines command and snapshot behavior, Pause versus Hold, system media
+controls, local persistence, sharing, touch requirements, implementation
+milestones, and physical-device acceptance checks. iOS follows the Android
+background prototype and requires Mac/Xcode access.
+
+Read the spec against the existing audio and drift code and checked its local
+links, invisible Unicode, and agreement with ROADMAP.md. Git whitespace checks
+passed. No runtime files changed; no mobile build or device test was performed.
+The next step is the Android background prototype. The source-mix control is
+deferred until it passes, so the prototype can settle background drift before
+adding a separate feature. Toolchain versions, repository placement, platform
+minimums, resource budgets, and store release decisions remain open.
