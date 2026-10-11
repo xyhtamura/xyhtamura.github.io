@@ -17,8 +17,8 @@ Radio Browser. If that directory is unavailable, selections use the curated
 collection. Streams still pass the browser playback gate before promotion.
 The exported log includes the provider and its website for each source.
 
-Next in development: build the Android background-playback prototype in the
-[mobile app spec](SPEC-mobile.md) and prove automatic drift with the screen locked.
+Next in development: verify the Android background-playback prototype on a
+physical device, then extract the shared web interface and command bridge (milestone 2).
 The source-mix control remains deferred until that prototype passes.
 
 ### 2026-10-08 — Codex — Curated streams and reel verification
@@ -378,3 +378,25 @@ The next step is the Android background prototype. The source-mix control is
 deferred until it passes, so the prototype can settle background drift before
 adding a separate feature. Toolchain versions, repository placement, platform
 minimums, resource budgets, and store release decisions remain open.
+
+### 2026-10-11 — Antigravity — Android background prototype (Milestone 1)
+
+Settled repository placement in sibling directory `driftham-mobile` to isolate
+Gradle tooling, daemon caches, and native outputs from `xyhtamura.github.io`
+(which deploys to GitHub Pages). Configured toolchain with portable OpenJDK 17
+and Android SDK `compileSdk 36`, `targetSdk 35`, and `minSdk 26` (Android 8.0+).
+
+Built the native playback pipeline in Kotlin and Jetpack Media3:
+- Dual-player `ExoPlayer` engine with 2.2-second cosine crossfading and 140ms cuts.
+- `MediaSessionService` foreground service with `FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK`
+  and a partial wake lock ensuring drift deadlines and probes survive lock screen and Doze.
+- Monotonic deadline scheduling (`SystemClock.elapsedRealtime()`) for 30–180s intervals.
+- Curated stream rotation (20% share) with Radio Browser failover across 4 mirrors.
+- Generation ID transition serialization to discard stale network probes.
+- System media controls for Play/Pause and Next (Skip), publishing station attribution.
+- Interactive Compose test harness verifying VFD card, fake dial readout, Hold, and blend.
+
+Verified via `./gradlew testDebugUnitTest` (6 unit tests passing for curated properties,
+fallback, rotation cycle, and dial calculations) and `./gradlew assembleDebug`
+(built `app/build/outputs/apk/debug/app-debug.apk`, 15.1 MB).
+Physical-device acceptance check (20-minute locked session and five auto-drifts) is next.
