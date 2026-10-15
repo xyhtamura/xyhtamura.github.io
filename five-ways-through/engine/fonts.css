@@ -1,0 +1,8 @@
+/* Averia Sans Libre by Dan Sayers, SIL Open Font License 1.1 (fonts/OFL.txt).
+   An average of the fonts on its designer's computer. WOFF repackaging of the
+   released files; glyphs unchanged. */
+@font-face { font-family: 'Averia Sans Libre'; src: url('../fonts/AveriaSansLibre-Light.woff') format('woff'); font-weight: 300; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Averia Sans Libre'; src: url('../fonts/AveriaSansLibre-LightItalic.woff') format('woff'); font-weight: 300; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Averia Sans Libre'; src: url('../fonts/AveriaSansLibre-Regular.woff') format('woff'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Averia Sans Libre'; src: url('../fonts/AveriaSansLibre-Italic.woff') format('woff'); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Averia Sans Libre'; src: url('../fonts/AveriaSansLibre-Bold.woff') format('woff'); font-weight: 700; font-style: normal; font-display: swap; }

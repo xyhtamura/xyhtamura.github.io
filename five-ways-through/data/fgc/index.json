@@ -1,0 +1,50 @@
+[
+ {
+  "name": "hydrangea_blue_potted",
+  "width": 428,
+  "height": 640,
+  "joints": 136,
+  "plants": 1,
+  "maxOrder": 2,
+  "verts": 7295,
+  "quads": 6995,
+  "lodVerts": 974,
+  "erased": 0
+ },
+ {
+  "name": "hydrangea_pink_pair",
+  "width": 754,
+  "height": 640,
+  "joints": 58,
+  "plants": 1,
+  "maxOrder": 0,
+  "verts": 15160,
+  "quads": 14714,
+  "lodVerts": 1906,
+  "erased": 0
+ },
+ {
+  "name": "malunggay_leaves",
+  "width": 469,
+  "height": 640,
+  "joints": 88,
+  "plants": 1,
+  "maxOrder": 2,
+  "verts": 12058,
+  "quads": 11665,
+  "lodVerts": 1530,
+  "erased": 0
+ },
+ {
+  "name": "sunflower_arrangement",
+  "width": 552,
+  "height": 640,
+  "joints": 49,
+  "plants": 1,
+  "maxOrder": 2,
+  "verts": 6556,
+  "quads": 6286,
+  "lodVerts": 891,
+  "erased": 0
+ }
+]

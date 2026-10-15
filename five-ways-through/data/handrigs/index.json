@@ -1,0 +1,26 @@
+[
+ {
+  "name": "handcursor",
+  "width": 613,
+  "height": 640,
+  "joints": 108,
+  "plants": 1,
+  "maxOrder": 2,
+  "verts": 12913,
+  "quads": 12485,
+  "lodVerts": 1658,
+  "erased": 0
+ },
+ {
+  "name": "handopen",
+  "width": 571,
+  "height": 640,
+  "joints": 118,
+  "plants": 1,
+  "maxOrder": 1,
+  "verts": 10543,
+  "quads": 10088,
+  "lodVerts": 1420,
+  "erased": 0
+ }
+]

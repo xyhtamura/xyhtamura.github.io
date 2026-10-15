@@ -1,0 +1,15 @@
+{
+ "source": "Payphone.obj",
+ "scale": 0.01,
+ "vertices": 27522,
+ "stride": 8,
+ "pieces": 33,
+ "roles": null,
+ "uv": true,
+ "layout": "float32 x, y, z, nx, ny, nz, u, v per vertex; triangles, no index",
+ "size": [
+  0.56,
+  1.7543,
+  0.33
+ ]
+}
