@@ -34,6 +34,23 @@ const slides = [
     }
   },
 
+  {
+    kind: "piece",
+    piece: {
+      id: "five-ways-through",
+      title: "Five Ways Through",
+      year: "2026",
+      tags: ["intermedia", "electronic literature", "interactive", "botany", "procedural 3D", "WebGL", "Web Audio"],
+      blurb: "Five short interactive browser pieces, one for each sentence of a five-sentence text, set in a field of plants at night, by day, and in coloured dark. Lit by an on-camera flash and played with a photographed hand, the pieces combine herbarium specimens and rigged cutouts moving in the wind, with a septimal synth and field recordings.",
+      media: [
+        { type: "image", src: "../img/works/five-ways-through.jpg", label: "Five Ways Through interactive plant and hand pieces" }
+      ],
+      links: [
+        { label: "Play Pieces", url: "https://xyhtamura.github.io/five-ways-through/" }
+      ]
+    }
+  },
+
 {
     kind: "piece",
     piece: {
