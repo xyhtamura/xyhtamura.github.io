@@ -105,10 +105,11 @@ const slides = [
       id: "drawing-the-hours",
       title: "Drawing the Hours",
       year: "2026",
-      tags: ["games", "gesture game", "browser game", "combinatorics", "touch"],
+      tags: ["games", "music", "soundtrack", "ost", "gesture game", "browser game", "combinatorics", "touch"],
       blurb: "A tablet and browser meadow gesture game where the player draws with continuous cord loops and strokes among moving garden inhabitants. Successive visits across four quiet hours (morning, noon, dusk, and midnight) introduce combinatorial stroke interactions, enclosed loops, multi-pocket separations, length-based colour changes, and environmental hazards on a tactile paper playfield.",
       links: [
-        { label: "Play Game", url: "https://xyhtamura.github.io/drawing-the-hours/" }
+        { label: "Play Game", url: "https://xyhtamura.github.io/drawing-the-hours/" },
+        { label: "Original Soundtrack (Bandcamp)", url: "https://xyhtamura.bandcamp.com/album/drawing-the-hours" }
       ]
     }
   },
