@@ -45,6 +45,10 @@ also tints the floating dust. Type is Averia Sans Libre, served from `fonts/`.
 - `scripts/make_credits.py` writes `credits.html`. `scripts/make_wind_loops.py`
   writes the loops outside the repository, and `scripts/pack_sounds.py` packs
   them into `data/sounds.pak`, read by `engine/sounds.js`.
+- `scripts/stamp_heads.py` writes the favicon and share-card tags into every
+  page's head between `<!-- share -->` markers; `make_credits.py` calls it for
+  the page it rewrites. `card.jpg` and `apple-touch-icon.png` are rendered from
+  the opening page by `scripts/capture_card.js` (steps in the file).
 
 Credits are in [credits.html](credits.html). The development log (`NOTES.md`),
 asset provenance (`ASSETS.md`), and description text (`DESCRIPTION.md`) are kept

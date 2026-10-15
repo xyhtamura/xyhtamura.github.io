@@ -62,6 +62,10 @@ def main():
     page = TEMPLATE.replace('{{SPECIMENS}}', '\n'.join(items)).replace('{{COUNT}}', str(len(rigs)))
     io.open(args.out, 'w', encoding='utf-8', newline='\n').write(page)
     print(f'wrote {args.out}: {len(rigs)} specimens')
+    # The share tags live in one place; put them back on the page just rewritten.
+    import stamp_heads
+    if os.path.abspath(args.out) == os.path.abspath(os.path.join(SERIES, 'credits.html')):
+        stamp_heads.stamp('credits.html')
 
 
 TEMPLATE = """<!doctype html>

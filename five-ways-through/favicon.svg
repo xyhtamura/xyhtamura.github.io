@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Five leaves in the five sentences' colours, in a ring around a star: the
+       opening page's view up through the plants. -->
+  <defs>
+    <radialGradient id="sky" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#1c1650"/>
+      <stop offset="100%" stop-color="#05060d"/>
+    </radialGradient>
+  </defs>
+  <rect width="32" height="32" rx="7" fill="url(#sky)"/>
+  <g transform="translate(16 16)">
+    <path d="M0 -5.2 C3.4 -7.4 3.6 -12 0 -14.4 C-3.6 -12 -3.4 -7.4 0 -5.2 Z" fill="#8fdcff"/>
+    <path d="M0 -5.2 C3.4 -7.4 3.6 -12 0 -14.4 C-3.6 -12 -3.4 -7.4 0 -5.2 Z" fill="#ffa3cb" transform="rotate(72)"/>
+    <path d="M0 -5.2 C3.4 -7.4 3.6 -12 0 -14.4 C-3.6 -12 -3.4 -7.4 0 -5.2 Z" fill="#cdb8ff" transform="rotate(144)"/>
+    <path d="M0 -5.2 C3.4 -7.4 3.6 -12 0 -14.4 C-3.6 -12 -3.4 -7.4 0 -5.2 Z" fill="#ffb67a" transform="rotate(216)"/>
+    <path d="M0 -5.2 C3.4 -7.4 3.6 -12 0 -14.4 C-3.6 -12 -3.4 -7.4 0 -5.2 Z" fill="#98f0d4" transform="rotate(288)"/>
+    <circle r="1.5" fill="#fff6e8"/>
+  </g>
+</svg>
