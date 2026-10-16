@@ -8,7 +8,7 @@ text; each sentence opens one piece.
 | --- | --- | --- | --- |
 | [Running](running/) | Starts as blue night with a white flash; with distance the flash turns red, violet, then orange-red against a sky moving to green; no path; strafing forward and left; 0.7–3.5 m/s | Grab the brush ahead and let it snap back. Each snap adds speed, which decays; after 220 m or 150 s the brush opens onto the horizon and the piece ends. | Bend-down notes while holding, a snap on release |
 | [Exchange](exchange/) | Daytime with the flash on: deep blue sky, white clouds, a dark peak; path; drifting right; 0.06 m/s | Press a plant: a hand card stands where it was, and the cursor becomes the plant. Ends after 12 exchanges. | A vowel gliding from the last pitch to the new one |
-| [Hours](hours/) | Night blue → dusk → magenta → amber; straight ahead; 6.5 m/s, faster when dragging, almost no stride | Drag sideways (or arrow keys) to move through the hours; the moon arcs, the flash fades as the sky's light rises; fast drags are wind. Ends once all four have been reached. | A held F minor seventh gliding between equal, just minor, septimal, and Whitewood35 tunings |
+| [Hours](hours/) | Night blue → dusk → magenta → amber; banderitas, parol stars, paper lanterns, and carp streamers among the plants; straight ahead; 6.5 m/s, faster when dragging, almost no stride | Drag sideways (or arrow keys) to move through the hours; the moon arcs, the flash fades as the sky's light rises; fast drags are wind. Ends once all four have been reached. | A held F minor seventh gliding between equal, just minor, septimal, and Whitewood35 tunings |
 | [Toward](toward/) | A new colour at each pole: amber sepia, rose dusk, orange flash on violet-blue, pink flash on aurora green, teal night with the bulb left warm; standing still drains it; poles and palms; straight ahead; walks by itself at 0.9 m/s | Holding a press (over 0.22 s) stops the walk; the hand steers, and a short tap steers too. A bulb over the payphone on the fourth pole, 96 m on, is the destination; arrival turns to face it. | Step pulses; a detuned chord drawn into septimal tune by distance; a rising phrase on arrival |
 | [Forgetting](forgetting/) | Near-black, cyan light near and magenta further off, each plant under a coloured gel; shide on straw ropes mark every other place a thing lies; looking down; walking backwards; 0.38 m/s | Pick up things lying on the path; picking up another puts the last one down where the hand is, and pressing the ground puts it down on its own. Ends after the last thing passes. | A held note per thing, bent down when it is put down; the carried notes return with only the last one sounding |
 
@@ -65,7 +65,18 @@ and draws one frame.
 `scripts/prop-models.js` builds the green Japanese public phone and a wooden
 geta. It also reads Foam Green City's `household-tools.js` to reuse its tsinelas
 geometry. `scripts/build_props.cjs` exports the phone as a textured mesh and
-renders both kinds of footwear into rigid cards for *Forgetting*.
+renders both kinds of footwear into rigid cards for *Forgetting*. The same
+script exports banderitas from Foam Green City's `decor.js`, plus authored
+parol stars, ribbed Japanese paper lanterns, and koinobori carp streamers as
+meshes in `data/festival/`.
+
+`scripts/festival-runtime.js` is injected into the scene by `make_engine.py`.
+With `S.festival` enabled, it loads the four festival meshes and places seeded
+clusters at indexed stations along the route. Only the surrounding stations
+are drawn; the collection does not grow with distance. The flags and tails
+flutter with `S.wind`, while their supports stay fixed. *Hours* enables it;
+the other pieces do not load these assets. After editing the runtime snippet,
+run `python scripts/make_engine.py`.
 
 From this folder, run `node scripts/build_props.cjs --verify` with Playwright
 available on `NODE_PATH` and Microsoft Edge installed. The workspace must also

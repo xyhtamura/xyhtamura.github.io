@@ -28,7 +28,7 @@ export const S = {
   clouds: .45, cloudColour: '#9fd8ff', cloudLight: .2, cloudHue: -20, cloudDrift: 1, grain: .06, scale: 1,
   ambient: 1, bulbPos: [0, -100, 0], bulbColour: [0, 0, 0],
   grab: true, notes: true, sparks: true, brushSound: true, bokehPalette: 'night', handCursor: true, handScale: .7,
-  plantGroups: ['herbarium', 'fgc'], poleLateral: 3.2, payphoneEvery: 6, payphoneOffset: 0,
+  plantGroups: ['herbarium', 'fgc'], poleLateral: 3.2, payphoneEvery: 6, payphoneOffset: 0, festival: false,
 };
 export const LOOKS = {
   nightBlue: {skyTop: '#06123f', skyHorizon: '#1d4fd6', flash: '#eef3ff', power: 6, exposure: 1.3, hue: 0, sat: .7, ridge: .5, trees: .7, lights: .5, haze: .6,
@@ -212,7 +212,7 @@ export const sparksAt = (count, spread = .12) => spawnSparks(count, spread, 0);
 export async function init({sets = ['herbarium', 'fgc'], payphone = false, only = null} = {}) {
   const bases = {herbarium: DATA + 'herbarium/', fgc: DATA + 'fgc/', objects: DATA + 'objects/', handrigs: DATA + 'handrigs/'};
   const lists = await Promise.all(sets.map(async k => [k, (await (await fetch(bases[k] + 'index.json')).json()).filter(e => !only || only.includes(e.name))]));
-  await Promise.all([payphone ? loadPayphone() : null, ...lists.flatMap(([k, list]) => list.map(e => loadSpecies(bases[k], e, k)))]);
+  await Promise.all([payphone ? loadPayphone() : null, S.festival ? loadFestival() : null, ...lists.flatMap(([k, list]) => list.map(e => loadSpecies(bases[k], e, k)))]);
   species.sort((a, b) => a.name.localeCompare(b.name));
   packBones();
   placePlants();
@@ -519,15 +519,17 @@ export function applyLook(look) {""")
     # hanging from it. Placed at fixed spots along the route by S.shide. The paper
     # (role 3) swings about the rope; its UV carries depth below the rope and a phase.
     rep("uniform mat4 uVP, uModel; uniform float uWind, uTime, uPhase, uSwayHeight;",
-        "uniform mat4 uVP, uModel; uniform float uWind, uTime, uPhase, uSwayHeight, uFlutter;")
+        "uniform mat4 uVP, uModel; uniform float uWind, uTime, uPhase, uSwayHeight, uFlutter, uFestival;")
     rep("  vec4 w = uModel * vec4(p, 1.); vW = w.xyz; vN = mat3(uModel) * aNormal; vRole = aRole; gl_Position = uVP * w;",
         "  if (uFlutter > 0. && aRole > 2.5) {\n"
-        "    float h = aUV.x, s = aUV.y + uPhase;\n"
+        "    float h = uFestival > .5 ? max(0., aRole - 3.) : aUV.x, s = aUV.y + uPhase;\n"
         "    p.z += uFlutter * h * (.5 * sin(uTime * 1.9 + s) + .25 * sin(uTime * 4.7 + s * 2.3));\n"
         "    p.x += uFlutter * h * .25 * sin(uTime * 2.6 + s * 1.7);\n"
         "  }\n"
         "  vec4 w = uModel * vec4(p, 1.); vW = w.xyz; vN = mat3(uModel) * aNormal; vRole = aRole; gl_Position = uVP * w;")
-    rep("  drawPalms(cam, vp);", "  drawPalms(cam, vp);\n  drawShide(cam, vp);")
+    rep("  drawPalms(cam, vp);", "  drawPalms(cam, vp);\n  drawShide(cam, vp);\n  drawFestival(cam, vp);")
+    festival_runtime = io.open(os.path.join(HERE, 'festival-runtime.js'), encoding='utf-8').read()
+    rep("// ---------- brushing ----------", festival_runtime + "\n// ---------- brushing ----------")
     rep("// ---------- brushing ----------", SHIDE_JS + "\n// ---------- brushing ----------")
     rep("gels: ['#ffffff', '#ffffff', '#ffffff', '#ffffff'], gel: 0,", "gels: ['#ffffff', '#ffffff', '#ffffff', '#ffffff'], gel: 0, shide: [],")
 

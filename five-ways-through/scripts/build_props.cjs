@@ -1,5 +1,5 @@
-/** Rebuild the green phone and rigid footwear cards from authored geometry.
- * Usage: node scripts/build_props.cjs [--workspace PATH] [--previews PATH]
+/** Rebuild the phone, footwear cards, and festival meshes from authored geometry.
+ * Usage: node scripts/build_props.cjs [--workspace PATH] [--previews PATH] [--verify]
  * Requires Playwright on NODE_PATH and installed Microsoft Edge. Uses the
  * workspace's existing Three.js and FGC toolkit only while authoring.
  */
@@ -27,12 +27,22 @@ async function main(){
     const assets=await page.evaluate(async()=>{
       const m=await import('/xyhtamura.github.io/five-ways-through/scripts/prop-models.js');
       const phone=m.phone();
-      return {phone:m.exportPhone(phone),previews:{phone:m.render(phone),geta:m.render(m.geta()),tsinelas:m.render(m.tsinelas())}};
+      const festival={},previews={phone:m.render(phone),geta:m.render(m.geta()),tsinelas:m.render(m.tsinelas())};
+      for(const name of ['banderitas','parol','chochin','koinobori']){
+        const model=m[name]();festival[name]=m.exportPhone(model,true);previews[name]=m.render(model);
+      }
+      return {phone:m.exportPhone(phone),festival,previews};
     });
     const data=path.join(series,'data');
     fs.writeFileSync(path.join(data,'payphone.bin'),Buffer.from(new Float32Array(assets.phone.vertices).buffer));
     fs.writeFileSync(path.join(data,'payphone.json'),JSON.stringify(assets.phone.meta,null,2)+'\n');
     writeImage(path.join(data,'payphone.webp'),assets.phone.texture);
+    fs.mkdirSync(path.join(data,'festival'),{recursive:true});
+    for(const [name,asset]of Object.entries(assets.festival)){
+      fs.writeFileSync(path.join(data,`festival/${name}.bin`),Buffer.from(new Float32Array(asset.vertices).buffer));
+      fs.writeFileSync(path.join(data,`festival/${name}.json`),JSON.stringify(asset.meta,null,2)+'\n');
+      writeImage(path.join(data,`festival/${name}.webp`),asset.texture);
+    }
     const indexFile=path.join(data,'objects/index.json'),index=JSON.parse(fs.readFileSync(indexFile,'utf8')).filter(e=>!['geta','tsinelas'].includes(e.name));
     for(const name of ['geta','tsinelas']){
       const image=await page.evaluate(async uri=>{
@@ -51,7 +61,7 @@ async function main(){
     }
     fs.writeFileSync(indexFile,JSON.stringify(index,null,1)+'\n');
     if(previews){fs.mkdirSync(previews,{recursive:true});for(const [name,uri]of Object.entries(assets.previews))writeImage(path.join(previews,`${name}.png`),uri);}
-    console.log(`Built phone (${assets.phone.meta.vertices} vertices), geta, and FGC tsinelas.`);
+    console.log(`Built phone (${assets.phone.meta.vertices} vertices), footwear, and four festival models.`);
     if(args.includes('--verify')){
       const errors=[];page.on('pageerror',e=>errors.push(e.message));
       page.on('response',response=>{if(response.status()>=400)errors.push(response.status()+' '+response.url());});
@@ -92,6 +102,32 @@ async function main(){
       if(+phone.payphones!==1)throw Error('Toward phone not drawn: '+JSON.stringify(phone));
       console.log('Toward: one phone drawn at '+phone.camera);
       if(previews){await page.locator('#begin').evaluate(el=>el.remove());await page.screenshot({path:path.join(previews,'toward-scene.png')});}
+      await page.goto(base+'hours/');
+      await page.waitForFunction(()=>document.querySelector('#begin')?.disabled===false);
+      await page.locator('#begin').evaluate(el=>el.remove());
+      const stations=await page.evaluate(async()=>{
+        const m=await import('../engine/scene.js');m.S.walking=true;m.S.speed=6.5;sceneStep(3.5);m.S.walking=false;sceneStep(0);
+        return {counts:JSON.parse(document.querySelector('canvas').dataset.festival),stations:document.querySelector('canvas').dataset.festivalStations};
+      });
+      if(Object.keys(stations.counts).length!==4)throw Error('Initial Hours mix missing: '+JSON.stringify(stations));
+      if(previews)await page.screenshot({path:path.join(previews,'hours-night.png')});
+      const pixels=await page.evaluate(async()=>{
+        const m=await import('../engine/scene.js'),c=document.querySelector('canvas'),gl=c.getContext('webgl2');
+        const read=()=>{const a=new Uint8Array(c.width*c.height*4);gl.readPixels(0,0,c.width,c.height,gl.RGBA,gl.UNSIGNED_BYTE,a);return a;};
+        sceneStep(0);const on=read();m.S.festival=false;sceneStep(0);const off=read();m.S.festival=true;sceneStep(0);
+        let changed=0;for(let i=0;i<on.length;i+=4)if(Math.abs(on[i]-off[i])+Math.abs(on[i+1]-off[i+1])+Math.abs(on[i+2]-off[i+2])>10)changed++;
+        return changed;
+      });
+      if(pixels<200)throw Error('Festival geometry not visibly contributing: '+pixels+' pixels');
+      const streamed=await page.evaluate(async()=>{
+        const m=await import('../engine/scene.js');m.S.walking=true;m.S.speed=6.5;sceneStep(200);m.S.walking=false;sceneStep(0);
+        return {counts:JSON.parse(document.querySelector('canvas').dataset.festival),stations:document.querySelector('canvas').dataset.festivalStations};
+      });
+      if(streamed.stations===stations.stations)throw Error('Festival did not stream');
+      for(let i=0;i<34;i++)await page.keyboard.press('ArrowRight');
+      await page.evaluate(()=>sceneStep(0));
+      if(previews)await page.screenshot({path:path.join(previews,'hours-amber.png')});
+      console.log('Hours: '+JSON.stringify({initial:stations,streamed,changedPixels:pixels}));
       if(errors.length)throw Error(errors.join('\n'));
       console.log('No page errors.');
     }

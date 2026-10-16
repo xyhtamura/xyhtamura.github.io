@@ -27,7 +27,7 @@ export const S = {
   ambient: 1, ambientColour: null, flashFar: null, farRange: [2, 7], hazeLift: .16,
   gels: ['#ffffff', '#ffffff', '#ffffff', '#ffffff'], gel: 0, shide: [], cloudSun: 0, peak: 1, stars: 0, bob: 1, backwards: false, pollenTint: .8, bulbPos: [0, -100, 0], bulbColour: [0, 0, 0],
   grab: true, notes: true, sparks: true, brushSound: true, bokehPalette: 'night', handCursor: true, handScale: .7,
-  clearing: [0, 0, 0], plantGroups: ['herbarium', 'fgc'], poleLateral: 3.2, payphoneEvery: 6, payphoneOffset: 0,
+  clearing: [0, 0, 0], plantGroups: ['herbarium', 'fgc'], poleLateral: 3.2, payphoneEvery: 6, payphoneOffset: 0, festival: false,
 };
 export const LOOKS = {
   nightBlue: {skyTop: '#06123f', skyHorizon: '#1d4fd6', flash: '#eef3ff', power: 6, exposure: 1.3, hue: 0, sat: .7, ridge: .5, trees: .7, lights: .5, haze: .6,
@@ -386,7 +386,7 @@ void main(){
 const SOLID_VS = `#version 300 es
 precision highp float;
 layout(location=0) in vec3 aPos; layout(location=1) in vec3 aNormal; layout(location=2) in float aRole; layout(location=3) in vec2 aUV;
-uniform mat4 uVP, uModel; uniform float uWind, uTime, uPhase, uSwayHeight, uFlutter;
+uniform mat4 uVP, uModel; uniform float uWind, uTime, uPhase, uSwayHeight, uFlutter, uFestival;
 out vec3 vW, vN; out float vRole; out vec2 vUV;
 void main(){
   vec3 p = aPos; vUV = aUV;
@@ -398,7 +398,7 @@ void main(){
     if (aRole > .5 && aRole < 1.5) p.y += uWind * .08 * k * sin(uTime * 3.1 + p.x * 1.7 + p.z * 1.3 + uPhase);
   }
   if (uFlutter > 0. && aRole > 2.5) {
-    float h = aUV.x, s = aUV.y + uPhase;
+    float h = uFestival > .5 ? max(0., aRole - 3.) : aUV.x, s = aUV.y + uPhase;
     p.z += uFlutter * h * (.5 * sin(uTime * 1.9 + s) + .25 * sin(uTime * 4.7 + s * 2.3));
     p.x += uFlutter * h * .25 * sin(uTime * 2.6 + s * 1.7);
   }
@@ -1019,6 +1019,57 @@ function drawPalms(cam, vp) {
   canvas.dataset.palms = drawn;
 }
 
+// Injected into engine/scene.js by make_engine.py. Uses that scene's solid
+// shader and lighting; geometry is exported by build_props.cjs.
+const festivalMeshes = new Map();
+const FESTIVAL_NAMES = ['banderitas', 'parol', 'chochin', 'koinobori'];
+async function loadFestival() {
+  await Promise.all(FESTIVAL_NAMES.map(async name => {
+    const base = DATA + 'festival/' + name;
+    const [meta, buffer, image] = await Promise.all([
+      fetch(base + '.json').then(r => r.json()), fetch(base + '.bin').then(r => r.arrayBuffer()),
+      fetch(base + '.webp').then(r => r.blob()).then(createImageBitmap),
+    ]);
+    const mesh = solidMesh(new Float32Array(buffer), meta.stride, true), tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+    gl.generateMipmap(gl.TEXTURE_2D); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+    image.close(); festivalMeshes.set(name, {...mesh, tex});
+  }));
+}
+function drawFestival(cam, vp) {
+  if (!S.festival || !festivalMeshes.size) return;
+  const u = P.solid.u, d = cam.dir, r = [-d[1], d[0]], counts = {};
+  gl.useProgram(P.solid.p); common(P.solid, cam);
+  gl.uniformMatrix4fv(u.uVP, false, vp); gl.uniform1f(u.uFlat, 0);
+  gl.uniform1f(u.uWind, 0); gl.uniform1f(u.uTime, time);
+  gl.uniform1f(u.uFestival, 1); gl.uniform1f(u.uFlutter, .08 + S.wind * .2);
+  gl.uniform1f(u.uTextured, 1); gl.activeTexture(gl.TEXTURE2); gl.uniform1i(u.uSolidTex, 2);
+  const draw = (name, along, across, yaw, phase) => {
+    const mesh = festivalMeshes.get(name), c = Math.cos(yaw), s = Math.sin(yaw);
+    const ax = [r[0] * c - d[0] * s, r[1] * c - d[1] * s];
+    const az = [-r[0] * s - d[0] * c, -r[1] * s - d[1] * c];
+    const base = [along * d[0] + across * r[0], along * d[1] + across * r[1]];
+    gl.uniformMatrix4fv(u.uModel, false, frameMatrix(ax, az, base)); gl.uniform1f(u.uPhase, phase);
+    gl.bindTexture(gl.TEXTURE_2D, mesh.tex); gl.bindVertexArray(mesh.vao); gl.drawArrays(gl.TRIANGLES, 0, mesh.count);
+    counts[name] = (counts[name] || 0) + 1;
+  };
+  // Index-addressed stations stream indefinitely; no objects accumulate. The
+  // same station has the same arrangement when reached from either direction.
+  const first = Math.max(0, Math.floor((travel - 12) / 18)), last = Math.ceil((travel + 65) / 18);
+  for (let k = first; k <= last; k++) {
+    const rnd = seeded(1016 + k * 7919), along = 9 + k * 18 + rnd() * 4;
+    if (rnd() < .55) draw('banderitas', along, 0, (rnd() - .5) * .25, k * 2.7);
+    const name = FESTIVAL_NAMES[1 + Math.floor(rnd() * 3)], side = rnd() < .5 ? -1 : 1;
+    draw(name, along + 4, side * (2 + rnd() * .8), side * (.12 + rnd() * .4), k * 3.1);
+    if (rnd() < .3) draw(FESTIVAL_NAMES[1 + Math.floor(rnd() * 3)], along + 10, -side * 2.5, -.3 * side, k * 1.3);
+  }
+  canvas.dataset.festival = JSON.stringify(counts);
+  canvas.dataset.festivalStations = first + ':' + last;
+  gl.uniform1f(u.uFestival, 0); gl.uniform1f(u.uFlutter, 0); gl.uniform1f(u.uTextured, 0);
+  gl.activeTexture(gl.TEXTURE0);
+}
+
 
 // ---------- shide ----------
 // A shimenawa: two bamboo stakes, a sagging straw rope between them, and zigzag
@@ -1335,6 +1386,7 @@ function render() {
   if (S.poles) drawPoles(cam, vp);
   drawPalms(cam, vp);
   drawShide(cam, vp);
+  drawFestival(cam, vp);
 
   // Cards: alpha-to-coverage keeps soft edges without sorting hundreds of cards.
   gl.enable(gl.SAMPLE_ALPHA_TO_COVERAGE);
@@ -1563,7 +1615,7 @@ export const sparksAt = (count, spread = .12) => spawnSparks(count, spread, 0);
 export async function init({sets = ['herbarium', 'fgc'], payphone = false, only = null} = {}) {
   const bases = {herbarium: DATA + 'herbarium/', fgc: DATA + 'fgc/', objects: DATA + 'objects/', handrigs: DATA + 'handrigs/'};
   const lists = await Promise.all(sets.map(async k => [k, (await (await fetch(bases[k] + 'index.json')).json()).filter(e => !only || only.includes(e.name))]));
-  await Promise.all([payphone ? loadPayphone() : null, ...lists.flatMap(([k, list]) => list.map(e => loadSpecies(bases[k], e, k)))]);
+  await Promise.all([payphone ? loadPayphone() : null, S.festival ? loadFestival() : null, ...lists.flatMap(([k, list]) => list.map(e => loadSpecies(bases[k], e, k)))]);
   species.sort((a, b) => a.name.localeCompare(b.name));
   packBones();
   placePlants();

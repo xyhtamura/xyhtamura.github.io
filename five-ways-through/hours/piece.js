@@ -9,7 +9,7 @@ import {piece} from '../engine/shell.js';
 applyLook('nightBlue');
 const FAST = 6.5;   // metres a second; drags add up to 5 more
 Object.assign(S, {speed: FAST, path: true, height: 1.05, tilt: 9, fov: 64, sway: .3, bob: .15, drift: 0, density: .9,
-  grab: false, notes: false, sparks: false, focus: 4, aperture: .9, moon: true, bokehPalette: 'hours'});
+  grab: false, notes: false, sparks: false, focus: 4, aperture: .9, moon: true, bokehPalette: 'hours', festival: true});
 
 // Keyframes along one axis, 0 to 1, each a look and a tuning.
 const KEYS = [

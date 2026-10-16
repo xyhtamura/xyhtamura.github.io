@@ -1,0 +1,13 @@
+{
+  "source": "scripts/prop-models.js",
+  "vertices": 14931,
+  "stride": 9,
+  "uv": true,
+  "roles": null,
+  "size": [
+    2.205500066280365,
+    4.199999809265137,
+    0.40400000074505804
+  ],
+  "layout": "float32 x, y, z, nx, ny, nz, u, v, flexRole per vertex; triangles, no index"
+}

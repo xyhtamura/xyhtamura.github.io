@@ -2,6 +2,7 @@
 // exported assets have no runtime dependency on either project.
 import * as THREE from '/foam-green-city/vendor/three/build/three.module.js';
 import {createHouseholdToolKit} from '/foam-green-city/household-tools.js';
+import {createDecorKit} from '/foam-green-city/decor.js';
 
 const material = colour => new THREE.MeshStandardMaterial({color: colour, roughness: .65});
 function box(group, colour, p, size, radius = .005) {
@@ -82,7 +83,7 @@ export function render(model, size=768) {
   renderer.render(scene,camera);
   const result=renderer.domElement.toDataURL('image/png'); renderer.dispose(); return result;
 }
-export function exportPhone(model) {
+export function exportPhone(model, flex = false) {
   model.updateMatrixWorld(true);
   const colours=[], vertices=[];
   model.traverse(mesh=>{
@@ -92,13 +93,89 @@ export function exportPhone(model) {
     const geometry=mesh.geometry.index?mesh.geometry.toNonIndexed():mesh.geometry.clone();
     geometry.applyMatrix4(mesh.matrixWorld);
     const p=geometry.attributes.position,n=geometry.attributes.normal;
-    for(let i=0;i<p.count;i++)vertices.push(p.getX(i),p.getY(i),p.getZ(i),n.getX(i),n.getY(i),n.getZ(i),role,0);
+    for(let i=0;i<p.count;i++){
+      vertices.push(p.getX(i),p.getY(i),p.getZ(i),n.getX(i),n.getY(i),n.getZ(i),role,0);
+      const delta=mesh.userData.flexAxis==='x'?p.getX(i)-mesh.userData.anchorX:mesh.userData.anchorY-p.getY(i);
+      if(flex)vertices.push(mesh.userData.flex ? 3+Math.max(0,Math.min(1,delta/(mesh.userData.flexLength||1))) : 0);
+    }
     geometry.dispose();
   });
   // Atlas texels are well separated, sampled at their centres, with no UV seams.
   const canvas=Object.assign(document.createElement('canvas'),{width:colours.length*32,height:32}),ctx=canvas.getContext('2d');
   colours.forEach((c,i)=>{ctx.fillStyle=c;ctx.fillRect(i*32,0,32,32);});
-  for(let i=0;i<vertices.length;i+=8){vertices[i+6]=(vertices[i+6]+.5)/colours.length;vertices[i+7]=.5;}
+  const stride=flex?9:8;
+  for(let i=0;i<vertices.length;i+=stride){vertices[i+6]=(vertices[i+6]+.5)/colours.length;vertices[i+7]=.5;}
   const bounds=new THREE.Box3().setFromObject(model),size=bounds.getSize(new THREE.Vector3());
-  return {vertices,texture:canvas.toDataURL('image/webp',1),meta:{source:'scripts/prop-models.js',vertices:vertices.length/8,stride:8,uv:true,roles:null,size:size.toArray(),layout:'float32 x, y, z, nx, ny, nz, u, v per vertex; triangles, no index'}};
+  return {vertices,texture:canvas.toDataURL('image/webp',1),meta:{source:'scripts/prop-models.js',vertices:vertices.length/stride,stride,uv:true,roles:null,size:size.toArray(),layout:'float32 x, y, z, nx, ny, nz, u, v'+(flex?', flexRole':'')+' per vertex; triangles, no index'}};
+}
+
+function panel(group,colour,points,flex=false,anchorY=0,flexLength=1){
+  const geometry=new THREE.BufferGeometry();
+  geometry.setAttribute('position',new THREE.Float32BufferAttribute(points.flat(),3));
+  const index=[];for(let i=1;i<points.length-1;i++)index.push(0,i,i+1);
+  geometry.setIndex(index);geometry.computeVertexNormals();
+  const mat=material(colour);mat.side=THREE.DoubleSide;
+  const mesh=new THREE.Mesh(geometry,mat);mesh.userData={flex,anchorY,flexLength};group.add(mesh);return mesh;
+}
+function mast(group,x,height){
+  box(group,'#8a8651',[x,height/2,0],[.045,height,.045],.003);
+  for(let y=.5;y<height;y+=.52)box(group,'#545637',[x,y,0],[.051,.025,.051],.003);
+}
+export function banderitas(){
+  const g=new THREE.Group();
+  const flags=createDecorKit().create('bunting',{length:6,drop:.42,sag:.45,flags:16,palette:[0xc4493b,0xe6bd4f,0x467aaf,0xd4d4ad],seed:1016});
+  flags.position.y=3.8;flags.traverse(m=>{if(m.isMesh&&m.geometry.attributes.position.count===3){m.geometry.computeBoundingBox();m.userData={flex:true,anchorY:3.8+m.geometry.boundingBox.max.y,flexLength:.42};}});
+  g.add(flags);mast(g,-3,4.05);mast(g,3,4.05);return g;
+}
+export function parol(){
+  const g=new THREE.Group();mast(g,0,3.6);
+  tube(g,'#78754b',[[0,3.5,0],[.3,3.55,0],[.65,3.35,0]],.016,8);
+  const x=.65,y=2.8,points=[];
+  for(let i=0;i<10;i++){const a=Math.PI/2+i*Math.PI/5,r=i%2?.23:.53;points.push([x+Math.cos(a)*r,y+Math.sin(a)*r,.04]);}
+  for(let i=0;i<10;i++){
+    panel(g,i%2?'#e0b94c':'#bf4e3d',[[x,y,.12],points[i],points[(i+1)%10]]);
+    tube(g,'#e5c976',[points[i],points[(i+1)%10]],.009,2);
+  }
+  for(const side of [-1,1])for(let i=0;i<4;i++){
+    const tx=x+side*.32+(i-1.5)*.035,top=y-.3,len=.6+(i%2)*.18;
+    panel(g,i%2?'#d9b751':'#b94d45',[[tx,top,.04],[tx+.025,top,.04],[tx+.06,top-len,.08],[tx+.025,top-len,.08]],true,top,len);
+  }
+  return g;
+}
+export function chochin(){
+  const g=new THREE.Group();mast(g,0,3.65);
+  tube(g,'#777850',[[0,3.5,0],[.65,3.5,0],[.65,3.25,0]],.016,5);
+  const body=new THREE.Mesh(new THREE.SphereGeometry(.29,18,14),material('#d87455'));body.scale.y=1.35;body.position.set(.65,2.8,0);g.add(body);
+  for(let i=-5;i<=5;i++){
+    const y=i*.06,r=.294*Math.sqrt(1-(y/.4)**2);
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(r,.006,4,24),material('#8c4437'));ring.rotation.x=Math.PI/2;ring.position.set(.65,2.8+y,0);g.add(ring);
+  }
+  for(const y of [2.42,3.18])box(g,'#423b30',[.65,y,0],[.21,.045,.21]);
+  return g;
+}
+export function koinobori(){
+  const g=new THREE.Group();mast(g,0,4.2);
+  for(const [i,colour]of ['#435c70','#bb5148','#4b89a2'].entries()){
+    const y=3.8-i*.6,length=1.6-i*.22;
+    tube(g,'#b2a886',[[0,y,0],[.28,y,0]],.007,3);
+    const first=g.children.length;
+    // Inflated mouth, tapered fabric body, and split tail, all actual geometry.
+    const body=new THREE.Mesh(new THREE.CylinderGeometry(.17,.075,length,16,10,true),material(colour));
+    body.rotation.z=Math.PI/2;body.position.set(.28+length/2,y-.13,0);body.userData={flex:true,anchorY:y+.17,flexLength:.6};g.add(body);
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(.17,.014,5,20),material('#e2d4b3'));ring.rotation.y=Math.PI/2;ring.position.set(.28,y-.13,0);g.add(ring);
+    for(const z of [-.15,.15]){
+      const eye=new THREE.Mesh(new THREE.SphereGeometry(.05,10,8),material('#dfd8bc'));eye.position.set(.43,y-.09,z);g.add(eye);
+      const pupil=new THREE.Mesh(new THREE.SphereGeometry(.025,8,6),material('#252d31'));pupil.position.set(.43,y-.09,z*1.18);g.add(pupil);
+    }
+    const end=.28+length;
+    panel(g,colour,[[end-.04,y-.055,0],[end+.3,y+.03,0],[end+.2,y-.13,0],[end+.3,y-.29,0],[end-.04,y-.205,0]],true,y+.1,.45);
+    // Pale scale chevrons on both sides, without an image texture.
+    for(let j=0;j<5;j++)for(const z of [-1,1]){
+      const x=.65+j*(length-.5)/5;
+      const radius=.17-(x-.28)/length*.095;
+      tube(g,'#cfbd95',[[x,y-.08,z*radius*.9],[x+.06,y-.13,z*(radius+.003)],[x,y-.18,z*radius*.9]],.005,4);
+    }
+    for(const mesh of g.children.slice(first))mesh.userData={flex:true,flexAxis:'x',anchorX:.28,flexLength:length};
+  }
+  return g;
 }
