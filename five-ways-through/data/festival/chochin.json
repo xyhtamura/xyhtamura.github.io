@@ -9,5 +9,14 @@
     3.6500000953674316,
     0.6000000238418579
   ],
-  "layout": "float32 x, y, z, nx, ny, nz, u, v, flexRole per vertex; triangles, no index"
+  "light": {
+    "position": [
+      0.65,
+      2.8,
+      0
+    ],
+    "colour": "#ffb76b",
+    "power": 16
+  },
+  "layout": "float32 x, y, z, nx, ny, nz, u, v, materialRole (-1 emissive, 0 rigid, 3..4 flex) per vertex; triangles, no index"
 }

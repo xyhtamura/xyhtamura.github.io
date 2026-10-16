@@ -78,6 +78,15 @@ flutter with `S.wind`, while their supports stay fixed. *Hours* enables it;
 the other pieces do not load these assets. After editing the runtime snippet,
 run `python scripts/make_engine.py`.
 
+The parol paper panels and Japanese lantern bodies emit warm light into the
+scene's bloom pass. Their mesh metadata stores each lamp's local position,
+colour, and strength. Before drawing the scene, the runtime transforms those
+positions with the decorations and uploads the four nearest lamps. They light
+plants, grass, ground, and solid objects with inverse-square falloff softened
+at the source and faded to zero at eight metres. These lights do not cast
+shadows. `S.festivalLight` and `S.festivalEmission` control spill and emission
+separately; `S.festivalVisible` hides the meshes for illumination checks.
+
 From this folder, run `node scripts/build_props.cjs --verify` with Playwright
 available on `NODE_PATH` and Microsoft Edge installed. The workspace must also
 contain `foam-green-city/` and its existing Three.js vendor folder. Optional

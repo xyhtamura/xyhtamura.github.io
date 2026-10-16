@@ -28,6 +28,7 @@ export const S = {
   gels: ['#ffffff', '#ffffff', '#ffffff', '#ffffff'], gel: 0, shide: [], cloudSun: 0, peak: 1, stars: 0, bob: 1, backwards: false, pollenTint: .8, bulbPos: [0, -100, 0], bulbColour: [0, 0, 0],
   grab: true, notes: true, sparks: true, brushSound: true, bokehPalette: 'night', handCursor: true, handScale: .7,
   clearing: [0, 0, 0], plantGroups: ['herbarium', 'fgc'], poleLateral: 3.2, payphoneEvery: 6, payphoneOffset: 0, festival: false,
+  festivalLight: 1, festivalEmission: 1, festivalVisible: true,
 };
 export const LOOKS = {
   nightBlue: {skyTop: '#06123f', skyHorizon: '#1d4fd6', flash: '#eef3ff', power: 6, exposure: 1.3, hue: 0, sat: .7, ridge: .5, trees: .7, lights: .5, haze: .6,
@@ -84,6 +85,7 @@ const linear = hex => [1, 3, 5].map(i => Math.pow(parseInt(hex.slice(i, i + 2), 
 const COMMON = `
 uniform vec3 uCam, uFwd, uFlash, uSkyH;
 uniform float uHue, uSat, uHdr, uCone, uHaze, uAmbient;
+uniform vec3 uFestivalPos[4], uFestivalCol[4]; uniform int uFestivalCount;
 uniform vec3 uBulbPos, uBulbCol, uMoonDir, uAmbCol, uFlashFar; uniform vec2 uFarRange; uniform float uHazeLift;
 vec3 toLin(vec3 c){ return pow(max(c, 0.), vec3(2.2)); }
 vec3 grade(vec3 c){
@@ -92,12 +94,23 @@ vec3 grade(vec3 c){
   return max(mix(vec3(dot(c, vec3(.299, .587, .114))), c, uSat), 0.);
 }
 // Light from a flash on the camera: inverse-square falloff inside a soft cone.
+vec3 festivalLighting(vec3 world){
+  vec3 light = vec3(0.);
+  for (int i = 0; i < 4; i++) {
+    if (i >= uFestivalCount) break;
+    vec3 delta = world - uFestivalPos[i]; float d2 = dot(delta, delta);
+    // Smooth finite reach, so selecting the next lantern never adds a hard edge.
+    float fade = max(0., 1. - d2 / 64.);
+    light += uFestivalCol[i] * fade * fade / (d2 + .5);
+  }
+  return light;
+}
 vec3 flashLit(vec3 albedo, vec3 world){
   vec3 v = world - uCam; float d2 = dot(v, v);
   float cone = pow(max(dot(v * inversesqrt(d2), uFwd), 0.), uCone);
   vec3 b = world - uBulbPos;
   vec3 flash = mix(uFlash, uFlashFar, smoothstep(uFarRange.x, uFarRange.y, sqrt(d2)));
-  return albedo * (flash * cone / (d2 + .1) + uAmbCol * .012 * uAmbient + uBulbCol / (dot(b, b) + .25));   // .1 keeps the nearest plants from going pure white
+  return albedo * (flash * cone / (d2 + .1) + uAmbCol * .012 * uAmbient + uBulbCol / (dot(b, b) + .25) + festivalLighting(world));   // .1 keeps the nearest plants from going pure white
 }
 // Aerial perspective: with distance, a surface fades toward the darkened horizon
 // colour. The sky's horizon layers use the same colour, so the ground runs into them.
@@ -407,13 +420,14 @@ void main(){
 const SOLID_FS = `#version 300 es
 precision highp float;
 ${COMMON}
-in vec3 vW, vN; in float vRole; in vec2 vUV; uniform vec3 uAlbedo, uPalette[9]; uniform float uFlat, uTextured; uniform sampler2D uSolidTex; out vec4 o;
+in vec3 vW, vN; in float vRole; in vec2 vUV; uniform vec3 uAlbedo, uPalette[9]; uniform float uFlat, uTextured, uFestivalEmission; uniform sampler2D uSolidTex; out vec4 o;
 void main(){
   vec3 l = normalize(uCam - vW), n = normalize(vN);
   n = dot(n, l) < 0. ? -n : n;   // meshes are drawn two-sided
   float facing = uFlat > .5 ? 1. : .25 + .75 * max(dot(n, l), 0.);
   vec3 albedo = uTextured > .5 ? texture(uSolidTex, vUV).rgb : vRole < -.5 ? uAlbedo : uPalette[int(vRole + .5)];
-  o = vec4(hazed(flashLit(grade(toLin(albedo)), vW) * facing, vW) * uHdr, 1.);
+  vec3 emission = vRole < -.5 ? toLin(albedo) * vec3(5., 3.2, 1.8) * uFestivalEmission : vec3(0.);
+  o = vec4(hazed(flashLit(grade(toLin(albedo)), vW) * facing + emission, vW) * uHdr, 1.);
 }`;
 
 const POLLEN_VS = `#version 300 es
@@ -1023,6 +1037,8 @@ function drawPalms(cam, vp) {
 // shader and lighting; geometry is exported by build_props.cjs.
 const festivalMeshes = new Map();
 const FESTIVAL_NAMES = ['banderitas', 'parol', 'chochin', 'koinobori'];
+const festivalInstances = [], festivalLightPositions = new Float32Array(12), festivalLightColours = new Float32Array(12);
+let festivalLightCount = 0;
 async function loadFestival() {
   await Promise.all(FESTIVAL_NAMES.map(async name => {
     const base = DATA + 'festival/' + name;
@@ -1034,39 +1050,61 @@ async function loadFestival() {
     gl.bindTexture(gl.TEXTURE_2D, tex);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
     gl.generateMipmap(gl.TEXTURE_2D); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
-    image.close(); festivalMeshes.set(name, {...mesh, tex});
+    image.close(); festivalMeshes.set(name, {...mesh, tex, light: meta.light});
   }));
 }
-function drawFestival(cam, vp) {
+function prepareFestival(cam) {
+  festivalInstances.length = 0; festivalLightCount = 0;
+  festivalLightPositions.fill(0); festivalLightColours.fill(0);
   if (!S.festival || !festivalMeshes.size) return;
-  const u = P.solid.u, d = cam.dir, r = [-d[1], d[0]], counts = {};
-  gl.useProgram(P.solid.p); common(P.solid, cam);
-  gl.uniformMatrix4fv(u.uVP, false, vp); gl.uniform1f(u.uFlat, 0);
-  gl.uniform1f(u.uWind, 0); gl.uniform1f(u.uTime, time);
-  gl.uniform1f(u.uFestival, 1); gl.uniform1f(u.uFlutter, .08 + S.wind * .2);
-  gl.uniform1f(u.uTextured, 1); gl.activeTexture(gl.TEXTURE2); gl.uniform1i(u.uSolidTex, 2);
-  const draw = (name, along, across, yaw, phase) => {
+  const d = cam.dir, r = [-d[1], d[0]], lights = [];
+  const place = (name, along, across, yaw, phase) => {
     const mesh = festivalMeshes.get(name), c = Math.cos(yaw), s = Math.sin(yaw);
     const ax = [r[0] * c - d[0] * s, r[1] * c - d[1] * s];
     const az = [-r[0] * s - d[0] * c, -r[1] * s - d[1] * c];
     const base = [along * d[0] + across * r[0], along * d[1] + across * r[1]];
-    gl.uniformMatrix4fv(u.uModel, false, frameMatrix(ax, az, base)); gl.uniform1f(u.uPhase, phase);
-    gl.bindTexture(gl.TEXTURE_2D, mesh.tex); gl.bindVertexArray(mesh.vao); gl.drawArrays(gl.TRIANGLES, 0, mesh.count);
-    counts[name] = (counts[name] || 0) + 1;
+    festivalInstances.push({name, mesh, matrix: frameMatrix(ax, az, base), phase});
+    if (mesh.light) {
+      const light = mesh.light, [x, y, z] = light.position;
+      const p = [base[0] + ax[0] * x + az[0] * z, y, base[1] + ax[1] * x + az[1] * z];
+      lights.push({name, p, c: linear(light.colour).map(c => c * light.power * S.festivalLight), d2: p.reduce((sum, v, i) => sum + (v - cam.eye[i]) ** 2, 0)});
+    }
   };
   // Index-addressed stations stream indefinitely; no objects accumulate. The
   // same station has the same arrangement when reached from either direction.
   const first = Math.max(0, Math.floor((travel - 12) / 18)), last = Math.ceil((travel + 65) / 18);
   for (let k = first; k <= last; k++) {
     const rnd = seeded(1016 + k * 7919), along = 9 + k * 18 + rnd() * 4;
-    if (rnd() < .55) draw('banderitas', along, 0, (rnd() - .5) * .25, k * 2.7);
+    if (rnd() < .55) place('banderitas', along, 0, (rnd() - .5) * .25, k * 2.7);
     const name = FESTIVAL_NAMES[1 + Math.floor(rnd() * 3)], side = rnd() < .5 ? -1 : 1;
-    draw(name, along + 4, side * (2 + rnd() * .8), side * (.12 + rnd() * .4), k * 3.1);
-    if (rnd() < .3) draw(FESTIVAL_NAMES[1 + Math.floor(rnd() * 3)], along + 10, -side * 2.5, -.3 * side, k * 1.3);
+    place(name, along + 4, side * (2 + rnd() * .8), side * (.12 + rnd() * .4), k * 3.1);
+    if (rnd() < .3) place(FESTIVAL_NAMES[1 + Math.floor(rnd() * 3)], along + 10, -side * 2.5, -.3 * side, k * 1.3);
+  }
+  // Only four local sources reach the shaders, independently of route length.
+  const nearby = lights.sort((a, b) => a.d2 - b.d2).slice(0, 4);
+  for (const light of nearby) {
+    festivalLightPositions.set(light.p, festivalLightCount * 3); festivalLightColours.set(light.c, festivalLightCount * 3); festivalLightCount++;
+  }
+  canvas.dataset.festivalLights = String(festivalLightCount);
+  canvas.dataset.festivalLightTypes = JSON.stringify(nearby.map(light => light.name));
+  canvas.dataset.festivalLightPositions = JSON.stringify([...festivalLightPositions.slice(0, festivalLightCount * 3)]);
+  canvas.dataset.festivalStations = first + ':' + last;
+}
+function drawFestival(cam, vp) {
+  if (!S.festival || !festivalMeshes.size || !S.festivalVisible) return;
+  const u = P.solid.u, counts = {};
+  gl.useProgram(P.solid.p); common(P.solid, cam);
+  gl.uniformMatrix4fv(u.uVP, false, vp); gl.uniform1f(u.uFlat, 0);
+  gl.uniform1f(u.uWind, 0); gl.uniform1f(u.uTime, time);
+  gl.uniform1f(u.uFestival, 1); gl.uniform1f(u.uFestivalEmission, S.festivalEmission); gl.uniform1f(u.uFlutter, .08 + S.wind * .2);
+  gl.uniform1f(u.uTextured, 1); gl.activeTexture(gl.TEXTURE2); gl.uniform1i(u.uSolidTex, 2);
+  for (const {name, mesh, matrix, phase} of festivalInstances) {
+    gl.uniformMatrix4fv(u.uModel, false, matrix); gl.uniform1f(u.uPhase, phase);
+    gl.bindTexture(gl.TEXTURE_2D, mesh.tex); gl.bindVertexArray(mesh.vao); gl.drawArrays(gl.TRIANGLES, 0, mesh.count);
+    counts[name] = (counts[name] || 0) + 1;
   }
   canvas.dataset.festival = JSON.stringify(counts);
-  canvas.dataset.festivalStations = first + ':' + last;
-  gl.uniform1f(u.uFestival, 0); gl.uniform1f(u.uFlutter, 0); gl.uniform1f(u.uTextured, 0);
+  gl.uniform1f(u.uFestival, 0); gl.uniform1f(u.uFestivalEmission, 0); gl.uniform1f(u.uFlutter, 0); gl.uniform1f(u.uTextured, 0);
   gl.activeTexture(gl.TEXTURE0);
 }
 
@@ -1338,6 +1376,8 @@ function common(prog, cam) {
   if (u.uAmbient) gl.uniform1f(u.uAmbient, value('ambient'));
   if (u.uBulbPos) { gl.uniform3fv(u.uBulbPos, S.bulbPos); gl.uniform3fv(u.uBulbCol, S.bulbColour); }
   if (u.uMoonDir) gl.uniform3fv(u.uMoonDir, S.moonDir);
+  if (u.uFestivalCount) { gl.uniform1i(u.uFestivalCount, festivalLightCount);
+    gl.uniform3fv(u['uFestivalPos[0]'], festivalLightPositions); gl.uniform3fv(u['uFestivalCol[0]'], festivalLightColours); }
   if (u.uSide) gl.uniform1f(u.uSide, laneSide());
   if (u.uAmbCol) gl.uniform3fv(u.uAmbCol, linear(S.ambientColour || S.skyHorizon));
   if (u.uFlashFar) { gl.uniform3fv(u.uFlashFar, linear(S.flashFar || S.flash).map(c => c * value('power'))); gl.uniform2fv(u.uFarRange, S.farRange); }
@@ -1355,6 +1395,7 @@ function render() {
   const view = viewMatrix(cam.eye, cam.fwd), vp = multiply(perspective(fovy, aspect, .03, 220), view.m);
   brush.view = {eye: cam.eye, fwd: cam.fwd, dir: cam.dir, r: view.r, u: view.u, tanX: Math.tan(fovy / 2) * aspect, tanY: Math.tan(fovy / 2)};
 
+  prepareFestival(cam);
   gl.bindFramebuffer(gl.FRAMEBUFFER, targets.ms); gl.viewport(0, 0, w, h);
   gl.disable(gl.BLEND); gl.disable(gl.DEPTH_TEST); gl.depthMask(false);
   // Sky first, behind everything.

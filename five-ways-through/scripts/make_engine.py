@@ -29,6 +29,7 @@ export const S = {
   ambient: 1, bulbPos: [0, -100, 0], bulbColour: [0, 0, 0],
   grab: true, notes: true, sparks: true, brushSound: true, bokehPalette: 'night', handCursor: true, handScale: .7,
   plantGroups: ['herbarium', 'fgc'], poleLateral: 3.2, payphoneEvery: 6, payphoneOffset: 0, festival: false,
+  festivalLight: 1, festivalEmission: 1, festivalVisible: true,
 };
 export const LOOKS = {
   nightBlue: {skyTop: '#06123f', skyHorizon: '#1d4fd6', flash: '#eef3ff', power: 6, exposure: 1.3, hue: 0, sat: .7, ridge: .5, trees: .7, lights: .5, haze: .6,
@@ -530,6 +531,33 @@ export function applyLook(look) {""")
     rep("  drawPalms(cam, vp);", "  drawPalms(cam, vp);\n  drawShide(cam, vp);\n  drawFestival(cam, vp);")
     festival_runtime = io.open(os.path.join(HERE, 'festival-runtime.js'), encoding='utf-8').read()
     rep("// ---------- brushing ----------", festival_runtime + "\n// ---------- brushing ----------")
+    # Lantern surfaces emit into the existing bloom pass. Four nearby sources
+    # also illuminate cards, grass, ground, and solids through COMMON.
+    rep("uniform vec3 uBulbPos, uBulbCol, uMoonDir, uAmbCol, uFlashFar;",
+        "uniform vec3 uFestivalPos[4], uFestivalCol[4]; uniform int uFestivalCount;\n"
+        "uniform vec3 uBulbPos, uBulbCol, uMoonDir, uAmbCol, uFlashFar;")
+    rep("vec3 flashLit(vec3 albedo, vec3 world){", """vec3 festivalLighting(vec3 world){
+  vec3 light = vec3(0.);
+  for (int i = 0; i < 4; i++) {
+    if (i >= uFestivalCount) break;
+    vec3 delta = world - uFestivalPos[i]; float d2 = dot(delta, delta);
+    // Smooth finite reach, so selecting the next lantern never adds a hard edge.
+    float fade = max(0., 1. - d2 / 64.);
+    light += uFestivalCol[i] * fade * fade / (d2 + .5);
+  }
+  return light;
+}
+vec3 flashLit(vec3 albedo, vec3 world){""")
+    rep("uBulbCol / (dot(b, b) + .25));", "uBulbCol / (dot(b, b) + .25) + festivalLighting(world));")
+    rep("  if (u.uMoonDir) gl.uniform3fv(u.uMoonDir, S.moonDir);",
+        "  if (u.uMoonDir) gl.uniform3fv(u.uMoonDir, S.moonDir);\n"
+        "  if (u.uFestivalCount) { gl.uniform1i(u.uFestivalCount, festivalLightCount);\n"
+        "    gl.uniform3fv(u['uFestivalPos[0]'], festivalLightPositions); gl.uniform3fv(u['uFestivalCol[0]'], festivalLightColours); }")
+    rep("  gl.bindFramebuffer(gl.FRAMEBUFFER, targets.ms);", "  prepareFestival(cam);\n  gl.bindFramebuffer(gl.FRAMEBUFFER, targets.ms);")
+    rep("uniform float uFlat, uTextured;", "uniform float uFlat, uTextured, uFestivalEmission;")
+    rep("  o = vec4(hazed(flashLit(grade(toLin(albedo)), vW) * facing, vW) * uHdr, 1.);",
+        "  vec3 emission = vRole < -.5 ? toLin(albedo) * vec3(5., 3.2, 1.8) * uFestivalEmission : vec3(0.);\n"
+        "  o = vec4(hazed(flashLit(grade(toLin(albedo)), vW) * facing + emission, vW) * uHdr, 1.);")
     rep("// ---------- brushing ----------", SHIDE_JS + "\n// ---------- brushing ----------")
     rep("gels: ['#ffffff', '#ffffff', '#ffffff', '#ffffff'], gel: 0,", "gels: ['#ffffff', '#ffffff', '#ffffff', '#ffffff'], gel: 0, shide: [],")
 

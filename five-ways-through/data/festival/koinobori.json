@@ -9,5 +9,5 @@
     4.199999809265137,
     0.40400000074505804
   ],
-  "layout": "float32 x, y, z, nx, ny, nz, u, v, flexRole per vertex; triangles, no index"
+  "layout": "float32 x, y, z, nx, ny, nz, u, v, materialRole (-1 emissive, 0 rigid, 3..4 flex) per vertex; triangles, no index"
 }

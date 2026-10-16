@@ -119,6 +119,51 @@ async function main(){
         return changed;
       });
       if(pixels<200)throw Error('Festival geometry not visibly contributing: '+pixels+' pixels');
+      const lantern=await page.evaluate(async()=>{
+        const m=await import('../engine/scene.js'),v=m.brush.view;
+        const xyz=JSON.parse(document.querySelector('canvas').dataset.festivalLightPositions),ahead=[];
+        for(let i=0;i<xyz.length;i+=3){const p=xyz.slice(i,i+3),along=p[0]*v.dir[0]+p[2]*v.dir[1];if(along>m.getTravel()+6)ahead.push({p,along});}
+        const target=ahead.sort((a,b)=>a.along-b.along)[0];if(!target)throw Error('No lantern ahead');
+        m.S.walking=true;m.S.speed=6.5;sceneStep((target.along-4.5-m.getTravel())/6.5);m.S.walking=false;
+        const eye=m.brush.view.eye;m.S.yaw=Math.atan2(target.p[0]-eye[0],-(target.p[2]-eye[2]));m.S.tilt=16;
+        sceneStep(0);return target.p;
+      });
+      if(previews)await page.screenshot({path:path.join(previews,'hours-lantern-lit.png')});
+      const lighting=await page.evaluate(async()=>{
+        const m=await import('../engine/scene.js'),c=document.querySelector('canvas'),gl=c.getContext('webgl2');
+        const read=()=>{const a=new Uint8Array(c.width*c.height*4);gl.readPixels(0,0,c.width,c.height,gl.RGBA,gl.UNSIGNED_BYTE,a);return a;};
+        const changed=(a,b)=>{let n=0;for(let i=0;i<a.length;i+=4)if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])>10)n++;return n;};
+        // Exclude every festival mesh and its bloom, leaving illumination on
+        // existing plants/ground as the only source of image differences.
+        m.S.festivalVisible=false;m.S.festivalLight=0;sceneStep(0);const dark=read();
+        m.S.festivalLight=1;sceneStep(0);const spill=read();
+        m.S.festivalVisible=true;m.S.festivalLight=0;m.S.festivalEmission=0;sceneStep(0);const opaque=read();
+        m.S.festivalEmission=1;sceneStep(0);const emission=read();m.S.festivalLight=1;sceneStep(0);
+        const lights=+c.dataset.festivalLights;if(lights>4||lights<1)throw Error('Invalid light count: '+lights);
+        return {spillPixels:changed(dark,spill),emissivePixels:changed(opaque,emission),lights};
+      });
+      if(lighting.spillPixels<200||lighting.emissivePixels<30)throw Error('Lantern lighting not visible: '+JSON.stringify(lighting));
+      if(previews){
+        await page.evaluate(async()=>{const m=await import('../engine/scene.js');m.S.festivalVisible=false;m.S.festivalLight=0;sceneStep(0);});
+        await page.screenshot({path:path.join(previews,'hours-spill-off.png')});
+        await page.evaluate(async()=>{const m=await import('../engine/scene.js');m.S.festivalLight=1;sceneStep(0);});
+        await page.screenshot({path:path.join(previews,'hours-spill-on.png')});
+        await page.evaluate(async()=>{const m=await import('../engine/scene.js');m.S.festivalVisible=true;sceneStep(0);});
+      }
+      const parolEmission=await page.evaluate(async()=>{
+        const m=await import('../engine/scene.js'),c=document.querySelector('canvas'),gl=c.getContext('webgl2');
+        const xyz=JSON.parse(c.dataset.festivalLightPositions),types=JSON.parse(c.dataset.festivalLightTypes),index=types.indexOf('parol');
+        if(index<0)throw Error('No parol in light fixture');
+        const p=xyz.slice(index*3,index*3+3),d=m.brush.view.dir,along=p[0]*d[0]+p[2]*d[1],delta=along-4.5-m.getTravel();
+        m.S.walking=true;m.S.speed=Math.sign(delta)*6.5;sceneStep(Math.abs(delta)/6.5);m.S.walking=false;
+        const eye=m.brush.view.eye;m.S.yaw=Math.atan2(p[0]-eye[0],-(p[2]-eye[2]));m.S.tilt=16;m.S.festivalLight=0;
+        const read=()=>{const a=new Uint8Array(c.width*c.height*4);gl.readPixels(0,0,c.width,c.height,gl.RGBA,gl.UNSIGNED_BYTE,a);return a;};
+        m.S.festivalEmission=0;sceneStep(0);const dark=read();m.S.festivalEmission=1;sceneStep(0);const bright=read();
+        let changed=0;for(let i=0;i<dark.length;i+=4)if(Math.abs(dark[i]-bright[i])+Math.abs(dark[i+1]-bright[i+1])+Math.abs(dark[i+2]-bright[i+2])>10)changed++;
+        m.S.festivalLight=1;sceneStep(0);return changed;
+      });
+      if(parolEmission<30)throw Error('Parol not emissive: '+parolEmission);
+      if(previews)await page.screenshot({path:path.join(previews,'hours-parol-lit.png')});
       const streamed=await page.evaluate(async()=>{
         const m=await import('../engine/scene.js');m.S.walking=true;m.S.speed=6.5;sceneStep(200);m.S.walking=false;sceneStep(0);
         return {counts:JSON.parse(document.querySelector('canvas').dataset.festival),stations:document.querySelector('canvas').dataset.festivalStations};
@@ -127,7 +172,7 @@ async function main(){
       for(let i=0;i<34;i++)await page.keyboard.press('ArrowRight');
       await page.evaluate(()=>sceneStep(0));
       if(previews)await page.screenshot({path:path.join(previews,'hours-amber.png')});
-      console.log('Hours: '+JSON.stringify({initial:stations,streamed,changedPixels:pixels}));
+      console.log('Hours: '+JSON.stringify({initial:stations,streamed,changedPixels:pixels,lantern,lighting,parolEmission}));
       if(errors.length)throw Error(errors.join('\n'));
       console.log('No page errors.');
     }

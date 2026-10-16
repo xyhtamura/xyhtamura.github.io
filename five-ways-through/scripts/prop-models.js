@@ -96,7 +96,7 @@ export function exportPhone(model, flex = false) {
     for(let i=0;i<p.count;i++){
       vertices.push(p.getX(i),p.getY(i),p.getZ(i),n.getX(i),n.getY(i),n.getZ(i),role,0);
       const delta=mesh.userData.flexAxis==='x'?p.getX(i)-mesh.userData.anchorX:mesh.userData.anchorY-p.getY(i);
-      if(flex)vertices.push(mesh.userData.flex ? 3+Math.max(0,Math.min(1,delta/(mesh.userData.flexLength||1))) : 0);
+      if(flex)vertices.push(mesh.userData.emissive ? -1 : mesh.userData.flex ? 3+Math.max(0,Math.min(1,delta/(mesh.userData.flexLength||1))) : 0);
     }
     geometry.dispose();
   });
@@ -106,7 +106,7 @@ export function exportPhone(model, flex = false) {
   const stride=flex?9:8;
   for(let i=0;i<vertices.length;i+=stride){vertices[i+6]=(vertices[i+6]+.5)/colours.length;vertices[i+7]=.5;}
   const bounds=new THREE.Box3().setFromObject(model),size=bounds.getSize(new THREE.Vector3());
-  return {vertices,texture:canvas.toDataURL('image/webp',1),meta:{source:'scripts/prop-models.js',vertices:vertices.length/stride,stride,uv:true,roles:null,size:size.toArray(),layout:'float32 x, y, z, nx, ny, nz, u, v'+(flex?', flexRole':'')+' per vertex; triangles, no index'}};
+  return {vertices,texture:canvas.toDataURL('image/webp',1),meta:{source:'scripts/prop-models.js',vertices:vertices.length/stride,stride,uv:true,roles:null,size:size.toArray(),...(model.userData.light?{light:model.userData.light}:{}),layout:'float32 x, y, z, nx, ny, nz, u, v'+(flex?', materialRole (-1 emissive, 0 rigid, 3..4 flex)':'')+' per vertex; triangles, no index'}};
 }
 
 function panel(group,colour,points,flex=false,anchorY=0,flexLength=1){
@@ -129,11 +129,12 @@ export function banderitas(){
 }
 export function parol(){
   const g=new THREE.Group();mast(g,0,3.6);
+  g.userData.light={position:[.65,2.8,.08],colour:'#ffd079',power:18};
   tube(g,'#78754b',[[0,3.5,0],[.3,3.55,0],[.65,3.35,0]],.016,8);
   const x=.65,y=2.8,points=[];
   for(let i=0;i<10;i++){const a=Math.PI/2+i*Math.PI/5,r=i%2?.23:.53;points.push([x+Math.cos(a)*r,y+Math.sin(a)*r,.04]);}
   for(let i=0;i<10;i++){
-    panel(g,i%2?'#e0b94c':'#bf4e3d',[[x,y,.12],points[i],points[(i+1)%10]]);
+    panel(g,i%2?'#e0b94c':'#bf4e3d',[[x,y,.12],points[i],points[(i+1)%10]]).userData.emissive=true;
     tube(g,'#e5c976',[points[i],points[(i+1)%10]],.009,2);
   }
   for(const side of [-1,1])for(let i=0;i<4;i++){
@@ -144,8 +145,9 @@ export function parol(){
 }
 export function chochin(){
   const g=new THREE.Group();mast(g,0,3.65);
+  g.userData.light={position:[.65,2.8,0],colour:'#ffb76b',power:16};
   tube(g,'#777850',[[0,3.5,0],[.65,3.5,0],[.65,3.25,0]],.016,5);
-  const body=new THREE.Mesh(new THREE.SphereGeometry(.29,18,14),material('#d87455'));body.scale.y=1.35;body.position.set(.65,2.8,0);g.add(body);
+  const body=new THREE.Mesh(new THREE.SphereGeometry(.29,18,14),material('#d87455'));body.scale.y=1.35;body.position.set(.65,2.8,0);body.userData.emissive=true;g.add(body);
   for(let i=-5;i<=5;i++){
     const y=i*.06,r=.294*Math.sqrt(1-(y/.4)**2);
     const ring=new THREE.Mesh(new THREE.TorusGeometry(r,.006,4,24),material('#8c4437'));ring.rotation.x=Math.PI/2;ring.position.set(.65,2.8+y,0);g.add(ring);
