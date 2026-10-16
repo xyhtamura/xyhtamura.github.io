@@ -1,15 +1,13 @@
 {
- "source": "Payphone.obj",
- "scale": 0.01,
- "vertices": 27522,
- "stride": 8,
- "pieces": 33,
- "roles": null,
- "uv": true,
- "layout": "float32 x, y, z, nx, ny, nz, u, v per vertex; triangles, no index",
- "size": [
-  0.56,
-  1.7543,
-  0.33
- ]
+  "source": "scripts/prop-models.js",
+  "vertices": 31572,
+  "stride": 8,
+  "uv": true,
+  "roles": null,
+  "size": [
+    0.46000000834465027,
+    1.6100000003725292,
+    0.40850000191759317
+  ],
+  "layout": "float32 x, y, z, nx, ny, nz, u, v per vertex; triangles, no index"
 }

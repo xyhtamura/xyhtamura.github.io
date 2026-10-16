@@ -142,5 +142,21 @@
   "quads": 2658,
   "lodVerts": 364,
   "erased": 0
+ },
+ {
+  "name": "geta",
+  "width": 492,
+  "height": 366,
+  "joints": 1,
+  "verts": 4,
+  "quads": 1
+ },
+ {
+  "name": "tsinelas",
+  "width": 449,
+  "height": 227,
+  "joints": 1,
+  "verts": 4,
+  "quads": 1
  }
 ]

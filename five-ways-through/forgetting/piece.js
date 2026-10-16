@@ -18,7 +18,8 @@ Object.assign(S, {speed: .38, path: true, height: 1.05, tilt: -15, fov: 58, sway
 
 // Long side in metres, roughly true to life and a little generous so each reads from standing height.
 const THINGS = {abaniko_fan: .45, backpack_teal: .5, bayong_beaded_bag: .45, clothes_hanger_blue: .42, envelope_kraft: .32,
-  index_card_white: .2, jeans_blue: .95, kamatis_tomatoes: .22, onion_red: .18, teddy_bear_brown: .4, tshirt_red: .7, tumbler_plastic_blue: .24};
+  index_card_white: .2, jeans_blue: .95, kamatis_tomatoes: .22, onion_red: .18, teddy_bear_brown: .4, tshirt_red: .7, tumbler_plastic_blue: .24,
+  geta: .3, tsinelas: .36};
 const FIRST = -3, SPACING = 5.5;   // the first is already in view, behind the start
 let placed = [], held = null, voice = null, carried = [], synth = null, end = null, lastU = 0, finished = false;
 

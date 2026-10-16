@@ -1,0 +1,1 @@
+{"name":"tsinelas","texture":"tsinelas.webp","width":449,"height":227,"source":"scripts/prop-models.js","nodes":[[224.5,227,-1,0,1]],"verts":[0,0,0,0,255,449,0,0,0,255,449,227,0,0,255,0,227,0,0,255],"quads":[0,1,2,3]}

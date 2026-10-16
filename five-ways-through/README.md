@@ -59,3 +59,17 @@ No build step and no libraries. Served by the root server at
 
 For testing in a page that is not being painted, `sceneStep(seconds)` advances
 and draws one frame.
+
+## Prop models
+
+`scripts/prop-models.js` builds the green Japanese public phone and a wooden
+geta. It also reads Foam Green City's `household-tools.js` to reuse its tsinelas
+geometry. `scripts/build_props.cjs` exports the phone as a textured mesh and
+renders both kinds of footwear into rigid cards for *Forgetting*.
+
+From this folder, run `node scripts/build_props.cjs --verify` with Playwright
+available on `NODE_PATH` and Microsoft Edge installed. The workspace must also
+contain `foam-green-city/` and its existing Three.js vendor folder. Optional
+`--workspace PATH` selects that workspace, and `--previews PATH` saves prop
+renders and scene captures. These dependencies are used only to build assets;
+the published pieces load the exported files from `data/`.

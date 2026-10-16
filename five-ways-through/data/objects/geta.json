@@ -1,0 +1,1 @@
+{"name":"geta","texture":"geta.webp","width":492,"height":366,"source":"scripts/prop-models.js","nodes":[[246,366,-1,0,1]],"verts":[0,0,0,0,255,492,0,0,0,255,492,366,0,0,255,0,366,0,0,255],"quads":[0,1,2,3]}
