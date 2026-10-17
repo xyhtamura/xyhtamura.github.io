@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>DriftGlass - a lens that wanders</title>
 <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
 :root{
   --DW:520px;
@@ -38,14 +41,6 @@
 @font-face{
   font-family:"Karrik Local";
   src:url("../fonts/Karrik-Regular.woff2") format("woff2");
-  font-weight:normal;
-  font-style:normal;
-  font-display:swap;
-}
-
-@font-face{
-  font-family:"Blue Screen";
-  src:url("../fonts/personal-use/bluescreen.ttf") format("truetype");
   font-weight:normal;
   font-style:normal;
   font-display:swap;
@@ -142,7 +137,7 @@ a{ color:inherit; }
 }
 .nameplate p{
   margin:5px 0 0;
-  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-family:"Share Tech Mono",monospace;
   font-size:11px;
   letter-spacing:.08em;
   color:#dffaf3;
@@ -308,7 +303,7 @@ a{ color:inherit; }
   padding:24px;
   text-align:center;
   color:#9fc9c5;
-  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-family:"Share Tech Mono",monospace;
   font-size:13px;
   letter-spacing:.05em;
   text-shadow:0 0 10px rgba(127,255,230,.28);
@@ -325,7 +320,7 @@ a{ color:inherit; }
   color:#cffff5;
   background:rgba(4,17,21,.54);
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.14), 0 4px 12px rgba(0,0,0,.24);
-  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-family:"Share Tech Mono",monospace;
   font-size:10px;
   letter-spacing:.06em;
   white-space:nowrap;
@@ -358,7 +353,7 @@ a{ color:inherit; }
 .locator{
   min-width:0;
   color:var(--phosphor);
-  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-family:"Share Tech Mono",monospace;
   font-size:17px;
   letter-spacing:.05em;
   text-shadow:0 0 9px rgba(127,255,230,.56);
@@ -393,7 +388,7 @@ a{ color:inherit; }
 .aperture-bars i:nth-child(5){ animation-delay:.52s; }
 @keyframes bar{ 0%,100%{ height:24%; } 42%{ height:92%; } 72%{ height:46%; } }
 .meta,.status{
-  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-family:"Share Tech Mono",monospace;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
@@ -438,7 +433,7 @@ a{ color:inherit; }
   align-items:center;
   justify-content:center;
   color:var(--phosphor);
-  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-family:"Share Tech Mono",monospace;
   font-size:11px;
   text-shadow:0 0 6px rgba(127,255,230,.62);
   pointer-events:none;
@@ -475,7 +470,7 @@ a{ color:inherit; }
   display:block;
   margin-top:3px;
   color:rgba(7,23,28,.74);
-  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-family:"Share Tech Mono",monospace;
   font-size:9px;
   font-weight:400;
   text-transform:none;
@@ -510,7 +505,7 @@ a{ color:inherit; }
   flex:0 0 42px;
   color:#e9fffa;
   opacity:.88;
-  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-family:"Share Tech Mono",monospace;
   font-size:11px;
   letter-spacing:.04em;
 }
@@ -572,7 +567,7 @@ a{ color:inherit; }
 .readval{
   flex:0 0 80px;
   color:#d7fff7;
-  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-family:"Share Tech Mono",monospace;
   font-size:11px;
   text-align:right;
 }
@@ -590,7 +585,7 @@ a{ color:inherit; }
   background:
     linear-gradient(180deg, rgba(8,34,41,.88), rgba(7,20,27,.94));
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.14), inset 0 2px 8px rgba(0,0,0,.42);
-  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-family:"Share Tech Mono",monospace;
   font-size:11px;
   outline:none;
   appearance:none;
@@ -602,7 +597,7 @@ a{ color:inherit; }
   top:50%;
   transform:translateY(-50%);
   color:#94e5db;
-  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-family:"Share Tech Mono",monospace;
   font-size:10px;
   pointer-events:none;
 }
@@ -644,7 +639,7 @@ a{ color:inherit; }
   color:#e7fff9;
   background:rgba(6,22,28,.68);
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.13), inset 0 2px 8px rgba(0,0,0,.45);
-  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-family:"Share Tech Mono",monospace;
   font-size:11px;
   outline:none;
 }
@@ -665,7 +660,7 @@ a{ color:inherit; }
   color:#d9fff7;
   background:rgba(6,22,28,.58);
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.13), 0 3px 8px rgba(0,0,0,.18);
-  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-family:"Share Tech Mono",monospace;
   font-size:10px;
   letter-spacing:.04em;
 }
@@ -679,7 +674,7 @@ a{ color:inherit; }
   min-width:0;
   color:#b7e7df;
   opacity:.72;
-  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-family:"Share Tech Mono",monospace;
   font-size:10px;
   white-space:nowrap;
   overflow:hidden;
@@ -702,7 +697,7 @@ a{ color:inherit; }
   justify-content:center;
   white-space:nowrap;
   color:#e9fff9;
-  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-family:"Share Tech Mono",monospace;
   font-size:12px;
   letter-spacing:.05em;
   text-shadow:0 0 8px rgba(127,255,230,.42);
@@ -722,7 +717,7 @@ a{ color:inherit; }
   text-align:center;
   color:#cff3ee;
   opacity:.72;
-  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-family:"Share Tech Mono",monospace;
   font-size:10px;
   line-height:1.35;
   text-shadow:0 2px 8px rgba(0,0,0,.5);
@@ -770,7 +765,7 @@ a{ color:inherit; }
 .log-head .ct{
   margin-left:6px;
   color:#a8d7d2;
-  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-family:"Share Tech Mono",monospace;
   font-size:12px;
 }
 .log-x{
@@ -792,7 +787,7 @@ a{ color:inherit; }
   padding:28px 16px;
   color:#89aaa6;
   text-align:center;
-  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-family:"Share Tech Mono",monospace;
   font-size:12px;
 }
 .entry{
@@ -820,7 +815,7 @@ a{ color:inherit; }
 .e-meta,.e-note{
   margin-top:4px;
   color:#87aaa6;
-  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-family:"Share Tech Mono",monospace;
   font-size:10px;
   line-height:1.35;
 }
@@ -837,7 +832,7 @@ a{ color:inherit; }
   flex:1;
   min-width:0;
   color:#83aaa5;
-  font-family:"Blue Screen","Share Tech Mono",monospace;
+  font-family:"Share Tech Mono",monospace;
   font-size:10px;
   line-height:1.35;
 }
