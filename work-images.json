@@ -7,6 +7,11 @@
   },
   "works": [
     {
+      "id": "xyh-fonts",
+      "image": "img/works/xyh-fonts.jpg",
+      "alt": "Xyh Fonts comparison showing Bract, Sump, and Skirl display typefaces"
+    },
+    {
       "id": "comma-poem-villa",
       "aliases": [
         "a-comma-poem-after-jose-garcia-villas-i-it-was-that-saw-before-the-coming-el-nino"

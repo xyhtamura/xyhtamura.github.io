@@ -1,0 +1,1492 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Xyh Fonts — Bract, Sump, and Skirl</title>
+  <meta name="description" content="Three original Latin display typefaces authored for Xyh Tamura: Bract, Sump, and Skirl. Interactive specimen, type tester, glyph map, and font downloads.">
+  <link rel="shortcut icon" type="image/png" href="../xyhfavicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../xyhfavicon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="../xyh8metal.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../xyh8metal.png">
+
+  <style>
+    @font-face {
+      font-family: 'Xyh Bract';
+      src: url('XyhBract-Regular.woff2?v=1.000') format('woff2'),
+           url('XyhBract-Regular.woff?v=1.000') format('woff'),
+           url('XyhBract-Regular.ttf?v=1.000') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Xyh Sump';
+      src: url('XyhSump-Regular.woff2?v=0.003') format('woff2'),
+           url('XyhSump-Regular.woff?v=0.003') format('woff'),
+           url('XyhSump-Regular.ttf?v=0.003') format('truetype');
+      font-weight: 800;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Xyh Skirl';
+      src: url('XyhSkirl-Oblique.woff2?v=1.001') format('woff2'),
+           url('XyhSkirl-Oblique.woff?v=1.001') format('woff'),
+           url('XyhSkirl-Oblique.ttf?v=1.001') format('truetype');
+      font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+    }
+
+    :root {
+      --bg: #141a1b;
+      --bg-surface: rgba(22, 32, 32, 0.65);
+      --bg-card: rgba(26, 38, 38, 0.55);
+      --border: rgba(180, 212, 200, 0.16);
+      --border-focus: rgba(101, 255, 232, 0.45);
+      --text: #eef2eb;
+      --text-muted: #a6b5b0;
+      --text-dim: #738580;
+      --accent-bract: #76d7be;
+      --accent-sump: #cf9bf5;
+      --accent-skirl: #e8d76d;
+      --accent-design: #c4915c;
+      --chip-bg: rgba(255, 255, 255, 0.08);
+      --chip-border: rgba(255, 255, 255, 0.14);
+      --bubble-tint: linear-gradient(145deg, rgba(101,255,232,0.10), rgba(122,82,243,0.10) 45%, rgba(232,215,109,0.08));
+      --bubble-gloss: linear-gradient(to bottom, rgba(255,255,255,0.08), transparent 45%);
+      --bubble-ring: inset 0 1px 0 rgba(255,255,255,0.15);
+      --shadow: 0 12px 32px rgba(2, 14, 12, 0.45);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 22px;
+      --radius-pill: 9999px;
+    }
+
+    body[data-theme="bract"] {
+      --bg: #e6e2d1;
+      --bg-surface: rgba(245, 242, 233, 0.85);
+      --bg-card: #f0ecde;
+      --border: rgba(100, 115, 110, 0.25);
+      --text: #283330;
+      --text-muted: #4f615c;
+      --text-dim: #758682;
+      --bubble-ring: inset 0 1px 0 rgba(255,255,255,0.6);
+      --shadow: 0 8px 24px rgba(70, 80, 75, 0.12);
+    }
+
+    body[data-theme="sump"] {
+      --bg: #d7cbdf;
+      --bg-surface: rgba(232, 222, 240, 0.85);
+      --bg-card: #e4d7ec;
+      --border: rgba(90, 75, 105, 0.25);
+      --text: #283635;
+      --text-muted: #4d5f5e;
+      --text-dim: #728281;
+      --bubble-ring: inset 0 1px 0 rgba(255,255,255,0.6);
+      --shadow: 0 8px 24px rgba(60, 50, 75, 0.14);
+    }
+
+    body[data-theme="skirl"] {
+      --bg: #d5da84;
+      --bg-surface: rgba(228, 233, 150, 0.85);
+      --bg-card: #e1e69b;
+      --border: rgba(100, 95, 50, 0.28);
+      --text: #482154;
+      --text-muted: #663973;
+      --text-dim: #885c95;
+      --bubble-ring: inset 0 1px 0 rgba(255,255,255,0.6);
+      --shadow: 0 8px 24px rgba(75, 40, 85, 0.14);
+    }
+
+    body[data-theme="paper"] {
+      --bg: #f7f6f1;
+      --bg-surface: rgba(255, 255, 255, 0.9);
+      --bg-card: #ffffff;
+      --border: rgba(0, 0, 0, 0.12);
+      --text: #1d2120;
+      --text-muted: #555d5b;
+      --text-dim: #838d8a;
+      --bubble-ring: inset 0 1px 0 rgba(255,255,255,0.9);
+      --shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.55;
+      min-height: 100vh;
+      transition: background-color 0.25s ease, color 0.25s ease;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      transition: opacity 0.2s ease, color 0.2s ease;
+    }
+    a:hover { opacity: 0.85; }
+
+    .site-wrap {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 24px 20px 80px;
+    }
+
+    /* ── NAV BAR ── */
+    header.site-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 20px;
+      background: var(--bg-surface);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      margin-bottom: 28px;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.88rem;
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      background: var(--chip-bg);
+      border: 1px solid var(--border);
+      text-decoration: none;
+      color: var(--text-muted);
+    }
+    .back-link:hover {
+      color: var(--text);
+      border-color: var(--border-focus);
+    }
+
+    .brand-title {
+      font-size: 1.12rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .badge-wardrobe {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      background: rgba(196, 145, 92, 0.2);
+      color: var(--accent-design);
+      border: 1px solid rgba(196, 145, 92, 0.4);
+      font-weight: 600;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .nav-links a {
+      font-size: 0.85rem;
+      text-decoration: none;
+      color: var(--text-muted);
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      transition: all 0.2s ease;
+    }
+    .nav-links a:hover {
+      color: var(--text);
+      background: var(--chip-bg);
+    }
+
+    .theme-picker {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px;
+      border-radius: var(--radius-pill);
+      background: var(--chip-bg);
+      border: 1px solid var(--border);
+    }
+    .theme-btn {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      outline: none;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+    .theme-btn:hover { transform: scale(1.15); }
+    .theme-btn.active { border-color: var(--text); transform: scale(1.1); }
+    .theme-btn[data-theme-name="dark"] { background: #141a1b; }
+    .theme-btn[data-theme-name="bract"] { background: #e6e2d1; }
+    .theme-btn[data-theme-name="sump"] { background: #d7cbdf; }
+    .theme-btn[data-theme-name="skirl"] { background: #d5da84; }
+    .theme-btn[data-theme-name="paper"] { background: #ffffff; }
+
+    /* ── HERO BANNER ── */
+    .hero {
+      position: relative;
+      background: var(--bg-surface);
+      background-image: var(--bubble-tint), var(--bubble-gloss);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 44px 36px 36px;
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+
+    .hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+
+    .hero-headline {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 24px;
+    }
+    .hero-line-bract {
+      font-family: 'Xyh Bract', sans-serif;
+      font-size: clamp(44px, 7vw, 98px);
+      line-height: 1.05;
+      color: var(--accent-bract);
+      letter-spacing: 0;
+    }
+    .hero-line-sump {
+      font-family: 'Xyh Sump', sans-serif;
+      font-size: clamp(38px, 6.2vw, 86px);
+      font-weight: 800;
+      line-height: 1.1;
+      color: var(--accent-sump);
+      letter-spacing: 0;
+    }
+    .hero-line-skirl {
+      font-family: 'Xyh Skirl', serif;
+      font-size: clamp(40px, 6.5vw, 92px);
+      font-style: italic;
+      line-height: 1.1;
+      color: var(--accent-skirl);
+      letter-spacing: 0;
+    }
+
+    .hero-desc {
+      max-width: 78ch;
+      font-size: 1.06rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .tag-chip {
+      font-size: 0.8rem;
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      background: var(--chip-bg);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    /* ── INTERACTIVE PLAYGROUND ── */
+    .section-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 32px 30px;
+      margin-bottom: 32px;
+    }
+
+    .section-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+    .section-subtitle {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    .playground-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px 24px;
+      padding: 16px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 20px;
+    }
+
+    .tool-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .tool-label {
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-dim);
+      font-weight: 600;
+    }
+
+    .segmented-control {
+      display: inline-flex;
+      background: var(--chip-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      padding: 3px;
+      gap: 2px;
+    }
+    .seg-btn {
+      background: transparent;
+      border: none;
+      padding: 5px 13px;
+      border-radius: var(--radius-pill);
+      color: var(--text-muted);
+      font-size: 0.84rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .seg-btn:hover { color: var(--text); }
+    .seg-btn.active {
+      background: var(--text);
+      color: var(--bg);
+      font-weight: 600;
+    }
+
+    .range-control {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .range-control input[type="range"] {
+      width: 140px;
+      accent-color: var(--accent-design);
+    }
+    .range-val {
+      font-family: monospace;
+      font-size: 0.85rem;
+      min-width: 44px;
+      color: var(--text-muted);
+    }
+
+    .presets-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .preset-chip {
+      background: var(--chip-bg);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 4px 11px;
+      border-radius: var(--radius-pill);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .preset-chip:hover {
+      color: var(--text);
+      border-color: var(--border-focus);
+    }
+
+    .tester-canvas {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .test-block {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 22px 24px;
+      transition: border-color 0.2s ease;
+    }
+    .test-block:focus-within {
+      border-color: var(--border-focus);
+    }
+    .test-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .test-meta-badge {
+      font-weight: 600;
+    }
+    .test-meta-badge.bract { color: var(--accent-bract); }
+    .test-meta-badge.sump { color: var(--accent-sump); }
+    .test-meta-badge.skirl { color: var(--accent-skirl); }
+
+    .test-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: inherit;
+      resize: vertical;
+      min-height: 80px;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      font-kerning: normal;
+    }
+    .test-input.font-bract {
+      font-family: 'Xyh Bract', sans-serif;
+    }
+    .test-input.font-sump {
+      font-family: 'Xyh Sump', sans-serif;
+      font-weight: 800;
+    }
+    .test-input.font-skirl {
+      font-family: 'Xyh Skirl', serif;
+      font-style: italic;
+    }
+
+    /* ── WARDROBE ROLES (3 CARDS) ── */
+    .wardrobe-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .face-card {
+      background: var(--bg-surface);
+      background-image: var(--bubble-gloss);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 30px 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .face-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+    }
+    .face-card.bract::before { background: var(--accent-bract); }
+    .face-card.sump::before { background: var(--accent-sump); }
+    .face-card.skirl::before { background: var(--accent-skirl); }
+
+    .face-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 14px;
+    }
+    .face-num {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      font-weight: 600;
+    }
+    .face-version {
+      font-family: monospace;
+      font-size: 0.78rem;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      background: var(--chip-bg);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    .face-name {
+      font-size: 2.4rem;
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+    .face-name.bract { font-family: 'Xyh Bract', sans-serif; color: var(--accent-bract); }
+    .face-name.sump { font-family: 'Xyh Sump', sans-serif; font-weight: 800; color: var(--accent-sump); }
+    .face-name.skirl { font-family: 'Xyh Skirl', serif; font-style: italic; color: var(--accent-skirl); }
+
+    .face-role {
+      font-size: 0.94rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .face-waterfall {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      margin-bottom: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .waterfall-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 8px;
+    }
+    .waterfall-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .waterfall-text {
+      overflow-wrap: anywhere;
+      line-height: 1.15;
+    }
+    .waterfall-size {
+      font-family: monospace;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      flex-shrink: 0;
+    }
+
+    .face-specs {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      margin-bottom: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .face-specs span {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+      padding: 3px 0;
+    }
+
+    .face-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: auto;
+    }
+    .btn-download {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: var(--radius-pill);
+      text-decoration: none;
+      transition: all 0.15s ease;
+      background: var(--chip-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .btn-download:hover {
+      background: var(--text);
+      color: var(--bg);
+      border-color: var(--text);
+    }
+    .btn-download.primary {
+      background: var(--accent-design);
+      color: #1a1510;
+      border-color: var(--accent-design);
+    }
+    .btn-download.primary:hover {
+      background: #dfaa72;
+      color: #1a1510;
+    }
+
+    /* ── WARDROBE COMPARISON SECTION ── */
+    .comparison-sheet {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 24px 28px;
+      margin-bottom: 24px;
+    }
+    .comparison-row {
+      padding: 18px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .comparison-row:last-child { border-bottom: none; }
+    .comparison-label {
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+    .comparison-sample {
+      font-size: clamp(32px, 5.2vw, 68px);
+      line-height: 1.15;
+      overflow-wrap: anywhere;
+    }
+    .comparison-sample.bract { font-family: 'Xyh Bract', sans-serif; color: var(--accent-bract); }
+    .comparison-sample.sump { font-family: 'Xyh Sump', sans-serif; font-weight: 800; color: var(--accent-sump); }
+    .comparison-sample.skirl { font-family: 'Xyh Skirl', serif; font-style: italic; color: var(--accent-skirl); }
+
+    /* ── GLYPHS EXPLORER ── */
+    .glyph-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .glyph-grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
+      gap: 6px;
+      max-height: 480px;
+      overflow-y: auto;
+      padding: 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 20px;
+    }
+
+    .glyph-cell {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.12s ease;
+    }
+    .glyph-cell:hover {
+      background: var(--text);
+      color: var(--bg);
+      transform: scale(1.1);
+      z-index: 2;
+    }
+    .glyph-cell.active {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 2px var(--border-focus);
+    }
+
+    .glyph-cell.font-bract { font-family: 'Xyh Bract', sans-serif; }
+    .glyph-cell.font-sump { font-family: 'Xyh Sump', sans-serif; font-weight: 800; }
+    .glyph-cell.font-skirl { font-family: 'Xyh Skirl', serif; font-style: italic; }
+
+    .glyph-detail-card {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 16px 22px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+    .glyph-preview-large {
+      font-size: 4rem;
+      line-height: 1;
+      min-width: 80px;
+      text-align: center;
+    }
+    .glyph-info {
+      flex: 1;
+      min-width: 200px;
+    }
+    .glyph-name {
+      font-weight: 700;
+      font-size: 1.02rem;
+      margin-bottom: 4px;
+    }
+    .glyph-props {
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    /* ── DOWNLOADS TABLE ── */
+    .download-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      margin-top: 14px;
+    }
+    .download-table th, .download-table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .download-table th {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-dim);
+    }
+    .download-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* ── FOOTER & PROVENANCE ── */
+    footer.site-footer {
+      margin-top: 48px;
+      padding-top: 28px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      color: var(--text-dim);
+      font-size: 0.86rem;
+    }
+    .footer-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    /* ── TOAST NOTIFICATION ── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 10px 18px;
+      border-radius: var(--radius-pill);
+      background: var(--text);
+      color: var(--bg);
+      font-size: 0.84rem;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: all 0.2s ease;
+      z-index: 999;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 768px) {
+      .hero { padding: 28px 20px; }
+      .section-card { padding: 22px 18px; }
+      .playground-toolbar { flex-direction: column; align-items: stretch; }
+      .wardrobe-grid { grid-template-columns: 1fr; }
+      .download-table { display: block; overflow-x: auto; }
+    }
+  </style>
+</head>
+<body data-theme="dark">
+
+<div class="site-wrap">
+
+  <!-- NAVIGATION -->
+  <header class="site-header">
+    <div class="nav-left">
+      <a href="../" class="back-link">&#8592; xyh tamura</a>
+      <span class="brand-title">Xyh Fonts</span>
+      <span class="badge-wardrobe">Wardrobe · 01–03</span>
+    </div>
+    <nav class="nav-links">
+      <a href="#playground">Playground</a>
+      <a href="#wardrobe">Wardrobe</a>
+      <a href="#comparison">Comparison</a>
+      <a href="#glyphs">Glyphs</a>
+      <a href="#downloads">Downloads</a>
+    </nav>
+    <div class="theme-picker" title="Switch preview paper ground">
+      <button class="theme-btn active" data-theme-name="dark" title="Dark Multichrome"></button>
+      <button class="theme-btn" data-theme-name="bract" title="Bract Oatmeal Ground"></button>
+      <button class="theme-btn" data-theme-name="sump" title="Sump Lilac Ground"></button>
+      <button class="theme-btn" data-theme-name="skirl" title="Skirl Sulfur Ground"></button>
+      <button class="theme-btn" data-theme-name="paper" title="Clean Paper"></button>
+    </div>
+  </header>
+
+  <!-- HERO / SPECIMEN INTRO -->
+  <section class="hero">
+    <div class="hero-eyebrow">
+      <span>Original Type Design</span>
+      <span>·</span>
+      <span>346 Latin Codepoints Each</span>
+      <span>·</span>
+      <span>TTF / WOFF / WOFF2</span>
+    </div>
+    <div class="hero-headline">
+      <span class="hero-line-bract">01 · Xyh Bract Regular</span>
+      <span class="hero-line-sump">02 · Xyh Sump Heavy</span>
+      <span class="hero-line-skirl">03 · Xyh Skirl Oblique</span>
+    </div>
+    <p class="hero-desc">
+      Three display typefaces designed in conversation as an exploratory Latin type wardrobe. Each face adopts a distinct anatomical role—narrow rounded terminals and folded bowls (Bract), broad mass with continuous negative space (Sump), and high-contrast oblique curves with authored fin serifs (Skirl)—calibrated against continuous organic bodies and functional counters.
+    </p>
+    <div class="hero-tags">
+      <span class="tag-chip">346 Mapped Characters</span>
+      <span class="tag-chip">Latin-1 Supplement</span>
+      <span class="tag-chip">Latin Extended-A</span>
+      <span class="tag-chip">Romanian Comma-Below</span>
+      <span class="tag-chip">Combining Marks &amp; Stacking</span>
+      <span class="tag-chip">Fitted Silhouette Spacing</span>
+      <span class="tag-chip">Free &amp; Open Specimen</span>
+    </div>
+  </section>
+
+  <!-- INTERACTIVE PLAYGROUND -->
+  <section id="playground" class="section-card">
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">Interactive Type Tester</h2>
+        <span class="section-subtitle">Type your own words, test multilingual accents, and tune optical size across the wardrobe.</span>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="playground-toolbar">
+      <div class="tool-group">
+        <span class="tool-label">View</span>
+        <div class="segmented-control" id="view-mode-control">
+          <button class="seg-btn active" data-view="stack">Stack (All 3)</button>
+          <button class="seg-btn" data-view="bract">Bract</button>
+          <button class="seg-btn" data-view="sump">Sump</button>
+          <button class="seg-btn" data-view="skirl">Skirl</button>
+        </div>
+      </div>
+
+      <div class="tool-group">
+        <span class="tool-label">Size</span>
+        <div class="range-control">
+          <input type="range" id="size-slider" min="24" max="160" value="64">
+          <span class="range-val" id="size-val">64px</span>
+        </div>
+      </div>
+
+      <div class="tool-group">
+        <span class="tool-label">Tracking</span>
+        <div class="range-control">
+          <input type="range" id="tracking-slider" min="-0.04" max="0.30" step="0.01" value="0">
+          <span class="range-val" id="tracking-val">0.00em</span>
+        </div>
+      </div>
+
+      <div class="tool-group">
+        <span class="tool-label">Leading</span>
+        <div class="range-control">
+          <input type="range" id="leading-slider" min="0.85" max="2.0" step="0.05" value="1.2">
+          <span class="range-val" id="leading-val">1.20</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Preset Strings -->
+    <div class="presets-bar">
+      <span class="tool-label" style="margin-right:4px;">Presets:</span>
+      <button class="preset-chip" data-text="Sharp Weather / Heavy Mass / Folded Bow">Wardrobe Roles</button>
+      <button class="preset-chip" data-text="Élève, déjà vu — cœur. Niña, São Tomé, Noël. Łódź, Straße, Český ďábel.">Multilingual Latin</button>
+      <button class="preset-chip" data-text="The quick brown fox jumps over the lazy dog.">Pangram Fox</button>
+      <button class="preset-chip" data-text="Sphinx of black quartz, judge my vow.">Pangram Sphinx</button>
+      <button class="preset-chip" data-text="ABCDEFGHIJKLMNOPQRSTUVWXYZ&#10;abcdefghijklmnopqrstuvwxyz">Alphabet Case</button>
+      <button class="preset-chip" data-text="0123456789 €$£¥ &amp;?! @#% [{(«»)}]">Figures &amp; Marks</button>
+    </div>
+
+    <!-- Live Test Blocks -->
+    <div class="tester-canvas" id="tester-canvas">
+      <!-- Bract Block -->
+      <div class="test-block" id="block-bract">
+        <div class="test-meta">
+          <span class="test-meta-badge bract">01 · Xyh Bract Regular · v1.000</span>
+          <span>Narrow Display · Rounded Terminals</span>
+        </div>
+        <textarea class="test-input font-bract" id="input-bract" spellcheck="false" rows="2">Sharp Weather / Heavy Mass / Folded Bow</textarea>
+      </div>
+
+      <!-- Sump Block -->
+      <div class="test-block" id="block-sump">
+        <div class="test-meta">
+          <span class="test-meta-badge sump">02 · Xyh Sump Regular · v0.003</span>
+          <span>Broad Heavy Display · Continuous Counters</span>
+        </div>
+        <textarea class="test-input font-sump" id="input-sump" spellcheck="false" rows="2">Sharp Weather / Heavy Mass / Folded Bow</textarea>
+      </div>
+
+      <!-- Skirl Block -->
+      <div class="test-block" id="block-skirl">
+        <div class="test-meta">
+          <span class="test-meta-badge skirl">03 · Xyh Skirl Oblique · v1.001</span>
+          <span>High Contrast Oblique · Curved Fin Serifs</span>
+        </div>
+        <textarea class="test-input font-skirl" id="input-skirl" spellcheck="false" rows="2">Sharp Weather / Heavy Mass / Folded Bow</textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- WARDROBE OVERVIEW (3 CARDS) -->
+  <section id="wardrobe" class="section-card">
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">The Three Typefaces</h2>
+        <span class="section-subtitle">Detailed anatomy, specifications, size waterfalls, and direct font exports.</span>
+      </div>
+    </div>
+
+    <div class="wardrobe-grid">
+      <!-- BRACT CARD -->
+      <article class="face-card bract">
+        <div>
+          <div class="face-header">
+            <span class="face-num">Wardrobe 01</span>
+            <span class="face-version">v1.000 Regular</span>
+          </div>
+          <h3 class="face-name bract">Xyh Bract</h3>
+          <p class="face-role">
+            Narrow display face with rounded terminals, pinched and folded bowls, and curled shoulders. Bowed stem anatomy with genuine lowercase and 10,117 pair adjustments. Best suited for headings at 36&nbsp;px or larger.
+          </p>
+
+          <div class="face-waterfall">
+            <div class="waterfall-row">
+              <span class="waterfall-text font-bract" style="font-size: 54px;">Quenched</span>
+              <span class="waterfall-size">54px</span>
+            </div>
+            <div class="waterfall-row">
+              <span class="waterfall-text font-bract" style="font-size: 38px;">Folded Horizon</span>
+              <span class="waterfall-size">38px</span>
+            </div>
+            <div class="waterfall-row">
+              <span class="waterfall-text font-bract" style="font-size: 24px;">AVATAR · Wa Yo fa · Straße</span>
+              <span class="waterfall-size">24px</span>
+            </div>
+          </div>
+
+          <div class="face-specs">
+            <span><strong>Role</strong> <em>Narrow Display</em></span>
+            <span><strong>Mapped Characters</strong> <em>346 Codepoints</em></span>
+            <span><strong>Pair Clearances</strong> <em>10,117 Adjustments</em></span>
+            <span><strong>Format</strong> <em>TTF, WOFF2, WOFF</em></span>
+          </div>
+        </div>
+
+        <div class="face-actions">
+          <a href="XyhBract-Regular.ttf" download class="btn-download primary">&#8681; TTF</a>
+          <a href="XyhBract-Regular.woff2" download class="btn-download">&#8681; WOFF2</a>
+          <a href="specimens/wardrobe-01.png" target="_blank" rel="noopener" class="btn-download">&#9655; Specimen Sheet</a>
+        </div>
+      </article>
+
+      <!-- SUMP CARD -->
+      <article class="face-card sump">
+        <div>
+          <div class="face-header">
+            <span class="face-num">Wardrobe 02</span>
+            <span class="face-version">v0.003 Regular</span>
+          </div>
+          <h3 class="face-name sump">Xyh Sump</h3>
+          <p class="face-role">
+            Broad, heavy display face with folded shoulders and continuous negative counters. Little vertical contrast, high lowercase body, and 290-unit word space. Cleaned contours with 22,467 fitted pair adjustments.
+          </p>
+
+          <div class="face-waterfall">
+            <div class="waterfall-row">
+              <span class="waterfall-text font-sump" style="font-size: 50px;">Massive</span>
+              <span class="waterfall-size">50px</span>
+            </div>
+            <div class="waterfall-row">
+              <span class="waterfall-text font-sump" style="font-size: 34px;">Heavy Chamber</span>
+              <span class="waterfall-size">34px</span>
+            </div>
+            <div class="waterfall-row">
+              <span class="waterfall-text font-sump" style="font-size: 22px;">AVATAR · Wa Yo fa · Straße</span>
+              <span class="waterfall-size">22px</span>
+            </div>
+          </div>
+
+          <div class="face-specs">
+            <span><strong>Role</strong> <em>Broad Heavy Display</em></span>
+            <span><strong>Mapped Characters</strong> <em>346 Codepoints</em></span>
+            <span><strong>Pair Clearances</strong> <em>22,467 Adjustments</em></span>
+            <span><strong>Format</strong> <em>TTF, WOFF2, WOFF</em></span>
+          </div>
+        </div>
+
+        <div class="face-actions">
+          <a href="XyhSump-Regular.ttf" download class="btn-download primary">&#8681; TTF</a>
+          <a href="XyhSump-Regular.woff2" download class="btn-download">&#8681; WOFF2</a>
+          <a href="specimens/wardrobe-02.png" target="_blank" rel="noopener" class="btn-download">&#9655; Specimen Sheet</a>
+        </div>
+      </article>
+
+      <!-- SKIRL CARD -->
+      <article class="face-card skirl">
+        <div>
+          <div class="face-header">
+            <span class="face-num">Wardrobe 03</span>
+            <span class="face-version">v1.001 Oblique</span>
+          </div>
+          <h3 class="face-name skirl">Xyh Skirl</h3>
+          <p class="face-role">
+            High-contrast oblique display face with per-letter curved fin serifs, bowed diagonals, and turned crests. Stressed broad pen role with 48 authored character profiles for reach, scoop, and curl. Fitted with 21,705 pair adjustments.
+          </p>
+
+          <div class="face-waterfall">
+            <div class="waterfall-row">
+              <span class="waterfall-text font-skirl" style="font-size: 52px;">Oblique</span>
+              <span class="waterfall-size">52px</span>
+            </div>
+            <div class="waterfall-row">
+              <span class="waterfall-text font-skirl" style="font-size: 36px;">Curved Fin Serifs</span>
+              <span class="waterfall-size">36px</span>
+            </div>
+            <div class="waterfall-row">
+              <span class="waterfall-text font-skirl" style="font-size: 23px;">AVATAR · Wa Yo fa · Straße</span>
+              <span class="waterfall-size">23px</span>
+            </div>
+          </div>
+
+          <div class="face-specs">
+            <span><strong>Role</strong> <em>High-Contrast Oblique</em></span>
+            <span><strong>Mapped Characters</strong> <em>346 Codepoints</em></span>
+            <span><strong>Pair Clearances</strong> <em>21,705 Adjustments</em></span>
+            <span><strong>Format</strong> <em>TTF, WOFF2, WOFF</em></span>
+          </div>
+        </div>
+
+        <div class="face-actions">
+          <a href="XyhSkirl-Oblique.ttf" download class="btn-download primary">&#8681; TTF</a>
+          <a href="XyhSkirl-Oblique.woff2" download class="btn-download">&#8681; WOFF2</a>
+          <a href="specimens/wardrobe-03.png" target="_blank" rel="noopener" class="btn-download">&#9655; Specimen Sheet</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- WARDROBE COMPARISON -->
+  <section id="comparison" class="section-card">
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">Wardrobe Comparison</h2>
+        <span class="section-subtitle">Side-by-side comparison illustrating contrasting anatomical roles at identical optical sizes.</span>
+      </div>
+      <div>
+        <a href="specimens/wardrobe-comparison.png" target="_blank" rel="noopener" class="btn-download">&#8681; Full-Fidelity PNG Proof</a>
+      </div>
+    </div>
+
+    <div class="comparison-sheet">
+      <div class="comparison-row">
+        <div class="comparison-label">01 / Bract / Narrow, Rounded Terminals</div>
+        <div class="comparison-sample bract">sharp weather</div>
+        <div class="comparison-sample bract" style="font-size: 0.52em; margin-top: 6px; color: var(--text-muted);">Aa Ee Mm Rr 0123456789 &sect; &para; &bull; &ldquo;c&oelig;ur&rdquo;</div>
+      </div>
+
+      <div class="comparison-row">
+        <div class="comparison-label">02 / Sump / Broad, Heavy Mass &amp; Continuous Counters</div>
+        <div class="comparison-sample sump">sharp weather</div>
+        <div class="comparison-sample sump" style="font-size: 0.52em; margin-top: 6px; color: var(--text-muted);">Aa Ee Mm Rr 0123456789 &sect; &para; &bull; &ldquo;c&oelig;ur&rdquo;</div>
+      </div>
+
+      <div class="comparison-row">
+        <div class="comparison-label">03 / Skirl / Oblique, High Contrast &amp; Fin Serifs</div>
+        <div class="comparison-sample skirl">sharp weather</div>
+        <div class="comparison-sample skirl" style="font-size: 0.52em; margin-top: 6px; color: var(--text-muted);">Aa Ee Mm Rr 0123456789 &sect; &para; &bull; &ldquo;c&oelig;ur&rdquo;</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GLYPHS EXPLORER -->
+  <section id="glyphs" class="section-card">
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">Glyph Explorer</h2>
+        <span class="section-subtitle">Inspect the 346 mapped characters across uppercase, lowercase, diacritics, figures, and combining accents.</span>
+      </div>
+    </div>
+
+    <div class="glyph-controls">
+      <div class="tool-group">
+        <span class="tool-label">Font Face</span>
+        <div class="segmented-control" id="glyph-font-control">
+          <button class="seg-btn active" data-font="bract">Bract</button>
+          <button class="seg-btn" data-font="sump">Sump</button>
+          <button class="seg-btn" data-font="skirl">Skirl</button>
+        </div>
+      </div>
+
+      <div class="tool-group">
+        <span class="tool-label">Category</span>
+        <div class="segmented-control" id="glyph-cat-control">
+          <button class="seg-btn active" data-cat="all">All (344)</button>
+          <button class="seg-btn" data-cat="upper">A–Z</button>
+          <button class="seg-btn" data-cat="lower">a–z</button>
+          <button class="seg-btn" data-cat="accents">Accents (À–ž)</button>
+          <button class="seg-btn" data-cat="digits">0–9 &amp; &euro;</button>
+          <button class="seg-btn" data-cat="punct">Punctuation</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Glyphs Grid -->
+    <div class="glyph-grid-container glyph-cell-font-bract" id="glyph-grid">
+      <!-- Filled dynamically by JavaScript -->
+    </div>
+
+    <!-- Active Glyph Inspector -->
+    <div class="glyph-detail-card" id="glyph-detail">
+      <div class="glyph-preview-large font-bract" id="detail-char">A</div>
+      <div class="glyph-info">
+        <div class="glyph-name" id="detail-name">LATIN CAPITAL LETTER A</div>
+        <div class="glyph-props">
+          <span id="detail-cp">Unicode: U+0041</span>
+          <span id="detail-dec">Decimal: 65</span>
+          <span id="detail-entity">Entity: &amp;#65;</span>
+        </div>
+      </div>
+      <div>
+        <button class="btn-download" id="copy-glyph-btn">&#128203; Copy Character</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOWNLOADS & SPECIFICATIONS -->
+  <section id="downloads" class="section-card">
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">Downloads &amp; Specifications</h2>
+        <span class="section-subtitle">Installable TrueType (.ttf) and webfont formats (.woff2, .woff). Free for personal and creative use.</span>
+      </div>
+    </div>
+
+    <table class="download-table">
+      <thead>
+        <tr>
+          <th>Face &amp; Style</th>
+          <th>Version</th>
+          <th>Coverage</th>
+          <th>Kerning</th>
+          <th>Files &amp; Formats</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Xyh Bract Regular</strong></td>
+          <td>1.000</td>
+          <td>346 codepoints (ASCII + Latin-1 + Ext-A)</td>
+          <td>10,117 pairs</td>
+          <td>
+            <a href="XyhBract-Regular.ttf" download class="btn-download" style="padding:4px 10px; margin:2px;">TTF (461 KB)</a>
+            <a href="XyhBract-Regular.woff2" download class="btn-download" style="padding:4px 10px; margin:2px;">WOFF2 (71 KB)</a>
+            <a href="XyhBract-Regular.woff" download class="btn-download" style="padding:4px 10px; margin:2px;">WOFF (101 KB)</a>
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Xyh Sump Regular</strong></td>
+          <td>0.003</td>
+          <td>346 codepoints (Continuous counters)</td>
+          <td>22,467 pairs</td>
+          <td>
+            <a href="XyhSump-Regular.ttf" download class="btn-download" style="padding:4px 10px; margin:2px;">TTF (480 KB)</a>
+            <a href="XyhSump-Regular.woff2" download class="btn-download" style="padding:4px 10px; margin:2px;">WOFF2 (80 KB)</a>
+            <a href="XyhSump-Regular.woff" download class="btn-download" style="padding:4px 10px; margin:2px;">WOFF (114 KB)</a>
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Xyh Skirl Oblique</strong></td>
+          <td>1.001</td>
+          <td>346 codepoints (Curved fin serifs)</td>
+          <td>21,705 pairs</td>
+          <td>
+            <a href="XyhSkirl-Oblique.ttf" download class="btn-download" style="padding:4px 10px; margin:2px;">TTF (544 KB)</a>
+            <a href="XyhSkirl-Oblique.woff2" download class="btn-download" style="padding:4px 10px; margin:2px;">WOFF2 (81 KB)</a>
+            <a href="XyhSkirl-Oblique.woff" download class="btn-download" style="padding:4px 10px; margin:2px;">WOFF (118 KB)</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-links">
+      <a href="../">&#8592; Main Portfolio</a>
+      <a href="ASSETS.md">Asset Provenance</a>
+      <a href="specimens/wardrobe-comparison.png">Wardrobe Sheet</a>
+      <a href="specimens/wardrobe-01.png">Bract Sheet</a>
+      <a href="specimens/wardrobe-02.png">Sump Sheet</a>
+      <a href="specimens/wardrobe-03.png">Skirl Sheet</a>
+    </div>
+    <p>
+      Authored for Xyh Tamura on 2026-10-18. All letterforms, skeletons, accent drawings, and curved fin serifs independently drawn. Built using fontTools, uharfbuzz, and skia-pathops.
+    </p>
+  </footer>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">Copied to clipboard!</div>
+
+<script>
+  // ── THEME SWITCHER ──
+  const themeButtons = document.querySelectorAll('.theme-btn');
+  themeButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      themeButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const theme = btn.getAttribute('data-theme-name');
+      document.body.setAttribute('data-theme', theme);
+    });
+  });
+
+  // ── TYPE TESTER SYNC & CONTROLS ──
+  const inputs = {
+    bract: document.getElementById('input-bract'),
+    sump: document.getElementById('input-sump'),
+    skirl: document.getElementById('input-skirl')
+  };
+
+  const blocks = {
+    bract: document.getElementById('block-bract'),
+    sump: document.getElementById('block-sump'),
+    skirl: document.getElementById('block-skirl')
+  };
+
+  // Sync text across inputs
+  Object.values(inputs).forEach(input => {
+    input.addEventListener('input', (e) => {
+      const val = e.target.value;
+      Object.values(inputs).forEach(other => {
+        if (other !== e.target) other.value = val;
+      });
+    });
+  });
+
+  // Size slider
+  const sizeSlider = document.getElementById('size-slider');
+  const sizeVal = document.getElementById('size-val');
+  sizeSlider.addEventListener('input', () => {
+    const sz = sizeSlider.value + 'px';
+    sizeVal.textContent = sz;
+    Object.values(inputs).forEach(input => input.style.fontSize = sz);
+  });
+  // Initialize size
+  Object.values(inputs).forEach(input => input.style.fontSize = sizeSlider.value + 'px');
+
+  // Tracking slider
+  const trackingSlider = document.getElementById('tracking-slider');
+  const trackingVal = document.getElementById('tracking-val');
+  trackingSlider.addEventListener('input', () => {
+    const tr = trackingSlider.value + 'em';
+    trackingVal.textContent = tr;
+    Object.values(inputs).forEach(input => input.style.letterSpacing = tr);
+  });
+
+  // Leading slider
+  const leadingSlider = document.getElementById('leading-slider');
+  const leadingVal = document.getElementById('leading-val');
+  leadingSlider.addEventListener('input', () => {
+    const ld = leadingSlider.value;
+    leadingVal.textContent = parseFloat(ld).toFixed(2);
+    Object.values(inputs).forEach(input => input.style.lineHeight = ld);
+  });
+
+  // Presets
+  document.querySelectorAll('.preset-chip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const txt = btn.getAttribute('data-text');
+      Object.values(inputs).forEach(input => input.value = txt);
+    });
+  });
+
+  // View Mode Segments (Stack vs Single)
+  const viewBtns = document.querySelectorAll('#view-mode-control .seg-btn');
+  viewBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      viewBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const view = btn.getAttribute('data-view');
+      if (view === 'stack') {
+        blocks.bract.style.display = 'block';
+        blocks.sump.style.display = 'block';
+        blocks.skirl.style.display = 'block';
+      } else {
+        blocks.bract.style.display = (view === 'bract') ? 'block' : 'none';
+        blocks.sump.style.display = (view === 'sump') ? 'block' : 'none';
+        blocks.skirl.style.display = (view === 'skirl') ? 'block' : 'none';
+      }
+    });
+  });
+
+  // ── GLYPHS EXPLORER ──
+  let glyphData = [];
+  const glyphGrid = document.getElementById('glyph-grid');
+  const detailChar = document.getElementById('detail-char');
+  const detailName = document.getElementById('detail-name');
+  const detailCp = document.getElementById('detail-cp');
+  const detailDec = document.getElementById('detail-dec');
+  const detailEntity = document.getElementById('detail-entity');
+  const copyBtn = document.getElementById('copy-glyph-btn');
+  const toast = document.getElementById('toast');
+
+  let activeFontClass = 'font-bract';
+  let activeCategory = 'all';
+
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2000);
+  }
+
+  function renderGlyphs() {
+    glyphGrid.innerHTML = '';
+    const filtered = glyphData.filter(g => {
+      const code = g.code;
+      if (activeCategory === 'upper') return code >= 65 && code <= 90;
+      if (activeCategory === 'lower') return code >= 97 && code <= 122;
+      if (activeCategory === 'digits') return (code >= 48 && code <= 57) || code === 8364 || code === 163 || code === 165 || code === 162 || code === 188 || code === 189 || code === 190;
+      if (activeCategory === 'accents') return (code >= 192 && code <= 383) || (code >= 536 && code <= 539) || (code >= 567 && code <= 567);
+      if (activeCategory === 'punct') return (code >= 33 && code <= 47) || (code >= 58 && code <= 64) || (code >= 91 && code <= 96) || (code >= 123 && code <= 126) || (code >= 8211 && code <= 8230);
+      return true;
+    });
+
+    filtered.forEach(g => {
+      const cell = document.createElement('div');
+      cell.className = `glyph-cell ${activeFontClass}`;
+      cell.textContent = g.char;
+      cell.title = `${g.name} (${g.cp})`;
+      cell.addEventListener('click', () => {
+        document.querySelectorAll('.glyph-cell').forEach(c => c.classList.remove('active'));
+        cell.classList.add('active');
+        selectGlyph(g);
+      });
+      glyphGrid.appendChild(cell);
+    });
+
+    if (filtered.length > 0) {
+      selectGlyph(filtered[0]);
+    }
+  }
+
+  function selectGlyph(g) {
+    detailChar.textContent = g.char;
+    detailName.textContent = g.name;
+    detailCp.textContent = `Unicode: ${g.cp}`;
+    detailDec.textContent = `Decimal: ${g.code}`;
+    detailEntity.textContent = `Entity: &amp;#${g.code};`;
+  }
+
+  copyBtn.addEventListener('click', () => {
+    const char = detailChar.textContent;
+    navigator.clipboard.writeText(char).then(() => {
+      showToast(`Copied "${char}" to clipboard!`);
+    }).catch(() => {
+      showToast(`Selected "${char}"`);
+    });
+  });
+
+  // Font switcher for glyphs
+  const glyphFontBtns = document.querySelectorAll('#glyph-font-control .seg-btn');
+  glyphFontBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      glyphFontBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const font = btn.getAttribute('data-font');
+      activeFontClass = `font-${font}`;
+      detailChar.className = `glyph-preview-large font-${font}`;
+      renderGlyphs();
+    });
+  });
+
+  // Category switcher for glyphs
+  const glyphCatBtns = document.querySelectorAll('#glyph-cat-control .seg-btn');
+  glyphCatBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      glyphCatBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeCategory = btn.getAttribute('data-cat');
+      renderGlyphs();
+    });
+  });
+
+  // Fetch glyphs.json
+  fetch('glyphs.json')
+    .then(res => res.json())
+    .then(data => {
+      glyphData = data;
+      renderGlyphs();
+    })
+    .catch(() => {
+      // Fallback if fetch blocked locally
+      glyphData = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,:;!?'\"-()[]{}/\\&@#$%*+=<>".split('').map(c => ({
+        cp: 'U+' + c.charCodeAt(0).toString(16).toUpperCase().padStart(4, '0'),
+        code: c.charCodeAt(0),
+        char: c,
+        name: `CHARACTER '${c}'`
+      }));
+      renderGlyphs();
+    });
+</script>
+
+</body>
+</html>
