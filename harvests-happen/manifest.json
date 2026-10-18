@@ -1,0 +1,92 @@
+{
+ "note": "Written by renderedwork/goblincore/scripts/publish_site.py. Re-run it to refresh; do not edit these copies.",
+ "published": "2026-10-18",
+ "files": {
+  "engine/goblincore.js": {
+   "source": "renderedwork/goblincore/goblincore.js",
+   "sha256": "5e7619e4ae7df237"
+  },
+  "engine/export.js": {
+   "source": "renderedwork/goblincore/export.js",
+   "sha256": "2faa5d93b0236248"
+  },
+  "data/background.webp": {
+   "source": "renderedwork/goblincore/data/background.webp",
+   "sha256": "948ed17c4b6bf734"
+  },
+  "data/rock.webp": {
+   "source": "renderedwork/goblincore/data/rock.webp",
+   "sha256": "829c89d4acecff8f"
+  },
+  "data/rock.json": {
+   "source": "renderedwork/goblincore/data/rock.json",
+   "sha256": "ba18600982df5263"
+  },
+  "data/flow.png": {
+   "source": "renderedwork/goblincore/data/flow.png",
+   "sha256": "6369e6cd5e9ed290"
+  },
+  "data/insects.webp": {
+   "source": "renderedwork/goblincore/data/insects.webp",
+   "sha256": "2a07c2b2d7cf6719"
+  },
+  "data/insects.json": {
+   "source": "renderedwork/goblincore/data/insects.json",
+   "sha256": "0091c19a3552db6c"
+  },
+  "data/plant.webp": {
+   "source": "renderedwork/goblincore/data/plant.webp",
+   "sha256": "8cd6636ef0dc2f11"
+  },
+  "data/plant.json": {
+   "source": "renderedwork/goblincore/data/plant.json",
+   "sha256": "9e6b87c4c27ea7c0"
+  },
+  "data/goblin.json": {
+   "source": "renderedwork/goblincore/data/goblin.json",
+   "sha256": "57285dbadaf7de15"
+  },
+  "data/goblin_body.webp": {
+   "source": "renderedwork/goblincore/data/goblin_body.webp",
+   "sha256": "22a81a6af8c32b00"
+  },
+  "data/goblin_armA.webp": {
+   "source": "renderedwork/goblincore/data/goblin_armA.webp",
+   "sha256": "db6f6ffd76e16a99"
+  },
+  "data/goblin_armB.webp": {
+   "source": "renderedwork/goblincore/data/goblin_armB.webp",
+   "sha256": "79cd85b8b584ff0d"
+  },
+  "data/goblin_leg1.webp": {
+   "source": "renderedwork/goblincore/data/goblin_leg1.webp",
+   "sha256": "b671efa6ff063bcb"
+  },
+  "data/goblin_leg2.webp": {
+   "source": "renderedwork/goblincore/data/goblin_leg2.webp",
+   "sha256": "37cc22d0c6e0b733"
+  },
+  "data/goblin_leg3.webp": {
+   "source": "renderedwork/goblincore/data/goblin_leg3.webp",
+   "sha256": "0a3c76dde291654b"
+  },
+  "scene.json": {
+   "source": "renderedwork/goblincore/scene.json",
+   "sha256": "3ae831b4cceb0c21"
+  },
+  "motion.json": {
+   "source": "renderedwork/goblincore/motion.json",
+   "sha256": "69add78c87b009d5"
+  },
+  "harvests-happen.flac": {
+   "source": "renderedwork/goblincore/build/harvests-happen-loop.wav",
+   "sha256": "577f119a0a82ec1e"
+  },
+  "harvests-happen.mp4": {
+   "source": "renders/goblincore-loop-1920x1270-30fps.webm"
+  },
+  "poster.jpg": {
+   "source": "first frame of the same export"
+  }
+ }
+}

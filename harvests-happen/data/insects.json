@@ -1,0 +1,56 @@
+{
+ "note": "Baked by scripts/bake_insects.html from drawing-the-hours/src/entities.js. One row per species, one column per flap frame; each insect faces up, centred in its cell. oleanderHawkmoth and putakti are drawn as the SOMEWAREZ kiosk edition draws them.",
+ "species": [
+  "brimstone",
+  "damselfly",
+  "hawkmoth",
+  "hoverfly",
+  "lacewing",
+  "firefly",
+  "oleanderHawkmoth",
+  "putakti",
+  "ricefish",
+  "goby",
+  "barb",
+  "halfbeak"
+ ],
+ "frames": 16,
+ "cell": 256,
+ "unitsPerCell": 80,
+ "texturesLoaded": true,
+ "sizes": {
+  "brimstone": 22,
+  "damselfly": 24,
+  "hawkmoth": 20,
+  "hoverfly": 19,
+  "lacewing": 23,
+  "firefly": 22,
+  "oleanderHawkmoth": 20,
+  "putakti": 17,
+  "ricefish": 16,
+  "goby": 19,
+  "barb": 17,
+  "halfbeak": 24
+ },
+ "fish": [
+  "ricefish",
+  "goby",
+  "barb",
+  "halfbeak"
+ ],
+ "flutterFreq": {
+  "brimstone": 13,
+  "damselfly": 26,
+  "hawkmoth": 30,
+  "hoverfly": 38,
+  "lacewing": 12,
+  "firefly": 9,
+  "oleanderHawkmoth": 30,
+  "putakti": 26,
+  "ricefish": 8,
+  "goby": 15,
+  "barb": 8,
+  "halfbeak": 8
+ },
+ "baked": "2026-10-17T15:48:12.215Z"
+}

@@ -1,0 +1,93 @@
+{
+ "note": "Goblin motion. idle runs all the time and is scaled by the page's Idle motion slider; fidgets are keyframed actions at full strength, at set times in the loop (scene.json loopSeconds). In idle, a joints entry turns everything below one joint around that joint (deg either side of rest, positive is clockwise on screen); a stretch entry scales one bone, named by the joint at its far end (chest is the bone from spine to chest): along lengthens it and moves everything beyond it, across widens the drawing around it, in percent, negative to shorten or thin. cycles is swings per loop (whole, so the loop closes) and phase is where the swing starts, 0 to 1. In a fidget, start is seconds into the loop; turns maps a joint to [seconds after start, degrees] keys, stretch maps a bone to [seconds, along %, across %] keys, eased between keys and held after the last; wiggles add a shake to a joint between from and to seconds, faded in and out; touchPlant [from, to] makes the plant tremble near the fingertip in that window. Every key list should start and end at 0 so the fidget leaves the pose as it found it.",
+ "idle": {
+  "joints": [
+   {"joint": "spine",     "group": "body", "deg": 2.5, "cycles": 2, "phase": 0.00},
+   {"joint": "neck1",     "group": "head", "deg": 3,   "cycles": 1, "phase": 0.15},
+   {"joint": "neck3",     "group": "head", "deg": 5,   "cycles": 3, "phase": 0.30},
+   {"joint": "head",      "group": "head", "deg": 4,   "cycles": 2, "phase": 0.55},
+   {"joint": "hoodTop",   "group": "head", "deg": 7,   "cycles": 4, "phase": 0.65},
+   {"joint": "shoulderA", "group": "arms", "deg": 5,   "cycles": 1, "phase": 0.10},
+   {"joint": "wristA",    "group": "arms", "deg": 10,  "cycles": 3, "phase": 0.20},
+   {"joint": "elbowB",    "group": "arms", "deg": 6,   "cycles": 2, "phase": 0.80},
+   {"joint": "ankle1",    "group": "legs", "deg": 8,   "cycles": 3, "phase": 0.10},
+   {"joint": "ankle2",    "group": "legs", "deg": 8,   "cycles": 2, "phase": 0.90},
+   {"joint": "ankle3",    "group": "legs", "deg": 8,   "cycles": 3, "phase": 0.00}
+  ],
+  "stretch": [
+   {"bone": "spine", "group": "body", "along": 10, "across": -6,  "cycles": 4, "phase": 0.00},
+   {"bone": "chest", "group": "body", "along": 8,  "across": 14,  "cycles": 4, "phase": 0.10},
+   {"bone": "neck1", "group": "head", "along": 18, "across": -8,  "cycles": 2, "phase": 0.20},
+   {"bone": "neck2", "group": "head", "along": 22, "across": -10, "cycles": 2, "phase": 0.30},
+   {"bone": "neck3", "group": "head", "along": 18, "across": -8,  "cycles": 2, "phase": 0.40},
+   {"bone": "head",  "group": "head", "along": 8,  "across": 8,   "cycles": 4, "phase": 0.50}
+  ]
+ },
+ "fidgets": [
+  {
+   "name": "fix face",
+   "start": 0.4,
+   "turns": {
+    "shoulderA": [[0, 0], [0.9, 8], [3.6, 8], [4.6, 0]],
+    "elbowA":    [[0, 0], [1.0, -68], [3.5, -68], [4.5, 0]],
+    "wristA":    [[0, 0], [1.0, -8], [3.5, -8], [4.5, 0]],
+    "neck3":     [[0, 0], [1.1, 9], [3.3, 9], [4.3, 0]],
+    "head":      [[0, 0], [1.1, -6], [3.3, -6], [4.3, 0]]
+   },
+   "stretch": {
+    "neck2": [[0, 0, 0], [1.0, -10, 4], [3.4, -10, 4], [4.3, 0, 0]]
+   },
+   "wiggles": [
+    {"joint": "wristA", "deg": 9, "hz": 3.5, "from": 1.2, "to": 3.2},
+    {"joint": "head",   "deg": 3, "hz": 1.75, "from": 1.3, "to": 3.1}
+   ]
+  },
+  {
+   "name": "stretch legs",
+   "start": 5.2,
+   "turns": {
+    "hip1":   [[0, 0], [1.4, -6], [3.4, -6], [4.6, 0]],
+    "knee1":  [[0, 0], [1.4, -42], [3.4, -42], [4.6, 0]],
+    "ankle1": [[0, 0], [1.6, -25], [3.2, -25], [4.6, 0]],
+    "hip3":   [[0, 0], [0.4, 0], [1.8, 14], [3.4, 14], [4.8, 0]],
+    "knee3":  [[0, 0], [0.4, 0], [1.8, -62], [3.4, -62], [4.8, 0]],
+    "ankle3": [[0, 0], [0.6, 0], [2.0, -20], [3.2, -20], [4.8, 0]],
+    "knee2":  [[0, 0], [1.6, -10], [3.4, -10], [4.6, 0]],
+    "ankle2": [[0, 0], [1.6, -18], [3.4, -18], [4.6, 0]],
+    "spine":  [[0, 0], [1.6, 2], [3.4, 2], [4.8, 0]],
+    "neck1":  [[0, 0], [1.8, 4], [3.4, 4], [4.8, 0]],
+    "shoulderB": [[0, 0], [1.6, -10], [3.4, -10], [4.6, 0]]
+   },
+   "stretch": {
+    "spine": [[0, 0, 0], [1.6, 9, -5], [3.4, 9, -5], [4.8, 0, 0]],
+    "chest": [[0, 0, 0], [1.6, 7, 10], [3.4, 7, 10], [4.8, 0, 0]],
+    "neck1": [[0, 0, 0], [1.8, 5, -4], [3.4, 5, -4], [4.8, 0, 0]],
+    "neck2": [[0, 0, 0], [1.8, 6, -4], [3.4, 6, -4], [4.8, 0, 0]]
+   },
+   "wiggles": [
+    {"joint": "ankle1", "deg": 8, "hz": 2.5, "from": 1.8, "to": 3.4},
+    {"joint": "ankle3", "deg": 8, "hz": 2.5, "from": 2.1, "to": 3.4}
+   ]
+  },
+  {
+   "name": "touch leaves",
+   "start": 10.2,
+   "touchPlant": [1.2, 3.8],
+   "turns": {
+    "shoulderA": [[0, 0], [1.1, -3], [3.8, -3], [4.8, 0]],
+    "elbowA":    [[0, 0], [1.1, 3], [3.8, 3], [4.8, 0]],
+    "wristA":    [[0, 0], [1.0, -12], [3.8, -12], [4.8, 0]],
+    "spine":     [[0, 0], [1.2, 4], [3.8, 4], [4.8, 0]],
+    "neck1":     [[0, 0], [1.2, -6], [3.8, -6], [4.8, 0]],
+    "neck3":     [[0, 0], [1.2, -10], [3.8, -10], [4.8, 0]]
+   },
+   "stretch": {
+    "neck2": [[0, 0, 0], [1.2, 6, -4], [3.8, 6, -4], [4.8, 0, 0]]
+   },
+   "wiggles": [
+    {"joint": "wristA", "deg": 10, "hz": 1.5, "from": 1.2, "to": 3.8},
+    {"joint": "forearmA", "deg": 3, "hz": 3, "from": 1.2, "to": 3.8}
+   ]
+  }
+ ]
+}

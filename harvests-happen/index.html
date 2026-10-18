@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harvests Happen</title>
+<meta name="description" content="A looping video work: a crayon-drawn goblin fidgets beside a pressed plant growing from a rock while paper insects and fish pass through, drawn live in the browser and looping every 15 seconds with its music.">
+<meta property="og:title" content="Harvests Happen">
+<meta property="og:image" content="https://xyhtamura.github.io/harvests-happen/poster.jpg">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <figure class="stage">
+    <canvas id="view" aria-label="A crayon-drawn goblin sits on a stool in a pale green room beside a pressed plant growing from a rock; paper insects and fish pass through"></canvas>
+    <video id="fallback" src="harvests-happen.mp4" poster="poster.jpg" controls loop playsinline preload="none" hidden></video>
+  </figure>
+
+  <section class="about">
+    <div class="row">
+      <h1>Harvests Happen</h1>
+      <button type="button" id="sound" disabled>Loading…</button>
+    </div>
+    <p class="meta">2026 · looping video, 15 seconds</p>
+    <p>A goblin drawn in crayon sits on a stool in a green room. It breathes, rubs its face, stretches its legs, and reaches into the leaves of a pressed plant that grows out of a rock beside it. The room's crayon strokes are redrawn eight times a second, and paper insects, then a school of paper fish, pass through. The scene is drawn live in the browser, and the picture and the music loop together every 15 seconds.</p>
+    <p>The music is a phrase in 7/8 at 56 beats per minute, tuned to 19-tone equal temperament.</p>
+    <p class="links"><a class="visit" href="harvests-happen.mp4" download>&#9655; download the video</a> <a href="../">&larr; xyhtamura</a></p>
+    <p class="credits">Insects and fish from <a href="../drawing-the-hours/">Drawing the Hours</a>. Field recording in the music: <a href="https://freesound.org/s/837496/">AMBRurl_Autumn.Swampy Wild Field.Dist Birds.Grass,Shrubs And Trees In The Wind.Gusts 2_EM</a> by newlocknew, <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</p>
+    <p id="note" class="note" role="status"></p>
+  </section>
+
+  <!-- The scene engine (engine/goblincore.js) reads its settings from these
+       controls. They hold the settings the work was approved at and are not shown. -->
+  <form id="controls" hidden>
+    <button type="button" id="play">Pause</button>
+    <input id="motion" type="range" min="0" max="250" value="45"><output id="motionValue"></output>
+    <input id="wind" type="range" min="0" max="250" value="100"><output id="windValue"></output>
+    <input id="flutter" type="range" min="0" max="300" value="100"><output id="flutterValue"></output>
+    <input id="plantHue" type="range" min="-40" max="40" value="-14"><output id="plantHueValue"></output>
+    <input id="redraw" type="range" min="0" max="30" value="10"><output id="redrawValue"></output>
+    <select id="redrawRate"><option value="8" selected>8</option></select>
+    <select id="redrawCell"><option value="30" selected>30</option></select>
+    <input id="mute" type="range" min="0" max="100" value="45"><output id="muteValue"></output>
+    <input id="lift" type="range" min="0" max="70" value="35"><output id="liftValue"></output>
+    <input id="speed" type="range" min="25" max="200" value="100"><output id="speedValue"></output>
+    <input type="checkbox" id="fidgets" checked><input type="checkbox" id="insects" checked>
+    <input type="checkbox" id="g-head" checked><input type="checkbox" id="g-body" checked>
+    <input type="checkbox" id="g-arms" checked><input type="checkbox" id="g-legs" checked>
+    <input type="checkbox" id="showRig"><input type="checkbox" id="showMesh"><input type="checkbox" id="showParts">
+    <select id="exportWidth"><option value="1920" selected>1920</option></select>
+    <select id="exportFps"><option value="30" selected>30</option></select>
+    <button type="button" id="export">Export</button>
+    <p id="status"></p>
+  </form>
+</main>
+<script type="module" src="player.js"></script>
+</body>
+</html>
