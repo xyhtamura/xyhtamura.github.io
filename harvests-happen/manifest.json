@@ -80,7 +80,7 @@
   },
   "harvests-happen.flac": {
    "source": "renderedwork/goblincore/build/harvests-happen-loop.wav",
-   "sha256": "577f119a0a82ec1e"
+   "sha256": "a5e614c69f45337a"
   },
   "harvests-happen.mp4": {
    "source": "renders/goblincore-loop-1920x1270-30fps.webm"

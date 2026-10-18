@@ -19,6 +19,8 @@ h1 { font-size: 1.5rem; font-weight: 600; margin: 0; }
 p { margin: 0 0 12px; }
 a { color: var(--accent); }
 .links { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+.medium { margin: -6px 0 16px; }
+.statement { margin: 0 0 16px; padding: 2px 0 2px 16px; border-left: 2px solid var(--line); font-style: italic; }
 .credits, .note { color: var(--dim); font-size: .9rem; }
 button {
   font: inherit; color: var(--fg); background: #232820; border: 1px solid var(--line);

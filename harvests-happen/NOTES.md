@@ -71,3 +71,20 @@ and rechecked.
 Not checked: the no-WebGL fallback path was not triggered, and the loop was not
 listened to by anyone. The index, portfolio data, CV, and portfolio summaries
 are left to Antigravity, at Xyh's instruction.
+
+2026-10-18 — Claude Code — Replaced the music with Xyh's new export (16.536 s:
+the 15 s phrase and 1.5 s of ring-out). Xyh chose to keep the 15 s loop with
+the ring-out wrapped onto the start, over looping the file as exported. The
+wrapped peak reached 1.052, so the whole loop is lowered 0.62 dB to peak 0.98
+(`make_loop_audio.py --ceiling`); nothing is limited. Seam step 0.0008 against a
+99.9th-percentile step of 0.092 inside the music; level −15.9 dB into the seam
+and −16.7 dB out of it. The browser decodes 661,500 samples. The MP4 was
+re-encoded with the new loop: 450 frames, 15.000 s.
+
+Made the page a gallery label from Xyh's Instagram text: a medium line, the
+text verbatim as the statement, and the description corrected from crayon to
+oil pastel (the drawing is from 2025), with the plants named as ones Xyh
+plucked and the music as dungeon synth and comfy synth in 19-TET. The music
+layers named on the page were re-read from the project's mute states. Checked
+in the browser: statement and medium line present, no console errors, no
+sideways scroll.
