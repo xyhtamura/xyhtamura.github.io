@@ -91,6 +91,7 @@
   --category-sci-comm-color:#b5ebe1;
   --category-artistic-research-color:#1ad9c9;
   --category-fashion-color:#e6a3b1;
+  --category-design-color:#c4915c;
   --category-dot-color:#c3c6d6;
   --category-games-color: #ff7f50;
   --category-film-color:#d8f23b;
@@ -452,6 +453,7 @@ text-shadow:
 .fbtn[data-cat="writing"].on{background:var(--category-writing-color);}
 .fbtn[data-cat="theater"].on{background:var(--category-theater-color);}
 .fbtn[data-cat="tech"].on{background:var(--category-tech-color);}
+.fbtn[data-cat="design"].on{background:var(--category-design-color);}
 .fbtn[data-cat="visuals"].on{background:var(--category-visual-color);color:#fff;}
 .fbtn[data-cat="participatory"].on{background:var(--category-participatory-color);}
 .fbtn[data-cat="organization"].on{background:var(--category-organization-color);}
@@ -515,6 +517,7 @@ text-shadow:
 .chip.writing{background:var(--category-writing-color);color:#001;text-shadow:none;}
 .chip.theater{background:var(--category-theater-color);color:#001;text-shadow:none;}
 .chip.tech{background:var(--category-tech-color);}
+.chip.design{background:var(--category-design-color);}
 .chip.visuals{background:var(--category-visual-color);color:#fff;text-shadow:none;}
 .chip.participatory{background:var(--category-participatory-color);color:#001;text-shadow:none;}
 .chip.organization{background:var(--category-organization-color);color:#001;text-shadow:none;}
@@ -955,7 +958,8 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
 <button class="fbtn" data-cat="research" data-tooltip="academic and para-academic work">research</button>
 <button class="fbtn" data-cat="music" data-tooltip="works with outputs in music circulation">music</button>
 <button class="fbtn" data-cat="tech" data-tooltip="software & hardware, tools">tech</button>
-<button class="fbtn" data-cat="score" data-tooltip="as a composer, scoring for video, film, & stage">score</button>
+<button class="fbtn" data-cat="design" data-tooltip="stand-alone design artifacts met in use, such as fonts and interface sound">design</button>
+<button class="fbtn" data-cat="score"data-tooltip="as a composer or sound designer, scoring for video, film, & stage">score</button>
 <button class="fbtn" data-cat="artistic-research" data-tooltip="works hybridizing research and making">research-art</button>
 <button class="fbtn" data-cat="writing" data-tooltip="works with outputs that circulate as pure text">writing</button>
 <button class="fbtn" data-cat="theater" data-tooltip="theater, acting, performance, playwriting, and dramaturgical work">theater</button>
@@ -1892,11 +1896,11 @@ this site is for neurodivergents, punk academics, subculturists. navigable and u
   </div>
 </details>
 
-<details class="entry minor" data-cats="tech" id="critterances">
+<details class="entry minor" data-cats="design" id="critterances">
   <summary>
     <span class="year">2026</span>
     <span class="title">Critterances</span>
-    <span class="chips"><span class="chip tech">tech</span></span>
+    <span class="chips"><span class="chip design">design</span></span>
   </summary>
   <div class="body">
     <p>A procedural sound engine that generates chirps, murmurs, droplets, and filtered grains for imaginary creatures. It maps robot states such as thinking, transcribing, and crafting to distinct vocal behaviors, and also runs as a standalone browser toy.</p>
