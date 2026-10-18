@@ -266,6 +266,16 @@
       }
     },
     {
+      "id": "harvests-happen",
+      "image": "img/works/harvests-happen.jpg",
+      "alt": "Harvests Happen animated oil pastel goblin scene",
+      "capture": {
+        "url": "https://xyhtamura.github.io/harvests-happen/",
+        "localUrl": "http://localhost:8000/xyhtamura.github.io/harvests-happen/",
+        "waitMs": 4000
+      }
+    },
+    {
       "id": "five-ways-through",
       "image": "img/works/five-ways-through.jpg",
       "alt": "Five Ways Through interactive plant and hand pieces",

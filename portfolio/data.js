@@ -37,6 +37,23 @@ const slides = [
   {
     kind: "piece",
     piece: {
+      id: "harvests-happen",
+      title: "Harvests Happen",
+      year: "2026",
+      tags: ["intermedia", "visuals", "animation", "oil pastel", "WebGL", "Web Audio", "microtonal", "comfy synth", "dungeon synth", "19-TET"],
+      blurb: "An animated oil pastel drawing of a goblin sitting on a stool in a green room beside a pressed plant growing from a rock, breathing and fidgeting while paper insects and fish pass through. The drawing is redrawn live eight times a second and loops every 15 seconds in sync with comfy synth music in 19-tone equal temperament.",
+      media: [
+        { type: "image", src: "../img/works/harvests-happen.jpg", label: "Harvests Happen animated oil pastel goblin scene" }
+      ],
+      links: [
+        { label: "Open Piece", url: "https://xyhtamura.github.io/harvests-happen/" }
+      ]
+    }
+  },
+
+  {
+    kind: "piece",
+    piece: {
       id: "five-ways-through",
       title: "Five Ways Through",
       year: "2026",
