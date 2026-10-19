@@ -1368,6 +1368,48 @@ links: [
   sec: { id: "research", label: "Research" },
   pieces: [
     {
+      id: "noclip-gothic",
+      title: "No-Clip Gothic: 3D Rendering and the Uncanny of the Postwar American Spatial Order",
+      year: "2026",
+      tags: ["media studies", "architectural uncanny"],
+      blurb: "A paper investigating the shared manufacturing logic of postwar American commercial architecture and real-time 3D game engines. Postwar spatial production (standardized suburban housing, enclosed shopping malls, office parks) and real-time level design both assemble extensive environments through modular, repeatable assets instanced across coordinate grids. Liminal horror (the Backrooms) emerges from this historical convergence, introducing conflation without resolution: holding open opposing registers of physical reality and digital simulation without forcing a choice between them.",
+      links: [
+        { label: "ResearchGate", url: "https://www.researchgate.net/publication/415931464_No-Clip_Gothic_3D_Rendering_and_the_Uncanny_of_the_Postwar_American_Spatial_Order" }
+      ]
+    },
+    {
+      id: "medieval-retentions",
+      title: "Medieval Retentions in Modern Physics: Law, Impetus, and Cosmic Harmony",
+      year: "2026",
+      tags: ["history of science", "medievalisms"],
+      blurb: "An inquiry into how conceptual structures formed in medieval natural philosophy and late scholasticism continue to operate in modern physics after their theological foundations have been set aside. Across three distinct lobes, the paper traces how the language of natural laws retains Francisco Suárez's late-scholastic lex artificiorum as an artisan's norm-and-deviation model; introductory mechanics continually encounters student impetus preconceptions; and contemporary theoretical physics perpetuates quadrivial expectations of mathematical harmony between mind and cosmos.",
+      links: [
+        { label: "ResearchGate", url: "https://www.researchgate.net/publication/415933834_Medieval_Retentions_in_Modern_Physics_Law_Impetus_and_Cosmic_Harmony" }
+      ]
+    },
+    {
+      id: "composition-without-audition",
+      title: "Composition Without Audition",
+      year: "2026",
+      tags: ["electroacoustic theory", "acoustic epistemology"],
+      blurb: "A paper arguing that computational specifications of physical acoustics can be complete as musical compositions without entering phenomenal audition. Where electroacoustic theory historically privileges perceived sound-shapes, computational physical models (such as waveguide dimensions exceeding atmospheric acoustic cutoff) remain mathematically determinate across planetary scales, geologic durations, and stratified media, framing code as an inspectable proposition whose audible realization is contingent rather than constitutive.",
+      links: [
+        { label: "ResearchGate", url: "https://www.researchgate.net/publication/414228002_Composition_Without_Audition" },
+        { label: "The Unbounded Organ", url: "https://xyhtamura.github.io/unbounded-organ/" }
+      ]
+    },
+    {
+      id: "biomemristor-as-instrument",
+      title: "Biomemristor as Instrument",
+      year: "2026",
+      tags: ["electronic music", "history of science"],
+      blurb: "A paper reconstructing the biomemristor as a scientific and artistic object following replication disputes over memristive behaviour in Physarum polycephalum. Tracing the concept across theoretical definition, physical thin films, and biological computing, the paper presents a performable comparison between Leon Chua's charge-controlled memristor and parallel RC models, extending the comparison into vocal processing where frequency bands abrade a shared resistance substrate.",
+      links: [
+        { label: "ResearchGate", url: "https://www.researchgate.net/publication/414172274_Biomemristor_as_Instrument" },
+        { label: "Physa", url: "https://xyhtamura.github.io/physa/" }
+      ]
+    },
+    {
       id: "hauntotechnics",
       title: "Hauntotechnics",
       year: "2026",
