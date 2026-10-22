@@ -7,3 +7,17 @@
 2026-10-05 — Codex — Updated Insulae Incognitae's title and canonical `/insulae-incognitae/` destination across the landing page, interactive portfolio data, active slide cuts, sitemap, and image capture manifest following Xyh's repository rename. Retained stable portfolio IDs, anchors, and asset filenames. Regenerated `work-images.js` with the existing SyncOnly command. Read the landing-page entry and destination from the local browser DOM; all six slide-cut audits passed, including heading-to-link-registry checks, and `portfolio/data.js` parses. The parent's notes record Sulat and generator checks at the renamed route. No portfolio plans changed, and no remote push was performed; the live site still needs these commits published.
 
 2026-10-16 — Claude Code — Added `five-ways-through/`: a landing page with Xyh's five-sentence text as links over a live background, five interactive WebGL pieces (Running, Exchange, Hours, Toward, Forgetting), a generated credits page, and the data they load (about 24 MB). The folder's development log, asset provenance, and description are kept locally and gitignored (`five-ways-through/.gitignore`); `five-ways-through/README.md` says how it is built. No portfolio entry, sitemap, or `work-images.json` change was made.
+2026-10-23 — Codex — Expanded Xyh Fonts to Bract Regular 1.100, Sump Regular
+1.000, Skirl Oblique 1.100, and Lode Regular 1.000. The first three are complete
+irregular Latin revisions, not seven-letter previews. Each maps 346 codepoints
+with accents, mark stacking, fitted spacing, and four contextual states. Added
+the catalog, exact export hashes, Lode downloads/proofs, alternate controls,
+unsupported-character feedback, and mobile layout fixes. Updated both portfolio
+entries and the private CV/portfolio Markdown. Captured and inspected the four-face
+4:3 representative image; preserved the earlier image. The browser check in
+`scripts/check-fonts.cjs` checks twelve downloaded file hashes, real contextual
+pixel differences for all four fonts, controls, 344 glyph cells, and the 390 px
+layout. Source geometry, shaping, accent, and repeat-export checks are recorded
+in the local fontmaking workspace. Existing personal and creative use terms
+remain; no reference-bank fonts or build libraries are published. The publication
+branch excludes the two earlier unrelated unpublished site commits.

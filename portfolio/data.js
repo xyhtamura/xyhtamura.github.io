@@ -718,9 +718,9 @@ const slides = [
       title: "Xyh Fonts",
       year: "2026",
       tags: ["typography", "type design", "display fonts", "design", "type specimen", "Latin-1"],
-      blurb: "Three original Latin display typefaces built as an exploratory type wardrobe: Bract (a narrow face with rounded terminals and curled shoulders), Sump (a broad, heavy face with folded shoulders and continuous counters), and Skirl (a high-contrast oblique face with curved fin serifs). Each font maps 346 codepoints across ASCII, Latin-1, Latin Extended-A, Romanian comma-below letters, and combining accents, with fitted kerning and downloadable desktop and webfont exports.",
+      blurb: "Four original Latin display typefaces: narrow Bract, broad Sump, oblique Skirl, and heavy upright Lode with unequal polygonal chambers. Each maps 346 codepoints with accents, mark stacking, fitted spacing, and four contextual states. The collection includes an interactive specimen and downloadable TTF, WOFF, and WOFF2 files.",
       media: [
-        { type: "image", src: "../img/works/xyh-fonts.jpg", label: "Xyh Fonts comparison showing Bract, Sump, and Skirl display typefaces" }
+        { type: "image", src: "../img/works/xyh-fonts-four-faces.jpg", label: "Bract, Sump, Skirl, and Lode displaying the same words, accents, and numerals" }
       ],
       links: [
         { label: "Open Specimen", url: "https://xyhtamura.github.io/fonts/" }

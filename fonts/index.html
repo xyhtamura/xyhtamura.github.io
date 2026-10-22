@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Xyh Fonts — Bract, Sump, and Skirl</title>
-  <meta name="description" content="Three original Latin display typefaces authored for Xyh Tamura: Bract, Sump, and Skirl. Interactive specimen, type tester, glyph map, and font downloads.">
+  <title>Xyh Fonts — Bract, Sump, Skirl, and Lode</title>
+  <meta name="description" content="Four original Latin display typefaces: Bract, Sump, Skirl, and Lode. Interactive specimen, type tester, glyph map, and font downloads.">
   <link rel="shortcut icon" type="image/png" href="../xyhfavicon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="../xyhfavicon.png">
   <link rel="icon" type="image/png" sizes="192x192" href="../xyh8metal.png">
@@ -13,9 +13,9 @@
   <style>
     @font-face {
       font-family: 'Xyh Bract';
-      src: url('XyhBract-Regular.woff2?v=1.000') format('woff2'),
-           url('XyhBract-Regular.woff?v=1.000') format('woff'),
-           url('XyhBract-Regular.ttf?v=1.000') format('truetype');
+      src: url('XyhBract-Regular.woff2?v=1.100') format('woff2'),
+           url('XyhBract-Regular.woff?v=1.100') format('woff'),
+           url('XyhBract-Regular.ttf?v=1.100') format('truetype');
       font-weight: 400;
       font-style: normal;
       font-display: swap;
@@ -23,9 +23,9 @@
 
     @font-face {
       font-family: 'Xyh Sump';
-      src: url('XyhSump-Regular.woff2?v=0.003') format('woff2'),
-           url('XyhSump-Regular.woff?v=0.003') format('woff'),
-           url('XyhSump-Regular.ttf?v=0.003') format('truetype');
+      src: url('XyhSump-Regular.woff2?v=1.000') format('woff2'),
+           url('XyhSump-Regular.woff?v=1.000') format('woff'),
+           url('XyhSump-Regular.ttf?v=1.000') format('truetype');
       font-weight: 800;
       font-style: normal;
       font-display: swap;
@@ -33,9 +33,9 @@
 
     @font-face {
       font-family: 'Xyh Skirl';
-      src: url('XyhSkirl-Oblique.woff2?v=1.001') format('woff2'),
-           url('XyhSkirl-Oblique.woff?v=1.001') format('woff'),
-           url('XyhSkirl-Oblique.ttf?v=1.001') format('truetype');
+      src: url('XyhSkirl-Oblique.woff2?v=1.100') format('woff2'),
+           url('XyhSkirl-Oblique.woff?v=1.100') format('woff'),
+           url('XyhSkirl-Oblique.ttf?v=1.100') format('truetype');
       font-weight: 400;
       font-style: italic;
       font-display: swap;
@@ -270,6 +270,7 @@
     }
 
     .hero-headline {
+      overflow-wrap: anywhere;
       display: flex;
       flex-direction: column;
       gap: 6px;
@@ -364,6 +365,8 @@
     }
 
     .tool-group {
+      min-width: 0;
+      max-width: 100%;
       display: flex;
       align-items: center;
       gap: 10px;
@@ -378,6 +381,8 @@
     }
 
     .segmented-control {
+      flex-wrap: wrap;
+      max-width: 100%;
       display: inline-flex;
       background: var(--chip-bg);
       border: 1px solid var(--border);
@@ -840,6 +845,28 @@
       .wardrobe-grid { grid-template-columns: 1fr; }
       .download-table { display: block; overflow-x: auto; }
     }
+
+    @font-face{font-family:'Xyh Lode';src:url('XyhLode-Regular.woff2?v=1.000') format('woff2'),url('XyhLode-Regular.woff?v=1.000') format('woff');font-weight:800;font-style:normal;font-display:swap}
+    :root{--accent-lode:#c7b4dc;--font-features:"calt" 1}
+    .font-bract{font-family:'Xyh Bract',sans-serif;font-weight:400;font-style:normal}
+    .font-sump{font-family:'Xyh Sump',sans-serif;font-weight:800;font-style:normal}
+    .font-skirl{font-family:'Xyh Skirl',serif;font-weight:400;font-style:italic}
+    .font-lode,.face-name.lode,.comparison-sample.lode,.hero-line-lode{font-family:'Xyh Lode',sans-serif;font-weight:800}
+    .hero-line-lode{display:block;font-size:clamp(24px,4.5vw,58px);color:var(--accent-lode)}
+    .test-meta-badge.lode,.face-name.lode,.comparison-sample.lode{color:var(--accent-lode)}
+    .face-card.lode::before{background:var(--accent-lode)}
+    .test-input,.comparison-sample,.waterfall-text,.glyph-cell,.glyph-preview-large,.hero-headline span,.face-name{font-feature-settings:var(--font-features)}
+    .test-input{width:100%;min-width:0}
+    .tool-group select{font:inherit;background:var(--bg);color:var(--text);border:1px solid var(--border);padding:8px;border-radius:8px}
+    @media(min-width:900px){.wardrobe-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+    html[data-capture="wardrobe"] .site-header,html[data-capture="wardrobe"] .hero,html[data-capture="wardrobe"] .site-footer,html[data-capture="wardrobe"] #character-support,html[data-capture="wardrobe"] section:not(#comparison){display:none}
+    html[data-capture="wardrobe"] .site-wrap{max-width:1440px;padding:24px}
+    html[data-capture="wardrobe"] #comparison{margin:0;padding:28px}
+    html[data-capture="wardrobe"] .comparison-row{padding:16px 0}
+    html[data-capture="wardrobe"] .comparison-sample{font-size:66px;line-height:1.25}
+    html[data-capture="wardrobe"] .comparison-label{font-size:14px}
+    html[data-capture="wardrobe"] #comparison .section-head>div:last-child{display:none}
   </style>
 </head>
 <body data-theme="dark">
@@ -882,9 +909,10 @@
       <span class="hero-line-bract">01 · Xyh Bract Regular</span>
       <span class="hero-line-sump">02 · Xyh Sump Heavy</span>
       <span class="hero-line-skirl">03 · Xyh Skirl Oblique</span>
+      <span class="hero-line-lode">04 · Xyh Lode Regular</span>
     </div>
     <p class="hero-desc">
-      Three display typefaces designed in conversation as an exploratory Latin type wardrobe. Each face adopts a distinct anatomical role—narrow rounded terminals and folded bowls (Bract), broad mass with continuous negative space (Sump), and high-contrast oblique curves with authored fin serifs (Skirl)—calibrated against continuous organic bodies and functional counters.
+      Four Latin display faces: narrow Bract, broad Sump, oblique Skirl, and heavy upright Lode. Each has irregular curved contours, fitted spacing, and four contextual states. Lode adds glyph-specific polygonal chambers; the first three carry their revised construction across the full Latin set.
     </p>
     <div class="hero-tags">
       <span class="tag-chip">346 Mapped Characters</span>
@@ -893,7 +921,7 @@
       <span class="tag-chip">Romanian Comma-Below</span>
       <span class="tag-chip">Combining Marks &amp; Stacking</span>
       <span class="tag-chip">Fitted Silhouette Spacing</span>
-      <span class="tag-chip">Free &amp; Open Specimen</span>
+      <span class="tag-chip">Interactive Specimen</span>
     </div>
   </section>
 
@@ -911,10 +939,11 @@
       <div class="tool-group">
         <span class="tool-label">View</span>
         <div class="segmented-control" id="view-mode-control">
-          <button class="seg-btn active" data-view="stack">Stack (All 3)</button>
+          <button class="seg-btn active" data-view="stack">Stack (All 4)</button>
           <button class="seg-btn" data-view="bract">Bract</button>
           <button class="seg-btn" data-view="sump">Sump</button>
           <button class="seg-btn" data-view="skirl">Skirl</button>
+          <button class="seg-btn" data-view="lode">Lode</button>
         </div>
       </div>
 
@@ -943,6 +972,8 @@
       </div>
     </div>
 
+    <div class="tool-group"><label for="variation-select">Variation</label><select id="variation-select"><option value="auto">Contextual cycle</option><option value="base">Base outlines</option><option value="1">Alternate one</option><option value="2">Alternate two</option><option value="3">Alternate three</option></select></div>
+    <p class="section-subtitle">Contextual alternates cycle through four states within each word. Spaces restart the cycle. Fixed states are available above.</p>
     <!-- Preset Strings -->
     <div class="presets-bar">
       <span class="tool-label" style="margin-right:4px;">Presets:</span>
@@ -959,37 +990,40 @@
       <!-- Bract Block -->
       <div class="test-block" id="block-bract">
         <div class="test-meta">
-          <span class="test-meta-badge bract">01 · Xyh Bract Regular · v1.000</span>
+          <span class="test-meta-badge bract">01 · Xyh Bract Regular · v1.100</span>
           <span>Narrow Display · Rounded Terminals</span>
         </div>
-        <textarea class="test-input font-bract" id="input-bract" spellcheck="false" rows="2">Sharp Weather / Heavy Mass / Folded Bow</textarea>
+        <textarea class="test-input font-bract" id="input-bract" aria-label="Sample text in Xyh Bract" spellcheck="false" rows="2">Sharp Weather / Heavy Mass / Folded Bow</textarea>
       </div>
 
       <!-- Sump Block -->
       <div class="test-block" id="block-sump">
         <div class="test-meta">
-          <span class="test-meta-badge sump">02 · Xyh Sump Regular · v0.003</span>
+          <span class="test-meta-badge sump">02 · Xyh Sump Regular · v1.000</span>
           <span>Broad Heavy Display · Continuous Counters</span>
         </div>
-        <textarea class="test-input font-sump" id="input-sump" spellcheck="false" rows="2">Sharp Weather / Heavy Mass / Folded Bow</textarea>
+        <textarea class="test-input font-sump" id="input-sump" aria-label="Sample text in Xyh Sump" spellcheck="false" rows="2">Sharp Weather / Heavy Mass / Folded Bow</textarea>
       </div>
 
       <!-- Skirl Block -->
       <div class="test-block" id="block-skirl">
         <div class="test-meta">
-          <span class="test-meta-badge skirl">03 · Xyh Skirl Oblique · v1.001</span>
+          <span class="test-meta-badge skirl">03 · Xyh Skirl Oblique · v1.100</span>
           <span>High Contrast Oblique · Curved Fin Serifs</span>
         </div>
-        <textarea class="test-input font-skirl" id="input-skirl" spellcheck="false" rows="2">Sharp Weather / Heavy Mass / Folded Bow</textarea>
+        <textarea class="test-input font-skirl" id="input-skirl" aria-label="Sample text in Xyh Skirl" spellcheck="false" rows="2">Sharp Weather / Heavy Mass / Folded Bow</textarea>
       </div>
+      <div class="test-block" id="block-lode"><div class="test-meta"><span class="test-meta-badge lode">04 · Xyh Lode Regular · v1.000</span><span>Heavy Upright Display · Unequal Polygonal Chambers</span></div><textarea class="test-input font-lode" id="input-lode" aria-label="Sample text in Xyh Lode" spellcheck="false" rows="2">Sharp Weather / Heavy Mass / Folded Bow</textarea></div>
+
     </div>
   </section>
 
-  <!-- WARDROBE OVERVIEW (3 CARDS) -->
+  <p id="character-support" role="status" class="section-subtitle"></p>
+  <!-- WARDROBE OVERVIEW (4 CARDS) -->
   <section id="wardrobe" class="section-card">
     <div class="section-head">
       <div>
-        <h2 class="section-title">The Three Typefaces</h2>
+        <h2 class="section-title">Four typefaces</h2>
         <span class="section-subtitle">Detailed anatomy, specifications, size waterfalls, and direct font exports.</span>
       </div>
     </div>
@@ -1000,11 +1034,11 @@
         <div>
           <div class="face-header">
             <span class="face-num">Wardrobe 01</span>
-            <span class="face-version">v1.000 Regular</span>
+            <span class="face-version">v1.100 Regular</span>
           </div>
           <h3 class="face-name bract">Xyh Bract</h3>
           <p class="face-role">
-            Narrow display face with rounded terminals, pinched and folded bowls, and curled shoulders. Bowed stem anatomy with genuine lowercase and 10,117 pair adjustments. Best suited for headings at 36&nbsp;px or larger.
+            Narrow display face with rounded terminals, pinched and folded bowls, and curled shoulders. Revised shared walls and seated branches with four contextual states. Use for headings at 36&nbsp;px or larger.
           </p>
 
           <div class="face-waterfall">
@@ -1025,14 +1059,14 @@
           <div class="face-specs">
             <span><strong>Role</strong> <em>Narrow Display</em></span>
             <span><strong>Mapped Characters</strong> <em>346 Codepoints</em></span>
-            <span><strong>Pair Clearances</strong> <em>10,117 Adjustments</em></span>
+            <span><strong>Pair Clearances</strong> <em>21,712 adjustments</em></span>
             <span><strong>Format</strong> <em>TTF, WOFF2, WOFF</em></span>
           </div>
         </div>
 
         <div class="face-actions">
-          <a href="XyhBract-Regular.ttf" download class="btn-download primary">&#8681; TTF</a>
-          <a href="XyhBract-Regular.woff2" download class="btn-download">&#8681; WOFF2</a>
+          <a href="XyhBract-Regular.ttf?v=1.100" download class="btn-download primary">&#8681; TTF</a>
+          <a href="XyhBract-Regular.woff2?v=1.100" download class="btn-download">&#8681; WOFF2</a>
           <a href="specimens/wardrobe-01.png" target="_blank" rel="noopener" class="btn-download">&#9655; Specimen Sheet</a>
         </div>
       </article>
@@ -1042,11 +1076,11 @@
         <div>
           <div class="face-header">
             <span class="face-num">Wardrobe 02</span>
-            <span class="face-version">v0.003 Regular</span>
+            <span class="face-version">v1.000 Regular</span>
           </div>
           <h3 class="face-name sump">Xyh Sump</h3>
           <p class="face-role">
-            Broad, heavy display face with folded shoulders and continuous negative counters. Little vertical contrast, high lowercase body, and 290-unit word space. Cleaned contours with 22,467 fitted pair adjustments.
+            Broad, heavy display face with folded shoulders and continuous negative counters. Little vertical contrast, high lowercase body, and 290-unit word space.
           </p>
 
           <div class="face-waterfall">
@@ -1067,14 +1101,14 @@
           <div class="face-specs">
             <span><strong>Role</strong> <em>Broad Heavy Display</em></span>
             <span><strong>Mapped Characters</strong> <em>346 Codepoints</em></span>
-            <span><strong>Pair Clearances</strong> <em>22,467 Adjustments</em></span>
+            <span><strong>Pair Clearances</strong> <em>22,477 adjustments</em></span>
             <span><strong>Format</strong> <em>TTF, WOFF2, WOFF</em></span>
           </div>
         </div>
 
         <div class="face-actions">
-          <a href="XyhSump-Regular.ttf" download class="btn-download primary">&#8681; TTF</a>
-          <a href="XyhSump-Regular.woff2" download class="btn-download">&#8681; WOFF2</a>
+          <a href="XyhSump-Regular.ttf?v=1.000" download class="btn-download primary">&#8681; TTF</a>
+          <a href="XyhSump-Regular.woff2?v=1.000" download class="btn-download">&#8681; WOFF2</a>
           <a href="specimens/wardrobe-02.png" target="_blank" rel="noopener" class="btn-download">&#9655; Specimen Sheet</a>
         </div>
       </article>
@@ -1084,11 +1118,11 @@
         <div>
           <div class="face-header">
             <span class="face-num">Wardrobe 03</span>
-            <span class="face-version">v1.001 Oblique</span>
+            <span class="face-version">v1.100 Oblique</span>
           </div>
           <h3 class="face-name skirl">Xyh Skirl</h3>
           <p class="face-role">
-            High-contrast oblique display face with per-letter curved fin serifs, bowed diagonals, and turned crests. Stressed broad pen role with 48 authored character profiles for reach, scoop, and curl. Fitted with 21,705 pair adjustments.
+            High-contrast oblique display face with per-letter curved fin serifs, bowed diagonals, and turned crests. Stressed broad pen role with 48 authored character profiles for reach, scoop, and curl.
           </p>
 
           <div class="face-waterfall">
@@ -1109,15 +1143,53 @@
           <div class="face-specs">
             <span><strong>Role</strong> <em>High-Contrast Oblique</em></span>
             <span><strong>Mapped Characters</strong> <em>346 Codepoints</em></span>
-            <span><strong>Pair Clearances</strong> <em>21,705 Adjustments</em></span>
+            <span><strong>Pair Clearances</strong> <em>21,797 adjustments</em></span>
             <span><strong>Format</strong> <em>TTF, WOFF2, WOFF</em></span>
           </div>
         </div>
 
         <div class="face-actions">
-          <a href="XyhSkirl-Oblique.ttf" download class="btn-download primary">&#8681; TTF</a>
-          <a href="XyhSkirl-Oblique.woff2" download class="btn-download">&#8681; WOFF2</a>
+          <a href="XyhSkirl-Oblique.ttf?v=1.100" download class="btn-download primary">&#8681; TTF</a>
+          <a href="XyhSkirl-Oblique.woff2?v=1.100" download class="btn-download">&#8681; WOFF2</a>
           <a href="specimens/wardrobe-03.png" target="_blank" rel="noopener" class="btn-download">&#9655; Specimen Sheet</a>
+        </div>
+      </article>
+      <article class="face-card lode">
+        <div>
+          <div class="face-header">
+            <span class="face-num">Wardrobe 04</span>
+            <span class="face-version">v1.000 Regular</span>
+          </div>
+          <h3 class="face-name lode">Xyh Lode</h3>
+          <p class="face-role">Heavy upright letters with competing curved boundaries and glyph-specific polygonal chambers. Proportional numerals, Latin accents, mark stacking, and four contextual states.</p>
+
+          <div class="face-waterfall">
+            <div class="waterfall-row">
+              <span class="waterfall-text font-lode" style="font-size: 54px;">Boundaries</span>
+              <span class="waterfall-size">54px</span>
+            </div>
+            <div class="waterfall-row">
+              <span class="waterfall-text font-lode" style="font-size: 38px;">Unequal Chambers</span>
+              <span class="waterfall-size">38px</span>
+            </div>
+            <div class="waterfall-row">
+              <span class="waterfall-text font-lode" style="font-size: 24px;">AVATAR · Wa Yo fa · Straße</span>
+              <span class="waterfall-size">24px</span>
+            </div>
+          </div>
+
+          <div class="face-specs">
+            <span><strong>Role</strong> <em>Heavy Upright Display</em></span>
+            <span><strong>Mapped Characters</strong> <em>346 Codepoints</em></span>
+            <span><strong>Pair Clearances</strong> <em>22,550 adjustments</em></span>
+            <span><strong>Format</strong> <em>TTF, WOFF2, WOFF</em></span>
+          </div>
+        </div>
+
+        <div class="face-actions">
+          <a href="XyhLode-Regular.ttf?v=1.000" download class="btn-download primary">&#8681; TTF</a>
+          <a href="XyhLode-Regular.woff2?v=1.000" download class="btn-download">&#8681; WOFF2</a>
+          <a href="specimens/wardrobe-04.png" target="_blank" rel="noopener" class="btn-download">&#9655; Specimen Sheet</a>
         </div>
       </article>
     </div>
@@ -1128,31 +1200,18 @@
     <div class="section-head">
       <div>
         <h2 class="section-title">Wardrobe Comparison</h2>
-        <span class="section-subtitle">Side-by-side comparison illustrating contrasting anatomical roles at identical optical sizes.</span>
+        <span class="section-subtitle">Compare the four faces using the same sample text.</span>
       </div>
       <div>
-        <a href="specimens/wardrobe-comparison.png" target="_blank" rel="noopener" class="btn-download">&#8681; Full-Fidelity PNG Proof</a>
+        <a href="specimens/wardrobe-comparison.png" target="_blank" rel="noopener" class="btn-download">&#8681; Comparison PNG</a>
       </div>
     </div>
 
     <div class="comparison-sheet">
-      <div class="comparison-row">
-        <div class="comparison-label">01 / Bract / Narrow, Rounded Terminals</div>
-        <div class="comparison-sample bract">sharp weather</div>
-        <div class="comparison-sample bract" style="font-size: 0.52em; margin-top: 6px; color: var(--text-muted);">Aa Ee Mm Rr 0123456789 &sect; &para; &bull; &ldquo;c&oelig;ur&rdquo;</div>
-      </div>
-
-      <div class="comparison-row">
-        <div class="comparison-label">02 / Sump / Broad, Heavy Mass &amp; Continuous Counters</div>
-        <div class="comparison-sample sump">sharp weather</div>
-        <div class="comparison-sample sump" style="font-size: 0.52em; margin-top: 6px; color: var(--text-muted);">Aa Ee Mm Rr 0123456789 &sect; &para; &bull; &ldquo;c&oelig;ur&rdquo;</div>
-      </div>
-
-      <div class="comparison-row">
-        <div class="comparison-label">03 / Skirl / Oblique, High Contrast &amp; Fin Serifs</div>
-        <div class="comparison-sample skirl">sharp weather</div>
-        <div class="comparison-sample skirl" style="font-size: 0.52em; margin-top: 6px; color: var(--text-muted);">Aa Ee Mm Rr 0123456789 &sect; &para; &bull; &ldquo;c&oelig;ur&rdquo;</div>
-      </div>
+<div class="comparison-row"><div class="comparison-label">01 / Bract / Narrow, rounded terminals</div><div class="comparison-sample bract">sharp weather</div><div class="comparison-sample bract" style="font-size:clamp(18px,2.1vw,28px);margin-top:6px;color:var(--text-muted)">Aa Ee Mm Rr 0123456789 · “cœur”</div></div>
+<div class="comparison-row"><div class="comparison-label">02 / Sump / Broad, heavy mass</div><div class="comparison-sample sump">sharp weather</div><div class="comparison-sample sump" style="font-size:clamp(18px,2.1vw,28px);margin-top:6px;color:var(--text-muted)">Aa Ee Mm Rr 0123456789 · “cœur”</div></div>
+<div class="comparison-row"><div class="comparison-label">03 / Skirl / Oblique, curved fin serifs</div><div class="comparison-sample skirl">sharp weather</div><div class="comparison-sample skirl" style="font-size:clamp(18px,2.1vw,28px);margin-top:6px;color:var(--text-muted)">Aa Ee Mm Rr 0123456789 · “cœur”</div></div>
+<div class="comparison-row"><div class="comparison-label">04 / Lode / Heavy upright, unequal polygonal chambers</div><div class="comparison-sample lode">sharp weather</div><div class="comparison-sample lode" style="font-size:clamp(18px,2.1vw,28px);margin-top:6px;color:var(--text-muted)">Aa Ee Mm Rr 0123456789 · “cœur”</div></div>
     </div>
   </section>
 
@@ -1172,6 +1231,7 @@
           <button class="seg-btn active" data-font="bract">Bract</button>
           <button class="seg-btn" data-font="sump">Sump</button>
           <button class="seg-btn" data-font="skirl">Skirl</button>
+          <button class="seg-btn" data-font="lode">Lode</button>
         </div>
       </div>
 
@@ -1232,35 +1292,46 @@
       <tbody>
         <tr>
           <td><strong>Xyh Bract Regular</strong></td>
-          <td>1.000</td>
+          <td>1.100</td>
           <td>346 codepoints (ASCII + Latin-1 + Ext-A)</td>
-          <td>10,117 pairs</td>
+          <td>21,712 pairs</td>
           <td>
-            <a href="XyhBract-Regular.ttf" download class="btn-download" style="padding:4px 10px; margin:2px;">TTF (461 KB)</a>
-            <a href="XyhBract-Regular.woff2" download class="btn-download" style="padding:4px 10px; margin:2px;">WOFF2 (71 KB)</a>
-            <a href="XyhBract-Regular.woff" download class="btn-download" style="padding:4px 10px; margin:2px;">WOFF (101 KB)</a>
+            <a href="XyhBract-Regular.ttf?v=1.100" download class="btn-download" style="padding:4px 10px; margin:2px;">TTF (768 KB)</a>
+            <a href="XyhBract-Regular.woff2?v=1.100" download class="btn-download" style="padding:4px 10px; margin:2px;">WOFF2 (194 KB)</a>
+            <a href="XyhBract-Regular.woff?v=1.100" download class="btn-download" style="padding:4px 10px; margin:2px;">WOFF (286 KB)</a>
           </td>
         </tr>
         <tr>
           <td><strong>Xyh Sump Regular</strong></td>
-          <td>0.003</td>
+          <td>1.000</td>
           <td>346 codepoints (Continuous counters)</td>
-          <td>22,467 pairs</td>
+          <td>22,477 pairs</td>
           <td>
-            <a href="XyhSump-Regular.ttf" download class="btn-download" style="padding:4px 10px; margin:2px;">TTF (480 KB)</a>
-            <a href="XyhSump-Regular.woff2" download class="btn-download" style="padding:4px 10px; margin:2px;">WOFF2 (80 KB)</a>
-            <a href="XyhSump-Regular.woff" download class="btn-download" style="padding:4px 10px; margin:2px;">WOFF (114 KB)</a>
+            <a href="XyhSump-Regular.ttf?v=1.000" download class="btn-download" style="padding:4px 10px; margin:2px;">TTF (819 KB)</a>
+            <a href="XyhSump-Regular.woff2?v=1.000" download class="btn-download" style="padding:4px 10px; margin:2px;">WOFF2 (206 KB)</a>
+            <a href="XyhSump-Regular.woff?v=1.000" download class="btn-download" style="padding:4px 10px; margin:2px;">WOFF (308 KB)</a>
           </td>
         </tr>
         <tr>
           <td><strong>Xyh Skirl Oblique</strong></td>
-          <td>1.001</td>
+          <td>1.100</td>
           <td>346 codepoints (Curved fin serifs)</td>
-          <td>21,705 pairs</td>
+          <td>21,797 pairs</td>
           <td>
-            <a href="XyhSkirl-Oblique.ttf" download class="btn-download" style="padding:4px 10px; margin:2px;">TTF (544 KB)</a>
-            <a href="XyhSkirl-Oblique.woff2" download class="btn-download" style="padding:4px 10px; margin:2px;">WOFF2 (81 KB)</a>
-            <a href="XyhSkirl-Oblique.woff" download class="btn-download" style="padding:4px 10px; margin:2px;">WOFF (118 KB)</a>
+            <a href="XyhSkirl-Oblique.ttf?v=1.100" download class="btn-download" style="padding:4px 10px; margin:2px;">TTF (933 KB)</a>
+            <a href="XyhSkirl-Oblique.woff2?v=1.100" download class="btn-download" style="padding:4px 10px; margin:2px;">WOFF2 (230 KB)</a>
+            <a href="XyhSkirl-Oblique.woff?v=1.100" download class="btn-download" style="padding:4px 10px; margin:2px;">WOFF (345 KB)</a>
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Xyh Lode Regular</strong></td>
+          <td>1.000</td>
+          <td>346 codepoints (ASCII + Latin-1 + Ext-A)</td>
+          <td>22,550 pairs</td>
+          <td>
+            <a href="XyhLode-Regular.ttf?v=1.000" download class="btn-download" style="padding:4px 10px; margin:2px;">TTF (1204 KB)</a>
+            <a href="XyhLode-Regular.woff2?v=1.000" download class="btn-download" style="padding:4px 10px; margin:2px;">WOFF2 (203 KB)</a>
+            <a href="XyhLode-Regular.woff?v=1.000" download class="btn-download" style="padding:4px 10px; margin:2px;">WOFF (307 KB)</a>
           </td>
         </tr>
       </tbody>
@@ -1276,9 +1347,10 @@
       <a href="specimens/wardrobe-01.png">Bract Sheet</a>
       <a href="specimens/wardrobe-02.png">Sump Sheet</a>
       <a href="specimens/wardrobe-03.png">Skirl Sheet</a>
+      <a href="specimens/wardrobe-04.png">Lode Sheet</a>
     </div>
     <p>
-      Authored for Xyh Tamura on 2026-10-18. All letterforms, skeletons, accent drawings, and curved fin serifs independently drawn. Built using fontTools, uharfbuzz, and skia-pathops.
+      Original fonts by Xyh Tamura. All letterforms, skeletons, accent drawings, and curved fin serifs independently drawn. Built using fontTools, uharfbuzz, and skia-pathops.
     </p>
   </footer>
 
@@ -1288,6 +1360,7 @@
 <div class="toast" id="toast">Copied to clipboard!</div>
 
 <script>
+  if(new URLSearchParams(location.search).get('capture')==='wardrobe')document.documentElement.dataset.capture='wardrobe';
   // ── THEME SWITCHER ──
   const themeButtons = document.querySelectorAll('.theme-btn');
   themeButtons.forEach(btn => {
@@ -1303,13 +1376,15 @@
   const inputs = {
     bract: document.getElementById('input-bract'),
     sump: document.getElementById('input-sump'),
-    skirl: document.getElementById('input-skirl')
+    skirl: document.getElementById('input-skirl'),
+    lode: document.getElementById('input-lode')
   };
 
   const blocks = {
     bract: document.getElementById('block-bract'),
     sump: document.getElementById('block-sump'),
-    skirl: document.getElementById('block-skirl')
+    skirl: document.getElementById('block-skirl'),
+    lode: document.getElementById('block-lode')
   };
 
   // Sync text across inputs
@@ -1319,6 +1394,7 @@
       Object.values(inputs).forEach(other => {
         if (other !== e.target) other.value = val;
       });
+      updateSupport();
     });
   });
 
@@ -1355,7 +1431,7 @@
   document.querySelectorAll('.preset-chip').forEach(btn => {
     btn.addEventListener('click', () => {
       const txt = btn.getAttribute('data-text');
-      Object.values(inputs).forEach(input => input.value = txt);
+      Object.values(inputs).forEach(input => input.value = txt);updateSupport();
     });
   });
 
@@ -1366,20 +1442,34 @@
       viewBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       const view = btn.getAttribute('data-view');
-      if (view === 'stack') {
-        blocks.bract.style.display = 'block';
-        blocks.sump.style.display = 'block';
-        blocks.skirl.style.display = 'block';
-      } else {
-        blocks.bract.style.display = (view === 'bract') ? 'block' : 'none';
-        blocks.sump.style.display = (view === 'sump') ? 'block' : 'none';
-        blocks.skirl.style.display = (view === 'skirl') ? 'block' : 'none';
-      }
+      Object.entries(blocks).forEach(([id,block])=>block.style.display=(view==='stack'||view===id)?'block':'none');
     });
   });
 
+  document.getElementById('variation-select').addEventListener('change',event=>{
+    const value=event.target.value;
+    document.documentElement.style.setProperty('--font-features',value==='auto'?'"calt" 1':value==='base'?'"calt" 0':`"calt" 0, "ss0${value}" 1`);
+  });
+  fetch('catalog.json',{cache:'no-cache'}).then(r=>r.json()).then(entries=>{
+    entries.forEach((entry,i)=>{
+      document.querySelector(`#block-${entry.id} .test-meta-badge`).textContent=`0${i+1} · ${entry.family} ${entry.style} · v${entry.version}`;
+      const card=document.querySelector(`.face-card.${entry.id}`);
+      card.querySelector('.face-version').textContent=`v${entry.version} ${entry.style}`;
+      card.querySelectorAll('.face-specs em')[2].textContent=`${entry.pairAdjustments.toLocaleString()} adjustments`;
+      card.querySelectorAll('a[download]').forEach(a=>{const ext=a.getAttribute('href').split('?')[0].split('.').pop();a.href=entry.files[ext].path+'?v='+entry.version;});
+      const cells=document.querySelectorAll('.download-table tbody tr')[i].children;
+      cells[1].textContent=entry.version;cells[3].textContent=`${entry.pairAdjustments.toLocaleString()} pairs`;
+      cells[4].querySelectorAll('a').forEach(a=>{const ext=a.getAttribute('href').split('?')[0].split('.').pop();a.href=entry.files[ext].path+'?v='+entry.version;a.textContent=`${ext.toUpperCase()} (${Math.ceil(entry.files[ext].bytes/1024)} KB)`;});
+    });
+    document.documentElement.dataset.catalogReady='true';
+  });
   // ── GLYPHS EXPLORER ──
   let glyphData = [];
+  function updateSupport(){
+    const included=new Set([' ','\u00a0','\n','\r','\t',...glyphData.map(g=>g.char)]);
+    const missing=[...new Set([...inputs.bract.value].filter(c=>!included.has(c)))];
+    document.getElementById('character-support').textContent=missing.length?'Outside this Latin set: '+missing.join(' '):'All characters in this sample are included.';
+  }
   const glyphGrid = document.getElementById('glyph-grid');
   const detailChar = document.getElementById('detail-char');
   const detailName = document.getElementById('detail-name');
@@ -1413,7 +1503,7 @@
     filtered.forEach(g => {
       const cell = document.createElement('div');
       cell.className = `glyph-cell ${activeFontClass}`;
-      cell.textContent = g.char;
+      cell.textContent = g.code>=768&&g.code<=879?'x'+g.char:g.char;
       cell.title = `${g.name} (${g.cp})`;
       cell.addEventListener('click', () => {
         document.querySelectorAll('.glyph-cell').forEach(c => c.classList.remove('active'));
@@ -1429,15 +1519,15 @@
   }
 
   function selectGlyph(g) {
-    detailChar.textContent = g.char;
+    detailChar.textContent = g.code>=768&&g.code<=879?'x'+g.char:g.char;detailChar.dataset.character=g.char;
     detailName.textContent = g.name;
     detailCp.textContent = `Unicode: ${g.cp}`;
     detailDec.textContent = `Decimal: ${g.code}`;
-    detailEntity.textContent = `Entity: &amp;#${g.code};`;
+    detailEntity.textContent = `Entity: &#${g.code};`;
   }
 
   copyBtn.addEventListener('click', () => {
-    const char = detailChar.textContent;
+    const char = detailChar.dataset.character;
     navigator.clipboard.writeText(char).then(() => {
       showToast(`Copied "${char}" to clipboard!`);
     }).catch(() => {
@@ -1474,7 +1564,7 @@
     .then(res => res.json())
     .then(data => {
       glyphData = data;
-      renderGlyphs();
+      renderGlyphs();updateSupport();
     })
     .catch(() => {
       // Fallback if fetch blocked locally
