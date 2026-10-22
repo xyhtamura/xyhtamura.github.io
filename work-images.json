@@ -8,8 +8,13 @@
   "works": [
     {
       "id": "xyh-fonts",
-      "image": "img/works/xyh-fonts.jpg",
-      "alt": "Xyh Fonts comparison showing Bract, Sump, and Skirl display typefaces"
+      "image": "img/works/xyh-fonts-four-faces.jpg",
+      "alt": "Bract, Sump, Skirl, and Lode displaying the same words, accents, and numerals",
+      "capture": {
+        "url": "https://xyhtamura.github.io/fonts/?capture=wardrobe",
+        "localUrl": "http://localhost:8000/xyhtamura.github.io/fonts/?capture=wardrobe",
+        "waitMs": 8000
+      }
     },
     {
       "id": "comma-poem-villa",

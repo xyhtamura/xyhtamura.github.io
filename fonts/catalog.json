@@ -1,0 +1,118 @@
+[
+  {
+    "id": "bract",
+    "family": "Xyh Bract",
+    "style": "Regular",
+    "version": "1.100",
+    "mappedCodepoints": 346,
+    "outlinedGlyphs": 1334,
+    "combiningMarks": 14,
+    "states": 4,
+    "pairAdjustments": 21712,
+    "files": {
+      "ttf": {
+        "path": "XyhBract-Regular.ttf",
+        "bytes": 785736,
+        "sha256": "e86f900b5bd2617fba07a631b4a5d84c5eed4c80fb0a7c035a36d0875fd3b310"
+      },
+      "woff": {
+        "path": "XyhBract-Regular.woff",
+        "bytes": 291872,
+        "sha256": "686ab7cc0676942836290b4cc299cc6270578c6269f4752e32385d624a3b902d"
+      },
+      "woff2": {
+        "path": "XyhBract-Regular.woff2",
+        "bytes": 198628,
+        "sha256": "661568d6b88952963801a8b0603005983dd2eacb39f09a638635924f32b8e6b3"
+      }
+    },
+    "specimen": "specimens/wardrobe-01.png"
+  },
+  {
+    "id": "sump",
+    "family": "Xyh Sump",
+    "style": "Regular",
+    "version": "1.000",
+    "mappedCodepoints": 346,
+    "outlinedGlyphs": 1334,
+    "combiningMarks": 14,
+    "states": 4,
+    "pairAdjustments": 22477,
+    "files": {
+      "ttf": {
+        "path": "XyhSump-Regular.ttf",
+        "bytes": 838140,
+        "sha256": "f0e56ef827450efa0ab040b3e3d4c924a0c5166741471061f69d305ecc5a2c6d"
+      },
+      "woff": {
+        "path": "XyhSump-Regular.woff",
+        "bytes": 315372,
+        "sha256": "c7ab1d4a22565094a5da438a8fc109a84c9524cebc03894e72947ffac5e4b0fd"
+      },
+      "woff2": {
+        "path": "XyhSump-Regular.woff2",
+        "bytes": 210936,
+        "sha256": "086ae8ad085d6e850e3e11d348d6974e3ec806a31ccd1049e2308b7ca2ba22d1"
+      }
+    },
+    "specimen": "specimens/wardrobe-02.png"
+  },
+  {
+    "id": "skirl",
+    "family": "Xyh Skirl",
+    "style": "Oblique",
+    "version": "1.100",
+    "mappedCodepoints": 346,
+    "outlinedGlyphs": 1334,
+    "combiningMarks": 14,
+    "states": 4,
+    "pairAdjustments": 21797,
+    "files": {
+      "ttf": {
+        "path": "XyhSkirl-Oblique.ttf",
+        "bytes": 954652,
+        "sha256": "b1e966066d6d096d8a2a2e79cfc89f0c21ff0dec2cd0fb8141b90cbac00b3772"
+      },
+      "woff": {
+        "path": "XyhSkirl-Oblique.woff",
+        "bytes": 352412,
+        "sha256": "b20215508f9489e8ae8100c2cd389d707c62dc239990455f1c8e2e4131317d3d"
+      },
+      "woff2": {
+        "path": "XyhSkirl-Oblique.woff2",
+        "bytes": 234524,
+        "sha256": "f715ad6ed16a5a1acc9b3be61fa65508ee648a7571febc461d516db4a21ac0d7"
+      }
+    },
+    "specimen": "specimens/wardrobe-03.png"
+  },
+  {
+    "id": "lode",
+    "family": "Xyh Lode",
+    "style": "Regular",
+    "version": "1.000",
+    "mappedCodepoints": 346,
+    "outlinedGlyphs": 1334,
+    "combiningMarks": 14,
+    "states": 4,
+    "pairAdjustments": 22550,
+    "files": {
+      "ttf": {
+        "path": "XyhLode-Regular.ttf",
+        "bytes": 1232184,
+        "sha256": "e9fb5b01b62b5759e0ff25436030aaf20bb8855a236e05c9bf2b9b12a640e536"
+      },
+      "woff": {
+        "path": "XyhLode-Regular.woff",
+        "bytes": 313440,
+        "sha256": "edcf1bbefdbd4e42ed49143a92c2fac6b706861d5bd1f5f1348a1fdcff6b62fd"
+      },
+      "woff2": {
+        "path": "XyhLode-Regular.woff2",
+        "bytes": 207800,
+        "sha256": "066ba8b69b26f9ef15b65735ab196014fb10e4c0350927d2572fe48647b19934"
+      }
+    },
+    "specimen": "specimens/wardrobe-04.png"
+  }
+]

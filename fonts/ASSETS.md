@@ -1,27 +1,39 @@
-# Xyh Fonts Asset Provenance
+# Xyh Fonts asset provenance
 
-Original Latin display typefaces authored for Xyh Tamura on 2026-10-18.
+Four original Latin display typefaces by Xyh Tamura. Each maps 346 codepoints, includes fourteen combining marks, and supplies four finite contextual states for every nonmark character.
 
-## Typefaces
+## Published fonts
 
-1. **Xyh Bract** (Regular 1.000)
-   - Narrow display lettering with rounded terminals, folded bowls, and curled shoulders.
-   - Skeletons, Latin constructions, and outlines authored for Xyh by Codex on 2026-10-18. No third-party font contours or binaries used.
-   - 346 mapped codepoints: printable ASCII, Latin-1 Supplement, Latin Extended-A, Romanian comma-below, fourteen combining marks, dotless j, euro, and editorial punctuation. Fitted kerning with 10,117 nonzero base-pair adjustments.
+### Xyh Bract Regular 1.100
 
-2. **Xyh Sump** (Regular 0.003)
-   - Broad heavy display lettering with folded shoulders, continuous counters, and high lowercase body.
-   - Skeletons, glyph drawings, and carved counters authored for Xyh by Codex on 2026-10-18. No third-party font outlines or binaries used.
-   - 346 mapped codepoints: complete Latin-1 and Latin Extended-A, full Latin accent set, above/below mark stacking, and 22,467 pair adjustments.
+Original routes, glyph-specific profiles, Latin constructions, and outlines made for Xyh. No third-party font contours or binaries enter the family. 1,334 repertoire outlines and 21,712 nonzero class-pair adjustments.
 
-3. **Xyh Skirl** (Oblique 1.001)
-   - High-contrast oblique display face with per-letter curved fin serifs, bowed diagonals, and turned crests.
-   - Skeletons, ribbon terminals, noncollinear cubic serif contours, 48 authored character serif profiles, and accent drawings authored for Xyh by Codex on 2026-10-18. No third-party font outlines or binaries used.
-   - 346 mapped codepoints: complete Latin coverage, mark stacking following oblique direction, and 21,705 pair adjustments.
+The irregular edition extends the wardrobe construction study through the full Latin set, using authored joins, route bowing, component weight variation, and occurrence profiles. Accents inherit the revised bases.
 
-## Formats and Tooling
+### Xyh Sump Regular 1.000
 
-- Installable TrueType (`.ttf`) for desktop and print use.
-- Compressed webfonts (`.woff2` and `.woff`) for browser use.
-- Build dependencies: fontTools, uharfbuzz, Brotli, skia-pathops, NumPy, Pillow. None bundled into client runtime.
-- License status: Original production assets for Xyh Tamura.
+Original routes, glyph-specific profiles, Latin constructions, and outlines made for Xyh. No third-party font contours or binaries enter the family. 1,334 repertoire outlines and 22,477 nonzero class-pair adjustments.
+
+The irregular edition extends the wardrobe construction study through the full Latin set, using authored joins, route bowing, component weight variation, and occurrence profiles. Accents inherit the revised bases.
+
+### Xyh Skirl Oblique 1.100
+
+Original routes, glyph-specific profiles, Latin constructions, and outlines made for Xyh. No third-party font contours or binaries enter the family. 1,334 repertoire outlines and 21,797 nonzero class-pair adjustments.
+
+The irregular edition extends the wardrobe construction study through the full Latin set, using authored joins, route bowing, component weight variation, and occurrence profiles. Accents inherit the revised bases.
+
+### Xyh Lode Regular 1.000
+
+Original routes, glyph-specific profiles, Latin constructions, and outlines made for Xyh. No third-party font contours or binaries enter the family. 1,334 repertoire outlines and 22,550 nonzero class-pair adjustments.
+
+Lode uses competing curved boundaries and glyph-specific polygonal chambers. Its lining numerals, accents, and fitted spacing complete the Latin display scope.
+
+## Files and tooling
+
+TTF, WOFF, and WOFF2 copies are checked against the fully verified production exports. [`catalog.json`](catalog.json) records versions, sizes, and SHA-256 hashes. [`verification.json`](verification.json) records the public browser checks. The specimen retains the collection's personal and creative use statement.
+
+The fonts and comparison images are original production assets for Xyh Tamura. The private reference bank is not part of this directory. Proof labels are rasterized with Pillow's bundled default font; interface labels use the device's system font without copying it.
+
+Local build tooling uses fontTools, Skia path operations, HarfBuzz, NumPy, SciPy, Pillow, Brotli, and a hash-checked MIT-licensed Paper.js 0.12.18 build. These tools are not bundled into the browser specimen. The site loads the original exported fonts and its own HTML, CSS, and JavaScript.
+
+Checked on 2026-10-23.

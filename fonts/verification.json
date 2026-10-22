@@ -1,0 +1,30 @@
+{
+  "families": [
+    {
+      "id": "bract",
+      "version": "1.100"
+    },
+    {
+      "id": "sump",
+      "version": "1.000"
+    },
+    {
+      "id": "skirl",
+      "version": "1.100"
+    },
+    {
+      "id": "lode",
+      "version": "1.000"
+    }
+  ],
+  "downloadHashes": 12,
+  "glyphCells": 344,
+  "contextualPixelsDiffer": 4,
+  "controls": true,
+  "mobileOverflow": false,
+  "pageErrors": [],
+  "portfolioWidths": [
+    1440,
+    390
+  ]
+}
