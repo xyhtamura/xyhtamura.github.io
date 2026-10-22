@@ -564,10 +564,9 @@
     },
     {
       "id": "kikik",
-      "image": "img/works/kikik.jpg",
-      "alt": "Kikik spectral drawing instrument",
-      "page": "https://xyhtamura.github.io/kikik/",
-      "skipReason": "Needs a curated field-recording and grain-source fixture; the default page contains no swarm."
+      "image": "kikik/poem.png",
+      "alt": "kíkik text poem: scattered multilingual characters on a white page",
+      "page": "https://xyhtamura.github.io/kikik/"
     },
     {
       "id": "remanence",
