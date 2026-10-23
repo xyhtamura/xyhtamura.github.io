@@ -1422,11 +1422,16 @@ links: [
       year: "2026",
       tags: ["artistic research"],
       blurb: "A practice sharing on treating language as material shaped by bodies, histories, interfaces, and modalities. Examples from web literature, code, sound poetry, installation, and performance scores trace my shift from using media to present language toward using each medium as a compositional system that changes it.",
+      links: [
+        { label: "My Entry", url: "https://www.researchcatalogue.net/view/4683157/4683220/6901/0" },
+        { label: "Practice Sharing III", url: "https://www.researchcatalogue.net/view/4683157/4683094" },
+        { label: "Language-Based Artistic Research Group", url: "https://www.researchcatalogue.net/view/835089/835129" }
+      ],
       exhibitions: [
         {
           venue: "Journal for Artistic Research",
           event: "Language-Based Artistic Research Group",
-          year: "2026 forthcoming"
+          year: "2026"
         }
       ]
     },
