@@ -1,5 +1,14 @@
 # Website notes
 
+2026-10-26 — Codex — Revised Whisper house's web and print prose to the writing
+voice, preserving the four family experiences and open interpretations.
+Regenerated the notes PDFs from the print page and retained the original score.
+Read the rendered browser text, checked the narrow layout, inspected all five
+PDF notes pages, and compared the combined score's text and pixels with the
+original. Details and renderer usage are in [Whisper house notes](whisperhouse/NOTES.md).
+No development plan or curated portfolio image changed. Remote publication and
+a desktop browser layout check remain undone.
+
 2026-10-18 — Antigravity — Published `fonts/` as a dedicated web page for Xyh Fonts, making Bract Regular 1.000, Sump Regular 0.003, and Skirl Oblique 1.001 available with an interactive type tester, wardrobe comparison, 346-character glyph explorer, and downloadable TTF/WOFF/WOFF2 packages. Added *Xyh Fonts* as a design entry (`data-cats="design"`) on the landing page (`index.html`) with direct link `/fonts/`, specimen comparison still (`img/works/xyh-fonts.jpg`), interactive portfolio (`portfolio/data.js`), general CV (`profiles/cv/cv.md`), detailed portfolio summaries (`profiles/cv/portfolio.md`), and `sitemap.xml`. Rebuilt general CV HTML and PDF. Verified HTTP 200 responses on all font assets and specimen endpoints at localhost:8000.
 
 2026-10-04 — Codex — Added a collapsed “Earlier work and names” note to the existing footer in `index.html`, identifying Xyh Tamura as also known as Cy Tamura and linking The Magic Staff and Promil gifted-child coverage. Added JSON-LD connecting Xyh, Cy, and Cye Tamura to one Person identifier and The Magic Staff to that person as author and creator. Kept the main biography and search description focused on current work. Opened the local page in the Codex browser, confirmed the note starts collapsed, expanded it and read the rendered footer, parsed the JSON-LD from the DOM, and checked the note has no horizontal overflow at the browser's default viewport. Mobile layout and search-engine interpretation remain unverified. No portfolio work entries or development plans changed; no remote push performed.

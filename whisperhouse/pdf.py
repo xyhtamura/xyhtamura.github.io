@@ -1,190 +1,84 @@
-from reportlab.lib.pagesizes import LETTER
-from reportlab.lib import colors
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, HRFlowable, Table, TableStyle, PageBreak
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_JUSTIFY
+"""Print pn.html and prepend it to the unchanged score.
 
-def create_whisper_house_pdf(filename):
-    doc = SimpleDocTemplate(
-        filename,
-        pagesize=LETTER,
-        rightMargin=72, leftMargin=72,
-        topMargin=72, bottomMargin=72
-    )
+Requires PyMuPDF, Node.js, Playwright, and Chromium (or --browser).
+Serve F:/xyh on port 8000 before running. Prose lives in pn.html.
 
-    styles = getSampleStyleSheet()
-    
-    # Custom Styles to match the "Cormorant Garamond" / Art aesthetic
-    # We use Times-Roman as a standard serif substitute for portability
-    
-    # Title Style (Lowercase, large)
-    style_title = ParagraphStyle(
-        'WhisperTitle',
-        parent=styles['Heading1'],
-        fontName='Times-Roman',
-        fontSize=36,
-        leading=42,
-        alignment=TA_CENTER,
-        textColor=colors.black,
-        spaceAfter=10
-    )
+Usage:
+    python whisperhouse/pdf.py --modules PATH_TO_NODE_MODULES --browser PATH_TO_BROWSER
+    python whisperhouse/pdf.py --url http://localhost:8000/xyhtamura.github.io/whisperhouse/pn.html
+"""
 
-    # Subtitle (Italic)
-    style_subtitle = ParagraphStyle(
-        'WhisperSubtitle',
-        parent=styles['Italic'],
-        fontName='Times-Italic',
-        fontSize=14,
-        alignment=TA_CENTER,
-        textColor=colors.gray,
-        spaceAfter=30
-    )
+import argparse
+import json
+from pathlib import Path
+import subprocess
+import sys
+import tempfile
 
-    # Section Headers
-    style_h2 = ParagraphStyle(
-        'WhisperH2',
-        parent=styles['Heading2'],
-        fontName='Times-Bold',
-        fontSize=18,
-        leading=22,
-        spaceBefore=20,
-        spaceAfter=10,
-        textColor=colors.black
-    )
-    
-    # Body Text
-    style_body = ParagraphStyle(
-        'WhisperBody',
-        parent=styles['BodyText'],
-        fontName='Times-Roman',
-        fontSize=11,
-        leading=15,
-        alignment=TA_JUSTIFY,
-        spaceAfter=10
-    )
+import pymupdf
 
-    # Small Caps / Meta tags
-    style_meta = ParagraphStyle(
-        'WhisperMeta',
-        parent=styles['BodyText'],
-        fontName='Helvetica-Bold',
-        fontSize=8,
-        textColor=colors.gray,
-        textTransform='uppercase',
-        spaceAfter=2
-    )
-    
-    # Blockquotes
-    style_quote = ParagraphStyle(
-        'WhisperQuote',
-        parent=styles['BodyText'],
-        fontName='Times-Italic',
-        fontSize=12,
-        leftIndent=20,
-        rightIndent=20,
-        spaceBefore=10,
-        spaceAfter=10,
-        textColor=colors.darkgray
-    )
 
-    story = []
+PRINT_HTML = r"""
+const {createRequire} = require('node:module');
+const path = require('node:path');
+const options = JSON.parse(process.argv[1]);
+const runtime = options.modules
+  ? createRequire(path.join(path.resolve(options.modules), '_whisperhouse.cjs'))
+  : require;
+const {chromium} = runtime('playwright');
+(async () => {
+  const browser = await chromium.launch({headless: true,
+    ...(options.browser ? {executablePath: options.browser} : {})});
+  try {
+    const page = await browser.newPage();
+    const response = await page.goto(options.url, {waitUntil: 'networkidle'});
+    if (!response || !response.ok()) throw new Error('Print page failed to load');
+    await page.waitForFunction(() => getComputedStyle(document.querySelector('main')).maxWidth === '896px');
+    await page.evaluate(async () => {
+      await document.fonts.load('16px "Cormorant Garamond"');
+      await document.fonts.load('16px Inter');
+      await document.fonts.ready;
+      if (!document.fonts.check('16px "Cormorant Garamond"') || !document.fonts.check('16px Inter'))
+        throw new Error('Print fonts failed to load');
+    });
+    await page.pdf({path: options.output, preferCSSPageSize: true,
+      printBackground: true, displayHeaderFooter: false});
+  } finally {
+    await browser.close();
+  }
+})().catch(error => { console.error(error); process.exitCode = 1; });
+"""
 
-    # --- HEADER ---
-    story.append(Paragraph("whisper house", style_title))
-    story.append(HRFlowable(width="20%", thickness=0.5, color=colors.lightgrey, spaceAfter=10, spaceBefore=0))
-    story.append(Paragraph("A performance, a document, a ritual.", style_subtitle))
-    story.append(Spacer(1, 20))
 
-    # --- DEFINITION ---
-    story.append(Paragraph("What is whisper house?", style_h2))
-    story.append(Paragraph("<b>whisper house</b> is simultaneously a sound composition, a piece of literature, a fictional document, a performance art piece, experimental theater, a conceptual art piece, and a ritual. It is designed to function as any—or all—of these practices.", style_body))
-    
-    # Definitions List (Using a Table for grid-like layout)
-    def_data = [
-        [Paragraph("<b>As Composition:</b> The piece explores sounds created by the 'Guests'—sounds mediated by the house through space and distance.", style_body)],
-        [Paragraph("<b>As Literature:</b> A poetic, experimental, visual-musical text that can simply be read.", style_body)],
-        [Paragraph("<b>As Ritual:</b> The act of reading or performing the text constitutes a ritual. Its impossible acts resemble Zen koans.", style_body)],
-        [Paragraph("<b>As Conceptual Art:</b> The idea itself, enacted only in the mind, is the work. The surreal instructions are 'impossible instructions.'", style_body)]
-    ]
-    t_defs = Table(def_data, colWidths=['100%'])
-    t_defs.setStyle(TableStyle([('VALIGN', (0,0), (-1,-1), 'TOP'), ('BOTTOMPADDING', (0,0), (-1,-1), 6)]))
-    story.append(t_defs)
-    
-    story.append(Spacer(1, 10))
-    story.append(Paragraph('"There are many instructions in the piece that are surreal, impossible, or invisible. Participants may interpret these as they wish."', style_quote))
+def main():
+    if hasattr(sys.stdout, 'reconfigure'):
+        sys.stdout.reconfigure(encoding='utf-8')
+        sys.stderr.reconfigure(encoding='utf-8')
+    folder = Path(__file__).resolve().parent
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('--url', default='http://localhost:8000/xyhtamura.github.io/whisperhouse/pn.html')
+    parser.add_argument('--node', default='node', help='Node.js executable')
+    parser.add_argument('--modules', help='Directory containing the Playwright package')
+    parser.add_argument('--browser', help='Chromium, Edge, or Chrome executable')
+    args = parser.parse_args()
 
-    story.append(PageBreak())
+    # Stage both outputs so a failed print leaves the existing PDFs intact.
+    with tempfile.TemporaryDirectory(prefix='whisperhouse-pdf-', dir=folder) as staging:
+        notes_path = Path(staging) / 'programnotes.pdf'
+        full_path = Path(staging) / 'whisperhousefull.pdf'
+        options = dict(url=args.url, modules=args.modules, browser=args.browser, output=str(notes_path))
+        subprocess.run([args.node, '-e', PRINT_HTML, json.dumps(options)], check=True)
+        with pymupdf.open(notes_path) as notes, pymupdf.open(folder / 'whisperhouse.pdf') as score:
+            if not notes.page_count or any(not page.get_text().strip() for page in notes):
+                raise ValueError('Printed notes contain an empty page')
+            notes_pages = notes.page_count
+            notes.insert_pdf(score)
+            notes.set_metadata({'title': 'whisper house | Program notes and score', 'author': 'Xyh Tamura'})
+            notes.save(full_path)
+        notes_path.replace(folder / 'programnotes.pdf')
+        full_path.replace(folder / 'whisperhousefull.pdf')
+    print(f'Printed {notes_pages} pages of notes; combined with the unchanged score.')
 
-    # --- LOGISTICS ---
-    story.append(Paragraph("Performance Notes", style_h2))
-    story.append(Paragraph("The piece features four performers, referred to as <b>Guests</b>.", style_body))
-    
-    bullets = [
-        "The fourth Guest will not act until the very end.",
-        "Guest 1 begins with a phone or laptop.",
-        "Guest 3 begins with an encyclopedia.",
-        "Unspecified details are left to the performers' interpretation."
-    ]
-    for b in bullets:
-        story.append(Paragraph(f"• {b}", style_body))
-        
-    story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>Location Requirement:</b> Must be performed in a house. There should be at least one room with a door and a doorknob.", style_body))
 
-    # Materials
-    story.append(Paragraph("Materials Needed", style_h2))
-    
-    materials_data = [
-        [Paragraph("<b>Books & Paper</b>", style_body), Paragraph("Encyclopedia, Dictionary, Novel, Envelope", style_body)],
-        [Paragraph("<b>Kitchen</b>", style_body), Paragraph("Frying Pan & Egg, Pitcher, Water, Cutlery, Vegetables", style_body)],
-        [Paragraph("<b>Household</b>", style_body), Paragraph("Landline Phone, Radio, Electric Fan, Laundry Basket, Broom, Shell, Medicine", style_body)],
-    ]
-    t_mat = Table(materials_data, colWidths=[120, 300])
-    t_mat.setStyle(TableStyle([
-        ('VALIGN', (0,0), (-1,-1), 'TOP'),
-        ('LINEBELOW', (0,0), (-1,-1), 0.5, colors.lightgrey),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 8),
-        ('TOPPADDING', (0,0), (-1,-1), 8),
-    ]))
-    story.append(t_mat)
-
-    story.append(Spacer(1, 20))
-
-    # --- PROGRAM NOTES ---
-    story.append(Paragraph("Program Notes", style_h2))
-    
-    story.append(Paragraph("CONCEPT", style_meta))
-    story.append(Paragraph("whisper house imagines a household vigil where individuals must constantly check on something—or someone—quite fragile. Like a holding pattern of care, they must move through the house gently.", style_body))
-    
-    story.append(HRFlowable(width="100%", thickness=0.5, color=colors.lightgrey, spaceAfter=15, spaceBefore=15))
-
-    story.append(Paragraph("<b>First Inspiration (The Cats):</b> The slow decline of our family cats. Suffering from feline immunodeficiency virus, their health degraded in a slow, predictable fade.", style_body))
-    story.append(Paragraph("<b>Second Inspiration (Sickness):</b> The memory of my own sicknesses as a child. I heard the house through a filter: the distant sound of ironing, the sizzle of frying food.", style_body))
-    story.append(Paragraph("<b>Third Inspiration (Grandfather):</b> My grandfather drifted in and out of the hospital. It was an intense vigil that continued even when he was hospitalized.", style_body))
-    story.append(Paragraph("<b>Fourth Inspiration (Siblings):</b> The birth of my significantly younger siblings. They were so tiny, kept in a cradle in a quiet room. Always quiet. Always gentle.", style_body))
-
-    story.append(Paragraph('"So, this is what whisper house tries to embody. There’s a presence in the piece of something fragile, at the cusp of life and death."', style_quote))
-
-    # --- QUESTIONS ---
-    story.append(PageBreak())
-    story.append(Paragraph("This piece asks questions", style_h2))
-    story.append(Paragraph("I leave many things open and unexplained because I want this piece to provoke inquiry.", style_body))
-    
-    questions = [
-        "Who are the audience, really?",
-        "What is the house?",
-        "Who—or what—is really being cared for?",
-        "What is fragile here?",
-        "Why are the Guests 'guests'?",
-        "How many characters are in this piece?"
-    ]
-    
-    for q in questions:
-        story.append(Paragraph(f"? {q}", style_body))
-
-    # Build
-    doc.build(story)
-    print(f"PDF successfully generated as: {filename}")
-
-# Execute
-create_whisper_house_pdf("Whisper_House_Program_Notes.pdf")
+if __name__ == '__main__':
+    main()
