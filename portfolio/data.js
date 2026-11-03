@@ -294,6 +294,31 @@ const slides = [
   {
     kind: "piece",
     piece: {
+      id: "open4",
+      title: "Open4",
+      year: "2025–2026",
+      tags: ["ambient video", "archival video", "queer temporality", "found footage", "film"],
+      exhibitions: [
+        {
+          type: "Screened at",
+          venue: "attaque(e)r le visible",
+          event: "VIDEOAKTION #7 (Block III)",
+          year: "2026"
+        }
+      ],
+      media: [
+        { type: "image", src: "../img/works/open4.jpg", label: "Open4 ambient video still" }
+      ],
+      blurb: "Ambient videos looping transitional footage, empty rooms, and objects from archival gay adult media from the 1980s to the mid 2000s, transforming setting shots into liminal environments of queer temporality, silence, and longing.",
+      links: [
+        { label: "Open4", url: "https://xyhtamura.github.io/open4/" },
+        { label: "VIDEOAKTION #7", url: "https://www.attaqueerlevisible.com/va7_block3" }
+      ]
+    }
+  },
+  {
+    kind: "piece",
+    piece: {
       id: "cornice",
       title: "Cornice",
       year: "2026",
