@@ -204,8 +204,15 @@ readManifest("album.json").then((data) => {
   albumLength = album.samples / album.sampleRate;
   album.tracks.forEach((track, index) => {
     track.time = track.start / album.sampleRate;
-    const mark = document.createElement("span");
-    mark.style.left = `${100 * track.start / album.samples}%`;
+    const mark = document.createElement("button");
+    mark.type = "button";
+    mark.style.setProperty("--chapter-position", `${100 * track.start / album.samples}%`);
+    mark.setAttribute("aria-label", `Play ${track.title}`);
+    mark.addEventListener("click", () => playChapter(index));
+    const label = document.createElement("span");
+    label.textContent = track.title;
+    label.setAttribute("aria-hidden", "true");
+    mark.append(label);
     chapterMarks.append(mark);
     addRow(byId("album-tracks"), track, index, () => playChapter(index));
   });

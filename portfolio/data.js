@@ -522,6 +522,7 @@ const slides = [
       ],
       blurb: "A cleancore, ambient, and drone album exploring hyper-sanitized consumer soundscapes, bathroom rituals, and synthetic hygiene. Conceived in 2016 as a sonic definition of cleancore and completed in 2026, the album imagines a journey through a speculative spa designed for bathing. Constrained by the pitch set [0, 2, 4, 5, 7, 9] alongside quartal and quintal harmonies, the music balances sterile General MIDI sound fonts and sample-player presets against warm analog drones, expansive low-passed reverbs, and organic field recordings of water, steam, and flora.",
       links: [
+        { label: "Listen to Aftergreen", url: "https://xyhtamura.github.io/cyberpaean/aftergreen/" },
         { label: "Bandcamp", url: "https://cyberpaean.bandcamp.com/album/aftergreen" }
       ]
     }

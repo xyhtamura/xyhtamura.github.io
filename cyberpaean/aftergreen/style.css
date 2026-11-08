@@ -187,17 +187,49 @@ h1 {
 #chapter-marks {
   position: absolute;
   inset: 0 .5rem;
+  z-index: 1;
   pointer-events: none;
 }
-#chapter-marks span {
+#chapter-marks button {
+  position: absolute;
+  left: var(--chapter-position);
+  width: min(.9rem, 4%);
+  height: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: .25rem;
+  background: transparent;
+  transform: translateX(-50%);
+  pointer-events: auto;
+}
+#chapter-marks button::before {
+  content: "";
   position: absolute;
   top: 50%;
+  left: 50%;
   width: 2px;
   height: .72rem;
   border-radius: 1px;
   background: var(--green);
   transform: translate(-50%, -50%);
 }
+#chapter-marks span {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + .25rem);
+  left: 50%;
+  width: max-content;
+  max-width: 13rem;
+  transform: translateX(calc(-1 * var(--chapter-position)));
+  padding: .2rem .5rem;
+  border-radius: .4rem;
+  background: var(--green);
+  color: #fff;
+  font-size: .8rem;
+  pointer-events: none;
+}
+#chapter-marks button:hover span,
+#chapter-marks button:focus-visible span { display: block; }
 .progress input {
   position: relative;
   appearance: none;
