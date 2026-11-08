@@ -1,0 +1,103 @@
+{
+  "sampleRate": 44100,
+  "samples": 227520523,
+  "tracks": [
+    {
+      "title": "Clear Water",
+      "file": "01 Clear Water.mp3",
+      "start": 0,
+      "samples": 9730447,
+      "delay": 1105,
+      "firstFrame": 417
+    },
+    {
+      "title": "FlexiSpray",
+      "file": "02 FlexiSpray.mp3",
+      "start": 9730447,
+      "samples": 9692321,
+      "delay": 1105,
+      "firstFrame": 417
+    },
+    {
+      "title": "Marble",
+      "file": "03 Marble.mp3",
+      "start": 19422768,
+      "samples": 17421814,
+      "delay": 1105,
+      "firstFrame": 417
+    },
+    {
+      "title": "Aloe Vera",
+      "file": "04 Aloe Vera.mp3",
+      "start": 36844582,
+      "samples": 9536317,
+      "delay": 1105,
+      "firstFrame": 417
+    },
+    {
+      "title": "Memory 53",
+      "file": "05 Memory 53.mp3",
+      "start": 46380899,
+      "samples": 16147258,
+      "delay": 1105,
+      "firstFrame": 417
+    },
+    {
+      "title": "Warm and Cool",
+      "file": "06 Warm and Cool.mp3",
+      "start": 62528157,
+      "samples": 48303830,
+      "delay": 1105,
+      "firstFrame": 417
+    },
+    {
+      "title": "Forest Window",
+      "file": "07 Forest Window.mp3",
+      "start": 110831987,
+      "samples": 63596386,
+      "delay": 1105,
+      "firstFrame": 417
+    },
+    {
+      "title": "Xylitol",
+      "file": "08 Xylitol.mp3",
+      "start": 174428373,
+      "samples": 9199216,
+      "delay": 1105,
+      "firstFrame": 417
+    },
+    {
+      "title": "Vapor Pressure",
+      "file": "09 Vapor Pressure.mp3",
+      "start": 183627589,
+      "samples": 14922602,
+      "delay": 1105,
+      "firstFrame": 417
+    },
+    {
+      "title": "Fern Subroom",
+      "file": "10 Fern Subroom.mp3",
+      "start": 198550191,
+      "samples": 12671518,
+      "delay": 1105,
+      "firstFrame": 417
+    },
+    {
+      "title": "Natural Belief",
+      "file": "11 Natural Belief.mp3",
+      "start": 211221709,
+      "samples": 11552171,
+      "delay": 1105,
+      "firstFrame": 417
+    },
+    {
+      "title": "Promise of Clarity",
+      "file": "12 Promise of Clarity.mp3",
+      "start": 222773880,
+      "samples": 4746643,
+      "delay": 1105,
+      "firstFrame": 417
+    }
+  ],
+  "fallback": "album-continuous.m4a"
+}

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Listen to Aftergreen, a cleancore album by Cyberpaean.">
+  <title>Aftergreen · Cyberpaean</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="player.js"></script>
+</head>
+<body>
+  <header class="masthead wrap">
+    <a href="#top">Cyberpaean</a>
+    <nav aria-label="On this page">
+      <a href="#tracks">Tracklist</a>
+      <a href="#bonus">Bonus tracks</a>
+    </nav>
+  </header>
+  <main id="top" class="wrap">
+    <section class="hero" aria-labelledby="title">
+      <div class="cover-shell">
+        <img class="cover" src="../../img/works/aftergreen.jpg" width="1000" height="1000" alt="A green leaf and water droplets on translucent glass">
+      </div>
+      <div class="intro">
+        <p class="eyebrow edition">Cyberpaean / 2026</p>
+        <h1 id="title">Aftergreen</h1>
+        <p class="description">A cleancore album for a bath or shower.</p>
+        <div class="actions">
+          <button type="button" id="play-album" class="primary" disabled>Play album</button>
+          <a class="outline" href="https://cyberpaean.bandcamp.com/album/aftergreen">Bandcamp ↗</a>
+        </div>
+        <p class="album-info" id="album-info">12 tracks</p>
+      </div>
+    </section>
+    <section class="deck" aria-label="Audio player">
+      <audio id="audio" preload="none"></audio>
+      <div class="now">
+        <p class="eyebrow" id="playing-label">Album</p>
+        <p id="playing-title">Aftergreen</p>
+      </div>
+      <div class="controls" role="group" aria-label="Playback controls">
+        <button type="button" id="previous" class="transport skip" aria-label="Previous album track" disabled>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5v14M19 5l-10 7 10 7z"/></svg>
+        </button>
+        <button type="button" id="toggle" class="transport" aria-label="Play" disabled><span aria-hidden="true">▶</span></button>
+        <button type="button" id="next" class="transport skip" aria-label="Next album track" disabled>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 5v14M5 5l10 7-10 7z"/></svg>
+        </button>
+      </div>
+      <div class="progress">
+        <input type="range" min="0" max="1" step="any" value="0" id="position" aria-label="Playback position" disabled>
+        <div class="times"><span id="elapsed">0:00</span><span id="total">0:00</span></div>
+      </div>
+      <p class="status" id="status" role="status" hidden></p>
+    </section>
+    <section class="listing" id="tracks" aria-labelledby="tracks-title">
+      <div class="section-head">
+        <h2 id="tracks-title">Tracklist</h2>
+        <span>01–12</span>
+      </div>
+      <ol id="album-tracks" class="tracks"></ol>
+      <noscript><p>Enable JavaScript to use the album player.</p></noscript>
+    </section>
+    <section class="listing bonus" id="bonus" aria-labelledby="bonus-title">
+      <div class="section-head">
+        <h2 id="bonus-title">Bonus tracks</h2>
+      </div>
+      <p id="bonus-status">Audio forthcoming.</p>
+      <ul id="bonus-tracks" class="tracks" role="list"></ul>
+    </section>
+  </main>
+  <footer class="wrap"><span>Aftergreen</span><span>Cyberpaean · 2026</span></footer>
+</body>
+</html>

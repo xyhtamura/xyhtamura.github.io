@@ -602,6 +602,11 @@
       "skipReason": "Needs several curated text-file fixtures."
     },
     {
+      "id": "aftergreen",
+      "image": "img/works/aftergreen.jpg",
+      "alt": "A green leaf and water droplets on translucent glass"
+    },
+    {
       "id": "glossolalia",
       "image": "img/works/glossolalia.jpg",
       "alt": "Glossolalia vocal instrument",
