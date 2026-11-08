@@ -22,8 +22,9 @@
   --line: #7d7a8b35;
   --green: #3f5e2b;
   --leaf: #4a7933;
+  --title-leaf: #2a8d29;
   --heading: #5282f3;
-  --lime: #82ad3f;
+  --lime: #c2e26e;
   --silver: #c2c1bf;
   --prism: #c6cbde;
   --ribbon: linear-gradient(90deg, #5e8eff, var(--lime));
@@ -114,13 +115,13 @@ h1 {
   margin: .55rem 0 .5rem;
   font-size: clamp(3rem, 8vw, 6.5rem);
   font-weight: 950;
-  line-height: .98;
+  line-height: 1.16;
   color: var(--green);
 }
 @supports (background-clip: text) {
   @media (forced-colors: none) {
     h1 {
-      background: linear-gradient(90deg, var(--green), #6a882e);
+      background: linear-gradient(90deg, var(--title-leaf), var(--lime));
       background-clip: text;
       color: transparent;
     }
