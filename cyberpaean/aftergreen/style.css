@@ -110,12 +110,21 @@ nav { display: flex; flex-wrap: wrap; gap: .45rem 1.2rem; }
   box-shadow: var(--shadow);
 }
 h1 {
+  width: fit-content;
   margin: .55rem 0 .5rem;
   font-size: clamp(3rem, 8vw, 6.5rem);
   font-weight: 950;
   line-height: .98;
-  letter-spacing: -.07em;
-  color: var(--heading);
+  color: var(--green);
+}
+@supports (background-clip: text) {
+  @media (forced-colors: none) {
+    h1 {
+      background: linear-gradient(90deg, var(--green), #6a882e);
+      background-clip: text;
+      color: transparent;
+    }
+  }
 }
 .description { margin: 1rem 0 1.45rem; font-size: clamp(1rem, 2vw, 1.2rem); }
 .actions { display: flex; flex-wrap: wrap; gap: .65rem; }
