@@ -48,7 +48,10 @@
         </button>
       </div>
       <div class="progress">
-        <input type="range" min="0" max="1" step="any" value="0" id="position" aria-label="Playback position" disabled>
+        <div class="seek">
+          <div id="chapter-marks" aria-hidden="true"></div>
+          <input type="range" min="0" max="1" step="any" value="0" id="position" aria-label="Playback position" disabled>
+        </div>
         <div class="times"><span id="elapsed">0:00</span><span id="total">0:00</span></div>
       </div>
       <p class="status" id="status" role="status" hidden></p>

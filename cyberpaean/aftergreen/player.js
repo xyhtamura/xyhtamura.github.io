@@ -7,6 +7,7 @@ const toggle = byId("toggle");
 const previous = byId("previous");
 const next = byId("next");
 const position = byId("position");
+const chapterMarks = byId("chapter-marks");
 const status = byId("status");
 let album;
 let albumLength = 0;
@@ -34,6 +35,7 @@ function showStatus(message = "") {
 function updatePlayer() {
   if (!album) return;
   const bonus = mode === "bonus";
+  chapterMarks.hidden = bonus;
   const duration = bonus ? (Number.isFinite(audio.duration) ? audio.duration : 0) : albumLength;
   const current = audio.readyState ? audio.currentTime : pendingTime;
   const chapter = album.tracks.findLastIndex((entry) => entry.time <= current + .001);
@@ -202,6 +204,9 @@ readManifest("album.json").then((data) => {
   albumLength = album.samples / album.sampleRate;
   album.tracks.forEach((track, index) => {
     track.time = track.start / album.sampleRate;
+    const mark = document.createElement("span");
+    mark.style.left = `${100 * track.start / album.samples}%`;
+    chapterMarks.append(mark);
     addRow(byId("album-tracks"), track, index, () => playChapter(index));
   });
   byId("album-info").textContent = `${album.tracks.length} tracks · ${Math.round(albumLength / 60)} min`;
