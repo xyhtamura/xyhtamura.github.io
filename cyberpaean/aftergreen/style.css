@@ -1,4 +1,12 @@
 @font-face {
+  font-family: CyberPaean;
+  src: url("fonts/CyberPaean-Regular.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
   font-family: Nunito;
   src: url("fonts/nunito.ttf") format("truetype");
   font-style: normal;
@@ -8,7 +16,7 @@
 
 :root {
   color-scheme: light;
-  font-family: Nunito, system-ui, sans-serif;
+  font-family: CyberPaean, Nunito, system-ui, sans-serif;
   color: var(--green);
   background: #fcfcfa;
   --line: #7d7a8b35;
