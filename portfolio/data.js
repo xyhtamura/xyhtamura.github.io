@@ -201,7 +201,7 @@ const slides = [
       ],
       blurb: "An intermedia suite linking electronic literature, experimental pop, videopoetry, web art, performance scores, and simulations through a decentralized hypertext. Its shore is the present: a boundary where personal, ancestral, geological, virtual, remembered, and speculative times remain adjacent but inaccessible to one another. Individual works use that structure to test how identity and inheritance are assembled across incompatible media and temporal scales.",
       links: [
-        { label: "Launch Suite", url: "https://ppk80.github.io/of-another-shore/" }
+        { label: "Launch Suite", url: "https://xyhtamura.github.io/of-another-shore/" }
       ]
     },
     children: [
@@ -255,7 +255,7 @@ const slides = [
       ],
       blurb: "An interactive literature collection organized as a periodic table of the seven metalloids. Each element’s physical and chemical properties constrain a different work—New Weird fiction, body horror, kinetic poetry, science writing, nonfiction, or prose poetry—about objects including termite symbiosis, programmable skin, undersea cables, metallic wolves, and radioactive decay.",
       links: [
-        { label: "Plasticoid", url: "https://ppk80.github.io/plasticoid/" }
+        { label: "Table of Metalloids", url: "https://xyhtamura.github.io/table-of-metalloids/" }
       ]
     }
   },
@@ -359,7 +359,7 @@ const slides = [
       ],
       blurb: "A hypertext collage poem whose images and text fragments link outward to academic papers, public-domain archives, found media, recordings, forums, discarded materials, and commercial packaging. Citation is both structure and subject: the linked fragments model identity as an arrangement of references shaped by academia, plastics, capitalism, globalization, and ecological crisis.",
       links: [
-        { label: "Plasticoid", url: "https://ppk80.github.io/plasticoid/" }
+        { label: "Plasticoid", url: "https://xyhtamura.github.io/plasticoid/" }
       ]
     },
     {
