@@ -40,7 +40,7 @@ const slides = [
       id: "touch-screen",
       title: "TOUCH-SCREEN",
       year: "2026",
-      tags: ["games", "intermedia", "arcade cabinet", "multicart", "tablet installation", "launcher", "net art"],
+      tags: ["games", "intermedia", "music", "soundtrack", "arcade cabinet", "chiptune", "FM synthesis", "multicart", "tablet installation", "launcher", "net art"],
       exhibitions: [
         {
           type: "Exhibited at",
@@ -50,8 +50,12 @@ const slides = [
           year: "November 2026"
         }
       ],
-      blurb: "A month-long exhibition celebrating the act of play and navigating lived experiences through video games and their intersection with contemporary life, hosted at Misprint Coffee Commons, Regina Building, Escolta, Manila in November 2026. Xyh developed the custom arcade cabinet launcher software, compiled the 5-in-1 multicart (Cornice, Ombak Lock, Foam Green City, Drawing the Hours, and Sulat) loaded into the physical arcade cabinet, and produced the dedicated tablet installation edition of Drawing the Hours.",
+      media: [
+        { type: "image", src: "../img/works/file-id-diz.png", label: "FILE_ID.DIZ album cover" }
+      ],
+      blurb: "A month-long exhibition celebrating the act of play and navigating lived experiences through video games and their intersection with contemporary life, hosted at Misprint Coffee Commons, Regina Building, Escolta, Manila in November 2026. Xyh developed the custom arcade cabinet launcher software, compiled the 5-in-1 multicart (Cornice, Ombak Lock, Foam Green City, Drawing the Hours, and Sulat) loaded into the physical arcade cabinet, produced the dedicated tablet installation edition of Drawing the Hours, and composed FILE_ID.DIZ, a nine-track attract menu soundtrack album of keygen-style chip and FM synthesis spanning 12-TET, 19-EDO, quarter-comma meantone, and harmonic overtone tunings.",
       links: [
+        { label: "FILE_ID.DIZ on Bandcamp", url: "https://xyhtamura.bandcamp.com/album/file-id-diz" },
         { label: "TOUCH-SCREEN on Instagram", url: "https://www.instagram.com/p/Dfbs9KQo-lK/?img_index=1" },
         { label: "Somewarez", url: "https://www.instagram.com/somewarez/" }
       ]
