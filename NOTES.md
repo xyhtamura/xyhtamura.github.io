@@ -1,5 +1,12 @@
 # Website notes
 
+2026-11-13 — Codex — Updated the Fonts specimen and all three Bract downloads
+to Regular 1.101. Its four forms of 4 have an open top and a projecting
+crossbar. Refreshed the Bract and comparison proof sheets, the catalog, and
+the versioned font URLs. Ran `scripts/check-fonts.cjs` through the local
+server. Edge loaded all four faces, verified the twelve download hashes and
+344 glyph cells, and checked the controls and 390 px layout.
+
 2026-10-26 — Codex — Revised Whisper house's web and print prose to the writing
 voice, preserving the four family experiences and open interpretations.
 Regenerated the notes PDFs from the print page and retained the original score.

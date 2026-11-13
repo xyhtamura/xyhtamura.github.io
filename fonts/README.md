@@ -1,6 +1,6 @@
 # Xyh Fonts
 
-Four original Latin display faces: Bract Regular 1.100, Sump Regular 1.000,
+Four original Latin display faces: Bract Regular 1.101, Sump Regular 1.000,
 Skirl Oblique 1.100, and Lode Regular 1.000. Each maps 346 codepoints and has
 four finite contextual states, accents, combining-mark attachment and stacking,
 and fitted spacing. TTF, WOFF, and WOFF2 files are available in the specimen.
