@@ -4,11 +4,13 @@ Four original Latin display typefaces by Xyh Tamura. Each maps 346 codepoints, i
 
 ## Published fonts
 
-### Xyh Bract Regular 1.100
+### Xyh Bract Regular 1.101
 
 Original routes, glyph-specific profiles, Latin constructions, and outlines made for Xyh. No third-party font contours or binaries enter the family. 1,334 repertoire outlines and 21,712 nonzero class-pair adjustments.
 
 The irregular edition extends the wardrobe construction study through the full Latin set, using authored joins, route bowing, component weight variation, and occurrence profiles. Accents inherit the revised bases.
+
+Version 1.101 opens the top of the 4 and extends its crossbar. The ¼ and ¾ glyphs use the revised numeral.
 
 ### Xyh Sump Regular 1.000
 

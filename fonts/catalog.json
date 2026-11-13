@@ -3,7 +3,7 @@
     "id": "bract",
     "family": "Xyh Bract",
     "style": "Regular",
-    "version": "1.100",
+    "version": "1.101",
     "mappedCodepoints": 346,
     "outlinedGlyphs": 1334,
     "combiningMarks": 14,
@@ -12,18 +12,18 @@
     "files": {
       "ttf": {
         "path": "XyhBract-Regular.ttf",
-        "bytes": 785736,
-        "sha256": "e86f900b5bd2617fba07a631b4a5d84c5eed4c80fb0a7c035a36d0875fd3b310"
+        "bytes": 786792,
+        "sha256": "1cea48c753c98e50b2a0b7977faf10c1096a24d8b60f0ba38afef2770df7a65d"
       },
       "woff": {
         "path": "XyhBract-Regular.woff",
-        "bytes": 291872,
-        "sha256": "686ab7cc0676942836290b4cc299cc6270578c6269f4752e32385d624a3b902d"
+        "bytes": 292296,
+        "sha256": "380d0f3d0781039c8ff3890d7cc0d674939bbc47773f48cfc1f0edecac74308f"
       },
       "woff2": {
         "path": "XyhBract-Regular.woff2",
-        "bytes": 198628,
-        "sha256": "661568d6b88952963801a8b0603005983dd2eacb39f09a638635924f32b8e6b3"
+        "bytes": 199080,
+        "sha256": "e715ccedd88067bd0e8b13983c0a51970e55ed9353fe678f2170d7f78a9d511c"
       }
     },
     "specimen": "specimens/wardrobe-01.png"
