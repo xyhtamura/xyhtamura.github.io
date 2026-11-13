@@ -37,6 +37,56 @@ const slides = [
   {
     kind: "piece",
     piece: {
+      id: "touch-screen",
+      title: "TOUCH-SCREEN",
+      year: "2026",
+      tags: ["games", "intermedia", "arcade cabinet", "multicart", "tablet installation", "launcher", "net art"],
+      exhibitions: [
+        {
+          type: "Exhibited at",
+          venue: "Misprint Coffee Commons, Escolta, Manila",
+          event: "TOUCH-SCREEN",
+          details: "Month-long exhibition curated and produced by Agu Crisostomo and Nissie Arcega, assisted by Frank Brobio.",
+          year: "November 2026"
+        }
+      ],
+      blurb: "A month-long exhibition celebrating the act of play and navigating lived experiences through video games and their intersection with contemporary life, hosted at Misprint Coffee Commons, Regina Building, Escolta, Manila in November 2026. Xyh developed the custom arcade cabinet launcher software, compiled the 5-in-1 multicart (Cornice, Ombak Lock, Foam Green City, Drawing the Hours, and Sulat) loaded into the physical arcade cabinet, and produced the dedicated tablet installation edition of Drawing the Hours.",
+      links: [
+        { label: "TOUCH-SCREEN on Instagram", url: "https://www.instagram.com/p/Dfbs9KQo-lK/?img_index=1" },
+        { label: "Somewarez", url: "https://www.instagram.com/somewarez/" }
+      ]
+    }
+  },
+
+  {
+    kind: "piece",
+    piece: {
+      id: "open4",
+      title: "Open4",
+      year: "2025–2026",
+      tags: ["ambient video", "archival video", "queer temporality", "found footage", "film"],
+      exhibitions: [
+        {
+          type: "Screened at",
+          venue: "attaque(e)r le visible",
+          event: "VIDEOAKTION #7",
+          year: "November 6–8, 2026"
+        }
+      ],
+      media: [
+        { type: "image", src: "../img/works/open4.jpg", label: "Open4 ambient video still" }
+      ],
+      blurb: "Ambient videos looping transitional footage, empty rooms, and objects from archival gay adult media from the 1980s to the mid 2000s, transforming setting shots into liminal environments of queer temporality, silence, and longing.",
+      links: [
+        { label: "Open4", url: "https://xyhtamura.github.io/open4/" },
+        { label: "VIDEOAKTION #7", url: "https://www.attaqueerlevisible.com/videoaktion-7/" }
+      ]
+    }
+  },
+
+  {
+    kind: "piece",
+    piece: {
       id: "harvests-happen",
       title: "Harvests Happen",
       year: "2026",
@@ -109,9 +159,19 @@ const slides = [
       title: "Foam Green City",
       year: "2026",
       tags: ["intermedia", "virtual world", "procedural architecture", "walkthrough", "3D graphics", "WebGL"],
+      exhibitions: [
+        {
+          type: "Exhibited at",
+          venue: "Misprint Coffee Commons, Escolta",
+          event: "TOUCH-SCREEN (Somewarez)",
+          details: "Included in the 5-in-1 arcade multicart loaded into the arcade cabinet. Curated by Agu Crisostomo and Nissie Arcega.",
+          year: "November 2026"
+        }
+      ],
       blurb: "An autonomous browser-based 3D walkthrough of a procedurally arranged Filipino domestic interior. Foam-green walls, small family photos, modest furniture, and household objects recur along a slow, curving and twisting route with automatic or WASD movement, interrupted by occasional vast spaces, covered basketball courts, and open-air roofing-sheet walkways.",
       links: [
-        { label: "Enter Walkthrough", url: "https://xyhtamura.github.io/foam-green-city/" }
+        { label: "Enter Walkthrough", url: "https://xyhtamura.github.io/foam-green-city/" },
+        { label: "TOUCH-SCREEN", url: "https://www.instagram.com/p/Dfbs9KQo-lK/?img_index=1" }
       ]
     }
   },
@@ -123,10 +183,20 @@ const slides = [
       title: "Drawing the Hours",
       year: "2026",
       tags: ["games", "music", "soundtrack", "ost", "gesture game", "browser game", "combinatorics", "touch"],
+      exhibitions: [
+        {
+          type: "Exhibited at",
+          venue: "Misprint Coffee Commons, Escolta",
+          event: "TOUCH-SCREEN (Somewarez)",
+          details: "Dedicated tablet installation and included in the 5-in-1 arcade multicart. Curated by Agu Crisostomo and Nissie Arcega.",
+          year: "November 2026"
+        }
+      ],
       blurb: "A tablet and browser meadow gesture game where the player draws with continuous cord loops and strokes among moving garden inhabitants. Successive visits across four quiet hours (morning, noon, dusk, and midnight) introduce combinatorial stroke interactions, enclosed loops, multi-pocket separations, length-based colour changes, and environmental hazards on a tactile paper playfield.",
       links: [
         { label: "Play Game", url: "https://xyhtamura.github.io/drawing-the-hours/" },
-        { label: "Original Soundtrack (Bandcamp)", url: "https://xyhtamura.bandcamp.com/album/drawing-the-hours" }
+        { label: "Original Soundtrack (Bandcamp)", url: "https://xyhtamura.bandcamp.com/album/drawing-the-hours" },
+        { label: "TOUCH-SCREEN", url: "https://www.instagram.com/p/Dfbs9KQo-lK/?img_index=1" }
       ]
     }
   },
@@ -164,9 +234,19 @@ const slides = [
       title: "Ombak Lock",
       year: "2026",
       tags: ["intermedia", "games", "acoustic puzzle", "sound art", "web audio"],
+      exhibitions: [
+        {
+          type: "Exhibited at",
+          venue: "Misprint Coffee Commons, Escolta",
+          event: "TOUCH-SCREEN (Somewarez)",
+          details: "Included in the 5-in-1 arcade multicart loaded into the arcade cabinet. Curated by Agu Crisostomo and Nissie Arcega.",
+          year: "November 2026"
+        }
+      ],
       blurb: "An acoustic tuning puzzle game picked by ear, where zero-beat is failure. Grounded in Balinese gamelan's ombak (paired tuning where nominal unison shimmers with cultivated beating), the player must match target beat rates and depth across three multi-tone tumblers without allowing any two frequencies to reach unison.",
       links: [
-        { label: "Launch Game", url: "https://xyhtamura.github.io/ombak-lock/" }
+        { label: "Launch Game", url: "https://xyhtamura.github.io/ombak-lock/" },
+        { label: "TOUCH-SCREEN", url: "https://www.instagram.com/p/Dfbs9KQo-lK/?img_index=1" }
       ]
     }
   },
@@ -291,31 +371,7 @@ const slides = [
       ]
     }
   },
-  {
-    kind: "piece",
-    piece: {
-      id: "open4",
-      title: "Open4",
-      year: "2025–2026",
-      tags: ["ambient video", "archival video", "queer temporality", "found footage", "film"],
-      exhibitions: [
-        {
-          type: "Screened at",
-          venue: "attaque(e)r le visible",
-          event: "VIDEOAKTION #7 (Block III)",
-          year: "2026"
-        }
-      ],
-      media: [
-        { type: "image", src: "../img/works/open4.jpg", label: "Open4 ambient video still" }
-      ],
-      blurb: "Ambient videos looping transitional footage, empty rooms, and objects from archival gay adult media from the 1980s to the mid 2000s, transforming setting shots into liminal environments of queer temporality, silence, and longing.",
-      links: [
-        { label: "Open4", url: "https://xyhtamura.github.io/open4/" },
-        { label: "VIDEOAKTION #7", url: "https://www.attaqueerlevisible.com/va7_block3" }
-      ]
-    }
-  },
+
   {
     kind: "piece",
     piece: {
@@ -323,9 +379,19 @@ const slides = [
       title: "Cornice",
       year: "2026",
       tags: ["art game", "ASCII terrarium", "web art", "generative audio", "cyberpunk"],
+      exhibitions: [
+        {
+          type: "Exhibited at",
+          venue: "Misprint Coffee Commons, Escolta",
+          event: "TOUCH-SCREEN (Somewarez)",
+          details: "Included in the 5-in-1 arcade multicart loaded into the arcade cabinet. Curated by Agu Crisostomo and Nissie Arcega.",
+          year: "November 2026"
+        }
+      ],
       blurb: "A browser-based poem, art game, and ASCII terrarium set on a nocturnal balcony above an impossible city. WASD movement, inspectable textual specimens, movable objects, randomized vistas, changing weather, and a reactive sound engine make the terminal window behave as a small ecology.",
       links: [
-        { label: "Launch Game", url: "https://xyhtamura.github.io/cornice" }
+        { label: "Launch Game", url: "https://xyhtamura.github.io/cornice" },
+        { label: "TOUCH-SCREEN", url: "https://www.instagram.com/p/Dfbs9KQo-lK/?img_index=1" }
       ]
     }
   },
