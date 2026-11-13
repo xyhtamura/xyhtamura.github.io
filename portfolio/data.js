@@ -40,7 +40,7 @@ const slides = [
       id: "touch-screen",
       title: "TOUCH-SCREEN",
       year: "2026",
-      tags: ["games", "intermedia", "music", "soundtrack", "arcade cabinet", "chiptune", "FM synthesis", "multicart", "tablet installation", "launcher", "net art"],
+      tags: ["games", "intermedia", "technology", "music", "soundtrack", "arcade cabinet", "chiptune", "FM synthesis", "multicart", "tablet installation", "launcher", "net art"],
       exhibitions: [
         {
           type: "Exhibited at",
@@ -51,6 +51,8 @@ const slides = [
         }
       ],
       media: [
+        { type: "image", src: "../img/works/somewarez-multicart.png", label: "TOUCH-SCREEN 5-in-1 multicart selection screen" },
+        { type: "image", src: "../img/works/somewarez-launcher.png", label: "Somewarez TOUCH-SCREEN arcade cabinet fullscreen launcher interface" },
         { type: "image", src: "../img/works/file-id-diz.png", label: "FILE_ID.DIZ album cover" }
       ],
       blurb: "A month-long exhibition celebrating the act of play and navigating lived experiences through video games and their intersection with contemporary life, hosted at Misprint Coffee Commons, Regina Building, Escolta, Manila in November 2026. Xyh developed the custom arcade cabinet launcher software, compiled the 5-in-1 multicart (Cornice, Ombak Lock, Foam Green City, Drawing the Hours, and Sulat) loaded into the physical arcade cabinet, produced the dedicated tablet installation edition of Drawing the Hours, and composed FILE_ID.DIZ, a nine-track attract menu soundtrack album of keygen-style chip and FM synthesis spanning 12-TET, 19-EDO, quarter-comma meantone, and harmonic overtone tunings.",
@@ -346,6 +348,7 @@ const slides = [
   {
     kind: "piece",
     piece: {
+      id: "manifest",
       title: "Manifest",
       year: "2024–2025→",
       tags: ["short film", "videopoem", "live score", "collaboration", "Pacific"],
@@ -365,8 +368,9 @@ const slides = [
         }
       ],
       media: [
-        { type: "image", src: "../card/manifest.jpeg", label: "film still — oceanic archive" },
-        { type: "image", src: "../card/mani2.png", label: "film still — oceanic archive" }
+        { type: "image", src: "../img/works/manifest.jpg", label: "live score performance with projection" },
+        { type: "image", src: "../img/works/manifest-screening.png", label: "Manifest audience screening" },
+        { type: "image", src: "../card/manifest.jpeg", label: "film still: oceanic archive" }
       ],
       blurb: "A short film and videopoem made with Bea Mariano, accompanied by my live score. It stitches the wreck of the USS Samuel B. Roberts, Manila construction sites, archival photographs, handwashing footage, microorganisms, and ocean imagery to examine how American military history remains embedded in Philippine development. The title connects cargo records, apparitions, futures made material, and manifest destiny; construction workers rotated sideways become divers moving through the same Pacific archive.",
       links: [
