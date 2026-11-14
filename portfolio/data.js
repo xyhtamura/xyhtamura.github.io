@@ -57,6 +57,7 @@ const slides = [
       ],
       blurb: "A month-long exhibition celebrating the act of play and navigating lived experiences through video games and their intersection with contemporary life, hosted at Misprint Coffee Commons, Regina Building, Escolta, Manila in November 2026. Xyh developed the custom arcade cabinet launcher software, compiled the 5-in-1 multicart (Cornice, Ombak Lock, Foam Green City, Drawing the Hours, and Sulat) loaded into the physical arcade cabinet, produced the dedicated tablet installation edition of Drawing the Hours, and composed FILE_ID.DIZ, a nine-track attract menu soundtrack album of keygen-style chip and FM synthesis spanning 12-TET, 19-EDO, quarter-comma meantone, and harmonic overtone tunings.",
       links: [
+        { label: "Play 5-in-1 Multicart", url: "https://xyhtamura.github.io/somewarez-multicart/" },
         { label: "FILE_ID.DIZ on Bandcamp", url: "https://xyhtamura.bandcamp.com/album/file-id-diz" },
         { label: "TOUCH-SCREEN on Instagram", url: "https://www.instagram.com/p/Dfbs9KQo-lK/?img_index=1" },
         { label: "Somewarez", url: "https://www.instagram.com/somewarez/" }
