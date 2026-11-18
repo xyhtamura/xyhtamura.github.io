@@ -1485,6 +1485,25 @@ links: [
   sec: { id: "research", label: "Research" },
   pieces: [
     {
+      id: "radial-poetics-planets-stars",
+      title: "The Radial Poetics of Planets and Stars: Models of Layered Worlds",
+      year: "2026",
+      tags: ["space humanities", "history of science", "postphenomenology"],
+      blurb: "A presentation and essay examining how the mathematical vision of planets and stars as concentric layered spheres (crust, mantle, core) operates as a cultural technology of scale. Tracing this radial imagination from Cold War submarine acoustics and nuclear test monitoring (Project Vela Uniform) through the Preliminary Reference Earth Model, popular media cutaways, and Apollo and InSight seismology on the Moon and Mars, it asks how a physical model enters visual culture and shapes the questions scientists ask about other worlds alongside non-central sky and wayfinding traditions.",
+      exhibitions: [
+        {
+          venue: "KOSMICA Institute",
+          event: "KOSMICA Forum 2026: New Astro-Vocabularies",
+          year: "November 20, 2026"
+        }
+      ],
+      links: [
+        { label: "KOSMICA Programme", url: "https://kosmicainstitute.com/public_programmes/kosmica-forum-2026-new-astro-vocabularies/#spk-xyh-tamura" },
+        { label: "Essay", url: "https://xyhtamura.github.io/blog/radial-poetics-planets-stars.html" },
+        { label: "KOSMICA Institute", url: "https://kosmicainstitute.com/" }
+      ]
+    },
+    {
       id: "noclip-gothic",
       title: "No-Clip Gothic: 3D Rendering and the Uncanny of the Postwar American Spatial Order",
       year: "2026",
