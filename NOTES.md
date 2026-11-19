@@ -1,5 +1,10 @@
 # Website notes
 
+2026-11-20 — Codex — Added a question about how people construct experiences
+of non-human scales and replaced the method section with a short Making-with
+conclusion. Preserved the revised design. Checked the new copy and its layout
+in Chrome at 1440 and 390 px. The revision remains local.
+
 2026-11-19 — Codex — Revised the three questions in the Posthuman Circuits
 outline and added Tanim-Kalye (“Plant-Streets”), Of Another Shore, and the
 original Cybernetic Inquiry. Reused their portfolio images. Identified Radial
