@@ -1,5 +1,10 @@
 # Website notes
 
+2026-11-20 — Codex — Prepared the coordinated release of the Posthuman
+Circuits outline, including Xyh’s design revision and the submitted Loab PDF.
+Updated the Organ entry to the 4 mm to 384,400 km range from the instrument’s
+new build.
+
 2026-11-20 — Codex — Added a question about how people construct experiences
 of non-human scales and replaced the method section with a short Making-with
 conclusion. Preserved the revised design. Checked the new copy and its layout
