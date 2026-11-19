@@ -112,11 +112,15 @@ h1 {
   color: #c5d7c9;
 }
 
+.strand-nav {
+  display: none;
+}
+
 .diagram {
   position: relative;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  grid-template-rows: repeat(4, auto);
+  grid-template-rows: repeat(5, auto);
   column-gap: var(--gap);
   padding-top: 3.5rem;
 }
@@ -148,7 +152,7 @@ h1 {
 .strand {
   position: relative;
   display: grid;
-  grid-row: span 4;
+  grid-row: span 5;
   grid-template-rows: subgrid;
   border: 1px solid var(--line);
   border-radius: .875rem;
@@ -196,13 +200,39 @@ h1 {
 
 .strand-title {
   padding: 1.25rem var(--padding);
+  align-content: center;
   border-radius: .8125rem .8125rem 0 0;
   background: var(--tint);
+}
+
+.strand-visual img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  object-fit: cover;
+}
+
+.planetary .strand-visual img {
+  object-position: center 75%;
+}
+
+.machine .strand-visual img {
+  object-position: center 65%;
+}
+
+.strand-visual figcaption {
+  padding: .55rem var(--padding);
+  font-size: .875rem;
+  color: var(--muted);
 }
 
 h2 {
   font: 400 clamp(1.5rem, 2.25vw, 2rem)/1.12 var(--serif);
   letter-spacing: -.035em;
+}
+
+.strand-title h2 {
+  scroll-margin-top: 1rem;
 }
 
 .strand-group {
@@ -213,6 +243,63 @@ h2 {
 h3 {
   margin-bottom: .5rem;
   color: var(--accent);
+}
+
+.strand-question p {
+  font: 400 clamp(1.2rem, 1.55vw, 1.4rem)/1.32 var(--serif);
+  text-wrap: pretty;
+}
+
+.works {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.works li + li {
+  margin-top: .75rem;
+  padding-top: .75rem;
+  border-top: 1px solid var(--line);
+}
+
+.works a {
+  display: grid;
+  grid-template-columns: clamp(3.25rem, 6.1vw, 5.25rem) minmax(0, 1fr);
+  align-items: start;
+  gap: .75rem;
+  text-decoration: none;
+}
+
+.works strong {
+  font-weight: 650;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: .22em;
+}
+
+.works a:hover strong {
+  color: var(--accent);
+  text-decoration-thickness: 2px;
+}
+
+.works img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: .3rem;
+  object-fit: cover;
+  background: var(--tint);
+}
+
+.works .work-logo {
+  padding: .25rem;
+  object-fit: contain;
+  background: var(--dark);
+}
+
+.work-description {
+  display: block;
+  color: var(--muted);
 }
 
 .entries {
@@ -320,6 +407,45 @@ h3 {
   background: var(--wire);
 }
 
+.abstract-wrap {
+  max-width: 45rem;
+}
+
+.abstract-header {
+  padding-block: clamp(2rem, 5vw, 3.5rem);
+}
+
+.abstract-header h1 {
+  font-size: clamp(2.4rem, 6.5vw, 4.5rem);
+  line-height: 1;
+  text-wrap: balance;
+}
+
+.abstract-subtitle {
+  margin-top: .625rem;
+  font: 400 clamp(1.25rem, 3vw, 1.75rem)/1.25 var(--serif);
+}
+
+.abstract-byline {
+  margin-top: .875rem;
+  color: #c5d7c9;
+}
+
+.abstract-text {
+  padding-block: clamp(1.5rem, 4vw, 3rem);
+  font-size: 1.0625rem;
+}
+
+.abstract-text p + p {
+  margin-top: 1em;
+}
+
+.abstract-keywords {
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+}
+
 @media (max-width: 56rem) {
   .overview {
     grid-template-columns: 1fr;
@@ -328,6 +454,20 @@ h3 {
 
   .question p:first-child {
     text-wrap: pretty;
+  }
+
+  .strand-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .375rem 1.125rem;
+    padding-block: .75rem;
+    border-bottom: 1px solid var(--line);
+    font-size: .875rem;
+  }
+
+  .strand-nav a {
+    display: inline-block;
+    padding-block: .25rem;
   }
 
   .diagram {
@@ -362,6 +502,10 @@ h3 {
   .strand::after {
     top: 2rem;
     left: 0;
+  }
+
+  .works a {
+    grid-template-columns: clamp(3.5rem, 20vw, 5.25rem) minmax(0, 1fr);
   }
 
   .results {

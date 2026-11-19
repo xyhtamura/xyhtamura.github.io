@@ -1,5 +1,24 @@
 # Website notes
 
+2026-11-19 — Codex — Revised the Posthuman Circuits outline around three
+research questions and broadened the opening from composition to creation.
+Added A Comma Poem, Catchment, the landline piece, and From Interiority to
+Interaction. Gave all nine works thumbnails and added the submitted Placing
+the Nonhuman abstract as an unlisted HTML page. Compared its four paragraphs
+and five keywords with the Noema submission ODT. Chrome decoded all twelve
+images and checked widths from 320 to 1440 px, the mobile jump links, and the
+abstract layout at 390 px. Checked the new public work and journal links over
+HTTPS. The Noema essay is forthcoming, and the Tabota vocal study is proposed.
+
+The theme images reuse the sprout photograph from A Comma Poem and include
+[Earthrise](https://science.nasa.gov/resource/apollo-8s-iconic-earthrise/) by
+Bill Anders under [NASA’s media guidelines](https://www.nasa.gov/nasa-brand-center/images-and-media/),
+and [4 women at telephone switchboard](https://www.loc.gov/pictures/item/2019699918/)
+from the Library of Congress Matson collection, which lists no known
+restrictions on publication. Both archival photographs carry credits on the
+outline. The Library’s catalog returned HTTP 403 to the automated check, so the
+caption links to its image server.
+
 2026-11-19 — Codex — Built the Posthuman Circuits discussion outline for
 Eldad Tsabary as a direct-link page at `/posthuman-circuits/`. Its three
 branches link six existing works and summarize the related research, including
