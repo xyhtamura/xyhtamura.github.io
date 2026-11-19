@@ -1,5 +1,14 @@
 # Website notes
 
+2026-11-19 — Codex — Revised the three questions in the Posthuman Circuits
+outline and added Tanim-Kalye (“Plant-Streets”), Of Another Shore, and the
+original Cybernetic Inquiry. Reused their portfolio images. Identified Radial
+Poetics as a KOSMICA Forum talk and From Interiority to Interaction as a P&D
+article. Copied and linked the nine-page Loab PDF named in the DH2027
+submission record. Its SHA-256 matches the PDF served by the local link.
+Checked all 15 images and the outline at five widths in Chrome. The changes
+remain local.
+
 2026-11-19 — Codex — Renamed two Posthuman Circuits branches to Non-human
 scales and Machine agencies. Added questions about organisms meeting culture
 and technology and about how code and technical structures mediate machine
