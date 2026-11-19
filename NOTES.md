@@ -1,5 +1,15 @@
 # Website notes
 
+2026-11-19 — Codex — Renamed two Posthuman Circuits branches to Non-human
+scales and Machine agencies. Added questions about organisms meeting culture
+and technology and about how code and technical structures mediate machine
+sensing. Linked the ESNMA acceptance, Noema acceptance, and DH2027 submission
+to their venues. Revised the work descriptions for the Organ, the landline
+piece, Tabota, and goopCodecs. The Organ range extension is described as the
+next version while its local revision awaits publication. Checked the
+headings, questions, venue links, thumbnails, and overflow in Chrome at 1440
+and 390 px. This revision is local pending Xyh’s further additions.
+
 2026-11-19 — Codex — Revised the Posthuman Circuits outline around three
 research questions and broadened the opening from composition to creation.
 Added A Comma Poem, Catchment, the landline piece, and From Interiority to
