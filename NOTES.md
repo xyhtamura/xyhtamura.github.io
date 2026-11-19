@@ -1,5 +1,16 @@
 # Website notes
 
+2026-11-19 — Codex — Built the Posthuman Circuits discussion outline for
+Eldad Tsabary as a direct-link page at `/posthuman-circuits/`. Its three
+branches link six existing works and summarize the related research, including
+the comparison between raw and mean-centered vector reversal in the Loab
+study. The page uses `noindex` and sits outside the portfolio and sitemap.
+Chrome DOM checks covered 320, 390, 900, 1024, and 1440 px. Inspected the 390 and
+1440 px captures and checked the six public work destinations with HTTPS.
+ResearchGate returned 403 to automated requests, so two paper titles link to
+their portfolio entries. The vocal study remains proposed, and the Loab
+manuscript is identified by title and submission status.
+
 2026-11-13 — Codex — Updated the Fonts specimen and all three Bract downloads
 to Regular 1.101. Its four forms of 4 have an open top and a projecting
 crossbar. Refreshed the Bract and comparison proof sheets, the catalog, and
