@@ -31,6 +31,22 @@ export const works = {
   fashionPortrait: { label: "Fashion portrait", href: "https://www.instagram.com/p/DOtRiRSAdgQ/" },
 };
 
+// These additional works are shuffled in pairs in the landscape player.
+export const sideWorks = [
+  { label: "CUTLINE", page: "cutline/", image: "img/works/cutline.jpg" },
+  { label: "Aeropane", page: "aeropane/", image: "img/works/aeropane.jpg" },
+  { label: "Physa", page: "physa/", image: "img/works/physa.jpg" },
+  { label: "Electropond", page: "electropond/", image: "img/works/electropond.jpg" },
+  { label: "KuboCities", page: "kubocities/", image: "img/works/kubocities.jpg", clip: "card/kubo.mp4" },
+  { label: "Hunitsura", page: "hunitsura/", image: "img/works/hunitsura.jpg", clip: "card/huni.mp4" },
+  { label: "Where You Were Last Seen", page: "where-you-were-last-seen/", image: "img/works/where-you-were-last-seen.jpg" },
+  { label: "Gahuema", page: "gahuema/", image: "img/works/gahuema.jpg", clip: "card/gahuema.webm" },
+  { label: "Of Another Shore", page: "of-another-shore/", image: "img/works/of-another-shore.jpg" },
+  { label: "Ooid", page: "sgueltch/goopCodecs/ooid/", image: "img/works/ooid.jpg" },
+  { label: "a landline imagining a line probe during a storm", page: "landline/", image: "img/works/landline.jpg" },
+  { label: "Benzaiten", page: "benzaiten/", image: "img/works/benzaiten.jpg" },
+];
+
 // Times are relative to the narration. Camera shots clear the destination.
 const cuts = [
   [2.3, "fashionHour"],

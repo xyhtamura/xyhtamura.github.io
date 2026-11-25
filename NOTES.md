@@ -1,5 +1,7 @@
 # Website notes
 
+2026-11-26 — Codex — Added a landscape layout to the unlisted portfolio video. On wide viewports, the portrait video sits between two linked works. A shuffled set of twelve existing site works supplies stills and muted clips, and reduced-motion mode holds a still pair. Checked the layout in Chrome at phone and desktop sizes, including phone rotation, and ran the Impeccable detector against the local Pages copy.
+
 2026-11-26 — Codex — Revised the unlisted portfolio video. Added the Insulae Incognitae presentation, the Pacing To cover with singing footage, the love-letter-for-you.txt WebM, the KOSMICA forum poster and Radial Poetics slide, and the physics thesis title page. Updated the timed links and pointed Pacing To to the label’s release. Reviewed all five rendered shots, checked the five destinations, and matched the AAC and caption hashes to the previous cut.
 
 2026-11-26 — Codex — Added Xyh’s fashion portrait at 0:50.8 in the portfolio video. Checked the rendered shot and compared the narration, singing, and caption hashes with the preceding cut. Prepared the unlisted route for GitHub Pages.

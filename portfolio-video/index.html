@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex">
   <title>Xyh Tamura · Portfolio video</title>
-  <link rel="stylesheet" href="player.css">
+  <link rel="stylesheet" href="player.css?v=landscape">
 </head>
 <body>
   <div class="collage" aria-hidden="true">
@@ -25,21 +25,38 @@
   <main>
     <h1>Portfolio video</h1>
 
-    <div class="player">
-      <video id="intro-video" aria-label="Portfolio video" controls playsinline preload="metadata" hidden></video>
-      <div class="player-status" id="player-status" role="status">Loading video…</div>
-      <a class="shot-link" id="shot-link" target="_blank" rel="noopener noreferrer" aria-describedby="link-note" hidden>
-        <span id="shot-title"></span>
+    <div class="stage" data-site-root="../">
+      <div class="player">
+        <video id="intro-video" aria-label="Portfolio video" controls playsinline preload="metadata" hidden></video>
+        <div class="player-status" id="player-status" role="status">Loading video…</div>
+        <a class="shot-link" id="shot-link" target="_blank" rel="noopener noreferrer" aria-describedby="link-note" hidden>
+          <span id="shot-title"></span>
+        </a>
+      </div>
+
+      <a class="side-work" target="_blank" rel="noopener noreferrer" aria-describedby="link-note" hidden>
+        <span class="side-media">
+          <img alt="">
+          <video muted loop playsinline preload="none" aria-hidden="true"></video>
+        </span>
+        <span class="side-title"></span>
+      </a>
+      <a class="side-work" target="_blank" rel="noopener noreferrer" aria-describedby="link-note" hidden>
+        <span class="side-media">
+          <img alt="">
+          <video muted loop playsinline preload="none" aria-hidden="true"></video>
+        </span>
+        <span class="side-title"></span>
       </a>
     </div>
 
     <section class="works" aria-labelledby="works-title">
       <h2 id="works-title">Works in this video</h2>
       <ul class="work-list" id="work-list"></ul>
-      <p class="link-note" id="link-note">Select a work in the video or in this list to open it in a new tab.</p>
+      <p class="link-note" id="link-note">Select a work to open it in a new tab.</p>
     </section>
   </main>
 
-  <script type="module" src="player.mjs"></script>
+  <script type="module" src="player.mjs?v=landscape"></script>
 </body>
 </html>
