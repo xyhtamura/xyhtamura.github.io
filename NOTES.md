@@ -1,5 +1,7 @@
 # Website notes
 
+2026-11-26 — Codex — Added Xyh’s fashion portrait at 0:50.8 in the portfolio video. Checked the rendered shot and compared the narration, singing, and caption hashes with the preceding cut. Prepared the unlisted route for GitHub Pages.
+
 2026-11-26 — Codex — Revised the portfolio video to 55.1 seconds with separate cutaways for the spoken list and a three-second singing excerpt. Chrome played through the excerpt and checked captions and shot links. The update is local.
 
 2026-11-26 — Codex — Updated the portfolio video with a xyhnthesizer performance break, the Open4 festival poster, and three new cutaways. In Chrome, played through the break and checked the shifted captions and project links. The website copy contains the rendered edit, captions, and cue data. The update is local.
