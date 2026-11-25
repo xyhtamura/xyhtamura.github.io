@@ -50,6 +50,22 @@ body {
   mask-image: radial-gradient(ellipse at 49% 55%, #000 28%, transparent 73%);
 }
 
+.collage-talk {
+  inset: 9% auto auto 4%;
+  width: 31%;
+  opacity: .92;
+  transform: rotate(6deg);
+  mask-image: linear-gradient(95deg, #000 72%, transparent 99%);
+}
+
+.collage-paper-page {
+  inset: 18% -5% auto auto;
+  width: 24%;
+  opacity: .69;
+  transform: rotate(12deg);
+  mask-image: linear-gradient(112deg, #000 56%, transparent 93%);
+}
+
 .collage-notation {
   inset: 53% auto auto -6%;
   width: 42%;
@@ -66,6 +82,14 @@ body {
   transform: rotate(-14deg);
   mix-blend-mode: screen;
   mask-image: radial-gradient(ellipse at 47% 48%, #000 41%, transparent 70%);
+}
+
+.collage-seminar {
+  inset: 71% auto auto 2%;
+  width: 23%;
+  opacity: .86;
+  transform: rotate(-9deg);
+  mask-image: linear-gradient(119deg, #000 47%, transparent 89%);
 }
 
 .collage-performance {
@@ -226,8 +250,11 @@ a:focus-visible { outline: 2px solid; outline-offset: 3px; }
   .collage-landscape { left: -44%; width: 116%; height: 56%; }
   .collage-cover { top: 16%; left: -21%; }
   .collage-botanical { top: -14%; right: -38%; width: 92%; height: 54%; }
+  .collage-talk { top: 1%; left: -7%; width: 51%; }
+  .collage-paper-page { top: 7%; right: -24%; width: 55%; }
   .collage-notation { top: 56%; left: -40%; width: 92%; }
   .collage-paper { top: 60%; left: -25%; width: 81%; }
+  .collage-seminar { top: 74%; left: -24%; width: 63%; }
   .collage-performance { right: -49%; bottom: -11%; width: 110%; height: 59%; }
   .collage-game { right: -35%; width: 90%; }
   .collage-rays { top: 27%; right: -39%; width: 106%; }
