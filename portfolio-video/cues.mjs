@@ -26,7 +26,7 @@ export const works = {
   selecta: { label: "Selecta Carte d’Or", href: "https://www.youtube.com/watch?v=Ee93Wmt1GTk" },
   aftergreen: { label: "Aftergreen", href: "https://xyhtamura.github.io/#aftergreen" },
   foamGreenCity: { label: "Foam Green City", href: "https://xyhtamura.github.io/foam-green-city/" },
-  titanopsis: { label: "Titanopsis calcarea bizarre", href: "https://xyhtamura.github.io/#titanopsis" },
+  fashionPortrait: { label: "Fashion portrait", href: "https://www.instagram.com/p/DOtRiRSAdgQ/" },
 };
 
 // Times are relative to the narration. Camera shots clear the destination.
@@ -61,7 +61,7 @@ const cuts = [
   [44.85, "aftergreen"],
   [46, "foamGreenCity"],
   [47, "magicStaff"],
-  [47.8, "titanopsis"],
+  [47.8, "fashionPortrait"],
   [48.65, "magicStaff"],
   [49.4, "impossibility"],
   [50.5, null],
