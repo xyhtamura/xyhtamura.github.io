@@ -1,5 +1,7 @@
 # Website notes
 
+2026-11-26 — Codex — Added three research fragments to the portfolio video backdrop from the existing site assets. Chrome checked the phone and desktop composition, and all eleven image URLs returned HTTP 200 on the local website route. The update is local.
+
 2026-11-26 — Codex — Set the portfolio video against a collage of eight existing project images and fitted the player to the portrait frame. In Chrome at 320, 390, and 1440 pixels, checked image decoding, captions, the footage link, and the native controls. The revision is local.
 
 2026-11-25 — Codex — Added the unlisted `/portfolio-video/` route. The captioned montage links each cutaway directly to the work or its public catalog. Checked all 28 cutaways in Chrome, the native controls at 390 and 1440 pixels, and a tap that paused playback and opened a separate tab.
