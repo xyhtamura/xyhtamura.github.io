@@ -218,7 +218,7 @@ a:focus-visible { outline: 2px solid; outline-offset: 3px; }
 
 .side-work { display: none; }
 
-@media (min-width: 42rem) and (min-aspect-ratio: 6/5) {
+@media (min-width: 35rem) and (min-aspect-ratio: 6/5) {
   main {
     width: min(100% - 2rem, 84rem);
     padding-block-start: clamp(.6rem, 2.5svh, 2rem);
@@ -309,7 +309,7 @@ a:focus-visible { outline: 2px solid; outline-offset: 3px; }
   .side-work + .side-work .side-title { justify-self: end; }
 }
 
-@media (min-width: 42rem) and (min-aspect-ratio: 6/5) and (max-height: 34rem) {
+@media (min-width: 35rem) and (min-aspect-ratio: 6/5) and (max-height: 34rem) {
   .shot-link span {
     display: block;
     min-height: 0;

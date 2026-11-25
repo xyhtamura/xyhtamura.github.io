@@ -8,7 +8,7 @@ const shotTitle = document.querySelector("#shot-title");
 const workList = document.querySelector("#work-list");
 const stage = player.parentElement;
 const siteRoot = new URL(stage.dataset.siteRoot, document.baseURI);
-const landscape = matchMedia("(min-width: 42rem) and (min-aspect-ratio: 6/5)");
+const landscape = matchMedia("(min-width: 35rem) and (min-aspect-ratio: 6/5)");
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
 const sidePanels = Array.from(stage.querySelectorAll(".side-work"), link => ({
   link,
