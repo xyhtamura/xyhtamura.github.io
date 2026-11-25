@@ -1,6 +1,7 @@
 import { cues, works } from "./cues.mjs";
 
 const video = document.querySelector("#intro-video");
+const player = video.parentElement;
 const status = document.querySelector("#player-status");
 const shotLink = document.querySelector("#shot-link");
 const shotTitle = document.querySelector("#shot-title");
@@ -66,7 +67,7 @@ async function loadCaptions() {
 video.addEventListener("loadedmetadata", () => {
   status.hidden = true;
   video.hidden = false;
-  shotLink.style.setProperty("--video-ratio", video.videoWidth / video.videoHeight);
+  player.style.setProperty("--video-ratio", video.videoWidth / video.videoHeight);
   updateShotLink();
   loadCaptions();
 }, { once: true });

@@ -1,15 +1,113 @@
 :root {
-  color-scheme: light;
-  background: #ecf0e9;
-  color: #29243b;
+  color-scheme: dark;
+  background: #181423;
+  color: #f3ebe3;
   font: 1rem/1.5 system-ui, sans-serif;
 }
 
-body { margin: 0; }
+body {
+  margin: 0;
+  isolation: isolate;
+  min-height: 100vh;
+}
+
+.collage {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background: #181423;
+}
+
+.collage img {
+  position: absolute;
+  display: block;
+  object-fit: cover;
+}
+
+.collage-landscape {
+  inset: -20% auto auto -8%;
+  width: 66%;
+  height: 74%;
+  transform: rotate(-8deg);
+  mask-image: radial-gradient(ellipse at 40% 42%, #000 30%, transparent 75%);
+}
+
+.collage-cover {
+  inset: 23% auto auto 3%;
+  width: clamp(12rem, 24vw, 28rem);
+  transform: rotate(-13deg);
+  mask-image: radial-gradient(ellipse at 46% 54%, #000 31%, transparent 72%);
+}
+
+.collage-botanical {
+  inset: -23% 2% auto auto;
+  width: 38%;
+  height: 72%;
+  object-position: center 75%;
+  transform: rotate(15deg);
+  mask-image: radial-gradient(ellipse at 49% 55%, #000 28%, transparent 73%);
+}
+
+.collage-notation {
+  inset: 53% auto auto -6%;
+  width: 42%;
+  height: 15%;
+  object-position: 50% 72%;
+  opacity: .78;
+  transform: rotate(13deg);
+  mask-image: linear-gradient(94deg, #000 48%, transparent 100%);
+}
+
+.collage-paper {
+  inset: 57% auto auto 10%;
+  width: 35%;
+  transform: rotate(-14deg);
+  mix-blend-mode: screen;
+  mask-image: radial-gradient(ellipse at 47% 48%, #000 41%, transparent 70%);
+}
+
+.collage-performance {
+  inset: auto -9% -21% auto;
+  width: 58%;
+  height: 76%;
+  object-position: 54% 30%;
+  transform: rotate(-9deg);
+  mask-image: radial-gradient(ellipse at 61% 57%, #000 32%, transparent 70%);
+}
+
+.collage-game {
+  inset: auto 10% 10% auto;
+  width: 30%;
+  height: 24%;
+  object-position: 43% 55%;
+  transform: rotate(-13deg);
+  mix-blend-mode: screen;
+  mask-image: radial-gradient(ellipse at 47% 55%, #000 32%, transparent 69%);
+}
+
+.collage-rays {
+  inset: 23% 6% auto auto;
+  width: 34%;
+  opacity: .83;
+  mix-blend-mode: screen;
+  mask-image: radial-gradient(ellipse at 47% 54%, #000 26%, transparent 62%);
+}
+
+.collage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, #181423ca, #18142335 23%, transparent 58%, #18142372),
+    radial-gradient(ellipse at 50% 46%, #181423df 12%, #18142362 38%, transparent 61%);
+}
 
 main {
   width: min(100% - 2rem, 52rem);
-  margin: clamp(1.5rem, 6vw, 4rem) auto;
+  margin-inline: auto;
+  padding-block: clamp(1.4rem, 4vw, 3rem) 2rem;
 }
 
 h1, h2 {
@@ -20,29 +118,38 @@ h1, h2 {
 
 h1 {
   margin: 0 0 1rem;
-  font-size: clamp(1.9rem, 5vw, 3rem);
+  font-size: clamp(2rem, 4vw, 3.15rem);
+  text-align: center;
+  text-shadow: 0 .15rem .75rem #171222;
 }
 
 h2 {
-  margin: 1.75rem 0 .4rem;
+  margin: 0 0 .4rem;
   font-size: 1.3rem;
 }
 
-a { color: #3f3769; text-underline-offset: .18em; }
+a { color: #beefe0; text-underline-offset: .18em; }
 a:hover { text-decoration-thickness: .15em; }
 a:focus-visible { outline: 2px solid; outline-offset: 3px; }
 
 .player {
+  --video-height: 70vh;
   position: relative;
   overflow: hidden;
+  margin-inline: auto;
   border-radius: .75rem;
-  background: #242034;
+  background: #171324;
   color: #f0ede8;
+  box-shadow: 0 1rem 3rem #0e0b18b8;
+}
+
+.player:has(video:not([hidden])) {
+  width: min(100%, calc(var(--video-height) * var(--video-ratio, .5625)));
 }
 
 .player video {
   width: 100%;
-  max-height: 75vh;
+  max-height: var(--video-height);
   background: inherit;
 }
 
@@ -59,7 +166,7 @@ a:focus-visible { outline: 2px solid; outline-offset: 3px; }
 .shot-link:not([hidden]) {
   position: absolute;
   inset: 0 0 max(5rem, 18%) 0;
-  width: min(100%, calc(75vh * var(--video-ratio)));
+  width: min(100%, calc(var(--video-height) * var(--video-ratio, .5625)));
   box-sizing: border-box;
   margin-inline: auto;
   padding: .65rem;
@@ -85,6 +192,15 @@ a:focus-visible { outline: 2px solid; outline-offset: 3px; }
   outline-offset: -3px;
 }
 
+.works {
+  box-sizing: border-box;
+  width: min(100%, 42rem);
+  margin: 1.4rem auto 0;
+  padding: .95rem 1.15rem 1.05rem;
+  border-radius: 1rem .85rem 1.05rem .9rem;
+  background: #221a2e;
+}
+
 .work-list {
   display: flex;
   flex-wrap: wrap;
@@ -102,6 +218,18 @@ a:focus-visible { outline: 2px solid; outline-offset: 3px; }
 
 .link-note {
   margin: .15rem 0 0;
-  color: #514967;
+  color: #d3c7dc;
   font-size: .85rem;
+}
+
+@media (max-width: 43rem) {
+  .collage-landscape { left: -44%; width: 116%; height: 56%; }
+  .collage-cover { top: 16%; left: -21%; }
+  .collage-botanical { top: -14%; right: -38%; width: 92%; height: 54%; }
+  .collage-notation { top: 56%; left: -40%; width: 92%; }
+  .collage-paper { top: 60%; left: -25%; width: 81%; }
+  .collage-performance { right: -49%; bottom: -11%; width: 110%; height: 59%; }
+  .collage-game { right: -35%; width: 90%; }
+  .collage-rays { top: 27%; right: -39%; width: 106%; }
+  .collage::after { background: linear-gradient(180deg, #18142399, #18142305 30%, #18142342 68%, #18142386); }
 }
