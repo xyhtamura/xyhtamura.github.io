@@ -5,10 +5,11 @@ export const works = {
   music: { label: "Music by Xyh Tamura", href: "https://xyhtamura.bandcamp.com/" },
   xyhnthesizer: { label: "xyhnthesizer", href: "https://xyhtamura.github.io/#xyhnthesizer" },
   catchment: { label: "Catchment", href: "https://xyhtamura.github.io/catchment/" },
-  fiveWays: { label: "Five Ways Through", href: "https://xyhtamura.github.io/five-ways-through/" },
-  pacingTo: { label: "Pacing To", href: "https://masmxyh.bandcamp.com/album/pacing-to" },
+  insulae: { label: "Insulae Incognitae", href: "https://xyhtamura.github.io/insulae-incognitae/" },
+  pacingTo: { label: "Pacing To", href: "https://crookedtreerecords.bandcamp.com/album/pacing-to" },
   loveLetter: { label: "love-letter-for-you.txt", href: "https://xyhtamura.github.io/loveletterforyou/" },
   gliese: { label: "Gliese", href: "https://xyhtamura.github.io/gliese/" },
+  kosmica: { label: "The Radial Poetics of Planets and Stars", href: "https://xyhtamura.github.io/blog/radial-poetics-planets-stars.html" },
   feelingTogether: { label: "Feeling Together", href: "https://xyhtamura.github.io/#feeling-together" },
   istorya: { label: "Istorya sang Bȧlatyagon", href: "https://xyhtamura.github.io/istorya-sang-balatyagon/" },
   tabota: { label: "TaboTa Roll", href: "https://xyhtamura.github.io/tabota/roll/" },
@@ -19,6 +20,7 @@ export const works = {
   drawingTheHours: { label: "Drawing the Hours", href: "https://xyhtamura.github.io/drawing-the-hours/" },
   magicStaff: { label: "The Magic Staff", href: "https://xyhtamura.github.io/the-magic-staff/" },
   kikik: { label: "kíkik", href: "https://xyhtamura.github.io/kikik/" },
+  physicsThesis: { label: "Physics thesis", href: "https://xyhtamura.github.io/gliese/application%20of%20the%20lagrangian%20thesis.pdf" },
   whisperHouse: { label: "Whisper House score", href: "https://xyhtamura.github.io/whisperhouse/" },
   naughtyMaids: { label: "Naughty Maids", href: "https://xyhtamura.github.io/#naughty-maids" },
   manifest: { label: "Manifest", href: "https://vimeo.com/1019003508" },
@@ -35,10 +37,11 @@ const cuts = [
   [3.43, "weizenbaum"],
   [4.35, "eosforos"],
   [5.45, "catchment"],
-  [6.6, "fiveWays"],
-  [7.75, "pacingTo"],
+  [6.6, "insulae"],
+  [8, "pacingTo"],
   [9.7, "loveLetter"],
   [11.4, "gliese"],
+  [12.2, "kosmica"],
   [13.25, "feelingTogether"],
   [14.55, "istorya"],
   [16.15, "tabota"],
@@ -49,7 +52,7 @@ const cuts = [
   [24.1, "magicStaff"],
   [25.15, null],
   [27.35, "kikik"],
-  [30.15, "gliese"],
+  [30.15, "physicsThesis"],
   [31.45, null],
   [36.1, "whisperHouse"],
   [37.55, "naughtyMaids"],
@@ -67,7 +70,7 @@ const cuts = [
   [50.5, null],
 ];
 
-// The excerpt starts just before Five Ways Through and shifts every later frame.
+// The singing excerpt shifts Insulae Incognitae and every later shot.
 const toFrames = seconds => Math.round(seconds * 30 + 1e-8);
 const excerptStart = toFrames(6.6);
 const excerptFrames = toFrames(3);
