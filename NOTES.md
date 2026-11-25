@@ -1,5 +1,7 @@
 # Website notes
 
+2026-11-25 — Codex — Added the unlisted `/portfolio-video/` route. The captioned montage links each cutaway directly to the work or its public catalog. Checked all 28 cutaways in Chrome, the native controls at 390 and 1440 pixels, and a tap that paused playback and opened a separate tab.
+
 2026-11-20 — Codex — Prepared the coordinated release of the Posthuman
 Circuits outline, including Xyh’s design revision and the submitted Loab PDF.
 Updated the Organ entry to the 4 mm to 384,400 km range from the instrument’s

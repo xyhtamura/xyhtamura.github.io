@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name='robots' content='noindex'>
+  <title>Xyh Tamura · Portfolio video</title>
+  <link rel="stylesheet" href="player.css">
+</head>
+<body>
+  <main>
+    <h1>Portfolio video</h1>
+
+    <div class="player">
+      <video id="intro-video" aria-label="Portfolio video" controls playsinline preload="metadata" hidden></video>
+      <div class="player-status" id="player-status" role="status">Loading video…</div>
+      <a class="shot-link" id="shot-link" target="_blank" rel="noopener noreferrer" aria-describedby="link-note" hidden>
+        <span id="shot-title"></span>
+      </a>
+    </div>
+
+    <section aria-labelledby="works-title">
+      <h2 id="works-title">Works in this video</h2>
+      <ul class="work-list" id="work-list"></ul>
+      <p class="link-note" id="link-note">Select a work in the video or in this list to open it in a new tab.</p>
+    </section>
+  </main>
+
+  <script type="module" src="player.mjs"></script>
+</body>
+</html>
