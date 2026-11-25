@@ -1,5 +1,7 @@
 # Website notes
 
+2026-11-26 — Codex — Updated the portfolio video with a xyhnthesizer performance break, the Open4 festival poster, and three new cutaways. In Chrome, played through the break and checked the shifted captions and project links. The website copy contains the rendered edit, captions, and cue data. The update is local.
+
 2026-11-26 — Codex — Added three research fragments to the portfolio video backdrop from the existing site assets. Chrome checked the phone and desktop composition, and all eleven image URLs returned HTTP 200 on the local website route. The update is local.
 
 2026-11-26 — Codex — Set the portfolio video against a collage of eight existing project images and fitted the player to the portrait frame. In Chrome at 320, 390, and 1440 pixels, checked image decoding, captions, the footage link, and the native controls. The revision is local.
