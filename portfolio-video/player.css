@@ -140,10 +140,14 @@ h1, h2 {
   line-height: 1.15;
 }
 
-h1 {
-  margin: 0 0 1rem;
-  font-size: clamp(2rem, 4vw, 3.15rem);
+.page-header {
+  margin-bottom: 1rem;
   text-align: center;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3.15rem);
   text-shadow: 0 .15rem .75rem #171222;
 }
 
@@ -155,6 +159,18 @@ h2 {
 a { color: #beefe0; text-underline-offset: .18em; }
 a:hover { text-decoration-thickness: .15em; }
 a:focus-visible { outline: 2px solid; outline-offset: 3px; }
+
+.intro-jump {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  margin-top: .45rem;
+  padding-inline: .8rem;
+  border-radius: .55rem;
+  background: #221a2e;
+  font-size: .9rem;
+}
 
 .player {
   --video-height: 70vh;
@@ -225,6 +241,20 @@ a:focus-visible { outline: 2px solid; outline-offset: 3px; }
   }
 
   h1 { font-size: clamp(1.7rem, 5.2svh, 3.15rem); }
+
+  .page-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: .5rem;
+  }
+
+  .page-header h1 { grid-column: 2; }
+
+  .intro-jump {
+    justify-self: end;
+    margin-top: 0;
+  }
 
   .collage::after {
     background: linear-gradient(170deg, #18142395, #18142354 46%, #181423bd);
@@ -321,7 +351,7 @@ a:focus-visible { outline: 2px solid; outline-offset: 3px; }
   }
 }
 
-.works {
+.intro-text, .works {
   box-sizing: border-box;
   width: min(100%, 42rem);
   margin: 1.4rem auto 0;
@@ -329,6 +359,19 @@ a:focus-visible { outline: 2px solid; outline-offset: 3px; }
   border-radius: 1rem .85rem 1.05rem .9rem;
   background: #221a2e;
 }
+
+.intro-text { scroll-margin-top: 1rem; }
+
+.intro-text h2 { font-size: 1.75rem; }
+
+.intro-text ul {
+  margin: .65rem 0 0;
+  padding-inline-start: 1.25rem;
+}
+
+.intro-text li { text-wrap: pretty; }
+.intro-text li + li { margin-top: .65rem; }
+.intro-text li::marker { color: #beefe0; }
 
 .work-list {
   display: flex;

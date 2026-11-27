@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex">
   <title>Xyh Tamura · Portfolio video</title>
-  <link rel="stylesheet" href="player.css?v=landscape-2">
+  <link rel="stylesheet" href="player.css?v=read">
 </head>
 <body>
   <div class="collage" aria-hidden="true">
@@ -23,12 +23,15 @@
   </div>
 
   <main>
-    <h1>Portfolio video</h1>
+    <header class="page-header">
+      <h1>Portfolio video</h1>
+      <a class="intro-jump" href="#intro-text">Read the introduction</a>
+    </header>
 
     <div class="stage" data-site-root="../">
       <div class="player">
         <video id="intro-video" aria-label="Portfolio video" controls playsinline preload="metadata" hidden></video>
-        <div class="player-status" id="player-status" role="status">Loading video…</div>
+        <div class="player-status" id="player-status" role="status">Video unavailable.</div>
         <a class="shot-link" id="shot-link" target="_blank" rel="noopener noreferrer" aria-describedby="link-note" hidden>
           <span id="shot-title"></span>
         </a>
@@ -50,6 +53,17 @@
       </a>
     </div>
 
+    <section class="intro-text" id="intro-text" aria-labelledby="intro-title" tabindex="-1">
+      <h2 id="intro-title">Xyh Tamura</h2>
+      <ul>
+        <li>I’m a transdisciplinary artist, researcher, singer-songwriter, and creative technologist.</li>
+        <li>My work spans intermedia art, experimental pop, electronic literature, the sciences, science and technology studies (STS), theory, philosophy, and social research.</li>
+        <li>I build tools and instruments, make video art and games, and work in animation, musical theater, participatory mapping, and arts-based research. My tools, art practice, and research shape one another.</li>
+        <li>I have a BS in physics and am finishing a master’s in creative writing at the University of the Philippines. My <a href="https://xyhtamura.github.io/gliese/application%20of%20the%20lagrangian%20thesis.pdf">physics thesis (PDF)</a> modeled how light rays travel through a medium whose refractive index varies with distance from the center.</li>
+        <li>I’ve worked as a composer and audio engineer for over a decade, with work in film, theater, advertising, and session performance. I also work in graphics, video, writing, fashion, acting, and 3D modeling.</li>
+      </ul>
+    </section>
+
     <section class="works" aria-labelledby="works-title">
       <h2 id="works-title">Works in this video</h2>
       <ul class="work-list" id="work-list"></ul>
@@ -57,6 +71,6 @@
     </section>
   </main>
 
-  <script type="module" src="player.mjs?v=landscape-2"></script>
+  <script type="module" src="player.mjs?v=read"></script>
 </body>
 </html>

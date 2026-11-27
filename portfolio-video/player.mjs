@@ -162,4 +162,5 @@ video.addEventListener("error", () => {
   updateSideWorks();
 });
 
-video.src = "./intro.mp4";
+status.textContent = "Loading video…";
+video.src = "./intro.mp4?v=thesis-detail";

@@ -1,5 +1,7 @@
 # Website notes
 
+2026-11-27 — Codex — Added a first-person introduction in five bullets with a jump link above the video. The physics cutaway combines the thesis title, the Euler–Lagrange equation, and four ray trajectories from Figure 3.4. Chrome checked the text with the player script blocked, keyboard access at phone and desktop widths, and the thesis cue with its caption. FFmpeg frame hashes isolated the edit to the 39 frames of the thesis cutaway and confirmed identical audio.
+
 2026-11-26 — Codex — Added a landscape layout to the unlisted portfolio video. On wide viewports, the portrait video sits between two linked works. A shuffled set of twelve existing site works supplies stills and muted clips, and reduced-motion mode holds a still pair. Checked the layout in Chrome at phone and desktop sizes, including rotation and 568-pixel landscape, and ran the Impeccable detector against the local Pages copy.
 
 2026-11-26 — Codex — Revised the unlisted portfolio video. Added the Insulae Incognitae presentation, the Pacing To cover with singing footage, the love-letter-for-you.txt WebM, the KOSMICA forum poster and Radial Poetics slide, and the physics thesis title page. Updated the timed links and pointed Pacing To to the label’s release. Reviewed all five rendered shots, checked the five destinations, and matched the AAC and caption hashes to the previous cut.
