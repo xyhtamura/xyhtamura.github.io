@@ -163,4 +163,4 @@ video.addEventListener("error", () => {
 });
 
 status.textContent = "Loading video…";
-video.src = "./intro.mp4?v=thesis-detail";
+video.src = "./intro.mp4?v=band";
