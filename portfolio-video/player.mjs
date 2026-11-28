@@ -1,4 +1,4 @@
-import { cues, works } from "./cues.mjs?v=landscape-cut";
+import { cues, works } from "./cues.mjs?v=night-bus";
 
 const video = document.querySelector("#intro-video");
 const player = video.parentElement;
@@ -10,8 +10,8 @@ const workList = document.querySelector("#work-list");
 // Both cuts share one edit list, so cue times and captions apply to either file.
 const landscape = matchMedia("(min-width: 35rem) and (min-aspect-ratio: 6/5)");
 const sources = {
-  portrait: "./intro.mp4?v=band",
-  landscape: "./intro-landscape.mp4?v=1",
+  portrait: "./intro.mp4?v=night-bus",
+  landscape: "./intro-landscape.mp4?v=night-bus",
 };
 let landscapeFailed = false;
 let captionsLoaded = false;
