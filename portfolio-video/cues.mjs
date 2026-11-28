@@ -76,6 +76,7 @@ const cuts = [
 
 // The singing excerpt shifts Insulae Incognitae and every later shot.
 const toFrames = seconds => Math.round(seconds * 30 + 1e-8);
+const trimStartFrames = 28; // Matches intro-edit.json.
 const excerptStart = toFrames(6.6);
 const excerptFrames = toFrames(3);
 const frames = cuts.flatMap(([seconds, work]) => {
@@ -86,6 +87,6 @@ const frames = cuts.flatMap(([seconds, work]) => {
 
 export const cues = frames.slice(0, -1).flatMap(([start, work], index) => work ? [{
   work,
-  start: start / 30,
-  end: frames[index + 1][0] / 30,
+  start: (start - trimStartFrames) / 30,
+  end: (frames[index + 1][0] - trimStartFrames) / 30,
 }] : []);
