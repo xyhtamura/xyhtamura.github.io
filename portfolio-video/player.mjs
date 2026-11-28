@@ -1,4 +1,4 @@
-import { cues, works } from "./cues.mjs?v=opening-trim";
+import { cues, works } from "./cues.mjs?v=reaper-trim";
 
 const video = document.querySelector("#intro-video");
 const player = video.parentElement;
@@ -10,8 +10,8 @@ const workList = document.querySelector("#work-list");
 // Both cuts share one edit list, so cue times and captions apply to either file.
 const landscape = matchMedia("(min-width: 35rem) and (min-aspect-ratio: 6/5)");
 const sources = {
-  portrait: "./intro.mp4?v=opening-trim",
-  landscape: "./intro-landscape.mp4?v=opening-trim",
+  portrait: "./intro.mp4?v=reaper-trim",
+  landscape: "./intro-landscape.mp4?v=reaper-trim",
 };
 let landscapeFailed = false;
 let captionsLoaded = false;
@@ -56,7 +56,7 @@ async function loadCaptions() {
   if (captionsLoaded) return;
   captionsLoaded = true;
   try {
-    const response = await fetch("./intro.vtt?v=opening-trim");
+    const response = await fetch("./intro.vtt?v=reaper-trim");
     if (!response.ok) return;
 
     // Give the local server's generic MIME type an explicit WebVTT type.
