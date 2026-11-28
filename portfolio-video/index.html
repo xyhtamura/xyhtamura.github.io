@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Averia+Gruesa+Libre&family=Averia+Sans+Libre:ital,wght@0,400;0,700;1,400&family=Averia+Serif+Libre:wght@400;700&family=Syne+Mono&display=swap">
-  <link rel="stylesheet" href="player.css?v=numbered-intro">
+  <link rel="stylesheet" href="player.css?v=paired-works">
 </head>
 <body>
   <div class="collage" aria-hidden="true">
@@ -40,6 +40,9 @@
         <div class="player-status" id="player-status" role="status">Video unavailable.</div>
         <a class="shot-link" id="shot-link" target="_blank" rel="noopener noreferrer" aria-describedby="link-note" hidden>
           <span id="shot-title"></span>
+        </a>
+        <a class="shot-link shot-link-companion" id="shot-companion" target="_blank" rel="noopener noreferrer" aria-describedby="link-note" hidden>
+          <span id="shot-companion-title"></span>
         </a>
         <div class="side-gallery" data-site-root="../" hidden></div>
       </div>
@@ -91,6 +94,6 @@
     </section>
   </main>
 
-  <script type="module" src="player.mjs?v=side-works"></script>
+  <script type="module" src="player.mjs?v=paired-works"></script>
 </body>
 </html>

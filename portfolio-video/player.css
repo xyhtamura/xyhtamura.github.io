@@ -305,6 +305,24 @@ a:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
   outline-offset: -3px;
 }
 
+.player[data-paired-shot] #shot-link { inset-block-end: 50%; }
+.player[data-paired-shot] .shot-link-companion { inset-block-start: 50%; }
+
+.player[data-cut="landscape"][data-paired-shot] .shot-link {
+  width: 50%;
+  inset-block: 0 max(5rem, 18%);
+  margin-inline: 0;
+}
+
+.player[data-cut="landscape"][data-paired-shot] #shot-link {
+  inset-block-end: max(5rem, 18%);
+  inset-inline-end: auto;
+}
+.player[data-cut="landscape"][data-paired-shot] .shot-link-companion {
+  inset-inline-start: auto;
+  justify-content: flex-end;
+}
+
 .side-gallery {
   position: absolute;
   inset: 0;

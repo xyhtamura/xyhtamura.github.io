@@ -1,18 +1,20 @@
-import { cues, sideCues, works } from "./cues.mjs?v=side-works";
+import { cues, sideCues, works } from "./cues.mjs?v=paired-works";
 
 const video = document.querySelector("#intro-video");
 const player = video.parentElement;
 const status = document.querySelector("#player-status");
 const shotLink = document.querySelector("#shot-link");
 const shotTitle = document.querySelector("#shot-title");
+const shotCompanion = document.querySelector("#shot-companion");
+const shotCompanionTitle = document.querySelector("#shot-companion-title");
 const gallery = document.querySelector(".side-gallery");
 const workList = document.querySelector("#work-list");
 
 // Both cuts share one edit list, so cue times and captions apply to either file.
 const landscape = matchMedia("(min-width: 35rem) and (min-aspect-ratio: 6/5)");
 const sources = {
-  portrait: "./intro.mp4?v=reaper-trim",
-  landscape: "./intro-landscape.mp4?v=reaper-trim",
+  portrait: "./intro.mp4?v=paired-works",
+  landscape: "./intro-landscape.mp4?v=paired-works",
 };
 let landscapeFailed = false;
 let captionsLoaded = false;
@@ -71,16 +73,24 @@ for (const work of Object.values(works)) {
 
 const track = video.addTextTrack("metadata", "Project links");
 track.mode = "hidden";
-for (const { work, start, end } of cues) {
-  track.addCue(new VTTCue(start, end, work));
+for (const { work, companion, start, end } of cues) {
+  track.addCue(new VTTCue(start, end, companion ? `${work} ${companion}` : work));
 }
 
 function updateShotLink() {
-  const work = works[track.activeCues?.[0]?.text];
+  const [primary, secondary] = track.activeCues?.[0]?.text.split(" ") ?? [];
+  const work = works[primary];
+  const companion = works[secondary];
   shotLink.hidden = video.hidden || !work;
+  shotCompanion.hidden = video.hidden || !companion;
+  player.toggleAttribute("data-paired-shot", !shotCompanion.hidden);
   if (work) {
     shotLink.href = work.href;
     shotTitle.textContent = work.label;
+  }
+  if (companion) {
+    shotCompanion.href = companion.href;
+    shotCompanionTitle.textContent = companion.label;
   }
   showSideWorks();
 }
@@ -88,8 +98,10 @@ function updateShotLink() {
 track.addEventListener("cuechange", updateShotLink);
 video.addEventListener("seeked", showSideWorks);
 video.addEventListener("ended", showSideWorks);
-shotLink.addEventListener("click", () => video.pause());
-shotLink.addEventListener("focus", () => video.pause());
+for (const link of [shotLink, shotCompanion]) {
+  link.addEventListener("click", () => video.pause());
+  link.addEventListener("focus", () => video.pause());
+}
 
 async function loadCaptions() {
   if (captionsLoaded) return;
@@ -121,6 +133,7 @@ function chooseSource() {
   const resumeAt = video.currentTime;
   const resume = !video.paused && !video.ended;
   gallery.hidden = true;
+  shotCompanion.hidden = true;
   video.src = src;
   if (resumeAt > 0 || resume) {
     video.addEventListener("loadedmetadata", () => {
@@ -150,6 +163,7 @@ video.addEventListener("error", () => {
   status.hidden = false;
   video.hidden = true;
   shotLink.hidden = true;
+  shotCompanion.hidden = true;
   gallery.hidden = true;
 });
 

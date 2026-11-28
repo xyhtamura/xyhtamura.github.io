@@ -13,6 +13,7 @@ export const works = {
   feelingTogether: { label: "Feeling Together", href: "https://xyhtamura.github.io/#feeling-together" },
   istorya: { label: "Istorya sang Bȧlatyagon", href: "https://xyhtamura.github.io/istorya-sang-balatyagon/" },
   tabota: { label: "TaboTa Roll", href: "https://xyhtamura.github.io/tabota/roll/" },
+  gahuema: { label: "Gahuema", href: "https://xyhtamura.github.io/gahuema/" },
   aliquoto: { label: "Aliquoto", href: "https://xyhtamura.github.io/anexacta/aliquoto/" },
   tanimKalye: { label: "Tanim-Kalye", href: "https://xyhtamura.github.io/tanim-kalye/" },
   impossibility: { label: "The Impossibility of Form in the Mind", href: "https://xyhtamura.github.io/#the-impossibility-of-form-in-the-mind" },
@@ -26,6 +27,7 @@ export const works = {
   naughtyMaids: { label: "Naughty Maids", href: "https://xyhtamura.github.io/#naughty-maids" },
   manifest: { label: "Manifest", href: "https://vimeo.com/1019003508" },
   palibut: { label: "Palibut-Libot", href: "https://xyhtamura.github.io/#palibut-libot" },
+  spoliarium: { label: "Spoliarium", href: "https://tickets.tribecapac.org/spoliarium-the-opera-premiere-performance" },
   selecta: { label: "Selecta Carte d’Or", href: "https://www.youtube.com/watch?v=Ee93Wmt1GTk" },
   secondLife: { label: "Second Life", href: "https://xyhtamura.github.io/#second-life" },
   foamGreenCity: { label: "Foam Green City", href: "https://xyhtamura.github.io/foam-green-city/" },
@@ -46,7 +48,7 @@ const cuts = [
   [12.2, "kosmica"],
   [13.25, "feelingTogether"],
   [14.55, "istorya"],
-  [16.15, "tabota"],
+  [16.15, "tabota", "gahuema"],
   [17.5, "aliquoto"],
   [18.45, "istorya"],
   [20.15, "tanimKalye"],
@@ -62,7 +64,7 @@ const cuts = [
   [37.55, "naughtyMaids"],
   [38.75, "manifest"],
   [41.08, "palibut"],
-  [42.33, "magicStaff"],
+  [42.33, "spoliarium"],
   [42.9, "selecta"],
   [43.65, "music"],
   [44.85, "secondLife"],
@@ -81,14 +83,15 @@ const sourceEndFrame = 1506;
 const excerptStart = toFrames(6.6);
 const excerptFrames = toFrames(3);
 const endFrame = sourceEndFrame + excerptFrames;
-const frames = cuts.flatMap(([seconds, work]) => {
+const frames = cuts.flatMap(([seconds, work, companion]) => {
   const frame = toFrames(seconds);
-  const resumed = [frame < excerptStart ? frame : frame + excerptFrames, work];
+  const resumed = [frame < excerptStart ? frame : frame + excerptFrames, work, companion];
   return frame === excerptStart ? [[frame, "xyhnthesizer"], resumed] : [resumed];
 });
 
-export const cues = frames.slice(0, -1).flatMap(([start, work], index) => work && start < endFrame ? [{
+export const cues = frames.slice(0, -1).flatMap(([start, work, companion], index) => work && start < endFrame ? [{
   work,
+  companion,
   start: Math.max(0, start - trimStartFrames) / 30,
   end: (Math.min(frames[index + 1][0], endFrame) - trimStartFrames) / 30,
 }] : []);
