@@ -305,6 +305,48 @@ a:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
   outline-offset: -3px;
 }
 
+.side-gallery {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.side-work {
+  position: absolute;
+  inset: 20% auto auto 2.3%;
+  display: grid;
+  width: 29.5%;
+  overflow: hidden;
+  border-radius: .8rem 1rem .7rem .95rem;
+  background: hsl(271 36% 16%);
+  box-shadow: 0 .7rem 1.8rem hsl(272 55% 7% / .64);
+  color: var(--ink);
+  text-decoration: none;
+  pointer-events: auto;
+}
+
+.side-work + .side-work {
+  inset: auto 2.3% 23% auto;
+  border-radius: .98rem .74rem .9rem .7rem;
+}
+
+.side-work img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.side-work span {
+  padding: .42em .65em .5em;
+  font-size: clamp(.85rem, 1.15vw, 1.12rem);
+  font-weight: 700;
+  line-height: 1.25;
+  text-wrap: pretty;
+}
+
+.side-work:hover span, .side-work:focus-visible span { text-decoration: underline; }
+
 @media (min-width: 35rem) and (min-aspect-ratio: 6/5) {
   main {
     width: min(100% - 2rem, 84rem);
@@ -347,6 +389,10 @@ a:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
   .subtitle { display: none; }
 
   .player { --video-height: 74svh; }
+
+  .side-work { width: 27%; inset-block-start: 7%; }
+  .side-work + .side-work { inset-block-end: 38%; }
+  .side-work span { font-size: .8rem; }
 
   .shot-link span {
     display: block;

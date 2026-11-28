@@ -1,10 +1,11 @@
-import { cues, works } from "./cues.mjs?v=reaper-trim";
+import { cues, sideCues, works } from "./cues.mjs?v=side-works";
 
 const video = document.querySelector("#intro-video");
 const player = video.parentElement;
 const status = document.querySelector("#player-status");
 const shotLink = document.querySelector("#shot-link");
 const shotTitle = document.querySelector("#shot-title");
+const gallery = document.querySelector(".side-gallery");
 const workList = document.querySelector("#work-list");
 
 // Both cuts share one edit list, so cue times and captions apply to either file.
@@ -15,6 +16,7 @@ const sources = {
 };
 let landscapeFailed = false;
 let captionsLoaded = false;
+const sideGroups = [];
 
 function projectLink(work) {
   const link = document.createElement("a");
@@ -25,6 +27,40 @@ function projectLink(work) {
   link.setAttribute("aria-describedby", "link-note");
   link.addEventListener("click", () => video.pause());
   return link;
+}
+
+function showSideWorks() {
+  const isWide = !video.hidden && !video.ended && player.dataset.cut === "landscape";
+  const active = isWide ? sideCues.findIndex(({ start, end }) => (
+    start <= video.currentTime && video.currentTime < end
+  )) : -1;
+  gallery.hidden = active < 0;
+  for (const [index, group] of sideGroups.entries()) group.hidden = index !== active;
+}
+
+function loadSideWorks() {
+  if (sideGroups.length || player.dataset.cut !== "landscape") return;
+  const siteRoot = new URL(gallery.dataset.siteRoot, document.baseURI);
+  for (const { works: pair } of sideCues) {
+    const group = document.createElement("div");
+    group.className = "side-pair";
+    group.hidden = true;
+    for (const work of pair) {
+      const link = projectLink(work);
+      const title = document.createElement("span");
+      title.textContent = work.label;
+      const image = document.createElement("img");
+      image.alt = "";
+      image.decoding = "async";
+      image.src = new URL(work.image, siteRoot).href;
+      link.className = "side-work";
+      link.replaceChildren(image, title);
+      link.addEventListener("focus", () => video.pause());
+      group.append(link);
+    }
+    gallery.append(group);
+    sideGroups.push(group);
+  }
 }
 
 for (const work of Object.values(works)) {
@@ -46,9 +82,12 @@ function updateShotLink() {
     shotLink.href = work.href;
     shotTitle.textContent = work.label;
   }
+  showSideWorks();
 }
 
 track.addEventListener("cuechange", updateShotLink);
+video.addEventListener("seeked", showSideWorks);
+video.addEventListener("ended", showSideWorks);
 shotLink.addEventListener("click", () => video.pause());
 shotLink.addEventListener("focus", () => video.pause());
 
@@ -81,6 +120,7 @@ function chooseSource() {
   if (video.getAttribute("src") === src) return;
   const resumeAt = video.currentTime;
   const resume = !video.paused && !video.ended;
+  gallery.hidden = true;
   video.src = src;
   if (resumeAt > 0 || resume) {
     video.addEventListener("loadedmetadata", () => {
@@ -95,6 +135,7 @@ video.addEventListener("loadedmetadata", () => {
   video.hidden = false;
   player.style.setProperty("--video-ratio", video.videoWidth / video.videoHeight);
   player.dataset.cut = video.videoWidth > video.videoHeight ? "landscape" : "portrait";
+  loadSideWorks();
   updateShotLink();
   loadCaptions();
 });
@@ -109,6 +150,7 @@ video.addEventListener("error", () => {
   status.hidden = false;
   video.hidden = true;
   shotLink.hidden = true;
+  gallery.hidden = true;
 });
 
 landscape.addEventListener("change", chooseSource);

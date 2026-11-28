@@ -92,3 +92,24 @@ export const cues = frames.slice(0, -1).flatMap(([start, work], index) => work &
   start: Math.max(0, start - trimStartFrames) / 30,
   end: (Math.min(frames[index + 1][0], endFrame) - trimStartFrames) / 30,
 }] : []);
+
+const sidePairs = [
+  [
+    { label: "KuboCities", image: "img/works/kubocities.jpg", href: "https://xyhtamura.github.io/kubocities/" },
+    { label: "Benzaiten", image: "img/works/benzaiten.jpg", href: "https://xyhtamura.github.io/benzaiten/" },
+  ],
+  [
+    { label: "Of Another Shore", image: "img/works/of-another-shore.jpg", href: "https://xyhtamura.github.io/of-another-shore/" },
+    { label: "Ooid", image: "img/works/ooid.jpg", href: "https://xyhtamura.github.io/sgueltch/goopCodecs/ooid/" },
+  ],
+  [
+    { label: "Where You Were Last Seen", image: "img/works/where-you-were-last-seen.jpg", href: "https://xyhtamura.github.io/where-you-were-last-seen/" },
+    { label: "CUTLINE", image: "img/works/cutline.jpg", href: "https://xyhtamura.github.io/cutline/" },
+  ],
+];
+
+// Give the on-camera gaps within the montage their own pairs.
+export const sideCues = cues.flatMap(({ start }, index) => {
+  const previousEnd = cues[index - 1]?.end ?? 0;
+  return previousEnd < start ? [{ start: previousEnd, end: start }] : [];
+}).map((cue, index) => ({ ...cue, works: sidePairs[index % sidePairs.length] }));
