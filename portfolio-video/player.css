@@ -425,14 +425,38 @@ a:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
 
 .intro-text h2 { font-size: 1.6rem; }
 
-.intro-text ul {
-  margin: .65rem 0 0;
-  padding-inline-start: 1.25rem;
+.intro-lists {
+  display: grid;
+  gap: 1.1rem 1.75rem;
+  margin-top: .85rem;
+}
+
+.intro-text h3 {
+  margin: 0;
+  color: var(--amber);
+  font: 700 1.13rem/1.25 var(--font-serif);
+}
+
+.intro-text ol {
+  margin: .35rem 0 0;
+  padding-inline-start: 1.45rem;
 }
 
 .intro-text li { text-wrap: pretty; }
-.intro-text li + li { margin-top: .7rem; }
+.intro-text li + li { margin-top: .25rem; }
 .intro-text li::marker { color: var(--amber); }
+.intro-roles li { font-weight: 700; }
+.intro-practice p { margin: .65rem 0 0; color: var(--ink-soft); }
+
+@media (min-width: 44rem) {
+  .intro-lists {
+    grid-template: "roles practice" auto "background practice" 1fr / 1fr 1.85fr;
+  }
+
+  .intro-roles { grid-area: roles; }
+  .intro-practice { grid-area: practice; }
+  .intro-background { grid-area: background; }
+}
 
 .work-list {
   display: flex;
